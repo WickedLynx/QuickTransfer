@@ -1,0 +1,1036 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FA283EF418B494E5003D4FB6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF318B494E5003D4FB6 /* Foundation.framework */; };
+		FA283EF618B494E5003D4FB6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */; };
+		FA283EF818B494E5003D4FB6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF718B494E5003D4FB6 /* UIKit.framework */; };
+		FA283EFE18B494E5003D4FB6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA283EFC18B494E5003D4FB6 /* InfoPlist.strings */; };
+		FA283F0018B494E5003D4FB6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283EFF18B494E5003D4FB6 /* main.m */; };
+		FA283F0418B494E5003D4FB6 /* QTRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F0318B494E5003D4FB6 /* QTRAppDelegate.m */; };
+		FA283F0618B494E5003D4FB6 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA283F0518B494E5003D4FB6 /* Images.xcassets */; };
+		FA283F0C18B494E5003D4FB6 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD9FFF618B33CA80098DA76 /* XCTest.framework */; };
+		FA283F0D18B494E5003D4FB6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF318B494E5003D4FB6 /* Foundation.framework */; };
+		FA283F0E18B494E5003D4FB6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF718B494E5003D4FB6 /* UIKit.framework */; };
+		FA283F1618B494E5003D4FB6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA283F1418B494E5003D4FB6 /* InfoPlist.strings */; };
+		FA283F1818B494E5003D4FB6 /* QuickTransfer_iOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F1718B494E5003D4FB6 /* QuickTransfer_iOSTests.m */; };
+		FA283F1F18B49551003D4FB6 /* DTBonjourDataChunk.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001418B33F010098DA76 /* DTBonjourDataChunk.m */; };
+		FA283F2018B49551003D4FB6 /* DTBonjourDataConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001618B33F010098DA76 /* DTBonjourDataConnection.m */; };
+		FA283F2118B49551003D4FB6 /* DTBonjourServer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001818B33F010098DA76 /* DTBonjourServer.m */; };
+		FA283F2218B49551003D4FB6 /* NSScanner+DTBonjour.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001A18B33F010098DA76 /* NSScanner+DTBonjour.m */; };
+		FA283F2318B49582003D4FB6 /* QTRBonjourServer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002718B34DEF0098DA76 /* QTRBonjourServer.m */; };
+		FA283F2418B49582003D4FB6 /* QTRBonjourClient.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002A18B3515A0098DA76 /* QTRBonjourClient.m */; };
+		FA283F2518B49582003D4FB6 /* QTRMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9003018B3534A0098DA76 /* QTRMessage.m */; };
+		FA283F2618B49582003D4FB6 /* QTRUser.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9003318B3630F0098DA76 /* QTRUser.m */; };
+		FA283F2718B49582003D4FB6 /* QTRConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002D18B351DE0098DA76 /* QTRConstants.m */; };
+		FA283F2A18B49BA8003D4FB6 /* QTRFile.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2918B49BA8003D4FB6 /* QTRFile.m */; };
+		FA283F2C18B49BA8003D4FB6 /* QTRFile.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2918B49BA8003D4FB6 /* QTRFile.m */; };
+		FA283F3018B4C3B3003D4FB6 /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2F18B4C3B3003D4FB6 /* Base64.m */; };
+		FA283F3218B4C3B3003D4FB6 /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2F18B4C3B3003D4FB6 /* Base64.m */; };
+		FA283F3A18B5BD9F003D4FB6 /* QTRConnectedDevicesView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F3918B5BD9F003D4FB6 /* QTRConnectedDevicesView.m */; };
+		FA283F3D18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F3C18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m */; };
+		FAD9000018B33CA80098DA76 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFFE18B33CA80098DA76 /* InfoPlist.strings */; };
+		FAD9000218B33CA80098DA76 /* QuickTransferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9000118B33CA80098DA76 /* QuickTransferTests.m */; };
+		FAD9001B18B33F010098DA76 /* DTBonjourDataChunk.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001418B33F010098DA76 /* DTBonjourDataChunk.m */; };
+		FAD9001C18B33F010098DA76 /* DTBonjourDataConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001618B33F010098DA76 /* DTBonjourDataConnection.m */; };
+		FAD9001D18B33F010098DA76 /* DTBonjourServer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001818B33F010098DA76 /* DTBonjourServer.m */; };
+		FAD9001E18B33F010098DA76 /* NSScanner+DTBonjour.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001A18B33F010098DA76 /* NSScanner+DTBonjour.m */; };
+		FAD9002118B3458B0098DA76 /* QTRRootController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002018B3458B0098DA76 /* QTRRootController.m */; };
+		FAD9002818B34DEF0098DA76 /* QTRBonjourServer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002718B34DEF0098DA76 /* QTRBonjourServer.m */; };
+		FAD9002B18B3515A0098DA76 /* QTRBonjourClient.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002A18B3515A0098DA76 /* QTRBonjourClient.m */; };
+		FAD9002E18B351DE0098DA76 /* QTRConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002D18B351DE0098DA76 /* QTRConstants.m */; };
+		FAD9003118B3534A0098DA76 /* QTRMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9003018B3534A0098DA76 /* QTRMessage.m */; };
+		FAD9003418B3630F0098DA76 /* QTRUser.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9003318B3630F0098DA76 /* QTRUser.m */; };
+		FAD9FFD818B33CA70098DA76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD9FFD718B33CA70098DA76 /* Cocoa.framework */; };
+		FAD9FFE218B33CA70098DA76 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFE018B33CA70098DA76 /* InfoPlist.strings */; };
+		FAD9FFE418B33CA70098DA76 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9FFE318B33CA70098DA76 /* main.m */; };
+		FAD9FFE818B33CA70098DA76 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFE618B33CA70098DA76 /* Credits.rtf */; };
+		FAD9FFEB18B33CA70098DA76 /* QTRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9FFEA18B33CA70098DA76 /* QTRAppDelegate.m */; };
+		FAD9FFEE18B33CA80098DA76 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFEC18B33CA80098DA76 /* MainMenu.xib */; };
+		FAD9FFF018B33CA80098DA76 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFEF18B33CA80098DA76 /* Images.xcassets */; };
+		FAD9FFF718B33CA80098DA76 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD9FFF618B33CA80098DA76 /* XCTest.framework */; };
+		FAD9FFF818B33CA80098DA76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD9FFD718B33CA70098DA76 /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FA283F0F18B494E5003D4FB6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAD9FFCC18B33CA70098DA76 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA283EF118B494E5003D4FB6;
+			remoteInfo = "QuickTransfer-iOS";
+		};
+		FAD9FFF918B33CA80098DA76 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FAD9FFCC18B33CA70098DA76 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FAD9FFD318B33CA70098DA76;
+			remoteInfo = QuickTransfer;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		FA283EF218B494E5003D4FB6 /* QuickTransfer-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickTransfer-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA283EF318B494E5003D4FB6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		FA283EF718B494E5003D4FB6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		FA283EFB18B494E5003D4FB6 /* QuickTransfer-iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QuickTransfer-iOS-Info.plist"; sourceTree = "<group>"; };
+		FA283EFD18B494E5003D4FB6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA283EFF18B494E5003D4FB6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FA283F0118B494E5003D4FB6 /* QuickTransfer-iOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "QuickTransfer-iOS-Prefix.pch"; sourceTree = "<group>"; };
+		FA283F0218B494E5003D4FB6 /* QTRAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QTRAppDelegate.h; sourceTree = "<group>"; };
+		FA283F0318B494E5003D4FB6 /* QTRAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QTRAppDelegate.m; sourceTree = "<group>"; };
+		FA283F0518B494E5003D4FB6 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		FA283F0B18B494E5003D4FB6 /* QuickTransfer-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "QuickTransfer-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA283F1318B494E5003D4FB6 /* QuickTransfer-iOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QuickTransfer-iOSTests-Info.plist"; sourceTree = "<group>"; };
+		FA283F1518B494E5003D4FB6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA283F1718B494E5003D4FB6 /* QuickTransfer_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuickTransfer_iOSTests.m; sourceTree = "<group>"; };
+		FA283F2818B49BA8003D4FB6 /* QTRFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRFile.h; sourceTree = "<group>"; };
+		FA283F2918B49BA8003D4FB6 /* QTRFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRFile.m; sourceTree = "<group>"; };
+		FA283F2E18B4C3B3003D4FB6 /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
+		FA283F2F18B4C3B3003D4FB6 /* Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Base64.m; sourceTree = "<group>"; };
+		FA283F3818B5BD9F003D4FB6 /* QTRConnectedDevicesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRConnectedDevicesView.h; sourceTree = "<group>"; };
+		FA283F3918B5BD9F003D4FB6 /* QTRConnectedDevicesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRConnectedDevicesView.m; sourceTree = "<group>"; };
+		FA283F3B18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRConnectedDevicesViewController.h; sourceTree = "<group>"; };
+		FA283F3C18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRConnectedDevicesViewController.m; sourceTree = "<group>"; };
+		FAD9000118B33CA80098DA76 /* QuickTransferTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuickTransferTests.m; sourceTree = "<group>"; };
+		FAD9001318B33F010098DA76 /* DTBonjourDataChunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBonjourDataChunk.h; sourceTree = "<group>"; };
+		FAD9001418B33F010098DA76 /* DTBonjourDataChunk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBonjourDataChunk.m; sourceTree = "<group>"; };
+		FAD9001518B33F010098DA76 /* DTBonjourDataConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBonjourDataConnection.h; sourceTree = "<group>"; };
+		FAD9001618B33F010098DA76 /* DTBonjourDataConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBonjourDataConnection.m; sourceTree = "<group>"; };
+		FAD9001718B33F010098DA76 /* DTBonjourServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBonjourServer.h; sourceTree = "<group>"; };
+		FAD9001818B33F010098DA76 /* DTBonjourServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBonjourServer.m; sourceTree = "<group>"; };
+		FAD9001918B33F010098DA76 /* NSScanner+DTBonjour.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSScanner+DTBonjour.h"; sourceTree = "<group>"; };
+		FAD9001A18B33F010098DA76 /* NSScanner+DTBonjour.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSScanner+DTBonjour.m"; sourceTree = "<group>"; };
+		FAD9001F18B3458B0098DA76 /* QTRRootController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRRootController.h; sourceTree = "<group>"; };
+		FAD9002018B3458B0098DA76 /* QTRRootController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRRootController.m; sourceTree = "<group>"; };
+		FAD9002618B34DEF0098DA76 /* QTRBonjourServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRBonjourServer.h; sourceTree = "<group>"; };
+		FAD9002718B34DEF0098DA76 /* QTRBonjourServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRBonjourServer.m; sourceTree = "<group>"; };
+		FAD9002918B3515A0098DA76 /* QTRBonjourClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRBonjourClient.h; sourceTree = "<group>"; };
+		FAD9002A18B3515A0098DA76 /* QTRBonjourClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRBonjourClient.m; sourceTree = "<group>"; };
+		FAD9002C18B351DE0098DA76 /* QTRConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRConstants.h; sourceTree = "<group>"; };
+		FAD9002D18B351DE0098DA76 /* QTRConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRConstants.m; sourceTree = "<group>"; };
+		FAD9002F18B3534A0098DA76 /* QTRMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRMessage.h; sourceTree = "<group>"; };
+		FAD9003018B3534A0098DA76 /* QTRMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRMessage.m; sourceTree = "<group>"; };
+		FAD9003218B3630F0098DA76 /* QTRUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRUser.h; sourceTree = "<group>"; };
+		FAD9003318B3630F0098DA76 /* QTRUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRUser.m; sourceTree = "<group>"; };
+		FAD9003518B368BA0098DA76 /* QTRBonjourServerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRBonjourServerDelegate.h; sourceTree = "<group>"; };
+		FAD9003618B3740E0098DA76 /* QTRBonjourClientDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRBonjourClientDelegate.h; sourceTree = "<group>"; };
+		FAD9FFD418B33CA70098DA76 /* QuickTransfer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuickTransfer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAD9FFD718B33CA70098DA76 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		FAD9FFDA18B33CA70098DA76 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		FAD9FFDB18B33CA70098DA76 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		FAD9FFDC18B33CA70098DA76 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		FAD9FFDF18B33CA70098DA76 /* QuickTransfer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QuickTransfer-Info.plist"; sourceTree = "<group>"; };
+		FAD9FFE118B33CA70098DA76 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FAD9FFE318B33CA70098DA76 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FAD9FFE518B33CA70098DA76 /* QuickTransfer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "QuickTransfer-Prefix.pch"; sourceTree = "<group>"; };
+		FAD9FFE718B33CA70098DA76 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		FAD9FFE918B33CA70098DA76 /* QTRAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QTRAppDelegate.h; sourceTree = "<group>"; };
+		FAD9FFEA18B33CA70098DA76 /* QTRAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QTRAppDelegate.m; sourceTree = "<group>"; };
+		FAD9FFED18B33CA80098DA76 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		FAD9FFEF18B33CA80098DA76 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		FAD9FFF518B33CA80098DA76 /* QuickTransferTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuickTransferTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAD9FFF618B33CA80098DA76 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		FAD9FFFD18B33CA80098DA76 /* QuickTransferTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QuickTransferTests-Info.plist"; sourceTree = "<group>"; };
+		FAD9FFFF18B33CA80098DA76 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FA283EEF18B494E5003D4FB6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA283EF618B494E5003D4FB6 /* CoreGraphics.framework in Frameworks */,
+				FA283EF818B494E5003D4FB6 /* UIKit.framework in Frameworks */,
+				FA283EF418B494E5003D4FB6 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA283F0818B494E5003D4FB6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA283F0C18B494E5003D4FB6 /* XCTest.framework in Frameworks */,
+				FA283F0E18B494E5003D4FB6 /* UIKit.framework in Frameworks */,
+				FA283F0D18B494E5003D4FB6 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAD9FFD118B33CA70098DA76 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAD9FFD818B33CA70098DA76 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAD9FFF218B33CA80098DA76 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAD9FFF818B33CA80098DA76 /* Cocoa.framework in Frameworks */,
+				FAD9FFF718B33CA80098DA76 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FA283EF918B494E5003D4FB6 /* QuickTransfer-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				FA283F3318B5BD73003D4FB6 /* Classes */,
+				FA283F0218B494E5003D4FB6 /* QTRAppDelegate.h */,
+				FA283F0318B494E5003D4FB6 /* QTRAppDelegate.m */,
+				FA283F0518B494E5003D4FB6 /* Images.xcassets */,
+				FA283EFA18B494E5003D4FB6 /* Supporting Files */,
+			);
+			path = "QuickTransfer-iOS";
+			sourceTree = "<group>";
+		};
+		FA283EFA18B494E5003D4FB6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FA283EFB18B494E5003D4FB6 /* QuickTransfer-iOS-Info.plist */,
+				FA283EFC18B494E5003D4FB6 /* InfoPlist.strings */,
+				FA283EFF18B494E5003D4FB6 /* main.m */,
+				FA283F0118B494E5003D4FB6 /* QuickTransfer-iOS-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FA283F1118B494E5003D4FB6 /* QuickTransfer-iOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				FA283F1718B494E5003D4FB6 /* QuickTransfer_iOSTests.m */,
+				FA283F1218B494E5003D4FB6 /* Supporting Files */,
+			);
+			path = "QuickTransfer-iOSTests";
+			sourceTree = "<group>";
+		};
+		FA283F1218B494E5003D4FB6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FA283F1318B494E5003D4FB6 /* QuickTransfer-iOSTests-Info.plist */,
+				FA283F1418B494E5003D4FB6 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FA283F2D18B4C3B3003D4FB6 /* Base64 */ = {
+			isa = PBXGroup;
+			children = (
+				FA283F2E18B4C3B3003D4FB6 /* Base64.h */,
+				FA283F2F18B4C3B3003D4FB6 /* Base64.m */,
+			);
+			path = Base64;
+			sourceTree = "<group>";
+		};
+		FA283F3318B5BD73003D4FB6 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				FA283F3418B5BD73003D4FB6 /* Controllers */,
+				FA283F3518B5BD73003D4FB6 /* Model */,
+				FA283F3618B5BD73003D4FB6 /* Other */,
+				FA283F3718B5BD73003D4FB6 /* Views */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		FA283F3418B5BD73003D4FB6 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA283F3B18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.h */,
+				FA283F3C18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		FA283F3518B5BD73003D4FB6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		FA283F3618B5BD73003D4FB6 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
+		FA283F3718B5BD73003D4FB6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				FA283F3818B5BD9F003D4FB6 /* QTRConnectedDevicesView.h */,
+				FA283F3918B5BD9F003D4FB6 /* QTRConnectedDevicesView.m */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FAD9000B18B33EE30098DA76 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9002418B34DDB0098DA76 /* Networking */,
+				FAD9000C18B33EE30098DA76 /* Controllers */,
+				FAD9000D18B33EE30098DA76 /* Model */,
+				FAD9000E18B33EE30098DA76 /* Other */,
+				FAD9000F18B33EE30098DA76 /* Views */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		FAD9000C18B33EE30098DA76 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9001F18B3458B0098DA76 /* QTRRootController.h */,
+				FAD9002018B3458B0098DA76 /* QTRRootController.m */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		FAD9000D18B33EE30098DA76 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9002F18B3534A0098DA76 /* QTRMessage.h */,
+				FAD9003018B3534A0098DA76 /* QTRMessage.m */,
+				FAD9003218B3630F0098DA76 /* QTRUser.h */,
+				FAD9003318B3630F0098DA76 /* QTRUser.m */,
+				FA283F2818B49BA8003D4FB6 /* QTRFile.h */,
+				FA283F2918B49BA8003D4FB6 /* QTRFile.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		FAD9000E18B33EE30098DA76 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9002C18B351DE0098DA76 /* QTRConstants.h */,
+				FAD9002D18B351DE0098DA76 /* QTRConstants.m */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
+		FAD9000F18B33EE30098DA76 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FAD9001018B33F010098DA76 /* ThirdParty */ = {
+			isa = PBXGroup;
+			children = (
+				FA283F2D18B4C3B3003D4FB6 /* Base64 */,
+				FAD9001118B33F010098DA76 /* DTBonjour */,
+			);
+			path = ThirdParty;
+			sourceTree = "<group>";
+		};
+		FAD9001118B33F010098DA76 /* DTBonjour */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9001218B33F010098DA76 /* Source */,
+			);
+			path = DTBonjour;
+			sourceTree = "<group>";
+		};
+		FAD9001218B33F010098DA76 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9001318B33F010098DA76 /* DTBonjourDataChunk.h */,
+				FAD9001418B33F010098DA76 /* DTBonjourDataChunk.m */,
+				FAD9001518B33F010098DA76 /* DTBonjourDataConnection.h */,
+				FAD9001618B33F010098DA76 /* DTBonjourDataConnection.m */,
+				FAD9001718B33F010098DA76 /* DTBonjourServer.h */,
+				FAD9001818B33F010098DA76 /* DTBonjourServer.m */,
+				FAD9001918B33F010098DA76 /* NSScanner+DTBonjour.h */,
+				FAD9001A18B33F010098DA76 /* NSScanner+DTBonjour.m */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		FAD9002418B34DDB0098DA76 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9002518B34DDB0098DA76 /* Bonjour */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		FAD9002518B34DDB0098DA76 /* Bonjour */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9002618B34DEF0098DA76 /* QTRBonjourServer.h */,
+				FAD9002718B34DEF0098DA76 /* QTRBonjourServer.m */,
+				FAD9002918B3515A0098DA76 /* QTRBonjourClient.h */,
+				FAD9002A18B3515A0098DA76 /* QTRBonjourClient.m */,
+				FAD9003518B368BA0098DA76 /* QTRBonjourServerDelegate.h */,
+				FAD9003618B3740E0098DA76 /* QTRBonjourClientDelegate.h */,
+			);
+			path = Bonjour;
+			sourceTree = "<group>";
+		};
+		FAD9FFCB18B33CA70098DA76 = {
+			isa = PBXGroup;
+			children = (
+				FAD9001018B33F010098DA76 /* ThirdParty */,
+				FAD9FFDD18B33CA70098DA76 /* QuickTransfer */,
+				FAD9FFFB18B33CA80098DA76 /* QuickTransferTests */,
+				FA283EF918B494E5003D4FB6 /* QuickTransfer-iOS */,
+				FA283F1118B494E5003D4FB6 /* QuickTransfer-iOSTests */,
+				FAD9FFD618B33CA70098DA76 /* Frameworks */,
+				FAD9FFD518B33CA70098DA76 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FAD9FFD518B33CA70098DA76 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9FFD418B33CA70098DA76 /* QuickTransfer.app */,
+				FAD9FFF518B33CA80098DA76 /* QuickTransferTests.xctest */,
+				FA283EF218B494E5003D4FB6 /* QuickTransfer-iOS.app */,
+				FA283F0B18B494E5003D4FB6 /* QuickTransfer-iOSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FAD9FFD618B33CA70098DA76 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9FFD718B33CA70098DA76 /* Cocoa.framework */,
+				FAD9FFF618B33CA80098DA76 /* XCTest.framework */,
+				FA283EF318B494E5003D4FB6 /* Foundation.framework */,
+				FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */,
+				FA283EF718B494E5003D4FB6 /* UIKit.framework */,
+				FAD9FFD918B33CA70098DA76 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		FAD9FFD918B33CA70098DA76 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9FFDA18B33CA70098DA76 /* AppKit.framework */,
+				FAD9FFDB18B33CA70098DA76 /* CoreData.framework */,
+				FAD9FFDC18B33CA70098DA76 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		FAD9FFDD18B33CA70098DA76 /* QuickTransfer */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9000B18B33EE30098DA76 /* Classes */,
+				FAD9FFE918B33CA70098DA76 /* QTRAppDelegate.h */,
+				FAD9FFEA18B33CA70098DA76 /* QTRAppDelegate.m */,
+				FAD9FFEC18B33CA80098DA76 /* MainMenu.xib */,
+				FAD9FFEF18B33CA80098DA76 /* Images.xcassets */,
+				FAD9FFDE18B33CA70098DA76 /* Supporting Files */,
+			);
+			path = QuickTransfer;
+			sourceTree = "<group>";
+		};
+		FAD9FFDE18B33CA70098DA76 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9FFDF18B33CA70098DA76 /* QuickTransfer-Info.plist */,
+				FAD9FFE018B33CA70098DA76 /* InfoPlist.strings */,
+				FAD9FFE318B33CA70098DA76 /* main.m */,
+				FAD9FFE518B33CA70098DA76 /* QuickTransfer-Prefix.pch */,
+				FAD9FFE618B33CA70098DA76 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FAD9FFFB18B33CA80098DA76 /* QuickTransferTests */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9000118B33CA80098DA76 /* QuickTransferTests.m */,
+				FAD9FFFC18B33CA80098DA76 /* Supporting Files */,
+			);
+			path = QuickTransferTests;
+			sourceTree = "<group>";
+		};
+		FAD9FFFC18B33CA80098DA76 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FAD9FFFD18B33CA80098DA76 /* QuickTransferTests-Info.plist */,
+				FAD9FFFE18B33CA80098DA76 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FA283EF118B494E5003D4FB6 /* QuickTransfer-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA283F1D18B494E5003D4FB6 /* Build configuration list for PBXNativeTarget "QuickTransfer-iOS" */;
+			buildPhases = (
+				FA283EEE18B494E5003D4FB6 /* Sources */,
+				FA283EEF18B494E5003D4FB6 /* Frameworks */,
+				FA283EF018B494E5003D4FB6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "QuickTransfer-iOS";
+			productName = "QuickTransfer-iOS";
+			productReference = FA283EF218B494E5003D4FB6 /* QuickTransfer-iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FA283F0A18B494E5003D4FB6 /* QuickTransfer-iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA283F1E18B494E5003D4FB6 /* Build configuration list for PBXNativeTarget "QuickTransfer-iOSTests" */;
+			buildPhases = (
+				FA283F0718B494E5003D4FB6 /* Sources */,
+				FA283F0818B494E5003D4FB6 /* Frameworks */,
+				FA283F0918B494E5003D4FB6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FA283F1018B494E5003D4FB6 /* PBXTargetDependency */,
+			);
+			name = "QuickTransfer-iOSTests";
+			productName = "QuickTransfer-iOSTests";
+			productReference = FA283F0B18B494E5003D4FB6 /* QuickTransfer-iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		FAD9FFD318B33CA70098DA76 /* QuickTransfer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAD9000518B33CA80098DA76 /* Build configuration list for PBXNativeTarget "QuickTransfer" */;
+			buildPhases = (
+				FAD9FFD018B33CA70098DA76 /* Sources */,
+				FAD9FFD118B33CA70098DA76 /* Frameworks */,
+				FAD9FFD218B33CA70098DA76 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuickTransfer;
+			productName = QuickTransfer;
+			productReference = FAD9FFD418B33CA70098DA76 /* QuickTransfer.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FAD9FFF418B33CA80098DA76 /* QuickTransferTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAD9000818B33CA80098DA76 /* Build configuration list for PBXNativeTarget "QuickTransferTests" */;
+			buildPhases = (
+				FAD9FFF118B33CA80098DA76 /* Sources */,
+				FAD9FFF218B33CA80098DA76 /* Frameworks */,
+				FAD9FFF318B33CA80098DA76 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FAD9FFFA18B33CA80098DA76 /* PBXTargetDependency */,
+			);
+			name = QuickTransferTests;
+			productName = QuickTransferTests;
+			productReference = FAD9FFF518B33CA80098DA76 /* QuickTransferTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FAD9FFCC18B33CA70098DA76 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = QTR;
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Laughing Buddha Software";
+				TargetAttributes = {
+					FA283F0A18B494E5003D4FB6 = {
+						TestTargetID = FA283EF118B494E5003D4FB6;
+					};
+					FAD9FFF418B33CA80098DA76 = {
+						TestTargetID = FAD9FFD318B33CA70098DA76;
+					};
+				};
+			};
+			buildConfigurationList = FAD9FFCF18B33CA70098DA76 /* Build configuration list for PBXProject "QuickTransfer" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FAD9FFCB18B33CA70098DA76;
+			productRefGroup = FAD9FFD518B33CA70098DA76 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FAD9FFD318B33CA70098DA76 /* QuickTransfer */,
+				FAD9FFF418B33CA80098DA76 /* QuickTransferTests */,
+				FA283EF118B494E5003D4FB6 /* QuickTransfer-iOS */,
+				FA283F0A18B494E5003D4FB6 /* QuickTransfer-iOSTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FA283EF018B494E5003D4FB6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA283EFE18B494E5003D4FB6 /* InfoPlist.strings in Resources */,
+				FA283F0618B494E5003D4FB6 /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA283F0918B494E5003D4FB6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA283F1618B494E5003D4FB6 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAD9FFD218B33CA70098DA76 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAD9FFE218B33CA70098DA76 /* InfoPlist.strings in Resources */,
+				FAD9FFF018B33CA80098DA76 /* Images.xcassets in Resources */,
+				FAD9FFE818B33CA70098DA76 /* Credits.rtf in Resources */,
+				FAD9FFEE18B33CA80098DA76 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAD9FFF318B33CA80098DA76 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAD9000018B33CA80098DA76 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FA283EEE18B494E5003D4FB6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA283F3218B4C3B3003D4FB6 /* Base64.m in Sources */,
+				FA283F2318B49582003D4FB6 /* QTRBonjourServer.m in Sources */,
+				FA283F2418B49582003D4FB6 /* QTRBonjourClient.m in Sources */,
+				FA283F2518B49582003D4FB6 /* QTRMessage.m in Sources */,
+				FA283F2618B49582003D4FB6 /* QTRUser.m in Sources */,
+				FA283F2718B49582003D4FB6 /* QTRConstants.m in Sources */,
+				FA283F1F18B49551003D4FB6 /* DTBonjourDataChunk.m in Sources */,
+				FA283F2018B49551003D4FB6 /* DTBonjourDataConnection.m in Sources */,
+				FA283F2C18B49BA8003D4FB6 /* QTRFile.m in Sources */,
+				FA283F2118B49551003D4FB6 /* DTBonjourServer.m in Sources */,
+				FA283F3D18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m in Sources */,
+				FA283F3A18B5BD9F003D4FB6 /* QTRConnectedDevicesView.m in Sources */,
+				FA283F2218B49551003D4FB6 /* NSScanner+DTBonjour.m in Sources */,
+				FA283F0418B494E5003D4FB6 /* QTRAppDelegate.m in Sources */,
+				FA283F0018B494E5003D4FB6 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA283F0718B494E5003D4FB6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA283F1818B494E5003D4FB6 /* QuickTransfer_iOSTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAD9FFD018B33CA70098DA76 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA283F3018B4C3B3003D4FB6 /* Base64.m in Sources */,
+				FAD9002118B3458B0098DA76 /* QTRRootController.m in Sources */,
+				FAD9003118B3534A0098DA76 /* QTRMessage.m in Sources */,
+				FAD9002B18B3515A0098DA76 /* QTRBonjourClient.m in Sources */,
+				FAD9FFEB18B33CA70098DA76 /* QTRAppDelegate.m in Sources */,
+				FA283F2A18B49BA8003D4FB6 /* QTRFile.m in Sources */,
+				FAD9002818B34DEF0098DA76 /* QTRBonjourServer.m in Sources */,
+				FAD9001C18B33F010098DA76 /* DTBonjourDataConnection.m in Sources */,
+				FAD9002E18B351DE0098DA76 /* QTRConstants.m in Sources */,
+				FAD9001B18B33F010098DA76 /* DTBonjourDataChunk.m in Sources */,
+				FAD9001D18B33F010098DA76 /* DTBonjourServer.m in Sources */,
+				FAD9FFE418B33CA70098DA76 /* main.m in Sources */,
+				FAD9003418B3630F0098DA76 /* QTRUser.m in Sources */,
+				FAD9001E18B33F010098DA76 /* NSScanner+DTBonjour.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAD9FFF118B33CA80098DA76 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAD9000218B33CA80098DA76 /* QuickTransferTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FA283F1018B494E5003D4FB6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA283EF118B494E5003D4FB6 /* QuickTransfer-iOS */;
+			targetProxy = FA283F0F18B494E5003D4FB6 /* PBXContainerItemProxy */;
+		};
+		FAD9FFFA18B33CA80098DA76 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FAD9FFD318B33CA70098DA76 /* QuickTransfer */;
+			targetProxy = FAD9FFF918B33CA80098DA76 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		FA283EFC18B494E5003D4FB6 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA283EFD18B494E5003D4FB6 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FA283F1418B494E5003D4FB6 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA283F1518B494E5003D4FB6 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FAD9FFE018B33CA70098DA76 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FAD9FFE118B33CA70098DA76 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FAD9FFE618B33CA70098DA76 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FAD9FFE718B33CA70098DA76 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		FAD9FFEC18B33CA80098DA76 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FAD9FFED18B33CA80098DA76 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		FAD9FFFE18B33CA80098DA76 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FAD9FFFF18B33CA80098DA76 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FA283F1918B494E5003D4FB6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuickTransfer-iOS/QuickTransfer-iOS-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "QuickTransfer-iOS/QuickTransfer-iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "726AA5C5-3066-44D7-B5E1-49D6DB29B15F";
+				SDKROOT = iphoneos;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FA283F1A18B494E5003D4FB6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuickTransfer-iOS/QuickTransfer-iOS-Prefix.pch";
+				INFOPLIST_FILE = "QuickTransfer-iOS/QuickTransfer-iOS-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "726AA5C5-3066-44D7-B5E1-49D6DB29B15F";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		FA283F1B18B494E5003D4FB6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/QuickTransfer-iOS.app/QuickTransfer-iOS";
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuickTransfer-iOS/QuickTransfer-iOS-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "QuickTransfer-iOSTests/QuickTransfer-iOSTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		FA283F1C18B494E5003D4FB6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/QuickTransfer-iOS.app/QuickTransfer-iOS";
+				CLANG_ENABLE_MODULES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuickTransfer-iOS/QuickTransfer-iOS-Prefix.pch";
+				INFOPLIST_FILE = "QuickTransfer-iOSTests/QuickTransfer-iOSTests-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+		FAD9000318B33CA80098DA76 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		FAD9000418B33CA80098DA76 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		FAD9000618B33CA80098DA76 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
+				INFOPLIST_FILE = "QuickTransfer/QuickTransfer-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.9;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FAD9000718B33CA80098DA76 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
+				INFOPLIST_FILE = "QuickTransfer/QuickTransfer-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.9;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		FAD9000918B33CA80098DA76 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/QuickTransfer.app/Contents/MacOS/QuickTransfer";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "QuickTransferTests/QuickTransferTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		FAD9000A18B33CA80098DA76 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/QuickTransfer.app/Contents/MacOS/QuickTransfer";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
+				INFOPLIST_FILE = "QuickTransferTests/QuickTransferTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FA283F1D18B494E5003D4FB6 /* Build configuration list for PBXNativeTarget "QuickTransfer-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA283F1918B494E5003D4FB6 /* Debug */,
+				FA283F1A18B494E5003D4FB6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		FA283F1E18B494E5003D4FB6 /* Build configuration list for PBXNativeTarget "QuickTransfer-iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA283F1B18B494E5003D4FB6 /* Debug */,
+				FA283F1C18B494E5003D4FB6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		FAD9000518B33CA80098DA76 /* Build configuration list for PBXNativeTarget "QuickTransfer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAD9000618B33CA80098DA76 /* Debug */,
+				FAD9000718B33CA80098DA76 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAD9000818B33CA80098DA76 /* Build configuration list for PBXNativeTarget "QuickTransferTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAD9000918B33CA80098DA76 /* Debug */,
+				FAD9000A18B33CA80098DA76 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAD9FFCF18B33CA70098DA76 /* Build configuration list for PBXProject "QuickTransfer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAD9000318B33CA80098DA76 /* Debug */,
+				FAD9000418B33CA80098DA76 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FAD9FFCC18B33CA70098DA76 /* Project object */;
+}
