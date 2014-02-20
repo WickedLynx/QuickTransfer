@@ -156,9 +156,8 @@
         [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:QTRBonjourTXTRecordIdentifierKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    NSString *username = [NSString stringWithFormat:@"%@'s %@", NSUserName(), [[UIDevice currentDevice] localizedModel]];
 
-    _localUser = [[QTRUser alloc] initWithName:username identifier:uuid platform:QTRUserPlatformIOS];
+    _localUser = [[QTRUser alloc] initWithName:[[UIDevice currentDevice] name] identifier:uuid platform:QTRUserPlatformIOS];
 
     _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
 
