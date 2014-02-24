@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="4514" systemVersion="13A603" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="4514"/>
     </dependencies>
     <objects>
@@ -456,9 +457,36 @@
         <customObject id="iUg-SY-gp7" customClass="QTRRootController">
             <connections>
                 <outlet property="devicesTableView" destination="iEC-kh-Jvt" id="Hkj-2Z-0aS"/>
+                <outlet property="localComputerNameItem" destination="Ep1-ZT-OjJ" id="8JU-aa-RPS"/>
+                <outlet property="mainWindow" destination="371" id="KfT-wB-8wD"/>
+                <outlet property="sendFileSubMenuItem" destination="iqL-Qe-8lK" id="2YT-fh-OZJ"/>
+                <outlet property="statusBarMenu" destination="r8O-pE-e8J" id="Cjx-Ct-nGP"/>
             </connections>
         </customObject>
-        <menu autoenablesItems="NO" id="hOz-wh-Jpo">
+        <menu id="r8O-pE-e8J">
+            <items>
+                <menuItem title="My Mac" enabled="NO" id="Ep1-ZT-OjJ">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                </menuItem>
+                <menuItem title="Connected Devices..." id="fI6-AO-N7d">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="clickConnectedDevices:" target="iUg-SY-gp7" id="ZZd-2C-HCn"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Send File" id="iqL-Qe-8lK">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Send File" id="Jic-T9-ndy"/>
+                </menuItem>
+                <menuItem title="Stop Services" id="2ND-B4-xJn">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <connections>
+                        <action selector="clickStopServices:" target="iUg-SY-gp7" id="hEN-PW-xPW"/>
+                    </connections>
+                </menuItem>
+            </items>
+        </menu>
+        <menu title="Cell menu" autoenablesItems="NO" id="hOz-wh-Jpo">
             <items>
                 <menuItem title="Send File..." id="BbI-xh-Uvv">
                     <modifierMask key="keyEquivalentModifierMask"/>

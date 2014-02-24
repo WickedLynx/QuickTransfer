@@ -21,6 +21,7 @@ static char *computerModel = NULL;
 
 
 @interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRBonjourClientDelegate, QTRBonjourServerDelegate, NSOpenSavePanelDelegate> {
+    NSStatusItem *_statusItem;
     QTRBonjourServer *_server;
     QTRBonjourClient *_client;
     NSMutableArray *_connectedServers;
@@ -32,6 +33,10 @@ static char *computerModel = NULL;
 }
 
 @property (weak) IBOutlet NSTableView *devicesTableView;
+@property (weak) IBOutlet NSMenuItem *localComputerNameItem;
+@property (weak) IBOutlet NSMenuItem *sendFileSubMenuItem;
+@property (weak) IBOutlet NSMenu *statusBarMenu;
+@property (strong) IBOutlet NSWindow *mainWindow;
 
 - (IBAction)clickSendFile:(id)sender;
 - (NSString *)downloadsDirectory;
@@ -41,6 +46,8 @@ static char *computerModel = NULL;
 - (void) alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
 - (QTRUser *)userAtRow:(long)row isServer:(BOOL *)isServer;
 - (BOOL)userConnected:(QTRUser *)user;
+- (IBAction)clickStopServices:(id)sender;
+- (IBAction)clickConnectedDevices:(id)sender;
 
 @end
 
@@ -78,7 +85,7 @@ void refreshComputerModel() {
     _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
     
     if (![_server start]) {
-        NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Please contact your system administrator"];
+        NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Please make sure WiFi/Ethernet is enabled and connected"];
         [alert runModal];
     }
     
@@ -88,6 +95,12 @@ void refreshComputerModel() {
 
 - (void)awakeFromNib {
     [super awakeFromNib];
+
+    _statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
+    [_statusItem setHighlightMode:YES];
+    [_statusItem setTitle:@"QTR"];
+
+    [_statusItem setMenu:self.statusBarMenu];
 
     [self startServices];
 
@@ -191,6 +204,15 @@ void refreshComputerModel() {
 
     [openPanel setDelegate:self];
     [openPanel runModal];
+}
+
+- (IBAction)clickStopServices:(id)sender {
+
+}
+
+- (IBAction)clickConnectedDevices:(id)sender {
+    
+    [self.mainWindow makeKeyAndOrderFront:self];
 }
 
 

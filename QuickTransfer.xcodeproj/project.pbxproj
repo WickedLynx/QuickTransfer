@@ -513,6 +513,7 @@
 				FAD9FFD018B33CA70098DA76 /* Sources */,
 				FAD9FFD118B33CA70098DA76 /* Frameworks */,
 				FAD9FFD218B33CA70098DA76 /* Resources */,
+				FA10D28418BB41E400C54388 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -618,6 +619,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		FA10D28418BB41E400C54388 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "echo \"r\" > /dev/tty.usbmodem1441";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		FA283EEE18B494E5003D4FB6 /* Sources */ = {
@@ -994,6 +1011,7 @@
 				FA283F1A18B494E5003D4FB6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FA283F1E18B494E5003D4FB6 /* Build configuration list for PBXNativeTarget "QuickTransfer-iOSTests" */ = {
 			isa = XCConfigurationList;
@@ -1002,6 +1020,7 @@
 				FA283F1C18B494E5003D4FB6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FAD9000518B33CA80098DA76 /* Build configuration list for PBXNativeTarget "QuickTransfer" */ = {
 			isa = XCConfigurationList;
