@@ -36,7 +36,6 @@
 - (void)saveFile:(QTRFile *)file;
 - (BOOL)userConnected:(QTRUser *)user;
 - (QTRUser *)userAtIndexPath:(NSIndexPath *)indexPath isServer:(BOOL *)isServer;
-- (void)applicationDidBecomeActive:(NSNotification *)notification;
 
 @end
 
@@ -310,7 +309,7 @@
             if ([_connectedClients containsObject:_selectedUser]) {
                 [_server sendFile:file toUser:_selectedUser];
             } else if ([_connectedServers containsObject:_selectedUser]) {
-                [_server sendFile:file toUser:_selectedUser];
+                [_client sendFile:file toUser:_selectedUser];
             } else {
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
                 [alert show];

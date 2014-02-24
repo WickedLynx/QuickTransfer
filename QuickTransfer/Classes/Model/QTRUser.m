@@ -86,4 +86,8 @@ NSString *const QTRUserPlatformWindows = @"Windows";
     return dictionary;
 }
 
+- (NSString *)description {
+    return [NSString stringWithFormat:@"%@ {\nname: %@,\nidentifier: %@,\nplatform: %@\n}", [super description], self.name, self.identifier, self.platform];
+}
+
 @end
