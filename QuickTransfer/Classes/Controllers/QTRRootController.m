@@ -18,9 +18,9 @@
 #include <sys/sysctl.h>
 
 static char *computerModel = NULL;
+int const QTRRootControllerSendMenuItemBaseTag = 1000;
 
-
-@interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRBonjourClientDelegate, QTRBonjourServerDelegate, NSOpenSavePanelDelegate> {
+@interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRBonjourClientDelegate, QTRBonjourServerDelegate> {
     NSStatusItem *_statusItem;
     QTRBonjourServer *_server;
     QTRBonjourClient *_client;
@@ -30,6 +30,7 @@ static char *computerModel = NULL;
     QTRUser *_selectedUser;
     NSString *_downloadsDirectory;
     long _clickedRow;
+    BOOL _canRefresh;
 }
 
 @property (weak) IBOutlet NSTableView *devicesTableView;
@@ -37,6 +38,7 @@ static char *computerModel = NULL;
 @property (weak) IBOutlet NSMenuItem *sendFileSubMenuItem;
 @property (weak) IBOutlet NSMenu *statusBarMenu;
 @property (strong) IBOutlet NSWindow *mainWindow;
+@property (weak) IBOutlet NSMenu *sendFileMenu;
 
 - (IBAction)clickSendFile:(id)sender;
 - (NSString *)downloadsDirectory;
@@ -48,6 +50,9 @@ static char *computerModel = NULL;
 - (BOOL)userConnected:(QTRUser *)user;
 - (IBAction)clickStopServices:(id)sender;
 - (IBAction)clickConnectedDevices:(id)sender;
+- (void)refreshMenu;
+- (void)clickSendMenuItem:(NSMenuItem *)menuItem;
+- (IBAction)clickQuit:(id)sender;
 
 @end
 
@@ -63,35 +68,6 @@ void refreshComputerModel() {
     }
 }
 
-- (void)startServices {
-    if (computerModel == NULL) {
-        refreshComputerModel();
-    }
-    _connectedServers = [NSMutableArray new];
-    _connectedClients = [NSMutableArray new];
-    NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordIdentifierKey];
-    if ([uuid isKindOfClass:[NSNull class]] || uuid == nil) {
-        uuid = [[NSUUID UUID] UUIDString];
-        [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:QTRBonjourTXTRecordIdentifierKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    NSString *computerName = @"Mac";
-    if (computerModel != NULL) {
-        computerName = [NSString stringWithCString:computerModel encoding:NSUTF8StringEncoding];
-    }
-    NSString *username = [NSString stringWithFormat:@"%@'s %@", NSUserName(), computerName];
-    _localUser = [[QTRUser alloc] initWithName:username identifier:uuid platform:QTRUserPlatformMac];
-    
-    _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
-    
-    if (![_server start]) {
-        NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Please make sure WiFi/Ethernet is enabled and connected"];
-        [alert runModal];
-    }
-    
-    _client = [[QTRBonjourClient alloc] initWithDelegate:self];
-    [_client start];
-}
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -102,7 +78,11 @@ void refreshComputerModel() {
 
     [_statusItem setMenu:self.statusBarMenu];
 
+    _canRefresh = YES;
+
     [self startServices];
+
+    [self refreshMenu];
 
 }
 
@@ -160,37 +140,42 @@ void refreshComputerModel() {
 }
 
 - (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user {
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+
     NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"%@ sent file: %@", user.name, file.name] defaultButton:@"Save" alternateButton:@"Discard" otherButton:nil informativeTextWithFormat:@"Clicking save will save it to Downloads"];
+    [[alert window] setTitle:@"QuickTransfer"];
     [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:(void *)CFBridgingRetain(file)];
 }
 
-- (IBAction)clickRefresh:(id)sender {
-
-    [_connectedClients removeAllObjects];
-
-    [_connectedServers removeAllObjects];
-
-    [self.devicesTableView reloadData];
-
-    [_server setDelegate:nil];
-    [_server stop];
-    _server = nil;
-
-    [_client setDelegate:nil];
-    [_client stop];
-    _client = nil;
-
-    double delayInSeconds = 2.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [self startServices];
-    });
-
+- (void)sendFileAtURL:(NSURL *)url {
+    NSData *fileData = [NSData dataWithContentsOfURL:url];
+    if ([fileData length] > 0) {
+        
+        if (_clickedRow >= 0) {
+            
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[url path] error:nil];
+            NSString *fileName = [[url path] lastPathComponent];
+            NSString *fileType = fileAttributes[NSFileType];
+            
+            QTRFile *theFile = [[QTRFile alloc] initWithName:fileName type:fileType data:fileData];
+            
+            if ([_connectedServers count] > _clickedRow) {
+                
+                QTRUser *theUser = _connectedServers[_clickedRow];
+                
+                [_client sendFile:theFile toUser:theUser];
+                
+            } else {
+                
+                QTRUser *theUser = _connectedClients[_clickedRow - [_connectedServers count]];
+                [_server sendFile:theFile toUser:theUser];
+            }
+        }
+    }
 }
 
-- (IBAction)clickSendFile:(id)sender {
-
-    _clickedRow = [self.devicesTableView clickedRow];
+- (void)showOpenPanelForSelectedUser {
     QTRUser *theUser = [self userAtRow:_clickedRow isServer:NULL];
 
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
@@ -202,19 +187,153 @@ void refreshComputerModel() {
     [openPanel setAllowsMultipleSelection:NO];
     [openPanel setCanChooseDirectories:NO];
 
-    [openPanel setDelegate:self];
-    [openPanel runModal];
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    if ([[NSApplication sharedApplication] keyWindow] == nil) {
+        [openPanel beginWithCompletionHandler:^(NSInteger result) {
+            if (result == NSFileHandlingPanelOKButton && openPanel.URL != nil) {
+                NSURL *url = openPanel.URL;
+                [self sendFileAtURL:url];
+            }
+        }];
+    } else {
+        [openPanel beginSheetModalForWindow:self.mainWindow completionHandler:^(NSInteger result) {
+
+            if (result == NSFileHandlingPanelOKButton && openPanel.URL != nil) {
+                NSURL *url = openPanel.URL;
+                [self sendFileAtURL:url];
+            }
+
+        }];
+    }
+
+
+}
+
+- (void)stopServices {
+
+    [_connectedClients removeAllObjects];
+    
+    [_connectedServers removeAllObjects];
+    
+    [self.devicesTableView reloadData];
+
+    [self refreshMenu];
+    
+    [_server setDelegate:nil];
+    [_server stop];
+    _server = nil;
+    
+    [_client setDelegate:nil];
+    [_client stop];
+    _client = nil;
+}
+
+- (void)startServices {
+    if (computerModel == NULL) {
+        refreshComputerModel();
+    }
+    _connectedServers = [NSMutableArray new];
+    _connectedClients = [NSMutableArray new];
+    NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordIdentifierKey];
+    if ([uuid isKindOfClass:[NSNull class]] || uuid == nil) {
+        uuid = [[NSUUID UUID] UUIDString];
+        [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:QTRBonjourTXTRecordIdentifierKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    NSString *computerName = @"Mac";
+    if (computerModel != NULL) {
+        computerName = [NSString stringWithCString:computerModel encoding:NSUTF8StringEncoding];
+    }
+    NSString *username = [NSString stringWithFormat:@"%@'s %@", NSUserName(), computerName];
+    _localUser = [[QTRUser alloc] initWithName:username identifier:uuid platform:QTRUserPlatformMac];
+
+    _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
+
+    if (![_server start]) {
+        NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Please make sure WiFi/Ethernet is enabled and connected"];
+        [alert runModal];
+    }
+
+    _client = [[QTRBonjourClient alloc] initWithDelegate:self];
+    [_client start];
+}
+
+- (void)refreshMenu {
+
+    [self.localComputerNameItem setTitle:_localUser.name];
+
+    [self.sendFileMenu removeAllItems];
+
+    int totalConnectedUsers = (int)([_connectedServers count] + [_connectedClients count]);
+
+    if (totalConnectedUsers == 0) {
+        [self.sendFileSubMenuItem setEnabled:NO];
+
+    } else {
+
+        [self.sendFileSubMenuItem setEnabled:YES];
+
+        @autoreleasepool {
+            for (int userIndex = 0; userIndex != totalConnectedUsers; ++userIndex) {
+                QTRUser *theUser = [self userAtRow:userIndex isServer:NULL];
+                if (theUser != nil) {
+                    NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:theUser.name action:@selector(clickSendMenuItem:) keyEquivalent:@""];
+                    [menuItem setTarget:self];
+                    [menuItem setTag:(QTRRootControllerSendMenuItemBaseTag + userIndex)];
+                    [menuItem setEnabled:YES];
+                    [self.sendFileMenu addItem:menuItem];
+                }
+            }
+        }
+    }
+}
+
+#pragma mark - Actions
+
+- (IBAction)clickRefresh:(id)sender {
+
+    if (_canRefresh) {
+
+        _canRefresh = NO;
+
+        [self stopServices];
+
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self startServices];
+            _canRefresh = YES;
+        });
+    }
+
+}
+
+- (IBAction)clickSendFile:(id)sender {
+
+    _clickedRow = [self.devicesTableView clickedRow];
+
+    [self showOpenPanelForSelectedUser];
 }
 
 - (IBAction)clickStopServices:(id)sender {
-
+    [self stopServices];
 }
 
 - (IBAction)clickConnectedDevices:(id)sender {
-    
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
     [self.mainWindow makeKeyAndOrderFront:self];
 }
 
+- (void)clickSendMenuItem:(NSMenuItem *)menuItem {
+    int userIndex = (int)menuItem.tag - QTRRootControllerSendMenuItemBaseTag;
+    _clickedRow = userIndex;
+
+    [self showOpenPanelForSelectedUser];
+}
+
+- (IBAction)clickQuit:(id)sender {
+    [[NSApplication sharedApplication] terminate:self];
+}
 
 #pragma mark - NSTableViewDataSource
 
@@ -234,12 +353,16 @@ void refreshComputerModel() {
     if (![self userConnected:user]) {
         [_connectedClients addObject:user];
         [self.devicesTableView reloadData];
+
+        [self refreshMenu];
     }
 }
 
 - (void)server:(QTRBonjourServer *)server didDisconnectUser:(QTRUser *)user {
     [_connectedClients removeObject:user];
     [self.devicesTableView reloadData];
+
+    [self refreshMenu];
 }
 
 - (void)server:(QTRBonjourServer *)server didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
@@ -261,6 +384,8 @@ void refreshComputerModel() {
     if (![self userConnected:user]) {
         [_connectedServers addObject:user];
         [self.devicesTableView reloadData];
+
+        [self refreshMenu];
     }
 }
 
@@ -268,43 +393,13 @@ void refreshComputerModel() {
     [_connectedServers removeObject:user];
 
     [self.devicesTableView reloadData];
+
+    [self refreshMenu];
 }
 
 - (void)client:(QTRBonjourClient *)client didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
     [self showAlertForFile:file user:user];
 }
 
-#pragma mark - NSOpenSavePanelDelegate methods
-
-- (BOOL)panel:(id)sender validateURL:(NSURL *)url error:(NSError **)outError {
-    BOOL valid = NO;
-    NSData *fileData = [NSData dataWithContentsOfURL:url];
-    if ([fileData length] > 0) {
-        valid = YES;
-
-        if (_clickedRow >= 0) {
-
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[url path] error:nil];
-            NSString *fileName = [[url path] lastPathComponent];
-            NSString *fileType = fileAttributes[NSFileType];
-
-            QTRFile *theFile = [[QTRFile alloc] initWithName:fileName type:fileType data:fileData];
-
-            if ([_connectedServers count] > _clickedRow) {
-
-                QTRUser *theUser = _connectedServers[_clickedRow];
-
-                [_client sendFile:theFile toUser:theUser];
-
-            } else {
-
-                QTRUser *theUser = _connectedClients[_clickedRow - [_connectedServers count]];
-                [_server sendFile:theFile toUser:theUser];
-            }
-        }
-    }
-    return valid;
-}
 
 @end

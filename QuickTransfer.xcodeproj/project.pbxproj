@@ -632,7 +632,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "echo \"r\" > /dev/tty.usbmodem1441";
+			shellScript = "";
 		};
 /* End PBXShellScriptBuildPhase section */
 

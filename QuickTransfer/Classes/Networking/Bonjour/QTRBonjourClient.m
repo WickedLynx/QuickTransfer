@@ -55,7 +55,7 @@
 }
 
 - (void)stop {
-
+    [self.netServicesBrowser setDelegate:nil];
     [self.netServicesBrowser stop];
 
     [self.foundServices removeAllObjects];
@@ -63,8 +63,10 @@
     NSEnumerator *enumerator = [self.discoveredServices objectEnumerator];
     DTBonjourDataConnection *connection = nil;
     while (connection = [enumerator nextObject]) {
+        [connection setDelegate:nil];
         [connection close];
     }
+
 
     [self.discoveredServices removeAllObjects];
 

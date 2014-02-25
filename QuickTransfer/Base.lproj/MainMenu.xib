@@ -123,18 +123,12 @@
                         <items>
                             <menuItem title="Refresh" keyEquivalent="r" id="tu6-Qb-g6A">
                                 <connections>
-                                    <action selector="clickRefresh:" target="iUg-SY-gp7" id="gbR-pI-C9s"/>
+                                    <action selector="clickRefresh:" target="iUg-SY-gp7" id="amS-t6-N0i"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Undo" keyEquivalent="z" id="207">
+                            <menuItem title="Stop Services" keyEquivalent="." id="207">
                                 <connections>
-                                    <action selector="undo:" target="-1" id="223"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Redo" keyEquivalent="Z" id="215">
-                                <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
-                                <connections>
-                                    <action selector="redo:" target="-1" id="231"/>
+                                    <action selector="clickStopServices:" target="iUg-SY-gp7" id="Dcb-7a-VzE"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="206">
@@ -331,25 +325,16 @@
                     </menu>
                 </menuItem>
                 <menuItem title="View" id="295">
-                    <menu key="submenu" title="View" id="296">
-                        <items>
-                            <menuItem title="Show Toolbar" keyEquivalent="t" id="297">
-                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
-                                <connections>
-                                    <action selector="toggleToolbarShown:" target="-1" id="366"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Customize Toolbar…" id="298">
-                                <connections>
-                                    <action selector="runToolbarCustomizationPalette:" target="-1" id="365"/>
-                                </connections>
-                            </menuItem>
-                        </items>
-                    </menu>
+                    <menu key="submenu" title="View" id="296"/>
                 </menuItem>
                 <menuItem title="Window" id="19">
                     <menu key="submenu" title="Window" systemMenu="window" id="24">
                         <items>
+                            <menuItem title="Connected Devices..." keyEquivalent="D" id="W0h-IP-E5z">
+                                <connections>
+                                    <action selector="clickConnectedDevices:" target="iUg-SY-gp7" id="sF2-eR-oVd"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Minimize" keyEquivalent="m" id="23">
                                 <connections>
                                     <action selector="performMiniaturize:" target="-1" id="37"/>
@@ -385,36 +370,39 @@
                 </menuItem>
             </items>
         </menu>
-        <window title="QuickTransfer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+        <window title="QuickTransfer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="371">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+            <windowCollectionBehavior key="collectionBehavior" moveToActiveSpace="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="480" height="360"/>
+            <rect key="contentRect" x="757" y="401" width="395" height="360"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1600" height="878"/>
+            <value key="minSize" type="size" width="395" height="360"/>
+            <value key="maxSize" type="size" width="395" height="360"/>
             <view key="contentView" id="372">
-                <rect key="frame" x="0.0" y="0.0" width="480" height="360"/>
+                <rect key="frame" x="0.0" y="0.0" width="395" height="360"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="fR6-dm-Jug">
-                        <rect key="frame" x="20" y="20" width="440" height="320"/>
+                        <rect key="frame" x="20" y="20" width="355" height="320"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="GrB-8c-gw0">
-                            <rect key="frame" x="1" y="17" width="438" height="302"/>
+                            <rect key="frame" x="1" y="17" width="353" height="302"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="none" alternatingRowBackgroundColors="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="IQF-di-hSh" id="iEC-kh-Jvt">
-                                    <rect key="frame" x="0.0" y="0.0" width="438" height="302"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="353" height="302"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn editable="NO" width="433.8046875" minWidth="40" maxWidth="1000" id="xjQ-E3-Gos">
+                                        <tableColumn editable="NO" width="350" minWidth="40" maxWidth="1000" id="xjQ-E3-Gos">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="center" title="Devices">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
-                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Device" id="oxx-fz-Op5">
+                                            <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" allowsUndo="NO" alignment="left" title="Device" id="oxx-fz-Op5">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -433,15 +421,15 @@
                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="68N-lE-vhA">
-                            <rect key="frame" x="1" y="304" width="438" height="15"/>
+                            <rect key="frame" x="1" y="304" width="352" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="iUg-dp-QS3">
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="iUg-dp-QS3">
                             <rect key="frame" x="-14" y="9" width="15" height="0.0"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <tableHeaderView key="headerView" id="IQF-di-hSh">
-                            <rect key="frame" x="0.0" y="0.0" width="438" height="17"/>
+                            <rect key="frame" x="0.0" y="0.0" width="353" height="17"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </tableHeaderView>
                     </scrollView>
@@ -459,7 +447,8 @@
                 <outlet property="devicesTableView" destination="iEC-kh-Jvt" id="Hkj-2Z-0aS"/>
                 <outlet property="localComputerNameItem" destination="Ep1-ZT-OjJ" id="8JU-aa-RPS"/>
                 <outlet property="mainWindow" destination="371" id="KfT-wB-8wD"/>
-                <outlet property="sendFileSubMenuItem" destination="iqL-Qe-8lK" id="2YT-fh-OZJ"/>
+                <outlet property="sendFileMenu" destination="Jic-T9-ndy" id="R3f-6o-OCL"/>
+                <outlet property="sendFileSubMenuItem" destination="iqL-Qe-8lK" id="Egl-yW-7JF"/>
                 <outlet property="statusBarMenu" destination="r8O-pE-e8J" id="Cjx-Ct-nGP"/>
             </connections>
         </customObject>
@@ -468,20 +457,28 @@
                 <menuItem title="My Mac" enabled="NO" id="Ep1-ZT-OjJ">
                     <modifierMask key="keyEquivalentModifierMask"/>
                 </menuItem>
-                <menuItem title="Connected Devices..." id="fI6-AO-N7d">
+                <menuItem title="Send To" id="iqL-Qe-8lK">
                     <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Send To" autoenablesItems="NO" id="Jic-T9-ndy"/>
+                </menuItem>
+                <menuItem title="Connected Devices..." keyEquivalent="D" id="fI6-AO-N7d">
                     <connections>
-                        <action selector="clickConnectedDevices:" target="iUg-SY-gp7" id="ZZd-2C-HCn"/>
+                        <action selector="clickConnectedDevices:" target="iUg-SY-gp7" id="fu5-Qq-Fqp"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Send File" id="iqL-Qe-8lK">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Send File" id="Jic-T9-ndy"/>
-                </menuItem>
-                <menuItem title="Stop Services" id="2ND-B4-xJn">
-                    <modifierMask key="keyEquivalentModifierMask"/>
+                <menuItem title="Refresh" keyEquivalent="r" id="1GW-58-xew">
                     <connections>
-                        <action selector="clickStopServices:" target="iUg-SY-gp7" id="hEN-PW-xPW"/>
+                        <action selector="clickRefresh:" target="iUg-SY-gp7" id="Sbx-e9-kGo"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Stop Services" keyEquivalent="." id="2ND-B4-xJn">
+                    <connections>
+                        <action selector="clickStopServices:" target="iUg-SY-gp7" id="CnV-Ap-lnx"/>
+                    </connections>
+                </menuItem>
+                <menuItem title="Quit" keyEquivalent="q" id="tmZ-50-VNC">
+                    <connections>
+                        <action selector="clickQuit:" target="iUg-SY-gp7" id="MCQ-Br-rtq"/>
                     </connections>
                 </menuItem>
             </items>
