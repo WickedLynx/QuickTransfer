@@ -12,6 +12,8 @@
 #import "QTRUser.h"
 #import "QTRConstants.h"
 #import "QTRFile.h"
+#import "QTRStatusItemView.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -20,7 +22,7 @@
 static char *computerModel = NULL;
 int const QTRRootControllerSendMenuItemBaseTag = 1000;
 
-@interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRBonjourClientDelegate, QTRBonjourServerDelegate> {
+@interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRBonjourClientDelegate, QTRBonjourServerDelegate, QTRStatusItemViewDelegate> {
     NSStatusItem *_statusItem;
     QTRBonjourServer *_server;
     QTRBonjourClient *_client;
@@ -39,6 +41,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 @property (weak) IBOutlet NSMenu *statusBarMenu;
 @property (strong) IBOutlet NSWindow *mainWindow;
 @property (weak) IBOutlet NSMenu *sendFileMenu;
+@property (weak) IBOutlet QTRStatusItemView *statusItemView;
 
 - (IBAction)clickSendFile:(id)sender;
 - (NSString *)downloadsDirectory;
@@ -53,6 +56,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 - (void)refreshMenu;
 - (void)clickSendMenuItem:(NSMenuItem *)menuItem;
 - (IBAction)clickQuit:(id)sender;
+- (void)showMenu:(id)sender;
 
 @end
 
@@ -68,21 +72,25 @@ void refreshComputerModel() {
     }
 }
 
-
 - (void)awakeFromNib {
     [super awakeFromNib];
 
-    _statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
+    _statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     [_statusItem setHighlightMode:YES];
-    [_statusItem setTitle:@"QTR"];
 
     [_statusItem setMenu:self.statusBarMenu];
+    [_statusItem setView:self.statusItemView];
+    [self.statusItemView.button setTarget:self];
+    [self.statusItemView.button setAction:@selector(showMenu:)];
+    [self.statusItemView setDelegate:self];
 
     _canRefresh = YES;
 
     [self startServices];
 
     [self refreshMenu];
+
+    [self.devicesTableView registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
 
 }
 
@@ -205,8 +213,33 @@ void refreshComputerModel() {
 
         }];
     }
+}
 
+- (NSURL *)validateDraggedFileURLOnRow:(NSInteger)row info:(id <NSDraggingInfo>)info {
 
+    NSURL *validatedURL = nil;
+    QTRUser *user = [self userAtRow:row isServer:NULL];
+
+    NSPasteboard *thePasteboard = [info draggingPasteboard];
+    NSArray *supportedURLs = nil;
+    if ([user.platform isEqualToString:QTRUserPlatformIOS] || [user.platform isEqualToString:QTRUserPlatformAndroid]) {
+        supportedURLs = @[(NSString *)kUTTypeImage];
+    } else {
+        supportedURLs = @[(NSString *)kUTTypeItem];
+    }
+
+    NSArray *draggedURLs = [thePasteboard readObjectsForClasses:@[[NSURL class]] options:@{NSPasteboardURLReadingFileURLsOnlyKey : @(YES), NSPasteboardURLReadingContentsConformToTypesKey : supportedURLs}];
+
+    if ([draggedURLs count] == 1) {
+        BOOL isDirectory = NO;
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[(NSURL *)[draggedURLs firstObject] path] isDirectory:&isDirectory]) {
+            if (!isDirectory) {
+                validatedURL = [draggedURLs firstObject];
+            }
+        }
+    }
+
+    return validatedURL;
 }
 
 - (void)stopServices {
@@ -277,7 +310,7 @@ void refreshComputerModel() {
             for (int userIndex = 0; userIndex != totalConnectedUsers; ++userIndex) {
                 QTRUser *theUser = [self userAtRow:userIndex isServer:NULL];
                 if (theUser != nil) {
-                    NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:theUser.name action:@selector(clickSendMenuItem:) keyEquivalent:@""];
+                    NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:[self styledDisplayNameForUser:theUser] action:@selector(clickSendMenuItem:) keyEquivalent:@""];
                     [menuItem setTarget:self];
                     [menuItem setTag:(QTRRootControllerSendMenuItemBaseTag + userIndex)];
                     [menuItem setEnabled:YES];
@@ -286,6 +319,29 @@ void refreshComputerModel() {
             }
         }
     }
+}
+
+- (NSString *)styledDisplayNameForUser:(QTRUser *)user {
+    NSString *displayName = nil;
+
+    if ([user.platform isEqualToString:QTRUserPlatformAndroid] || [user.platform isEqualToString:QTRUserPlatformIOS]) {
+        displayName = [NSString stringWithFormat:@"📱 %@", user.name];
+    } else {
+        displayName = [NSString stringWithFormat:@"💻 %@", user.name];
+    }
+
+    return displayName;
+}
+
+- (void)showDevicesWindow {
+    NSRect windowRect = [self.statusItemView.window convertRectToScreen:self.statusItemView.frame];
+    NSPoint desiredWindowOrigin = NSMakePoint(windowRect.origin.x - self.mainWindow.frame.size.width / 2, windowRect.origin.y);
+    if (desiredWindowOrigin.x + self.mainWindow.frame.size.width > [[NSScreen mainScreen] frame].size.width - 20) {
+        desiredWindowOrigin.x = windowRect.origin.x - self.mainWindow.frame.size.width - 20;
+    }
+    [self.mainWindow setFrameOrigin:desiredWindowOrigin];
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    [self.mainWindow makeKeyAndOrderFront:self];
 }
 
 #pragma mark - Actions
@@ -320,8 +376,7 @@ void refreshComputerModel() {
 }
 
 - (IBAction)clickConnectedDevices:(id)sender {
-    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
-    [self.mainWindow makeKeyAndOrderFront:self];
+    [self showDevicesWindow];
 }
 
 - (void)clickSendMenuItem:(NSMenuItem *)menuItem {
@@ -335,6 +390,10 @@ void refreshComputerModel() {
     [[NSApplication sharedApplication] terminate:self];
 }
 
+- (void)showMenu:(id)sender {
+    [_statusItem popUpStatusItemMenu:_statusItem.menu];
+}
+
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
@@ -344,7 +403,38 @@ void refreshComputerModel() {
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     QTRUser *theUser = [self userAtRow:rowIndex isServer:NULL];
 
-    return theUser.name;
+    return  [self styledDisplayNameForUser:theUser];
+}
+
+- (NSDragOperation)tableView:(NSTableView *)aTableView validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {
+    NSDragOperation dragOperation = NSDragOperationNone;
+
+    if (operation == NSTableViewDropOn) {
+        if ([self validateDraggedFileURLOnRow:row info:info] != nil) {
+            dragOperation = NSDragOperationLink;
+        }
+
+    }
+
+    return dragOperation;
+
+}
+
+- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
+
+    BOOL acceptDrop = NO;
+
+    NSURL *fileURL = [self validateDraggedFileURLOnRow:row info:info];
+
+    if (fileURL != nil) {
+
+        acceptDrop = YES;
+        _clickedRow = row;
+        [self sendFileAtURL:fileURL];
+
+    }
+
+    return acceptDrop;
 }
 
 #pragma mark - QTRBonjourServerDelegate methods
@@ -399,6 +489,12 @@ void refreshComputerModel() {
 
 - (void)client:(QTRBonjourClient *)client didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
     [self showAlertForFile:file user:user];
+}
+
+#pragma mark - QTRStatusItemViewDelegate methods
+
+- (void)statusItemViewDraggingEntered:(QTRStatusItemView *)view {
+    [self showDevicesWindow];
 }
 
 
