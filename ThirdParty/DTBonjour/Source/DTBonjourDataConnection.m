@@ -323,7 +323,7 @@ typedef enum
 
 #pragma mark - Public Interface
 
-- (BOOL)sendObject:(id)object error:(NSError **)error
+- (BOOL)sendObject:(id)object error:(NSError **)error dataChunk:(DTBonjourDataChunk **)dataChunk;
 {
 	if (![self isOpen])
 	{
@@ -343,6 +343,10 @@ typedef enum
 	
 	if (!newChunk)
 		return NO;
+
+    if (dataChunk != nil) {
+        *dataChunk = newChunk;
+    }
 	
 	newChunk.sequenceNumber = _chunkSequenceNumber;
 

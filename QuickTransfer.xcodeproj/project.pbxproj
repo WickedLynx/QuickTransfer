@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA12BB0318BF06000030911F /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
+		FA12BB0418BF06000030911F /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
 		FA283EF418B494E5003D4FB6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF318B494E5003D4FB6 /* Foundation.framework */; };
 		FA283EF618B494E5003D4FB6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */; };
 		FA283EF818B494E5003D4FB6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF718B494E5003D4FB6 /* UIKit.framework */; };
@@ -76,6 +78,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		FA12BB0118BF06000030911F /* QTRTransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfer.h; sourceTree = "<group>"; };
+		FA12BB0218BF06000030911F /* QTRTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfer.m; sourceTree = "<group>"; };
 		FA283EF218B494E5003D4FB6 /* QuickTransfer-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickTransfer-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA283EF318B494E5003D4FB6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -308,6 +312,8 @@
 				FAD9003318B3630F0098DA76 /* QTRUser.m */,
 				FA283F2818B49BA8003D4FB6 /* QTRFile.h */,
 				FA283F2918B49BA8003D4FB6 /* QTRFile.m */,
+				FA12BB0118BF06000030911F /* QTRTransfer.h */,
+				FA12BB0218BF06000030911F /* QTRTransfer.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -650,6 +656,7 @@
 				FA283F2318B49582003D4FB6 /* QTRBonjourServer.m in Sources */,
 				FA283F2418B49582003D4FB6 /* QTRBonjourClient.m in Sources */,
 				FA283F2518B49582003D4FB6 /* QTRMessage.m in Sources */,
+				FA12BB0418BF06000030911F /* QTRTransfer.m in Sources */,
 				FA283F2618B49582003D4FB6 /* QTRUser.m in Sources */,
 				FA283F2718B49582003D4FB6 /* QTRConstants.m in Sources */,
 				FA283F1F18B49551003D4FB6 /* DTBonjourDataChunk.m in Sources */,
@@ -680,6 +687,7 @@
 				FAD9002118B3458B0098DA76 /* QTRRootController.m in Sources */,
 				FAD9003118B3534A0098DA76 /* QTRMessage.m in Sources */,
 				FAD9002B18B3515A0098DA76 /* QTRBonjourClient.m in Sources */,
+				FA12BB0318BF06000030911F /* QTRTransfer.m in Sources */,
 				FAD9FFEB18B33CA70098DA76 /* QTRAppDelegate.m in Sources */,
 				FA283F2A18B49BA8003D4FB6 /* QTRFile.m in Sources */,
 				FAD9002818B34DEF0098DA76 /* QTRBonjourServer.m in Sources */,
