@@ -10,6 +10,7 @@
 
 #import "DTBonjourServer.h"
 #import "QTRBonjourServerDelegate.h"
+#import "QTRBonjourTransferDelegate.h"
 
 @class QTRFile;
 @class QTRTransfersController;
@@ -21,5 +22,6 @@
 - (void)sendFile:(QTRFile *)file toUser:(QTRUser *)user;
 
 @property (weak) id <QTRBonjourServerDelegate> fileDelegate;
+@property (weak) id <QTRBonjourTransferDelegate> transferDelegate;
 
 @end

@@ -8,17 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@class QTRTransfer;
-@class QTRUser;
-@class DTBonjourDataChunk;
-@class QTRFile;
+#import "QTRBonjourTransferDelegate.h"
 
-@interface QTRTransfersController : NSObject
+@interface QTRTransfersController : NSObject <QTRBonjourTransferDelegate, NSTableViewDataSource, NSTableViewDelegate>
 
 - (NSArray *)transfers;
-- (void)addTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk;
-- (void)updateTransferForChunk:(DTBonjourDataChunk *)chunk;
 - (void)removeAllTransfers;
 
+@property (weak) IBOutlet NSTableView *transfersTableView;
+@property (weak) IBOutlet NSView *transfersTableCellView;
 
 @end

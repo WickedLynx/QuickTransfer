@@ -9,8 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "QTRBonjourClientDelegate.h"
-
-@class QTRUser;
+#import "QTRBonjourTransferDelegate.h"
 
 @interface QTRBonjourClient : NSObject
 
@@ -21,5 +20,7 @@
 - (void)sendFile:(QTRFile *)file toUser:(QTRUser *)user;
 
 @property (weak) id <QTRBonjourClientDelegate> delegate;
+@property (weak) id <QTRBonjourTransferDelegate> transferDelegate;
+
 
 @end

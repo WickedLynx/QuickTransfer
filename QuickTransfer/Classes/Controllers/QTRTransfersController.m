@@ -26,27 +26,7 @@
     return self;
 }
 
-- (void)addTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk {
-
-    QTRTransfer *transfer = [QTRTransfer new];
-    [transfer setUser:user];
-    [transfer setFile:file];
-
-    [_transfers setObject:transfer forKey:chunk];
-}
-
-- (void)updateTransferForChunk:(DTBonjourDataChunk *)chunk {
-
-    QTRTransfer *theTransfer = [_transfers objectForKey:chunk];
-    float progress = chunk.numberOfTransferredBytes / chunk.totalBytes;
-    [theTransfer setProgress:progress];
-
-    if ([chunk isTransmissionComplete]) {
-        [_transfers removeObjectForKey:chunk];
-    }
-
-    NSLog(@"Progress for file: %@ -- %f", theTransfer.file.name, progress);
-}
+#pragma mark - Public methods
 
 - (NSArray *)transfers {
     NSMutableArray *transfers = [NSMutableArray arrayWithCapacity:[_transfers count]];
@@ -62,5 +42,41 @@
 - (void)removeAllTransfers {
     [_transfers removeAllObjects];
 }
+
+#pragma mark - QTRBonjourTransferDelegate methods
+
+- (void)addTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk {
+
+    QTRTransfer *transfer = [QTRTransfer new];
+    [transfer setUser:user];
+    [transfer setFile:file];
+
+    [_transfers setObject:transfer forKey:chunk];
+}
+
+- (void)updateTransferForChunk:(DTBonjourDataChunk *)chunk {
+
+    QTRTransfer *theTransfer = [_transfers objectForKey:chunk];
+    float progress = (double)(chunk.numberOfTransferredBytes) / (double)(chunk.totalBytes);
+    [theTransfer setProgress:progress];
+
+    NSLog(@"Progress for file: %@ -- %f", theTransfer.file.name, progress);
+
+    if ([chunk isTransmissionComplete]) {
+        [_transfers removeObjectForKey:chunk];
+    }
+
+}
+
+#pragma mark - NSTableViewDataSource methods
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
+    return 5;
+}
+
+- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
+    return nil;
+}
+
 
 @end

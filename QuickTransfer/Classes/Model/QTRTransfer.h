@@ -17,6 +17,5 @@
 @property (nonatomic) float progress;
 @property (strong) QTRUser *user;
 @property (strong) QTRFile *file;
-@property (weak) DTBonjourDataChunk *chunk;
 
 @end

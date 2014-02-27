@@ -357,7 +357,7 @@ static void ListeningSocketCallback(CFSocketRef s, CFSocketCallBackType type, CF
 	{
 		NSError *error;
 		
-		if (![connection sendObject:object error:&error])
+		if (![connection sendObject:object error:&error dataChunk:nil])
 		{
 			NSLog(@"%@", [error localizedDescription]);
 		}

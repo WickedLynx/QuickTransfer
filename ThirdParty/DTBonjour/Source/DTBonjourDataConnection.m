@@ -347,7 +347,8 @@ typedef enum
     if (dataChunk != nil) {
         *dataChunk = newChunk;
     }
-	
+
+
 	newChunk.sequenceNumber = _chunkSequenceNumber;
 
 	BOOL queueWasEmpty = (![_outputQueue count]);

@@ -12,6 +12,7 @@
 #import "QTRUser.h"
 #import "QTRMessage.h"
 #import "QTRFile.h"
+#import "DTBonjourDataChunk.h"
 
 @interface QTRBonjourClient () <DTBonjourDataConnectionDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
@@ -22,7 +23,6 @@
 @property (strong) NSMapTable *discoveredServices;
 @property (strong) NSMutableArray *foundServices;
 @property (strong) QTRUser *localUser;
-
 
 @end
 
@@ -76,7 +76,12 @@
 
     QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
     NSData *jsonData = [message JSONData];
-    [[self connectionForUser:user] sendObject:jsonData error:nil];
+    DTBonjourDataChunk *chunk = nil;
+    [[self connectionForUser:user] sendObject:jsonData error:nil dataChunk:&chunk];
+
+    if ([self.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
+        [self.transferDelegate addTransferForUser:user file:file chunk:chunk];
+    }
 
 }
 
@@ -149,7 +154,7 @@
 - (void)connectionDidOpen:(DTBonjourDataConnection *)connection {
 
     QTRMessage *userInfoMessage = [QTRMessage messageWithUser:_localUser file:nil];
-    [connection sendObject:[userInfoMessage JSONData] error:nil];
+    [connection sendObject:[userInfoMessage JSONData] error:nil dataChunk:nil];
 
     if ([self.delegate respondsToSelector:@selector(client:didConnectToServerForUser:)]) {
         QTRUser *user = [self userForConnection:connection];
@@ -178,6 +183,18 @@
                 [self.delegate client:self didReceiveFile:theMessage.file fromUser:user];
             }
         }
+    }
+}
+
+- (void)connection:(DTBonjourDataConnection *)connection didSendBytes:(NSUInteger)bytesSent ofChunk:(DTBonjourDataChunk *)chunk {
+    if ([self.transferDelegate respondsToSelector:@selector(updateTransferForChunk:)]) {
+        [self.transferDelegate updateTransferForChunk:chunk];
+    }
+}
+
+- (void)connection:(DTBonjourDataConnection *)connection didFinishSendingChunk:(DTBonjourDataChunk *)chunk {
+    if ([self.transferDelegate respondsToSelector:@selector(updateTransferForChunk:)]) {
+        [self.transferDelegate updateTransferForChunk:chunk];
     }
 }
 

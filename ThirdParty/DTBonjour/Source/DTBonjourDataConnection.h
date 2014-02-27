@@ -173,7 +173,7 @@ extern CGFloat DTBonjourDataConnectionDefaultTimeout;
  @param error An option error output parameter
  @returns `YES` if the object was successfully encoded and enqueued for sending
  */
-- (BOOL)sendObject:(id)object error:(NSError **)error;
+- (BOOL)sendObject:(id)object error:(NSError **)error dataChunk:(DTBonjourDataChunk **)dataChunk;
 
 /**
  @name Getting Information

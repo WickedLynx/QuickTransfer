@@ -12,6 +12,7 @@
 #import "QTRUser.h"
 #import "QTRFile.h"
 #import "QTRTransfersController.h"
+#import "DTBonjourDataChunk.h"
 
 @interface QTRBonjourServer () {
 
@@ -50,7 +51,11 @@
     DTBonjourDataConnection *connection = [self connectionForUser:user];
     if (connection != nil) {
         QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
-        [connection sendObject:[message JSONData] error:nil];
+        DTBonjourDataChunk *dataChunk = nil;
+        [connection sendObject:[message JSONData] error:nil dataChunk:&dataChunk];
+        if ([self.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
+            [self.transferDelegate addTransferForUser:user file:file chunk:dataChunk];
+        }
     }
 }
 
@@ -76,8 +81,6 @@
 
     return connection;
 }
-
-
 
 #pragma mark - DTBonjourDataConnectionDelegate methods
 
@@ -115,10 +118,17 @@
     [super connectionDidClose:connection];
 }
 
-- (void)connection:(DTBonjourDataConnection *)connection willStartSendingChunk:(DTBonjourDataChunk *)chunk {
-    
+- (void)connection:(DTBonjourDataConnection *)connection didSendBytes:(NSUInteger)bytesSent ofChunk:(DTBonjourDataChunk *)chunk {
+    if ([self.transferDelegate respondsToSelector:@selector(updateTransferForChunk:)]) {
+        [self.transferDelegate updateTransferForChunk:chunk];
+    }
 }
 
+- (void)connection:(DTBonjourDataConnection *)connection didFinishSendingChunk:(DTBonjourDataChunk *)chunk {
+    if ([self.transferDelegate respondsToSelector:@selector(updateTransferForChunk:)]) {
+        [self.transferDelegate updateTransferForChunk:chunk];
+    }
+}
 
 
 

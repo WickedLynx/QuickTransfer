@@ -44,6 +44,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 @property (strong) IBOutlet NSWindow *mainWindow;
 @property (weak) IBOutlet NSMenu *sendFileMenu;
 @property (weak) IBOutlet QTRStatusItemView *statusItemView;
+@property (strong) IBOutlet QTRTransfersController *transfersController;
 
 - (IBAction)clickSendFile:(id)sender;
 - (NSString *)downloadsDirectory;
@@ -85,8 +86,6 @@ void refreshComputerModel() {
     [self.statusItemView.button setTarget:self];
     [self.statusItemView.button setAction:@selector(showMenu:)];
     [self.statusItemView setDelegate:self];
-
-    _transfersController = [[QTRTransfersController alloc] init];
 
     _canRefresh = YES;
 
@@ -227,7 +226,8 @@ void refreshComputerModel() {
     NSPasteboard *thePasteboard = [info draggingPasteboard];
     NSArray *supportedURLs = nil;
     if ([user.platform isEqualToString:QTRUserPlatformIOS] || [user.platform isEqualToString:QTRUserPlatformAndroid]) {
-        supportedURLs = @[(NSString *)kUTTypeImage];
+//        supportedURLs = @[(NSString *)kUTTypeImage];
+                supportedURLs = @[(NSString *)kUTTypeItem];
     } else {
         supportedURLs = @[(NSString *)kUTTypeItem];
     }
@@ -251,16 +251,20 @@ void refreshComputerModel() {
     [_connectedClients removeAllObjects];
     
     [_connectedServers removeAllObjects];
+
+    [_transfersController removeAllTransfers];
     
     [self.devicesTableView reloadData];
 
     [self refreshMenu];
     
     [_server setDelegate:nil];
+    [_server setTransferDelegate:nil];
     [_server stop];
     _server = nil;
     
     [_client setDelegate:nil];
+    [_client setTransferDelegate:nil];
     [_client stop];
     _client = nil;
 }
@@ -285,6 +289,7 @@ void refreshComputerModel() {
     _localUser = [[QTRUser alloc] initWithName:username identifier:uuid platform:QTRUserPlatformMac];
 
     _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
+    [_server setTransferDelegate:_transfersController];
 
     if (![_server start]) {
         NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Please make sure WiFi/Ethernet is enabled and connected"];
@@ -292,6 +297,7 @@ void refreshComputerModel() {
     }
 
     _client = [[QTRBonjourClient alloc] initWithDelegate:self];
+    [_client setTransferDelegate:_transfersController];
     [_client start];
 }
 
