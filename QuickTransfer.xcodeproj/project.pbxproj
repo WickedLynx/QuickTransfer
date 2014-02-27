@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		FA12BB0318BF06000030911F /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
 		FA12BB0418BF06000030911F /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
+		FA12BB0718BF29320030911F /* QTRTransfersController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0618BF29320030911F /* QTRTransfersController.m */; };
 		FA283EF418B494E5003D4FB6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF318B494E5003D4FB6 /* Foundation.framework */; };
 		FA283EF618B494E5003D4FB6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */; };
 		FA283EF818B494E5003D4FB6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF718B494E5003D4FB6 /* UIKit.framework */; };
@@ -80,6 +81,8 @@
 /* Begin PBXFileReference section */
 		FA12BB0118BF06000030911F /* QTRTransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfer.h; sourceTree = "<group>"; };
 		FA12BB0218BF06000030911F /* QTRTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfer.m; sourceTree = "<group>"; };
+		FA12BB0518BF29320030911F /* QTRTransfersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersController.h; sourceTree = "<group>"; };
+		FA12BB0618BF29320030911F /* QTRTransfersController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersController.m; sourceTree = "<group>"; };
 		FA283EF218B494E5003D4FB6 /* QuickTransfer-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickTransfer-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA283EF318B494E5003D4FB6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -299,6 +302,8 @@
 			children = (
 				FAD9001F18B3458B0098DA76 /* QTRRootController.h */,
 				FAD9002018B3458B0098DA76 /* QTRRootController.m */,
+				FA12BB0518BF29320030911F /* QTRTransfersController.h */,
+				FA12BB0618BF29320030911F /* QTRTransfersController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -693,6 +698,7 @@
 				FAD9002818B34DEF0098DA76 /* QTRBonjourServer.m in Sources */,
 				FAD9001C18B33F010098DA76 /* DTBonjourDataConnection.m in Sources */,
 				FA38B29318BDCFA4003BB8E5 /* QTRStatusItemView.m in Sources */,
+				FA12BB0718BF29320030911F /* QTRTransfersController.m in Sources */,
 				FAD9002E18B351DE0098DA76 /* QTRConstants.m in Sources */,
 				FAD9001B18B33F010098DA76 /* DTBonjourDataChunk.m in Sources */,
 				FAD9001D18B33F010098DA76 /* DTBonjourServer.m in Sources */,

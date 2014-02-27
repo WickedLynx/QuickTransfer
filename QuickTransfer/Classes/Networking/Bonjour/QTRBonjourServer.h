@@ -12,6 +12,7 @@
 #import "QTRBonjourServerDelegate.h"
 
 @class QTRFile;
+@class QTRTransfersController;
 
 @interface QTRBonjourServer : DTBonjourServer
 

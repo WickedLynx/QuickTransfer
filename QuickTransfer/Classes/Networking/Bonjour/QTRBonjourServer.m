@@ -11,6 +11,7 @@
 #import "QTRMessage.h"
 #import "QTRUser.h"
 #import "QTRFile.h"
+#import "QTRTransfersController.h"
 
 @interface QTRBonjourServer () {
 
@@ -112,6 +113,10 @@
     [self.mappedConnections removeObjectForKey:connection];
 
     [super connectionDidClose:connection];
+}
+
+- (void)connection:(DTBonjourDataConnection *)connection willStartSendingChunk:(DTBonjourDataChunk *)chunk {
+    
 }
 
 

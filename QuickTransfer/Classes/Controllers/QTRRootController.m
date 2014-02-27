@@ -13,6 +13,7 @@
 #import "QTRConstants.h"
 #import "QTRFile.h"
 #import "QTRStatusItemView.h"
+#import "QTRTransfersController.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -33,6 +34,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
     NSString *_downloadsDirectory;
     long _clickedRow;
     BOOL _canRefresh;
+    QTRTransfersController *_transfersController;
 }
 
 @property (weak) IBOutlet NSTableView *devicesTableView;
@@ -83,6 +85,8 @@ void refreshComputerModel() {
     [self.statusItemView.button setTarget:self];
     [self.statusItemView.button setAction:@selector(showMenu:)];
     [self.statusItemView setDelegate:self];
+
+    _transfersController = [[QTRTransfersController alloc] init];
 
     _canRefresh = YES;
 
