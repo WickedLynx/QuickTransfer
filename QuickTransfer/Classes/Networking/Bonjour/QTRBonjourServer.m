@@ -48,15 +48,27 @@
 }
 
 - (void)sendFile:(QTRFile *)file toUser:(QTRUser *)user {
-    DTBonjourDataConnection *connection = [self connectionForUser:user];
-    if (connection != nil) {
-        QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
-        DTBonjourDataChunk *dataChunk = nil;
-        [connection sendObject:[message JSONData] error:nil dataChunk:&dataChunk];
-        if ([self.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
-            [self.transferDelegate addTransferForUser:user file:file chunk:dataChunk];
+    __weak typeof(self) wSelf = self;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (wSelf != nil) {
+            typeof(self) sSelf = wSelf;
+            DTBonjourDataConnection *connection = [sSelf connectionForUser:user];
+            if (connection != nil) {
+                QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    DTBonjourDataChunk *dataChunk = nil;
+                    [connection sendObject:[message JSONData] error:nil dataChunk:&dataChunk];
+                    if ([sSelf.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
+                        [sSelf.transferDelegate addTransferForUser:user file:file chunk:dataChunk];
+                    }
+                });
+
+            }
         }
-    }
+
+    });
+
 }
 
 - (void)stop {
@@ -88,23 +100,36 @@
 
     [super connection:connection didReceiveObject:object];
 
-    if ([object isKindOfClass:[NSData class]]) {
-        QTRMessage *theMessage = [QTRMessage messageWithJSONData:object];
-        QTRUser *user = theMessage.user;
-        [self.mappedConnections setObject:user forKey:connection];
+    __weak typeof(self) wSelf = self;
 
-        if (user.name != nil && user.identifier != nil) {
-            if (theMessage.file == nil) {
-                if ([self.fileDelegate respondsToSelector:@selector(server:didConnectToUser:)]) {
-                    [self.fileDelegate server:self didConnectToUser:user];
-                }
-            } else {
-                if ([self.fileDelegate respondsToSelector:@selector(server:didReceiveFile:fromUser:)]) {
-                    [self.fileDelegate server:self didReceiveFile:theMessage.file fromUser:user];
-                }
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+
+        if (wSelf != nil) {
+            typeof(self) sSelf = wSelf;
+            if ([object isKindOfClass:[NSData class]]) {
+                QTRMessage *theMessage = [QTRMessage messageWithJSONData:object];
+                QTRUser *user = theMessage.user;
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [sSelf.mappedConnections setObject:user forKey:connection];
+
+                    if (user.name != nil && user.identifier != nil) {
+                        if (theMessage.file == nil) {
+                            if ([sSelf.fileDelegate respondsToSelector:@selector(server:didConnectToUser:)]) {
+                                [sSelf.fileDelegate server:sSelf didConnectToUser:user];
+                            }
+                        } else {
+                            if ([sSelf.fileDelegate respondsToSelector:@selector(server:didReceiveFile:fromUser:)]) {
+                                [sSelf.fileDelegate server:sSelf didReceiveFile:theMessage.file fromUser:user];
+                            }
+                        }
+                    }
+                });
+                
             }
         }
-    }
+
+    });
 }
 
 - (void)connectionDidClose:(DTBonjourDataConnection *)connection {

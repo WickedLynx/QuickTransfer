@@ -15,7 +15,8 @@
 - (NSArray *)transfers;
 - (void)removeAllTransfers;
 
+- (IBAction)clickClearCompleted:(id)sender;
+
 @property (weak) IBOutlet NSTableView *transfersTableView;
-@property (weak) IBOutlet NSView *transfersTableCellView;
 
 @end

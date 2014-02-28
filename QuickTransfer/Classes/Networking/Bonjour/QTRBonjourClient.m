@@ -73,15 +73,26 @@
 }
 
 - (void)sendFile:(QTRFile *)file toUser:(QTRUser *)user {
+    __weak typeof(self) wSelf = self;
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if (wSelf != nil) {
+            typeof(self) sSelf = wSelf;
+            QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
+            NSData *jsonData = [message JSONData];
 
-    QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
-    NSData *jsonData = [message JSONData];
-    DTBonjourDataChunk *chunk = nil;
-    [[self connectionForUser:user] sendObject:jsonData error:nil dataChunk:&chunk];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                DTBonjourDataChunk *chunk = nil;
+                [[sSelf connectionForUser:user] sendObject:jsonData error:nil dataChunk:&chunk];
+                if ([sSelf.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
+                    [sSelf.transferDelegate addTransferForUser:user file:file chunk:chunk];
+                }
 
-    if ([self.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
-        [self.transferDelegate addTransferForUser:user file:file chunk:chunk];
-    }
+            });
+
+        }
+
+    });
+
 
 }
 
@@ -173,17 +184,28 @@
 }
 
 - (void)connection:(DTBonjourDataConnection *)connection didReceiveObject:(id)object {
+    __weak typeof(self) wSelf = self;
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if (wSelf != nil) {
+            typeof(self) sSelf = wSelf;
 
-    if ([object isKindOfClass:[NSData class]]) {
-        QTRMessage *theMessage = [QTRMessage messageWithJSONData:object];
-        QTRUser *user = theMessage.user;
+            if ([object isKindOfClass:[NSData class]]) {
+                QTRMessage *theMessage = [QTRMessage messageWithJSONData:object];
+                QTRUser *user = theMessage.user;
 
-        if (user.name != nil && user.identifier != nil) {
-            if ([self.delegate respondsToSelector:@selector(client:didReceiveFile:fromUser:)]) {
-                [self.delegate client:self didReceiveFile:theMessage.file fromUser:user];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (user.name != nil && user.identifier != nil) {
+                        if ([sSelf.delegate respondsToSelector:@selector(client:didReceiveFile:fromUser:)]) {
+                            [sSelf.delegate client:sSelf didReceiveFile:theMessage.file fromUser:user];
+                        }
+                    }
+                });
+
             }
         }
-    }
+
+    });
+
 }
 
 - (void)connection:(DTBonjourDataConnection *)connection didSendBytes:(NSUInteger)bytesSent ofChunk:(DTBonjourDataChunk *)chunk {

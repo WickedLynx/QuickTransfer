@@ -69,4 +69,17 @@ NSString *const QTRFileDataKey = @"data";
     return self.data.length;
 }
 
+- (BOOL)isEqual:(id)object {
+    BOOL isEqual = NO;
+    if ([object isKindOfClass:[QTRFile class]]) {
+        QTRFile *otherFile = (QTRFile *)object;
+
+        if ([otherFile.name isEqualToString:self.name] && [otherFile length] == [self length] && [otherFile.type isEqualToString:self.type]) {
+            isEqual = YES;
+        }
+    }
+
+    return isEqual;
+}
+
 @end

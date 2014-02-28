@@ -13,9 +13,9 @@
 @implementation QTRTransfersTableCellView
 
 - (void)awakeFromNib {
-    NSProgressIndicator *progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(self.fileNameField.frame.origin.x + 5, self.fileNameField.frame.origin.y + 30, self.bounds.size.width - 10, 15)];
+    NSProgressIndicator *progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(self.fileNameField.frame.origin.x + 5, self.fileNameField.frame.origin.y + 23, self.bounds.size.width - 10, 10)];
     [progressIndicator setIndeterminate:NO];
-    [progressIndicator setUsesThreadedAnimation:NO];
+    [progressIndicator setUsesThreadedAnimation:YES];
     [progressIndicator setMaxValue:1.0f];
     [progressIndicator setMinValue:0.0f];
     [progressIndicator setDoubleValue:0.0f];

@@ -44,6 +44,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 @property (weak) IBOutlet NSMenu *sendFileMenu;
 @property (weak) IBOutlet QTRStatusItemView *statusItemView;
 @property (strong) IBOutlet QTRTransfersController *transfersController;
+@property (strong) IBOutlet NSWindow *transfersPanel;
 
 - (IBAction)clickSendFile:(id)sender;
 - (NSString *)downloadsDirectory;
@@ -59,6 +60,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 - (void)clickSendMenuItem:(NSMenuItem *)menuItem;
 - (IBAction)clickQuit:(id)sender;
 - (void)showMenu:(id)sender;
+- (IBAction)clickTransfers:(id)sender;
 
 @end
 
@@ -158,32 +160,44 @@ void refreshComputerModel() {
 }
 
 - (void)sendFileAtURL:(NSURL *)url {
-    NSData *fileData = [NSData dataWithContentsOfURL:url];
-    if ([fileData length] > 0) {
-        
-        if (_clickedRow >= 0) {
-            
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[url path] error:nil];
-            NSString *fileName = [[url path] lastPathComponent];
-            NSString *fileType = fileAttributes[NSFileType];
-            
-            QTRFile *theFile = [[QTRFile alloc] initWithName:fileName type:fileType data:fileData];
-            [theFile setUrl:url];
-            
-            if ([_connectedServers count] > _clickedRow) {
-                
-                QTRUser *theUser = _connectedServers[_clickedRow];
-                
-                [_client sendFile:theFile toUser:theUser];
-                
-            } else {
-                
-                QTRUser *theUser = _connectedClients[_clickedRow - [_connectedServers count]];
-                [_server sendFile:theFile toUser:theUser];
+    __weak typeof(self) wSelf = self;
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if (wSelf != nil) {
+            typeof(self) sSelf = self;
+            NSData *fileData = [NSData dataWithContentsOfURL:url];
+            if ([fileData length] > 0) {
+
+                if (sSelf->_clickedRow >= 0) {
+
+                    NSFileManager *fileManager = [NSFileManager defaultManager];
+                    NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[url path] error:nil];
+                    NSString *fileName = [[url path] lastPathComponent];
+                    NSString *fileType = fileAttributes[NSFileType];
+
+                    QTRFile *theFile = [[QTRFile alloc] initWithName:fileName type:fileType data:fileData];
+                    [theFile setUrl:url];
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if ([sSelf->_connectedServers count] > sSelf->_clickedRow) {
+
+                            QTRUser *theUser = sSelf->_connectedServers[sSelf->_clickedRow];
+
+                            [sSelf->_client sendFile:theFile toUser:theUser];
+
+                        } else {
+
+                            QTRUser *theUser = sSelf->_connectedClients[sSelf->_clickedRow - [sSelf->_connectedServers count]];
+                            [sSelf->_server sendFile:theFile toUser:theUser];
+                        }
+
+                        [sSelf showTransfers];
+                    });
+
+                }
             }
         }
-    }
+    });
+
 }
 
 - (void)showOpenPanelForSelectedUser {
@@ -191,7 +205,7 @@ void refreshComputerModel() {
 
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
     if ([theUser.platform isEqualToString:QTRUserPlatformIOS] || [theUser.platform isEqualToString:QTRUserPlatformLinux]) {
-        [openPanel setAllowedFileTypes:@[@"png", @"jpg", @"tiff", @"gif", @"jpeg"]];
+        [openPanel setAllowedFileTypes:@[(NSString *)kUTTypeImage]];
     }
     [openPanel setAllowsMultipleSelection:NO];
     [openPanel setAllowsOtherFileTypes:NO];
@@ -226,8 +240,7 @@ void refreshComputerModel() {
     NSPasteboard *thePasteboard = [info draggingPasteboard];
     NSArray *supportedURLs = nil;
     if ([user.platform isEqualToString:QTRUserPlatformIOS] || [user.platform isEqualToString:QTRUserPlatformAndroid]) {
-//        supportedURLs = @[(NSString *)kUTTypeImage];
-                supportedURLs = @[(NSString *)kUTTypeItem];
+        supportedURLs = @[(NSString *)kUTTypeImage];
     } else {
         supportedURLs = @[(NSString *)kUTTypeItem];
     }
@@ -354,6 +367,11 @@ void refreshComputerModel() {
     [self.mainWindow makeKeyAndOrderFront:self];
 }
 
+- (void)showTransfers {
+    [self.transfersPanel orderFront:self];
+
+}
+
 #pragma mark - Actions
 
 - (IBAction)clickRefresh:(id)sender {
@@ -402,6 +420,10 @@ void refreshComputerModel() {
 
 - (void)showMenu:(id)sender {
     [_statusItem popUpStatusItemMenu:_statusItem.menu];
+}
+
+- (void)clickTransfers:(id)sender {
+    [self showTransfers];
 }
 
 #pragma mark - NSTableViewDataSource
