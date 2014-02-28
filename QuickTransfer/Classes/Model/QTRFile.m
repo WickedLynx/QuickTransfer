@@ -65,4 +65,8 @@ NSString *const QTRFileDataKey = @"data";
     return dictionary;
 }
 
+- (NSUInteger)length {
+    return self.data.length;
+}
+
 @end

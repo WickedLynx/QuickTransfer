@@ -34,7 +34,6 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
     NSString *_downloadsDirectory;
     long _clickedRow;
     BOOL _canRefresh;
-    QTRTransfersController *_transfersController;
 }
 
 @property (weak) IBOutlet NSTableView *devicesTableView;
@@ -170,6 +169,7 @@ void refreshComputerModel() {
             NSString *fileType = fileAttributes[NSFileType];
             
             QTRFile *theFile = [[QTRFile alloc] initWithName:fileName type:fileType data:fileData];
+            [theFile setUrl:url];
             
             if ([_connectedServers count] > _clickedRow) {
                 
@@ -252,7 +252,7 @@ void refreshComputerModel() {
     
     [_connectedServers removeAllObjects];
 
-    [_transfersController removeAllTransfers];
+    [self.transfersController removeAllTransfers];
     
     [self.devicesTableView reloadData];
 
@@ -289,7 +289,7 @@ void refreshComputerModel() {
     _localUser = [[QTRUser alloc] initWithName:username identifier:uuid platform:QTRUserPlatformMac];
 
     _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
-    [_server setTransferDelegate:_transfersController];
+    [_server setTransferDelegate:self.transfersController];
 
     if (![_server start]) {
         NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Please make sure WiFi/Ethernet is enabled and connected"];
@@ -297,7 +297,7 @@ void refreshComputerModel() {
     }
 
     _client = [[QTRBonjourClient alloc] initWithDelegate:self];
-    [_client setTransferDelegate:_transfersController];
+    [_client setTransferDelegate:self.transfersController];
     [_client start];
 }
 

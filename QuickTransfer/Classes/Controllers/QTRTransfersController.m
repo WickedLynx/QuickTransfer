@@ -14,6 +14,7 @@
 
 @implementation QTRTransfersController {
     NSMapTable *_transfers;
+    NSMutableArray *_allTransfers;
 }
 
 - (id)init {
@@ -21,6 +22,7 @@
 
     if (self != nil) {
         _transfers = [NSMapTable strongToStrongObjectsMapTable];
+        _allTransfers = [NSMutableArray new];
     }
 
     return self;
@@ -29,18 +31,15 @@
 #pragma mark - Public methods
 
 - (NSArray *)transfers {
-    NSMutableArray *transfers = [NSMutableArray arrayWithCapacity:[_transfers count]];
-    NSEnumerator *objectEnumerator = [_transfers objectEnumerator];
-    id object = nil;
-    while (object = [objectEnumerator nextObject]) {
-        [transfers addObject:object];
-    }
 
-    return transfers;
+    return _allTransfers;
 }
 
 - (void)removeAllTransfers {
     [_transfers removeAllObjects];
+    [_allTransfers removeAllObjects];
+
+    [self.transfersTableView reloadData];
 }
 
 #pragma mark - QTRBonjourTransferDelegate methods
@@ -49,9 +48,13 @@
 
     QTRTransfer *transfer = [QTRTransfer new];
     [transfer setUser:user];
-    [transfer setFile:file];
-
+    [transfer setFileURL:file.url];
+    [transfer setFileSize:[file length]];
+    [transfer setTimestamp:[NSDate date]];
+    [_allTransfers insertObject:transfer atIndex:0];
     [_transfers setObject:transfer forKey:chunk];
+
+    [self.transfersTableView reloadData];
 }
 
 - (void)updateTransferForChunk:(DTBonjourDataChunk *)chunk {
@@ -60,22 +63,26 @@
     float progress = (double)(chunk.numberOfTransferredBytes) / (double)(chunk.totalBytes);
     [theTransfer setProgress:progress];
 
-    NSLog(@"Progress for file: %@ -- %f", theTransfer.file.name, progress);
+//    NSLog(@"Progress for file: %@ -- %f", theTransfer.file.name, progress);
 
     if ([chunk isTransmissionComplete]) {
         [_transfers removeObjectForKey:chunk];
+        [theTransfer setProgress:1.0f];
     }
+
+    [self.transfersTableView reloadData];
 
 }
 
 #pragma mark - NSTableViewDataSource methods
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return 5;
+    return [_allTransfers count];
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    return nil;
+    return _allTransfers[rowIndex];
+
 }
 
 

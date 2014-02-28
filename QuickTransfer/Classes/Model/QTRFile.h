@@ -13,9 +13,11 @@
 - (instancetype)initWithName:(NSString *)fileName type:(NSString *)fileType data:(NSData *)data;
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 - (NSDictionary *)dictionaryRepresentation;
+- (NSUInteger)length;
 
 @property (copy) NSString *name;
 @property (copy) NSString *type;
 @property (strong) NSData *data;
+@property (copy) NSURL *url;
 
 @end
