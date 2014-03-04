@@ -13,6 +13,7 @@
 #import "QTRFile.h"
 #import "QTRTransfersController.h"
 #import "DTBonjourDataChunk.h"
+#import "QTRMultipartWriter.h"
 
 @interface QTRBonjourServer () {
 
@@ -20,6 +21,7 @@
 
 @property (strong) NSMapTable *mappedConnections;
 @property (strong) QTRUser *localUser;
+@property (strong) NSMutableDictionary *receivedFileParts;
 
 - (DTBonjourDataConnection *)connectionForUser:(QTRUser *)user;
 
@@ -42,6 +44,8 @@
         self.TXTRecord = @{QTRBonjourTXTRecordIdentifierKey : [_localUser.identifier dataUsingEncoding:NSUTF8StringEncoding], QTRBonjourTXTRecordNameKey : [_localUser.name dataUsingEncoding:NSUTF8StringEncoding], QTRBonjourTXTRecordPlatformKey : _localUser.platform};
 
         _mappedConnections = [NSMapTable weakToStrongObjectsMapTable];
+
+        _receivedFileParts = [NSMutableDictionary new];
     }
 
     return self;
@@ -119,8 +123,25 @@
                                 [sSelf.fileDelegate server:sSelf didConnectToUser:user];
                             }
                         } else {
-                            if ([sSelf.fileDelegate respondsToSelector:@selector(server:didReceiveFile:fromUser:)]) {
-                                [sSelf.fileDelegate server:sSelf didReceiveFile:theMessage.file fromUser:user];
+
+                            if (theMessage.file.totalParts > 0) {
+                                QTRMultipartWriter *writer = sSelf.receivedFileParts[theMessage.file.multipartID];
+                                if (writer != nil) {
+                                    [writer writeFilePart:theMessage.file completion:^{
+                                        if (theMessage.file.partIndex == (theMessage.file.totalParts - 1)) {
+                                            [writer closeFile];
+                                            NSLog(@"finished writing file");
+                                            [sSelf.receivedFileParts removeObjectForKey:theMessage.file.multipartID];
+                                        }
+                                    }];
+                                } else {
+                                    writer = [[QTRMultipartWriter alloc] initWithFilePart:theMessage.file sender:user saveURL:[sSelf.fileDelegate saveURLForFile:theMessage.file]];
+                                    sSelf.receivedFileParts[theMessage.file.multipartID] = writer;
+                                }
+                            } else {
+                                if ([sSelf.fileDelegate respondsToSelector:@selector(server:didReceiveFile:fromUser:)]) {
+                                    [sSelf.fileDelegate server:sSelf didReceiveFile:theMessage.file fromUser:user];
+                                }
                             }
                         }
                     }

@@ -160,6 +160,18 @@ void refreshComputerModel() {
 }
 
 - (void)sendFileAtURL:(NSURL *)url {
+    if ([_connectedServers count] > _clickedRow) {
+
+        QTRUser *theUser = _connectedServers[_clickedRow];
+        [_client sendFileAtURL:url toUser:theUser];
+
+    } else {
+
+//        QTRUser *theUser = _connectedClients[_clickedRow - [_connectedServers count]];
+
+    }
+
+    /*
     __weak typeof(self) wSelf = self;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         if (wSelf != nil) {
@@ -197,6 +209,7 @@ void refreshComputerModel() {
             }
         }
     });
+    */
 
 }
 
@@ -489,6 +502,18 @@ void refreshComputerModel() {
 
 - (void)server:(QTRBonjourServer *)server didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
     [self showAlertForFile:file user:user];
+}
+
+- (NSURL *)saveURLForFile:(QTRFile *)file {
+    
+    NSString *fileName = file.name;
+    NSString *savePath = [[self downloadsDirectory] stringByAppendingPathComponent:fileName];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
+        fileName = [NSString stringWithFormat:@"%@ %@", [NSDate date], file.name];
+        savePath = [[self downloadsDirectory] stringByAppendingPathComponent:fileName];
+    }
+
+    return [NSURL fileURLWithPath:savePath];
 }
 
 #pragma mark - QTRBonjourClientDelegate methods

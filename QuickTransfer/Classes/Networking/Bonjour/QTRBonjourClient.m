@@ -13,6 +13,7 @@
 #import "QTRMessage.h"
 #import "QTRFile.h"
 #import "DTBonjourDataChunk.h"
+#import "QTRMultipartTransfer.h"
 
 @interface QTRBonjourClient () <DTBonjourDataConnectionDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
 
@@ -23,6 +24,7 @@
 @property (strong) NSMapTable *discoveredServices;
 @property (strong) NSMutableArray *foundServices;
 @property (strong) QTRUser *localUser;
+@property (strong) NSMapTable *dataChunksToMultipartTransfers;
 
 @end
 
@@ -38,6 +40,7 @@
         _localUser = [delegate localUser];
         _discoveredServices = [NSMapTable strongToStrongObjectsMapTable];
         _foundServices = [NSMutableArray new];
+        _dataChunksToMultipartTransfers = [NSMapTable strongToStrongObjectsMapTable];
     }
 
     return self;
@@ -90,10 +93,57 @@
             });
 
         }
-
     });
+}
 
+- (void)sendFileAtURL:(NSURL *)fileURL toUser:(QTRUser *)user {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[fileURL path] error:nil];
+    if (fileAttributes != nil) {
+        NSNumber *fileSizeNumber = fileAttributes[NSFileSize];
+        long long totalBytes = [fileSizeNumber longLongValue];
 
+        __weak typeof(self) wSelf = self;
+
+        if (totalBytes <= QTRMultipartTransferMaximumPartSize) {
+
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+
+                if (wSelf != nil) {
+                    typeof(self) sSelf = wSelf;
+                    NSData *fileData = [NSData dataWithContentsOfFile:[fileURL path]];
+                    NSString *fileName = [[fileURL path] lastPathComponent];
+                    QTRFile *file = [[QTRFile alloc] initWithName:fileName type:@"foo" data:fileData];
+
+                    [sSelf sendFile:file toUser:user];
+                }
+
+            });
+        } else {
+
+            QTRMultipartTransfer *transfer = [[QTRMultipartTransfer alloc] initWithFileURL:fileURL user:user];
+
+            [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart) {
+                if (wSelf != nil) {
+
+                    typeof(self) sSelf = wSelf;
+
+                    QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
+                    NSData *jsonData = [message JSONData];
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        DTBonjourDataChunk *chunk = nil;
+                        [[sSelf connectionForUser:user] sendObject:jsonData error:nil dataChunk:&chunk];
+                        [sSelf.dataChunksToMultipartTransfers setObject:transfer forKey:chunk];
+                        if ([sSelf.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
+                            [sSelf.transferDelegate addTransferForUser:user file:file chunk:chunk];
+                        }
+                    });
+                }
+            }];
+
+        }
+    }
 }
 
 #pragma mark - Private methods
@@ -215,9 +265,34 @@
 }
 
 - (void)connection:(DTBonjourDataConnection *)connection didFinishSendingChunk:(DTBonjourDataChunk *)chunk {
-    if ([self.transferDelegate respondsToSelector:@selector(updateTransferForChunk:)]) {
-        [self.transferDelegate updateTransferForChunk:chunk];
+    QTRMultipartTransfer *transfer = [self.dataChunksToMultipartTransfers objectForKey:chunk];
+    if (transfer != nil) {
+        __weak typeof(self) wSelf = self;
+        [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart) {
+            if (wSelf != nil) {
+                typeof(self) sSelf = wSelf;
+
+                QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
+                NSData *jsonData = [message JSONData];
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    DTBonjourDataChunk *dataChunk = nil;
+                    [[sSelf connectionForUser:transfer.user] sendObject:jsonData error:nil dataChunk:&dataChunk];
+                    [sSelf.transferDelegate replaceChunk:chunk withChunk:dataChunk];
+                    [sSelf.dataChunksToMultipartTransfers removeObjectForKey:chunk];
+
+                    if (!isLastPart) {
+                        [sSelf.dataChunksToMultipartTransfers setObject:transfer forKey:dataChunk];
+                    }
+                });
+            }
+        }];
+    } else {
+        NSLog(@"Finished transfering");
     }
+//    if ([self.transferDelegate respondsToSelector:@selector(updateTransferForChunk:)]) {
+//        [self.transferDelegate updateTransferForChunk:chunk];
+//    }
 }
 
 

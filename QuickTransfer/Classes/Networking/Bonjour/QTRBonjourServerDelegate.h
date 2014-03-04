@@ -17,6 +17,7 @@
 @required
 
 - (QTRUser *)localUser;
+- (NSURL *)saveURLForFile:(QTRFile *)file;
 
 @optional
 

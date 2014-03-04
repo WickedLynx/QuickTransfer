@@ -17,8 +17,10 @@
 @property (nonatomic) float progress;
 @property (strong) QTRUser *user;
 @property (copy) NSURL *fileURL;
-@property (nonatomic) NSUInteger fileSize;
+@property (nonatomic) long long fileSize;
 @property (strong) NSDate *timestamp;
-
+@property (nonatomic) NSUInteger totalParts;
+@property (nonatomic) long long totalTransferedBytes;
+@property (nonatomic) long long previousTransferedBytes;
 
 @end

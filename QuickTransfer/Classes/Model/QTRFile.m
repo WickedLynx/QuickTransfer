@@ -12,6 +12,10 @@
 NSString *const QTRFileNameKey = @"name";
 NSString *const QTRFileTypeKey = @"type";
 NSString *const QTRFileDataKey = @"data";
+NSString *const QTRFilePartIndexKey = @"partIndex";
+NSString *const QTRFileTotalPartsKey = @"totalParts";
+NSString *const QTRFileTotalSizeKey = @"totalSize";
+NSString *const QTRFileMultipartIDKey = @"multipartID";
 
 @implementation QTRFile
 
@@ -22,6 +26,23 @@ NSString *const QTRFileDataKey = @"data";
         _name = [fileName copy];
         _type = [fileType copy];
         _data = data;
+        _totalParts = 1;
+        _partIndex = 0;
+        _totalSize = [data length];
+        _multipartID = @"1";
+    }
+
+    return self;
+}
+
+- (instancetype)initWithName:(NSString *)fileName type:(NSString *)fileType partIndex:(NSUInteger)partIndex totalParts:(NSUInteger)totalParts totalSize:(long long)totalSize {
+    self = [super init];
+    if (self != nil) {
+        _name = [fileName copy];
+        _type = [fileType copy];
+        _partIndex = partIndex;
+        _totalParts = totalParts;
+        _totalSize = totalSize;
     }
 
     return self;
@@ -38,13 +59,30 @@ NSString *const QTRFileDataKey = @"data";
 
             _data = [NSData dataWithBase64EncodedString:encodedData];
         }
+
+        NSNumber *partIndex = dictionary[QTRFilePartIndexKey];
+        if (![partIndex isKindOfClass:[NSNull class]]) {
+            _partIndex = [partIndex integerValue];
+        }
+
+        NSNumber *totalParts = dictionary[QTRFileTotalPartsKey];
+        if (![totalParts isKindOfClass:[NSNull class]]) {
+            _totalParts = [totalParts integerValue];
+        }
+
+        NSNumber *totalSizeKey = dictionary[QTRFileTotalSizeKey];
+        if (![totalSizeKey isKindOfClass:[NSNull class]]) {
+            _totalSize = [totalParts longLongValue];
+        }
+
+        _multipartID = dictionary[QTRFileMultipartIDKey];
     }
 
     return self;
 }
 
 - (NSDictionary *)dictionaryRepresentation {
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:3];
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:6];
 
     if (_name != nil) {
         dictionary[QTRFileNameKey] = _name;
@@ -60,6 +98,14 @@ NSString *const QTRFileDataKey = @"data";
         if (encodedData != nil) {
             dictionary[QTRFileDataKey] = encodedData;
         }
+    }
+
+    dictionary[QTRFilePartIndexKey] = @(_partIndex);
+    dictionary[QTRFileTotalPartsKey] = @(_totalParts);
+    dictionary[QTRFileTotalSizeKey] = @(_totalSize);
+
+    if (_multipartID != nil) {
+        dictionary[QTRFileMultipartIDKey] = _multipartID;
     }
 
     return dictionary;

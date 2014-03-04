@@ -39,6 +39,10 @@
 		FA283F3D18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F3C18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m */; };
 		FA38B29318BDCFA4003BB8E5 /* QTRStatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA38B29218BDCFA4003BB8E5 /* QTRStatusItemView.m */; };
 		FA3ACDB618C0577A00889FBC /* QTRTransfersTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3ACDB518C0577A00889FBC /* QTRTransfersTableCellView.m */; };
+		FA6DA6B718C453E30097742B /* QTRMultipartTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */; };
+		FA6DA6B818C453E30097742B /* QTRMultipartTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */; };
+		FA6DA6BB18C5C2BC0097742B /* QTRMultipartWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */; };
+		FA6DA6BC18C5C2BC0097742B /* QTRMultipartWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */; };
 		FAD9000018B33CA80098DA76 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFFE18B33CA80098DA76 /* InfoPlist.strings */; };
 		FAD9000218B33CA80098DA76 /* QuickTransferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9000118B33CA80098DA76 /* QuickTransferTests.m */; };
 		FAD9001B18B33F010098DA76 /* DTBonjourDataChunk.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001418B33F010098DA76 /* DTBonjourDataChunk.m */; };
@@ -112,6 +116,10 @@
 		FA38B29218BDCFA4003BB8E5 /* QTRStatusItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRStatusItemView.m; sourceTree = "<group>"; };
 		FA3ACDB418C0577A00889FBC /* QTRTransfersTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersTableCellView.h; sourceTree = "<group>"; };
 		FA3ACDB518C0577A00889FBC /* QTRTransfersTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersTableCellView.m; sourceTree = "<group>"; };
+		FA6DA6B518C453E30097742B /* QTRMultipartTransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRMultipartTransfer.h; sourceTree = "<group>"; };
+		FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRMultipartTransfer.m; sourceTree = "<group>"; };
+		FA6DA6B918C5C2BC0097742B /* QTRMultipartWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRMultipartWriter.h; sourceTree = "<group>"; };
+		FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRMultipartWriter.m; sourceTree = "<group>"; };
 		FAD9000118B33CA80098DA76 /* QuickTransferTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuickTransferTests.m; sourceTree = "<group>"; };
 		FAD9001318B33F010098DA76 /* DTBonjourDataChunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBonjourDataChunk.h; sourceTree = "<group>"; };
 		FAD9001418B33F010098DA76 /* DTBonjourDataChunk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBonjourDataChunk.m; sourceTree = "<group>"; };
@@ -323,6 +331,10 @@
 				FA283F2918B49BA8003D4FB6 /* QTRFile.m */,
 				FA12BB0118BF06000030911F /* QTRTransfer.h */,
 				FA12BB0218BF06000030911F /* QTRTransfer.m */,
+				FA6DA6B518C453E30097742B /* QTRMultipartTransfer.h */,
+				FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */,
+				FA6DA6B918C5C2BC0097742B /* QTRMultipartWriter.h */,
+				FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -669,6 +681,7 @@
 				FA283F2418B49582003D4FB6 /* QTRBonjourClient.m in Sources */,
 				FA283F2518B49582003D4FB6 /* QTRMessage.m in Sources */,
 				FA12BB0418BF06000030911F /* QTRTransfer.m in Sources */,
+				FA6DA6B818C453E30097742B /* QTRMultipartTransfer.m in Sources */,
 				FA283F2618B49582003D4FB6 /* QTRUser.m in Sources */,
 				FA283F2718B49582003D4FB6 /* QTRConstants.m in Sources */,
 				FA283F1F18B49551003D4FB6 /* DTBonjourDataChunk.m in Sources */,
@@ -680,6 +693,7 @@
 				FA283F2218B49551003D4FB6 /* NSScanner+DTBonjour.m in Sources */,
 				FA283F0418B494E5003D4FB6 /* QTRAppDelegate.m in Sources */,
 				FA283F0018B494E5003D4FB6 /* main.m in Sources */,
+				FA6DA6BC18C5C2BC0097742B /* QTRMultipartWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -700,8 +714,10 @@
 				FAD9003118B3534A0098DA76 /* QTRMessage.m in Sources */,
 				FAD9002B18B3515A0098DA76 /* QTRBonjourClient.m in Sources */,
 				FA12BB0318BF06000030911F /* QTRTransfer.m in Sources */,
+				FA6DA6BB18C5C2BC0097742B /* QTRMultipartWriter.m in Sources */,
 				FAD9FFEB18B33CA70098DA76 /* QTRAppDelegate.m in Sources */,
 				FA283F2A18B49BA8003D4FB6 /* QTRFile.m in Sources */,
+				FA6DA6B718C453E30097742B /* QTRMultipartTransfer.m in Sources */,
 				FAD9002818B34DEF0098DA76 /* QTRBonjourServer.m in Sources */,
 				FA3ACDB618C0577A00889FBC /* QTRTransfersTableCellView.m in Sources */,
 				FAD9001C18B33F010098DA76 /* DTBonjourDataConnection.m in Sources */,

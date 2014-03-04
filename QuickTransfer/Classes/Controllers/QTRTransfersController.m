@@ -66,8 +66,15 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         QTRTransfer *transfer = [QTRTransfer new];
         [transfer setUser:user];
         [transfer setFileURL:file.url];
-        [transfer setFileSize:[file length]];
         [transfer setTimestamp:[NSDate date]];
+        [transfer setTotalParts:file.totalParts];
+        if (file.totalParts > 1) {
+            [transfer setFileSize:file.totalSize];
+        } else {
+            [transfer setFileSize:[file length]];
+        }
+
+        [transfer setTotalTransferedBytes:0];
         [_allTransfers insertObject:transfer atIndex:0];
         [_transfers setObject:transfer forKey:chunk];
 
@@ -80,18 +87,41 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
     QTRTransfer *theTransfer = [_transfers objectForKey:chunk];
     if (theTransfer != nil) {
-        float progress = (double)(chunk.numberOfTransferredBytes) / (double)(chunk.totalBytes);
+
         BOOL shouldReload = NO;
 
-        if (progress - theTransfer.progress > QTRTransfersControllerProgressThreshold) {
-            [theTransfer setProgress:progress];
-            shouldReload = YES;
-        }
+        if (theTransfer.totalParts == 1) {
+            float progress = (double)(chunk.numberOfTransferredBytes) / (double)(chunk.totalBytes);
 
-        if ([chunk isTransmissionComplete]) {
-            [_transfers removeObjectForKey:chunk];
-            [theTransfer setProgress:1.0f];
-            shouldReload = YES;
+
+            if (progress - theTransfer.progress > QTRTransfersControllerProgressThreshold) {
+                [theTransfer setProgress:progress];
+                shouldReload = YES;
+            }
+
+            if ([chunk isTransmissionComplete]) {
+                [_transfers removeObjectForKey:chunk];
+                [theTransfer setProgress:1.0f];
+                shouldReload = YES;
+            }
+
+        } else {
+
+            theTransfer.totalTransferedBytes += (chunk.numberOfTransferredBytes - theTransfer.previousTransferedBytes);
+            NSLog(@"previous: %llu, now: %llu, total: %llu", theTransfer.previousTransferedBytes, (chunk.numberOfTransferredBytes - theTransfer.previousTransferedBytes), theTransfer.totalTransferedBytes);
+            theTransfer.previousTransferedBytes = chunk.numberOfTransferredBytes;
+
+            float progress = (double)(theTransfer.totalTransferedBytes) / (double)(theTransfer.fileSize);
+            if (progress - theTransfer.progress > QTRTransfersControllerProgressThreshold) {
+                [theTransfer setProgress:progress];
+                shouldReload = YES;
+            }
+
+            if (progress == 1.0f) {
+                [_transfers removeObjectForKey:chunk];
+                shouldReload = YES;
+            }
+
         }
 
         if (shouldReload) {
@@ -100,9 +130,15 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
             [self.transfersTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:row] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
         }
     }
+}
 
-
-
+- (void)replaceChunk:(DTBonjourDataChunk *)oldChunk withChunk:(DTBonjourDataChunk *)newChunk {
+    QTRTransfer *transfer = [_transfers objectForKey:oldChunk];
+    if (transfer != nil) {
+        [_transfers removeObjectForKey:oldChunk];
+        [transfer setPreviousTransferedBytes:0];
+        [_transfers setObject:transfer forKey:newChunk];
+    }
 }
 
 #pragma mark - NSTableViewDataSource methods

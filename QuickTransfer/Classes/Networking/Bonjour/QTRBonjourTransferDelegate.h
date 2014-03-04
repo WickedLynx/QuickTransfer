@@ -18,5 +18,6 @@
 
 - (void)addTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk;
 - (void)updateTransferForChunk:(DTBonjourDataChunk *)chunk;
+- (void)replaceChunk:(DTBonjourDataChunk *)oldChunk withChunk:(DTBonjourDataChunk *)newChunk;
 
 @end
