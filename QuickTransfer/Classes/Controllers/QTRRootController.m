@@ -134,6 +134,10 @@ void refreshComputerModel() {
 
 }
 
+- (void)deleteSavedFileAtURL:(NSURL *)url {
+    [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
+}
+
 - (void)saveFile:(QTRFile *)file {
     NSString *fileName = file.name;
     NSString *savePath = [[self downloadsDirectory] stringByAppendingPathComponent:fileName];
@@ -144,11 +148,25 @@ void refreshComputerModel() {
     [file.data writeToFile:savePath atomically:YES];
 }
 
-- (void) alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
-    QTRFile *file = CFBridgingRelease(contextInfo);
-    if (returnCode == NSAlertDefaultReturn) {
-        [self saveFile:file];
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (contextInfo != NULL) {
+
+        id fileInfo = CFBridgingRelease(contextInfo);
+
+        if ([fileInfo isKindOfClass:[QTRFile class]]) {
+            QTRFile *file = (QTRFile *)fileInfo;
+            if (returnCode == NSAlertDefaultReturn) {
+                [self saveFile:file];
+            }
+        } else if ([fileInfo isKindOfClass:[NSURL class]]) {
+
+            NSURL *url = (NSURL *)fileInfo;
+            if (returnCode != NSAlertDefaultReturn) {
+                [self deleteSavedFileAtURL:url];
+            }
+        }
     }
+
 }
 
 - (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user {
@@ -159,6 +177,18 @@ void refreshComputerModel() {
     [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:(void *)CFBridgingRetain(file)];
 }
 
+- (void)showAlertForSavedFileAtURL:(NSURL *)url user:(QTRUser *)user {
+    NSString *fileName = [[url path] lastPathComponent];
+
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+
+    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"%@ sent file: %@", user.name, fileName] defaultButton:@"Save" alternateButton:@"Discard" otherButton:nil informativeTextWithFormat:@"Clicking save will save it to Downloads"];
+    [[alert window] setTitle:@"QuickTransfer"];
+    [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:(void *)CFBridgingRetain(url)];
+
+}
+
+
 - (void)sendFileAtURL:(NSURL *)url {
     if ([_connectedServers count] > _clickedRow) {
 
@@ -167,50 +197,12 @@ void refreshComputerModel() {
 
     } else {
 
-//        QTRUser *theUser = _connectedClients[_clickedRow - [_connectedServers count]];
+        QTRUser *theUser = _connectedClients[_clickedRow - [_connectedServers count]];
+        [_server sendFileAtURL:url toUser:theUser];
 
     }
 
-    /*
-    __weak typeof(self) wSelf = self;
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        if (wSelf != nil) {
-            typeof(self) sSelf = self;
-            NSData *fileData = [NSData dataWithContentsOfURL:url];
-            if ([fileData length] > 0) {
-
-                if (sSelf->_clickedRow >= 0) {
-
-                    NSFileManager *fileManager = [NSFileManager defaultManager];
-                    NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[url path] error:nil];
-                    NSString *fileName = [[url path] lastPathComponent];
-                    NSString *fileType = fileAttributes[NSFileType];
-
-                    QTRFile *theFile = [[QTRFile alloc] initWithName:fileName type:fileType data:fileData];
-                    [theFile setUrl:url];
-
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if ([sSelf->_connectedServers count] > sSelf->_clickedRow) {
-
-                            QTRUser *theUser = sSelf->_connectedServers[sSelf->_clickedRow];
-
-                            [sSelf->_client sendFile:theFile toUser:theUser];
-
-                        } else {
-
-                            QTRUser *theUser = sSelf->_connectedClients[sSelf->_clickedRow - [sSelf->_connectedServers count]];
-                            [sSelf->_server sendFile:theFile toUser:theUser];
-                        }
-
-                        [sSelf showTransfers];
-                    });
-
-                }
-            }
-        }
-    });
-    */
-
+    [self showTransfers];
 }
 
 - (void)showOpenPanelForSelectedUser {
@@ -516,6 +508,10 @@ void refreshComputerModel() {
     return [NSURL fileURLWithPath:savePath];
 }
 
+- (void)server:(QTRBonjourServer *)server didSaveReceivedFileAtURL:(NSURL *)url fromUser:(QTRUser *)user {
+    [self showAlertForSavedFileAtURL:url user:user];
+}
+
 #pragma mark - QTRBonjourClientDelegate methods
 
 - (QTRUser *)localUser {
@@ -546,6 +542,10 @@ void refreshComputerModel() {
 
 - (void)client:(QTRBonjourClient *)client didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
     [self showAlertForFile:file user:user];
+}
+
+- (void)client:(QTRBonjourClient *)client didSaveReceivedFileAtURL:(NSURL *)url fromUser:(QTRUser *)user {
+    [self showAlertForSavedFileAtURL:url user:user];
 }
 
 #pragma mark - QTRStatusItemViewDelegate methods

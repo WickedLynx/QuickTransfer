@@ -8,6 +8,7 @@
 
 #import "QTRMultipartWriter.h"
 #import "QTRFile.h"
+#import "QTRUser.h"
 
 @implementation QTRMultipartWriter {
     NSFileHandle *_fileHandle;
@@ -20,6 +21,9 @@
 
         NSFileManager *fileManager = [NSFileManager defaultManager];
         [fileManager createFileAtPath:[url path] contents:filePart.data attributes:nil];
+
+        _saveURL = [url copy];
+        _user = user;
 
         _fileHandle = [NSFileHandle fileHandleForWritingToURL:url error:nil];
         [_fileHandle seekToEndOfFile];

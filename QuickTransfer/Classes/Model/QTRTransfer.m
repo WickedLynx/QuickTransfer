@@ -10,4 +10,14 @@
 
 @implementation QTRTransfer
 
+
+- (float)progress {
+    
+    if (self.totalParts > 1) {
+        _progress = (float)(self.transferedChunks + self.currentChunkProgress) / (float)self.totalParts;
+    }
+
+    return _progress;
+}
+
 @end

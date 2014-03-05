@@ -15,7 +15,6 @@ NSString *const QTRMessageFileKey = @"file";
 
 @implementation QTRMessage
 
-
 + (instancetype)messageWithJSONData:(NSData *)data {
 
     NSError *jsonError = nil;

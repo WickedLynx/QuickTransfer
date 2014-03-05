@@ -19,7 +19,7 @@
 
 - (instancetype)initWithFileDelegate:(id <QTRBonjourServerDelegate>)fileDelegate;
 
-- (void)sendFile:(QTRFile *)file toUser:(QTRUser *)user;
+- (void)sendFileAtURL:(NSURL *)fileURL toUser:(QTRUser *)user;
 
 @property (weak) id <QTRBonjourServerDelegate> fileDelegate;
 @property (weak) id <QTRBonjourTransferDelegate> transferDelegate;

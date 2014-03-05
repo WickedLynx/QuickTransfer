@@ -90,9 +90,9 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
         BOOL shouldReload = NO;
 
-        if (theTransfer.totalParts == 1) {
-            float progress = (double)(chunk.numberOfTransferredBytes) / (double)(chunk.totalBytes);
+        float progress = (double)(chunk.numberOfTransferredBytes) / (double)(chunk.totalBytes);
 
+        if (theTransfer.totalParts == 1) {
 
             if (progress - theTransfer.progress > QTRTransfersControllerProgressThreshold) {
                 [theTransfer setProgress:progress];
@@ -107,17 +107,13 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
         } else {
 
-            theTransfer.totalTransferedBytes += (chunk.numberOfTransferredBytes - theTransfer.previousTransferedBytes);
-            NSLog(@"previous: %llu, now: %llu, total: %llu", theTransfer.previousTransferedBytes, (chunk.numberOfTransferredBytes - theTransfer.previousTransferedBytes), theTransfer.totalTransferedBytes);
-            theTransfer.previousTransferedBytes = chunk.numberOfTransferredBytes;
-
-            float progress = (double)(theTransfer.totalTransferedBytes) / (double)(theTransfer.fileSize);
-            if (progress - theTransfer.progress > QTRTransfersControllerProgressThreshold) {
-                [theTransfer setProgress:progress];
+            if (progress == 1.0f || (progress - theTransfer.currentChunkProgress > QTRTransfersControllerProgressThreshold * 2)) {
+                [theTransfer setCurrentChunkProgress:progress];
                 shouldReload = YES;
             }
 
-            if (progress == 1.0f) {
+            if (theTransfer.progress == 1.0f) {
+                [theTransfer setCurrentChunkProgress:1.0f];
                 [_transfers removeObjectForKey:chunk];
                 shouldReload = YES;
             }
@@ -136,7 +132,8 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     QTRTransfer *transfer = [_transfers objectForKey:oldChunk];
     if (transfer != nil) {
         [_transfers removeObjectForKey:oldChunk];
-        [transfer setPreviousTransferedBytes:0];
+        [transfer setCurrentChunkProgress:0.0f];
+        ++transfer.transferedChunks;
         [_transfers setObject:transfer forKey:newChunk];
     }
 }

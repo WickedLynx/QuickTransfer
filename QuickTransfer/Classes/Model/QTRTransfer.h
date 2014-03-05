@@ -22,5 +22,7 @@
 @property (nonatomic) NSUInteger totalParts;
 @property (nonatomic) long long totalTransferedBytes;
 @property (nonatomic) long long previousTransferedBytes;
+@property (nonatomic) int transferedChunks;
+@property (nonatomic) float currentChunkProgress;
 
 @end

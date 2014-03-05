@@ -11,7 +11,7 @@
 #import "QTRFile.h"
 #import "QTRUser.h"
 
-long long const QTRMultipartTransferMaximumPartSize = 50 * 1024 * 1024;   // 50 MB
+long long const QTRMultipartTransferMaximumPartSize = 20 * 1024 * 1024;   // 20 MB
 
 @implementation QTRMultipartTransfer {
     NSFileHandle *_fileHandle;
@@ -53,10 +53,6 @@ long long const QTRMultipartTransferMaximumPartSize = 50 * 1024 * 1024;   // 50 
     return self;
 }
 
-- (void)dealloc {
-    NSLog(@"%s", __PRETTY_FUNCTION__);
-}
-
 - (void)readNextPartForTransmission:(void (^)(QTRFile *file, BOOL isLastPart))dataReadCompletion {
     __weak typeof(self) wSelf = self;
 
@@ -71,10 +67,8 @@ long long const QTRMultipartTransferMaximumPartSize = 50 * 1024 * 1024;   // 50 
             BOOL isLastPart = NO;
             if (targetPosition <= sSelf->_totalBytes) {
                 [sSelf->_fileHandle seekToFileOffset:targetPosition];
-                NSLog(@"Read part");
             } else {
                 isLastPart = YES;
-                NSLog(@"Read last part");
             }
 
             QTRFile *file = [[QTRFile alloc] initWithName:sSelf->_fileName type:@"dmg" partIndex:sSelf->_currentPart totalParts:sSelf->_totalParts totalSize:sSelf->_totalBytes];

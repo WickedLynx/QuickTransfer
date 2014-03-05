@@ -18,11 +18,13 @@
 
 - (QTRUser *)localUser;
 - (BOOL)client:(QTRBonjourClient *)client shouldConnectToUser:(QTRUser *)user;
+- (NSURL *)saveURLForFile:(QTRFile *)file;
 
 @optional
 
 - (void)client:(QTRBonjourClient *)client didConnectToServerForUser:(QTRUser *)user;
 - (void)client:(QTRBonjourClient *)client didDisconnectFromServerForUser:(QTRUser *)user;
 - (void)client:(QTRBonjourClient *)client didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user;
+- (void)client:(QTRBonjourClient *)client didSaveReceivedFileAtURL:(NSURL *)url fromUser:(QTRUser *)user;
 
 @end

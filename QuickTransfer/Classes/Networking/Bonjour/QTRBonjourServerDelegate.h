@@ -24,6 +24,7 @@
 - (void)server:(QTRBonjourServer *)server didConnectToUser:(QTRUser *)user;
 - (void)server:(QTRBonjourServer *)server didDisconnectUser:(QTRUser *)user;
 - (void)server:(QTRBonjourServer *)server didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user;
+- (void)server:(QTRBonjourServer *)server didSaveReceivedFileAtURL:(NSURL *)url fromUser:(QTRUser *)user;
 
 
 @end
