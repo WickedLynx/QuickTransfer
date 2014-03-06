@@ -1,0 +1,5 @@
+#!/bin/sh
+rm -rf ./Documentation/*
+headerdoc2html -q -o Documentation -E ./QuickTransfer
+gatherheaderdoc Documentation
+
