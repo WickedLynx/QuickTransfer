@@ -73,8 +73,6 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         } else {
             [transfer setFileSize:[file length]];
         }
-
-        [transfer setTotalTransferedBytes:0];
         [_allTransfers insertObject:transfer atIndex:0];
         [_transfers setObject:transfer forKey:chunk];
 

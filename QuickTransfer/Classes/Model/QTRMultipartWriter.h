@@ -11,15 +11,52 @@
 @class QTRFile;
 @class QTRUser;
 
+/*!
+ This class writes the individual data parts of a multipart transfer to disk as they are received
+ */
 @interface QTRMultipartWriter : NSObject
 
+/*!
+ Creates a writer for writing a multipart transfer
+ @param filePart    The first part of the transfer
+ @param sender      The sender of the transfer
+ @param saveURL     The file URL where the file is to be written
+ */
 - (instancetype)initWithFilePart:(QTRFile *)filePart sender:(QTRUser *)user saveURL:(NSURL *)url;
 
+/*!
+ Appends data passed in filePart to the file at saveURL of the receiver.
+ 
+ The receiver calls the completionBlock once it has finished writing the part.
+ 
+ @param filePart The file part to write
+ @param completionBlock The block called after writing the file part.
+ 
+                        This block is not called on the main thread.
+ */
 - (void)writeFilePart:(QTRFile *)filePart completion:(void (^)())completionBlock;
+
+/*!
+ Closes the file and prevents further write operations to it.
+ 
+ This method must only be called after all parts of the multipart transfer
+ have been received and written to disk.
+ */
 - (void)closeFile;
 
+/*!
+ The file URL where the multipart transfer is saved.
+ */
 @property (copy, nonatomic) NSURL *saveURL;
+
+/*!
+ The sender of the file
+ */
 @property (strong) QTRUser *user;
+
+/*!
+ The name of the file with its extension
+ */
 @property (copy) NSString *fileName;
 
 @end

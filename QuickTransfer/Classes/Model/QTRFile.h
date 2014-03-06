@@ -8,13 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-/**
+/*!
  This class represents the file object intended to be shared with users
  */
-
 @interface QTRFile : NSObject
 
-/**
+/*!
  Creates a file with its data
  @param fileName The name of the file
  @param fileType The content type of the file
@@ -22,7 +21,7 @@
  */
 - (instancetype)initWithName:(NSString *)fileName type:(NSString *)fileType data:(NSData *)data;
 
-/**
+/*!
  Creates a file intended to be a part of a multipart transfer
  @param fileName The name of the file
  @param fileType The content type of the file
@@ -32,63 +31,63 @@
  */
 - (instancetype)initWithName:(NSString *)fileName type:(NSString *)fileType partIndex:(NSUInteger)partIndex totalParts:(NSUInteger)totalParts totalSize:(long long)totalSize;
 
-/**
+/*!
  Creates a file object, setting its properties from the key-value pairs of a dictionary
  @param dictionary The dictionary representing the properties of the file as key-value pairs
  */
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary;
 
-/**
+/*!
  Returns a dictionary with the properties of the receiver as key-value pairs. The data of the receiver is encoded to a base64 string before adding it to the dictionary.
  */
 - (NSDictionary *)dictionaryRepresentation;
 
-/**
+/*!
  The length of the data of the receiver
  */
 - (NSUInteger)length;
 
-/**
+/*!
  The unique identifier of a multipart transfer, of which the receiver is a part
  */
 - (NSString *)multipartID;
 
-/**
+/*!
  The name of the receiver
  */
 @property (copy) NSString *name;
 
-/**
+/*!
  The content type of the receiver
  */
 @property (copy) NSString *type;
 
-/**
+/*!
  The contents of the receiver
  */
 @property (strong) NSData *data;
 
-/**
+/*!
  The file URL from which the data of receiver was loaded
  */
 @property (copy) NSURL *url;
 
-/**
+/*!
  The multipart transfer part index of the receiver
  */
 @property (nonatomic) NSUInteger partIndex;
 
-/**
+/*!
  The total parts in the multipart transfer, of which the receiver is a part
  */
 @property (nonatomic) NSUInteger totalParts;
 
-/**
+/*!
  The total multipart transfer size, of which the receiver is a part of
  */
 @property (nonatomic) long long totalSize;
 
-/**
+/*!
  The unique identifier of the multipart transfer, of which the receiver is a part
  */
 @property (copy) NSString *multipartID;

@@ -15,13 +15,32 @@
 @class QTRFile;
 @class QTRTransfersController;
 
+/*!
+ This class is the server that implements the Bonjour protocol and allows remote clients to connect to it.
+ */
 @interface QTRBonjourServer : DTBonjourServer
 
+/*!
+ Creates a server
+ @param fileDelegate An object that confirms to QTRBonjourServerDelegate protocol
+ */
 - (instancetype)initWithFileDelegate:(id <QTRBonjourServerDelegate>)fileDelegate;
 
+/*!
+ Send a file to a user
+ @param fileURL The file URL indicating where the file is located at
+ @param user The recipient of the file
+ */
 - (void)sendFileAtURL:(NSURL *)fileURL toUser:(QTRUser *)user;
 
+/*!
+ The object which is interested in getting notified of connection and file related events
+ */
 @property (weak) id <QTRBonjourServerDelegate> fileDelegate;
+
+/*!
+ The obect which is interested in getting notified about the progres of file transfers
+ */
 @property (weak) id <QTRBonjourTransferDelegate> transferDelegate;
 
 @end
