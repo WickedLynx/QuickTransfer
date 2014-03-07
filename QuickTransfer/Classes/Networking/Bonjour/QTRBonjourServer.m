@@ -183,8 +183,8 @@
                                     [writer writeFilePart:theMessage.file completion:^{
                                         if (theMessage.file.partIndex == (theMessage.file.totalParts - 1)) {
                                             [writer closeFile];
-                                            if ([self.fileDelegate respondsToSelector:@selector(server:didSaveReceivedFileAtURL:fromUser:)]) {
-                                                [self.fileDelegate server:self didSaveReceivedFileAtURL:writer.saveURL fromUser:writer.user];
+                                            if ([sSelf.fileDelegate respondsToSelector:@selector(server:didSaveReceivedFileAtURL:fromUser:)]) {
+                                                [sSelf.fileDelegate server:sSelf didSaveReceivedFileAtURL:writer.saveURL fromUser:writer.user];
                                             }
                                             [sSelf.receivedFileParts removeObjectForKey:theMessage.file.multipartID];
                                         }

@@ -158,29 +158,30 @@
 		NSLog(@"Insufficient data received yet for decoding object");
 		return nil;
 	}
-	
-	NSInteger indexAfterHeader = NSMaxRange(_rangeOfHeader);
-	NSRange payloadRange = NSMakeRange(indexAfterHeader, _contentLength);
-	NSData *payloadData = [_data subdataWithRange:payloadRange];
-	
-	// decode data
-	id object = nil;
-	
-	if (_encoding == DTBonjourDataConnectionContentTypeJSON)
-	{
-		object = [NSJSONSerialization JSONObjectWithData:payloadData options:0 error:NULL];
-	}
-	else if (_encoding == DTBonjourDataConnectionContentTypeNSCoding)
-	{
-		object = [NSKeyedUnarchiver unarchiveObjectWithData:payloadData];
-	}
-	
-	if (!object)
-	{
-		NSLog(@"Unable to decode object");
-	}
-	
-	return object;
+	@autoreleasepool {
+        NSInteger indexAfterHeader = NSMaxRange(_rangeOfHeader);
+        NSRange payloadRange = NSMakeRange(indexAfterHeader, _contentLength);
+        NSData *payloadData = [_data subdataWithRange:payloadRange];
+
+        // decode data
+        id object = nil;
+
+        if (_encoding == DTBonjourDataConnectionContentTypeJSON)
+        {
+            object = [NSJSONSerialization JSONObjectWithData:payloadData options:0 error:NULL];
+        }
+        else if (_encoding == DTBonjourDataConnectionContentTypeNSCoding)
+        {
+            object = [NSKeyedUnarchiver unarchiveObjectWithData:payloadData];
+        }
+        
+        if (!object)
+        {
+            NSLog(@"Unable to decode object");
+        }
+
+        return object;
+    }
 }
 
 
