@@ -254,8 +254,8 @@
                                     [writer writeFilePart:theMessage.file completion:^{
                                         if (theMessage.file.partIndex == (theMessage.file.totalParts - 1)) {
                                             [writer closeFile];
-                                            if ([self.delegate respondsToSelector:@selector(client:didSaveReceivedFileAtURL:fromUser:)]) {
-                                                [self.delegate client:self didSaveReceivedFileAtURL:writer.saveURL fromUser:writer.user];
+                                            if ([sSelf.delegate respondsToSelector:@selector(client:didSaveReceivedFileAtURL:fromUser:)]) {
+                                                [sSelf.delegate client:sSelf didSaveReceivedFileAtURL:writer.saveURL fromUser:writer.user];
                                             }
                                             [sSelf.receivedFileParts removeObjectForKey:theMessage.file.multipartID];
                                         }
