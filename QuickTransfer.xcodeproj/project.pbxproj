@@ -64,6 +64,31 @@
 		FAD9FFF018B33CA80098DA76 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFEF18B33CA80098DA76 /* Images.xcassets */; };
 		FAD9FFF718B33CA80098DA76 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD9FFF618B33CA80098DA76 /* XCTest.framework */; };
 		FAD9FFF818B33CA80098DA76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD9FFD718B33CA70098DA76 /* Cocoa.framework */; };
+		FAEB333718CDB55C00EA5993 /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2F18B4C3B3003D4FB6 /* Base64.m */; };
+		FAEB333818CDB55C00EA5993 /* QTRRootController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002018B3458B0098DA76 /* QTRRootController.m */; };
+		FAEB333918CDB55C00EA5993 /* QTRMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9003018B3534A0098DA76 /* QTRMessage.m */; };
+		FAEB333A18CDB55C00EA5993 /* QTRBonjourClient.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002A18B3515A0098DA76 /* QTRBonjourClient.m */; };
+		FAEB333B18CDB55C00EA5993 /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
+		FAEB333C18CDB55C00EA5993 /* QTRMultipartWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */; };
+		FAEB333D18CDB55C00EA5993 /* QTRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9FFEA18B33CA70098DA76 /* QTRAppDelegate.m */; };
+		FAEB333E18CDB55C00EA5993 /* QTRFile.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2918B49BA8003D4FB6 /* QTRFile.m */; };
+		FAEB333F18CDB55C00EA5993 /* QTRMultipartTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */; };
+		FAEB334018CDB55C00EA5993 /* QTRBonjourServer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002718B34DEF0098DA76 /* QTRBonjourServer.m */; };
+		FAEB334118CDB55C00EA5993 /* QTRTransfersTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3ACDB518C0577A00889FBC /* QTRTransfersTableCellView.m */; };
+		FAEB334218CDB55C00EA5993 /* DTBonjourDataConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001618B33F010098DA76 /* DTBonjourDataConnection.m */; };
+		FAEB334318CDB55C00EA5993 /* QTRStatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA38B29218BDCFA4003BB8E5 /* QTRStatusItemView.m */; };
+		FAEB334418CDB55C00EA5993 /* QTRTransfersController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0618BF29320030911F /* QTRTransfersController.m */; };
+		FAEB334518CDB55C00EA5993 /* QTRConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002D18B351DE0098DA76 /* QTRConstants.m */; };
+		FAEB334618CDB55C00EA5993 /* DTBonjourDataChunk.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001418B33F010098DA76 /* DTBonjourDataChunk.m */; };
+		FAEB334718CDB55C00EA5993 /* DTBonjourServer.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001818B33F010098DA76 /* DTBonjourServer.m */; };
+		FAEB334818CDB55C00EA5993 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9FFE318B33CA70098DA76 /* main.m */; };
+		FAEB334918CDB55C00EA5993 /* QTRUser.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9003318B3630F0098DA76 /* QTRUser.m */; };
+		FAEB334A18CDB55C00EA5993 /* NSScanner+DTBonjour.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001A18B33F010098DA76 /* NSScanner+DTBonjour.m */; };
+		FAEB334C18CDB55C00EA5993 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD9FFD718B33CA70098DA76 /* Cocoa.framework */; };
+		FAEB334E18CDB55C00EA5993 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFE018B33CA70098DA76 /* InfoPlist.strings */; };
+		FAEB334F18CDB55C00EA5993 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFEF18B33CA80098DA76 /* Images.xcassets */; };
+		FAEB335018CDB55C00EA5993 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFE618B33CA70098DA76 /* Credits.rtf */; };
+		FAEB335118CDB55C00EA5993 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFEC18B33CA80098DA76 /* MainMenu.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -161,6 +186,8 @@
 		FAD9FFF618B33CA80098DA76 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		FAD9FFFD18B33CA80098DA76 /* QuickTransferTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "QuickTransferTests-Info.plist"; sourceTree = "<group>"; };
 		FAD9FFFF18B33CA80098DA76 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FAEB335618CDB55C00EA5993 /* QuickTransfer copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickTransfer copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAEB335718CDB55C00EA5993 /* QuickTransfer copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "QuickTransfer copy-Info.plist"; path = "/Users/harshad/Documents/Development/Cocoa/QuickTransfer/QuickTransfer copy-Info.plist"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +225,14 @@
 			files = (
 				FAD9FFF818B33CA80098DA76 /* Cocoa.framework in Frameworks */,
 				FAD9FFF718B33CA80098DA76 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAEB334B18CDB55C00EA5993 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAEB334C18CDB55C00EA5993 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,6 +458,7 @@
 				FA283F1118B494E5003D4FB6 /* QuickTransfer-iOSTests */,
 				FAD9FFD618B33CA70098DA76 /* Frameworks */,
 				FAD9FFD518B33CA70098DA76 /* Products */,
+				FAEB335718CDB55C00EA5993 /* QuickTransfer copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -433,6 +469,7 @@
 				FAD9FFF518B33CA80098DA76 /* QuickTransferTests.xctest */,
 				FA283EF218B494E5003D4FB6 /* QuickTransfer-iOS.app */,
 				FA283F0B18B494E5003D4FB6 /* QuickTransfer-iOSTests.xctest */,
+				FAEB335618CDB55C00EA5993 /* QuickTransfer copy.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -577,6 +614,24 @@
 			productReference = FAD9FFF518B33CA80098DA76 /* QuickTransferTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		FAEB333518CDB55C00EA5993 /* QuickTransfer copy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAEB335318CDB55C00EA5993 /* Build configuration list for PBXNativeTarget "QuickTransfer copy" */;
+			buildPhases = (
+				FAEB333618CDB55C00EA5993 /* Sources */,
+				FAEB334B18CDB55C00EA5993 /* Frameworks */,
+				FAEB334D18CDB55C00EA5993 /* Resources */,
+				FAEB335218CDB55C00EA5993 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "QuickTransfer copy";
+			productName = QuickTransfer;
+			productReference = FAEB335618CDB55C00EA5993 /* QuickTransfer copy.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -612,6 +667,7 @@
 				FAD9FFF418B33CA80098DA76 /* QuickTransferTests */,
 				FA283EF118B494E5003D4FB6 /* QuickTransfer-iOS */,
 				FA283F0A18B494E5003D4FB6 /* QuickTransfer-iOSTests */,
+				FAEB333518CDB55C00EA5993 /* QuickTransfer copy */,
 			);
 		};
 /* End PBXProject section */
@@ -653,10 +709,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FAEB334D18CDB55C00EA5993 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAEB334E18CDB55C00EA5993 /* InfoPlist.strings in Resources */,
+				FAEB334F18CDB55C00EA5993 /* Images.xcassets in Resources */,
+				FAEB335018CDB55C00EA5993 /* Credits.rtf in Resources */,
+				FAEB335118CDB55C00EA5993 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		FA10D28418BB41E400C54388 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "";
+		};
+		FAEB335218CDB55C00EA5993 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
 			files = (
@@ -737,6 +817,33 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAD9000218B33CA80098DA76 /* QuickTransferTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FAEB333618CDB55C00EA5993 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAEB333718CDB55C00EA5993 /* Base64.m in Sources */,
+				FAEB333818CDB55C00EA5993 /* QTRRootController.m in Sources */,
+				FAEB333918CDB55C00EA5993 /* QTRMessage.m in Sources */,
+				FAEB333A18CDB55C00EA5993 /* QTRBonjourClient.m in Sources */,
+				FAEB333B18CDB55C00EA5993 /* QTRTransfer.m in Sources */,
+				FAEB333C18CDB55C00EA5993 /* QTRMultipartWriter.m in Sources */,
+				FAEB333D18CDB55C00EA5993 /* QTRAppDelegate.m in Sources */,
+				FAEB333E18CDB55C00EA5993 /* QTRFile.m in Sources */,
+				FAEB333F18CDB55C00EA5993 /* QTRMultipartTransfer.m in Sources */,
+				FAEB334018CDB55C00EA5993 /* QTRBonjourServer.m in Sources */,
+				FAEB334118CDB55C00EA5993 /* QTRTransfersTableCellView.m in Sources */,
+				FAEB334218CDB55C00EA5993 /* DTBonjourDataConnection.m in Sources */,
+				FAEB334318CDB55C00EA5993 /* QTRStatusItemView.m in Sources */,
+				FAEB334418CDB55C00EA5993 /* QTRTransfersController.m in Sources */,
+				FAEB334518CDB55C00EA5993 /* QTRConstants.m in Sources */,
+				FAEB334618CDB55C00EA5993 /* DTBonjourDataChunk.m in Sources */,
+				FAEB334718CDB55C00EA5993 /* DTBonjourServer.m in Sources */,
+				FAEB334818CDB55C00EA5993 /* main.m in Sources */,
+				FAEB334918CDB55C00EA5993 /* QTRUser.m in Sources */,
+				FAEB334A18CDB55C00EA5993 /* NSScanner+DTBonjour.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1045,6 +1152,36 @@
 			};
 			name = Release;
 		};
+		FAEB335418CDB55C00EA5993 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
+				INFOPLIST_FILE = "QuickTransfer copy-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "QuickTransfer copy";
+				SDKROOT = macosx10.9;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FAEB335518CDB55C00EA5993 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
+				INFOPLIST_FILE = "QuickTransfer copy-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_NAME = "QuickTransfer copy";
+				SDKROOT = macosx10.9;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1089,6 +1226,15 @@
 			buildConfigurations = (
 				FAD9000318B33CA80098DA76 /* Debug */,
 				FAD9000418B33CA80098DA76 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAEB335318CDB55C00EA5993 /* Build configuration list for PBXNativeTarget "QuickTransfer copy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAEB335418CDB55C00EA5993 /* Debug */,
+				FAEB335518CDB55C00EA5993 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

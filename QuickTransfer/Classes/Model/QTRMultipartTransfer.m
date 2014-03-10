@@ -19,10 +19,9 @@ long long const QTRMultipartTransferMaximumPartSize = 20 * 1024 * 1024;   // 20 
     int _currentPart;
     long long _totalBytes;
     int _totalParts;
-    NSString *_multipartFileTransferID;
 }
 
-- (instancetype)initWithFileURL:(NSURL *)fileURL user:(QTRUser *)user {
+- (instancetype)initWithFileURL:(NSURL *)fileURL user:(QTRUser *)user fileIdentifier:(NSString *)fileIdentifier {
     self = [super init];
     if (self != nil) {
         if (fileURL != nil) {
@@ -32,7 +31,7 @@ long long const QTRMultipartTransferMaximumPartSize = 20 * 1024 * 1024;   // 20 
 
             _user = user;
 
-            _multipartFileTransferID = [NSString stringWithFormat:@"%@%@%f", _fileName, _user.name, [[NSDate date] timeIntervalSince1970]];
+            _fileIdentifier = [fileIdentifier copy];
 
             NSFileManager *fileManager = [NSFileManager defaultManager];
             NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[_fileURL path] error:nil];
@@ -74,7 +73,7 @@ long long const QTRMultipartTransferMaximumPartSize = 20 * 1024 * 1024;   // 20 
             QTRFile *file = [[QTRFile alloc] initWithName:sSelf->_fileName type:@"dmg" partIndex:sSelf->_currentPart totalParts:sSelf->_totalParts totalSize:sSelf->_totalBytes];
             [file setUrl:sSelf->_fileURL];
             [file setData:fileData];
-            [file setMultipartID:sSelf->_multipartFileTransferID];
+            [file setIdentifier:sSelf->_fileIdentifier];
 
             ++sSelf->_currentPart;
 

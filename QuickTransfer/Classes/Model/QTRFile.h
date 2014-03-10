@@ -48,11 +48,6 @@
 - (NSUInteger)length;
 
 /*!
- The unique identifier of a multipart transfer, of which the receiver is a part
- */
-- (NSString *)multipartID;
-
-/*!
  The name of the receiver
  */
 @property (copy) NSString *name;
@@ -88,8 +83,8 @@
 @property (nonatomic) long long totalSize;
 
 /*!
- The unique identifier of the multipart transfer, of which the receiver is a part
+ The unique identifier of the file
  */
-@property (copy) NSString *multipartID;
+@property (copy) NSString *identifier;
 
 @end

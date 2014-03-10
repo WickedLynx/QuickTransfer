@@ -39,8 +39,28 @@
 
 /*!
  The client asks its delegate for a file URL where a multipart file transfer must be written to
+ 
+ @param file The file that is to be saved
  */
 - (NSURL *)saveURLForFile:(QTRFile *)file;
+
+/*!
+ The client notifies its delegate when it detects an incoming file transfer.
+ 
+ The client will not accept or reject the file till the delegate explicitly asks it to.
+ 
+ @param file The incoming file
+ @param user The sender of the file
+ */
+- (void)client:(QTRBonjourClient *)client didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user;
+
+/*!
+ The client notifies its delegate when a user rejects a file transfer.
+ 
+ @param user The user who rejected the file
+ @param file The file that was rejected
+ */
+- (void)user:(QTRUser *)user didRejectFile:(QTRFile *)file;
 
 @optional
 
@@ -48,5 +68,14 @@
 - (void)client:(QTRBonjourClient *)client didDisconnectFromServerForUser:(QTRUser *)user;
 - (void)client:(QTRBonjourClient *)client didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user;
 - (void)client:(QTRBonjourClient *)client didSaveReceivedFileAtURL:(NSURL *)url fromUser:(QTRUser *)user;
+
+/*!
+ The client sends this message when it starts a file transfer to a user.
+
+ @param server The client that started sending the file
+ @param file The file that is being sent
+ @param user The recipient of the file
+ */
+- (void)client:(QTRBonjourClient *)client didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user;
 
 @end

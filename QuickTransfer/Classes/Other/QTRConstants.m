@@ -8,7 +8,7 @@
 
 #import "QTRConstants.h"
 
-NSString *const QTRBonjourServiceType = @"_qtr._tcp";
+NSString *const QTRBonjourServiceType = @"_qtr8._tcp";
 NSString *const QTRBonjourTXTRecordIdentifierKey = @"identifier";
 NSString *const QTRBonjourTXTRecordNameKey = @"name";
 NSString *const QTRBonjourTXTRecordPlatformKey = @"platform";

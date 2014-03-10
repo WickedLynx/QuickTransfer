@@ -16,14 +16,13 @@
 #import "QTRMultipartWriter.h"
 #import "QTRMultipartTransfer.h"
 
-@interface QTRBonjourServer () {
-
-}
+@interface QTRBonjourServer ()
 
 @property (strong) NSMapTable *mappedConnections;
 @property (strong) QTRUser *localUser;
 @property (strong) NSMutableDictionary *receivedFileParts;
 @property (strong) NSMapTable *dataChunksToMultipartTransfers;
+@property (strong) NSMutableArray *pendingTransfers;
 
 - (DTBonjourDataConnection *)connectionForUser:(QTRUser *)user;
 
@@ -48,10 +47,13 @@
         _mappedConnections = [NSMapTable weakToStrongObjectsMapTable];
         _receivedFileParts = [NSMutableDictionary new];
         _dataChunksToMultipartTransfers = [NSMapTable strongToStrongObjectsMapTable];
+        _pendingTransfers = [NSMutableArray new];
     }
 
     return self;
 }
+
+#pragma mark - Public methods
 
 - (void)sendFile:(QTRFile *)file toUser:(QTRUser *)user {
     __weak typeof(self) wSelf = self;
@@ -62,6 +64,7 @@
             DTBonjourDataConnection *connection = [sSelf connectionForUser:user];
             if (connection != nil) {
                 QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
+                [message setType:QTRMessageTypeFileTransfer];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     DTBonjourDataChunk *dataChunk = nil;
                     [connection sendObject:[message JSONData] error:nil dataChunk:&dataChunk];
@@ -78,60 +81,35 @@
 }
 
 - (void)sendFileAtURL:(NSURL *)fileURL toUser:(QTRUser *)user {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[fileURL path] error:nil];
-    if (fileAttributes != nil) {
-        NSNumber *fileSizeNumber = fileAttributes[NSFileSize];
-        long long totalBytes = [fileSizeNumber longLongValue];
+    NSString *fileName = [fileURL lastPathComponent];
+    QTRFile *file = [[QTRFile alloc] initWithName:fileName type:@".." data:nil];
+    [file setUrl:fileURL];
+    [file setIdentifier:[[self class] identifierForFile:file]];
+    [self.pendingTransfers addObject:file];
 
-        __weak typeof(self) wSelf = self;
+    QTRMessage *confirmationMessage = [QTRMessage messageWithUser:_localUser file:file];
+    [confirmationMessage setType:QTRMessageTypeConfirmFileTransfer];
 
-        if (totalBytes <= QTRMultipartTransferMaximumPartSize) {
-
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-
-                if (wSelf != nil) {
-                    typeof(self) sSelf = wSelf;
-                    NSData *fileData = [NSData dataWithContentsOfFile:[fileURL path]];
-                    NSString *fileName = [[fileURL path] lastPathComponent];
-                    QTRFile *file = [[QTRFile alloc] initWithName:fileName type:@"foo" data:fileData];
-                    [file setUrl:fileURL];
-
-                    [sSelf sendFile:file toUser:user];
-                }
-
-            });
-        } else {
-
-            QTRMultipartTransfer *transfer = [[QTRMultipartTransfer alloc] initWithFileURL:fileURL user:user];
-
-            [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart) {
-                if (wSelf != nil) {
-
-                    typeof(self) sSelf = wSelf;
-
-                    QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
-                    NSData *jsonData = [message JSONData];
-
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        DTBonjourDataChunk *chunk = nil;
-                        [[sSelf connectionForUser:user] sendObject:jsonData error:nil dataChunk:&chunk];
-                        [sSelf.dataChunksToMultipartTransfers setObject:transfer forKey:chunk];
-                        if ([sSelf.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
-                            [sSelf.transferDelegate addTransferForUser:user file:file chunk:chunk];
-                        }
-                    });
-                }
-            }];
-            
-        }
-    }
+    DTBonjourDataConnection *connectionForUser = [self connectionForUser:user];
+    [connectionForUser sendObject:[confirmationMessage JSONData] error:nil dataChunk:nil];
 }
 
 - (void)stop {
     [_mappedConnections removeAllObjects];
     
     [super stop];
+}
+
+- (void)acceptFile:(QTRFile *)file accept:(BOOL)shouldAccept fromUser:(QTRUser *)user {
+    QTRMessageType messageType = QTRMessageTypeRejectFileTransfer;
+    if (shouldAccept) {
+        messageType = QTRMessageTypeAcceptFileTransfer;
+    }
+
+    QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
+    [message setType:messageType];
+
+    [[self connectionForUser:user] sendObject:[message JSONData] error:nil dataChunk:nil];
 }
 
 #pragma mark - Private methods
@@ -149,6 +127,76 @@
     }
 
     return connection;
+}
+
+- (void)sendFileWithIdentifier:(NSString *)fileIdentifier toUser:(QTRUser *)user {
+    QTRFile *theFile = nil;
+    for (QTRFile *aFile in self.pendingTransfers) {
+        if ([aFile.identifier isEqualToString:fileIdentifier]) {
+            theFile = aFile;
+            break;
+        }
+    }
+
+    if (theFile.url != nil) {
+        NSURL *fileURL = theFile.url;
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[fileURL path] error:nil];
+        if (fileAttributes != nil) {
+            NSNumber *fileSizeNumber = fileAttributes[NSFileSize];
+            long long totalBytes = [fileSizeNumber longLongValue];
+
+            __weak typeof(self) wSelf = self;
+
+            if (totalBytes <= QTRMultipartTransferMaximumPartSize) {
+
+                dispatch_async(dispatch_get_global_queue(0, 0), ^{
+
+                    if (wSelf != nil) {
+                        typeof(self) sSelf = wSelf;
+                        NSData *fileData = [NSData dataWithContentsOfFile:[fileURL path]];
+                        NSString *fileName = [[fileURL path] lastPathComponent];
+                        QTRFile *file = [[QTRFile alloc] initWithName:fileName type:@"foo" data:fileData];
+                        [file setUrl:fileURL];
+                        [file setIdentifier:theFile.identifier];
+
+                        [sSelf sendFile:file toUser:user];
+                    }
+
+                });
+            } else {
+
+                QTRMultipartTransfer *transfer = [[QTRMultipartTransfer alloc] initWithFileURL:fileURL user:user fileIdentifier:theFile.identifier];
+
+                [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart) {
+                    if (wSelf != nil) {
+
+                        typeof(self) sSelf = wSelf;
+
+                        QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
+                        [message setType:QTRMessageTypeFileTransfer];
+                        NSData *jsonData = [message JSONData];
+
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            DTBonjourDataChunk *chunk = nil;
+                            [[sSelf connectionForUser:user] sendObject:jsonData error:nil dataChunk:&chunk];
+                            [sSelf.dataChunksToMultipartTransfers setObject:transfer forKey:chunk];
+                            if ([sSelf.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
+                                [sSelf.transferDelegate addTransferForUser:user file:file chunk:chunk];
+                            }
+                        });
+                    }
+                }];
+                
+            }
+        }
+
+        [self.pendingTransfers removeObject:theFile];
+    }
+}
+
++ (NSString *)identifierForFile:(QTRFile *)file {
+    return [NSString stringWithFormat:@"%@-%f", file.name, [[NSDate date] timeIntervalSince1970]];
 }
 
 #pragma mark - DTBonjourDataConnectionDelegate methods
@@ -170,15 +218,56 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [sSelf.mappedConnections setObject:user forKey:connection];
 
-                    if (user.name != nil && user.identifier != nil) {
-                        if (theMessage.file == nil) {
+                    switch (theMessage.type) {
+                        case QTRMessageTypeUserInfo: {
                             if ([sSelf.fileDelegate respondsToSelector:@selector(server:didConnectToUser:)]) {
                                 [sSelf.fileDelegate server:sSelf didConnectToUser:user];
                             }
-                        } else {
+
+                            break;
+                        }
+
+                        case QTRMessageTypeConfirmFileTransfer: {
+
+                            if ([sSelf.fileDelegate respondsToSelector:@selector(server:didDetectIncomingFile:fromUser:)]) {
+                                [sSelf.fileDelegate server:sSelf didDetectIncomingFile:theMessage.file fromUser:user];
+                            }
+
+                            break;
+                        }
+
+
+                        case QTRMessageTypeRejectFileTransfer: {
+                            QTRFile *pendingFile = nil;
+                            for (QTRFile *aFile in sSelf.pendingTransfers) {
+                                if ([aFile.identifier isEqualToString:theMessage.file.identifier]) {
+                                    pendingFile = aFile;
+                                    break;
+                                }
+                            }
+                            if ([sSelf.fileDelegate respondsToSelector:@selector(user:didRejectFile:)]) {
+                                [sSelf.fileDelegate user:user didRejectFile:theMessage.file];
+                            }
+
+                            [sSelf.pendingTransfers removeObject:pendingFile];
+
+                            break;
+                        }
+
+                        case QTRMessageTypeAcceptFileTransfer: {
+                            if ([sSelf.fileDelegate respondsToSelector:@selector(server:didBeginSendingFile:toUser:)]) {
+                                [sSelf.fileDelegate server:sSelf didBeginSendingFile:theMessage.file toUser:user];
+                            }
+
+                            [sSelf sendFileWithIdentifier:theMessage.file.identifier toUser:user];
+
+                            break;
+                        }
+
+                        case QTRMessageTypeFileTransfer: {
 
                             if (theMessage.file.totalParts > 1) {
-                                QTRMultipartWriter *writer = sSelf.receivedFileParts[theMessage.file.multipartID];
+                                QTRMultipartWriter *writer = sSelf.receivedFileParts[theMessage.file.identifier];
                                 if (writer != nil) {
                                     [writer writeFilePart:theMessage.file completion:^{
                                         if (theMessage.file.partIndex == (theMessage.file.totalParts - 1)) {
@@ -186,20 +275,26 @@
                                             if ([sSelf.fileDelegate respondsToSelector:@selector(server:didSaveReceivedFileAtURL:fromUser:)]) {
                                                 [sSelf.fileDelegate server:sSelf didSaveReceivedFileAtURL:writer.saveURL fromUser:writer.user];
                                             }
-                                            [sSelf.receivedFileParts removeObjectForKey:theMessage.file.multipartID];
+                                            [sSelf.receivedFileParts removeObjectForKey:theMessage.file.identifier];
                                         }
                                     }];
                                 } else {
                                     writer = [[QTRMultipartWriter alloc] initWithFilePart:theMessage.file sender:user saveURL:[sSelf.fileDelegate saveURLForFile:theMessage.file]];
-                                    sSelf.receivedFileParts[theMessage.file.multipartID] = writer;
+                                    sSelf.receivedFileParts[theMessage.file.identifier] = writer;
                                 }
                             } else {
                                 if ([sSelf.fileDelegate respondsToSelector:@selector(server:didReceiveFile:fromUser:)]) {
                                     [sSelf.fileDelegate server:sSelf didReceiveFile:theMessage.file fromUser:user];
                                 }
                             }
+
+                            break;
                         }
+
+                        default:
+                            break;
                     }
+
                 });
                 
             }
@@ -234,6 +329,7 @@
                 typeof(self) sSelf = wSelf;
 
                 QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
+                [message setType:QTRMessageTypeFileTransfer];
                 NSData *jsonData = [message JSONData];
 
                 dispatch_async(dispatch_get_main_queue(), ^{

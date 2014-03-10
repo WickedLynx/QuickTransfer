@@ -27,7 +27,7 @@ FOUNDATION_EXPORT long long const QTRMultipartTransferMaximumPartSize;
  @param fileURL The file URL from which the data for the transfer is read
  @param user The receipient of the transfer
  */
-- (instancetype)initWithFileURL:(NSURL *)fileURL user:(QTRUser *)user;
+- (instancetype)initWithFileURL:(NSURL *)fileURL user:(QTRUser *)user fileIdentifier:(NSString *)fileIdentifier;
 
 /*!
  Reads the next file part for the multipart transfer.
@@ -50,5 +50,7 @@ FOUNDATION_EXPORT long long const QTRMultipartTransferMaximumPartSize;
  The recipient of the file
  */
 @property (strong) QTRUser *user;
+
+@property (copy) NSString *fileIdentifier;
 
 @end

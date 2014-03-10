@@ -34,6 +34,14 @@
 - (void)sendFileAtURL:(NSURL *)fileURL toUser:(QTRUser *)user;
 
 /*!
+ Accept/reject a file transfer.
+
+ @param file The file to accept.
+ @param shouldAccept A boolen indicating if the file should be accepted
+ */
+- (void)acceptFile:(QTRFile *)file accept:(BOOL)shouldAccept fromUser:(QTRUser *)user;
+
+/*!
  The object which is interested in getting notified of connection and file related events
  */
 @property (weak) id <QTRBonjourServerDelegate> fileDelegate;

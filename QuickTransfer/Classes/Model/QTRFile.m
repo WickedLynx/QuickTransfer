@@ -15,7 +15,7 @@ NSString *const QTRFileDataKey = @"data";
 NSString *const QTRFilePartIndexKey = @"partIndex";
 NSString *const QTRFileTotalPartsKey = @"totalParts";
 NSString *const QTRFileTotalSizeKey = @"totalSize";
-NSString *const QTRFileMultipartIDKey = @"multipartID";
+NSString *const QTRFileIdentifierKey = @"identifier";
 
 @implementation QTRFile
 
@@ -29,7 +29,7 @@ NSString *const QTRFileMultipartIDKey = @"multipartID";
         _totalParts = 1;
         _partIndex = 0;
         _totalSize = [data length];
-        _multipartID = @"1";
+        _identifier = @"1";
     }
 
     return self;
@@ -56,8 +56,10 @@ NSString *const QTRFileMultipartIDKey = @"multipartID";
 
         NSString *encodedData = dictionary[QTRFileDataKey];
         if (encodedData.length > 0) {
+            @autoreleasepool {
+                _data = [NSData dataWithBase64EncodedString:encodedData];
+            }
 
-            _data = [NSData dataWithBase64EncodedString:encodedData];
         }
 
         NSNumber *partIndex = dictionary[QTRFilePartIndexKey];
@@ -75,7 +77,7 @@ NSString *const QTRFileMultipartIDKey = @"multipartID";
             _totalSize = [totalParts longLongValue];
         }
 
-        _multipartID = dictionary[QTRFileMultipartIDKey];
+        _identifier = dictionary[QTRFileIdentifierKey];
     }
 
     return self;
@@ -91,21 +93,23 @@ NSString *const QTRFileMultipartIDKey = @"multipartID";
     if (_type != nil) {
         dictionary[QTRFileTypeKey] = _type;
     }
+    @autoreleasepool {
+        if (_data != nil) {
 
-    if (_data != nil) {
-
-        NSString *encodedData = [_data base64EncodedString];
-        if (encodedData != nil) {
-            dictionary[QTRFileDataKey] = encodedData;
+            NSString *encodedData = [_data base64EncodedString];
+            if (encodedData != nil) {
+                dictionary[QTRFileDataKey] = encodedData;
+            }
         }
     }
+
 
     dictionary[QTRFilePartIndexKey] = @(_partIndex);
     dictionary[QTRFileTotalPartsKey] = @(_totalParts);
     dictionary[QTRFileTotalSizeKey] = @(_totalSize);
 
-    if (_multipartID != nil) {
-        dictionary[QTRFileMultipartIDKey] = _multipartID;
+    if (_identifier != nil) {
+        dictionary[QTRFileIdentifierKey] = _identifier;
     }
 
     return dictionary;

@@ -151,30 +151,35 @@ void refreshComputerModel() {
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (contextInfo != NULL) {
 
-        id fileInfo = CFBridgingRelease(contextInfo);
+        NSDictionary *fileInfo = CFBridgingRelease(contextInfo);
 
-        if ([fileInfo isKindOfClass:[QTRFile class]]) {
-            QTRFile *file = (QTRFile *)fileInfo;
-            if (returnCode == NSAlertDefaultReturn) {
-                [self saveFile:file];
-            }
-        } else if ([fileInfo isKindOfClass:[NSURL class]]) {
+        QTRFile *file = fileInfo[@"file"];
+        id receiver = fileInfo[@"receiver"];
 
-            NSURL *url = (NSURL *)fileInfo;
-            if (returnCode != NSAlertDefaultReturn) {
-                [self deleteSavedFileAtURL:url];
-            }
+        BOOL shouldAccept = NO;
+
+        if (returnCode == NSAlertDefaultReturn) {
+            shouldAccept = YES;
         }
+
+
+        if ([receiver isEqual:_client]) {
+            [_client acceptFile:file accept:shouldAccept fromUser:fileInfo[@"user"]];
+        } else if ([receiver isEqual:_server]) {
+            [_server acceptFile:file accept:shouldAccept fromUser:fileInfo[@"user"]];
+        }
+
     }
 
 }
 
 - (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user {
+    [file.data writeToURL:[self saveURLForFile:file] atomically:YES];
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
 
-    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"%@ sent file: %@", user.name, file.name] defaultButton:@"Save" alternateButton:@"Discard" otherButton:nil informativeTextWithFormat:@"Clicking save will save it to Downloads"];
+    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"%@ sent file: %@", user.name, file.name] defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"The file was saved to your Downloads directory"];
     [[alert window] setTitle:@"QuickTransfer"];
-    [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:(void *)CFBridgingRetain(file)];
+    [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
 - (void)showAlertForSavedFileAtURL:(NSURL *)url user:(QTRUser *)user {
@@ -182,12 +187,11 @@ void refreshComputerModel() {
 
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
 
-    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"%@ sent file: %@", user.name, fileName] defaultButton:@"Save" alternateButton:@"Discard" otherButton:nil informativeTextWithFormat:@"Clicking save will save it to Downloads"];
+    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"%@ sent file: %@", user.name, fileName] defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"The file was saved to your Downloads directory"];
     [[alert window] setTitle:@"QuickTransfer"];
-    [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:(void *)CFBridgingRetain(url)];
+    [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 
 }
-
 
 - (void)sendFileAtURL:(NSURL *)url {
     if ([_connectedServers count] > _clickedRow) {
@@ -202,7 +206,7 @@ void refreshComputerModel() {
 
     }
 
-    [self showTransfers];
+
 }
 
 - (void)showOpenPanelForSelectedUser {
@@ -374,7 +378,22 @@ void refreshComputerModel() {
 
 - (void)showTransfers {
     [self.transfersPanel orderFront:self];
+}
 
+- (void)showConfirmationAlertForFile:(QTRFile *)file user:(QTRUser *)user receiver:(id)receiver {
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+
+    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"%@ wants to send you a file: %@", user.name, file.name] defaultButton:@"Accept" alternateButton:@"Reject" otherButton:nil informativeTextWithFormat:@"Clicking Accept will save it to your Downloads directory"];
+    [[alert window] setTitle:@"QuickTransfer"];
+    [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:(void *)CFBridgingRetain(@{@"file" : file, @"receiver" : receiver, @"user" : user})];
+}
+
+- (void)showAlertForRejectedFile:(QTRFile *)file receiver:(QTRUser *)receiver {
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+
+    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"%@ rejected file: %@", receiver.name, file.name] defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"The file will not be sent"];
+    [[alert window] setTitle:@"QuickTransfer"];
+    [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
 #pragma mark - Actions
@@ -438,9 +457,16 @@ void refreshComputerModel() {
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    QTRUser *theUser = [self userAtRow:rowIndex isServer:NULL];
+    BOOL _isServer = NO;
+    QTRUser *theUser = [self userAtRow:rowIndex isServer:&_isServer];
+    NSString *name = [self styledDisplayNameForUser:theUser];
+    if (_isServer) {
+        name = [name stringByAppendingFormat:@" (server)"];
+    } else {
+        name = [name stringByAppendingFormat:@" (client)"];
+    }
 
-    return  [self styledDisplayNameForUser:theUser];
+    return  name;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)aTableView validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {
@@ -512,6 +538,18 @@ void refreshComputerModel() {
     [self showAlertForSavedFileAtURL:url user:user];
 }
 
+- (void)server:(QTRBonjourServer *)server didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
+    [self showConfirmationAlertForFile:file user:user receiver:server];
+}
+
+- (void)user:(QTRUser *)user didRejectFile:(QTRFile *)file {
+    [self showAlertForRejectedFile:file receiver:user];
+}
+
+- (void)server:(QTRBonjourServer *)server didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user {
+    [self showTransfers];
+}
+
 #pragma mark - QTRBonjourClientDelegate methods
 
 - (QTRUser *)localUser {
@@ -546,6 +584,14 @@ void refreshComputerModel() {
 
 - (void)client:(QTRBonjourClient *)client didSaveReceivedFileAtURL:(NSURL *)url fromUser:(QTRUser *)user {
     [self showAlertForSavedFileAtURL:url user:user];
+}
+
+- (void)client:(QTRBonjourClient *)client didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
+    [self showConfirmationAlertForFile:file user:user receiver:client];
+}
+
+- (void)client:(QTRBonjourClient *)client didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user {
+    [self showTransfers];
 }
 
 #pragma mark - QTRStatusItemViewDelegate methods

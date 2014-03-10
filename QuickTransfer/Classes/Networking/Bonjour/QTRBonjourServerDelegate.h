@@ -33,6 +33,24 @@
 - (NSURL *)saveURLForFile:(QTRFile *)file;
 
 /*!
+ The server notifies its file delegate when it detects an incoming file transfer.
+
+ The server will not accept or reject the file till the delegate explicitly asks it to.
+
+ @param file The incoming file
+ @param user The sender of the file
+ */
+- (void)server:(QTRBonjourServer *)server didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user;
+
+/*!
+ The server notifies its delegate when a user rejects a file transfer.
+
+ @param user The user who rejected the file
+ @param file The file that was rejected
+ */
+- (void)user:(QTRUser *)user didRejectFile:(QTRFile *)file;
+
+/*!
  @methodgroup Optional methods
  */
 @optional
@@ -66,6 +84,15 @@
  @param user The user who sent the file.
  */
 - (void)server:(QTRBonjourServer *)server didSaveReceivedFileAtURL:(NSURL *)url fromUser:(QTRUser *)user;
+
+/*!
+ The server sends this message when it starts a file transfer to a user.
+ 
+ @param server The server that started sending the file
+ @param file The file that is being sent
+ @param user The recipient of the file
+ */
+- (void)server:(QTRBonjourServer *)server didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user;
 
 
 @end
