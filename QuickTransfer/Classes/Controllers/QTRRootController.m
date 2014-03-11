@@ -475,11 +475,15 @@ void refreshComputerModel() {
     BOOL _isServer = NO;
     QTRUser *theUser = [self userAtRow:rowIndex isServer:&_isServer];
     NSString *name = [self styledDisplayNameForUser:theUser];
+/*
+ // For debugging connections
+ 
     if (_isServer) {
         name = [name stringByAppendingFormat:@" (server)"];
     } else {
         name = [name stringByAppendingFormat:@" (client)"];
     }
+*/
 
     return  name;
 }
