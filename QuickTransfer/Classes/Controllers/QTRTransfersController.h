@@ -17,11 +17,6 @@
 @interface QTRTransfersController : NSObject <QTRBonjourTransferDelegate, NSTableViewDataSource, NSTableViewDelegate>
 
 /*!
- The transfers currently being tracked by the receiver
- */
-- (NSArray *)transfers;
-
-/*!
  Removes all transfers currently being tracked by the receiver.
  
  This does not stop ongoing transfers from being transmitted

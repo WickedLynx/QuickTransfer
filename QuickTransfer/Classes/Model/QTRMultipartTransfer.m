@@ -11,7 +11,7 @@
 #import "QTRFile.h"
 #import "QTRUser.h"
 
-long long const QTRMultipartTransferMaximumPartSize = 20 * 1024 * 1024;   // 20 MB
+long long const QTRMultipartTransferMaximumPartSize = 10 * 1024 * 1024;   // 10 MB
 
 @implementation QTRMultipartTransfer {
     NSFileHandle *_fileHandle;

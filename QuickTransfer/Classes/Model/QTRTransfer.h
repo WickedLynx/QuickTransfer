@@ -70,7 +70,7 @@ typedef NS_ENUM(NSInteger, QTRTransferState) {
 /*!
  The total file parts that were successfully transfered
  */
-@property (nonatomic) int transferedChunks;
+@property (nonatomic) NSUInteger transferedChunks;
 
 /*!
  The progress of the file part that is currently being sent
@@ -81,5 +81,6 @@ typedef NS_ENUM(NSInteger, QTRTransferState) {
  The state of the transfer
  */
 @property (nonatomic) QTRTransferState state;
+
 
 @end

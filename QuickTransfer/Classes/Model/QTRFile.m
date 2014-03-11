@@ -74,7 +74,7 @@ NSString *const QTRFileIdentifierKey = @"identifier";
 
         NSNumber *totalSizeKey = dictionary[QTRFileTotalSizeKey];
         if (![totalSizeKey isKindOfClass:[NSNull class]]) {
-            _totalSize = [totalParts longLongValue];
+            _totalSize = [totalSizeKey longLongValue];
         }
 
         _identifier = dictionary[QTRFileIdentifierKey];

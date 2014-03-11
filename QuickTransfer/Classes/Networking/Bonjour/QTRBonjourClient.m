@@ -360,20 +360,29 @@
                                 QTRMultipartWriter *writer = sSelf.receivedFileParts[theMessage.file.identifier];
                                 if (writer != nil) {
                                     [writer writeFilePart:theMessage.file completion:^{
-                                        if (theMessage.file.partIndex == (theMessage.file.totalParts - 1)) {
-                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                        if ([sSelf.transferDelegate respondsToSelector:@selector(updateTransferForFile:)]) {
+                                            [sSelf.transferDelegate updateTransferForFile:theMessage.file];
+                                        }
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            
+                                            if (theMessage.file.partIndex == (theMessage.file.totalParts - 1)) {
                                                 [writer closeFile];
                                                 if ([sSelf.delegate respondsToSelector:@selector(client:didSaveReceivedFileAtURL:fromUser:)]) {
                                                     [sSelf.delegate client:sSelf didSaveReceivedFileAtURL:writer.saveURL fromUser:writer.user];
                                                 }
-                                                [sSelf.receivedFileParts removeObjectForKey:theMessage.file.identifier];
-                                            });
 
-                                        }
+                                                [sSelf.receivedFileParts removeObjectForKey:theMessage.file.identifier];
+                                            }
+                                        });
+
                                     }];
                                 } else {
                                     writer = [[QTRMultipartWriter alloc] initWithFilePart:theMessage.file sender:user saveURL:[sSelf.delegate saveURLForFile:theMessage.file]];
                                     sSelf.receivedFileParts[theMessage.file.identifier] = writer;
+                                    if ([sSelf.transferDelegate respondsToSelector:@selector(addTransferFromUser:file:)]) {
+                                        [theMessage.file setUrl:writer.saveURL];
+                                        [sSelf.transferDelegate addTransferFromUser:theMessage.user file:theMessage.file];
+                                    }
                                 }
                             } else {
                                 if ([sSelf.delegate respondsToSelector:@selector(client:didReceiveFile:fromUser:)]) {

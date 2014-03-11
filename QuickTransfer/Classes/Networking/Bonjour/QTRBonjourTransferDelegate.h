@@ -21,7 +21,24 @@
 - (void)replaceChunk:(DTBonjourDataChunk *)oldChunk withChunk:(DTBonjourDataChunk *)newChunk;
 /*!
  Marks all transfers for the particular user as failed
+ 
+ @param user The sender or receipient of the transfers
  */
 - (void)failAllTransfersForUser:(QTRUser *)user;
+
+/*!
+ Add a new incoming transfer.
+ 
+ @param user The sender of the file
+ @param file The file being received
+ */
+- (void)addTransferFromUser:(QTRUser *)user file:(QTRFile *)file;
+
+/*!
+ Update the transfer of an incoming file
+ 
+ @param file The file being received
+ */
+- (void)updateTransferForFile:(QTRFile *)file;
 
 @end

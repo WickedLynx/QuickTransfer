@@ -382,6 +382,7 @@ void refreshComputerModel() {
 }
 
 - (void)showTransfers {
+//    [self.transfersPanel makeKeyAndOrderFront:self];
     [self.transfersPanel orderFront:self];
 }
 

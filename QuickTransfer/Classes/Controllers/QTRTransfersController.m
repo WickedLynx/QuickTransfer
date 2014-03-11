@@ -15,19 +15,27 @@
 float QTRTransfersControllerProgressThreshold = 0.02f;
 
 @implementation QTRTransfersController {
-    NSMapTable *_transfers;
+    NSMapTable *_dataChunksToTransfers;
     NSMutableArray *_allTransfers;
+    NSMutableDictionary *_fileIdentifierToTransfers;
 }
 
 - (id)init {
     self = [super init];
 
     if (self != nil) {
-        _transfers = [NSMapTable strongToStrongObjectsMapTable];
+        _dataChunksToTransfers = [NSMapTable strongToStrongObjectsMapTable];
         _allTransfers = [NSMutableArray new];
+        _fileIdentifierToTransfers = [NSMutableDictionary new];
     }
 
     return self;
+}
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    [self.transfersTableView setTarget:self];
+    [self.transfersTableView setDoubleAction:@selector(clickTransfer:)];
 }
 
 #pragma mark - Actions
@@ -39,22 +47,27 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     for (NSInteger transferIndex = 0; transferIndex != count; ++transferIndex) {
         QTRTransfer *theTransfer = completedTransfers[transferIndex];
         [_allTransfers removeObject:theTransfer];
-        [_transfers removeObjectForKey:theTransfer];
     }
 
     [self.transfersTableView reloadData];
 }
 
-#pragma mark - Public methods
-
-- (NSArray *)transfers {
-
-    return _allTransfers;
+- (void)clickTransfer:(id)sender {
+    NSUInteger clickedRow = [self.transfersTableView clickedRow];
+    if (clickedRow < _allTransfers.count) {
+        QTRTransfer *theTransfer = _allTransfers[clickedRow];
+        if (theTransfer.progress == 1.0f) {
+            [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[theTransfer.fileURL]];
+        }
+    }
 }
 
+#pragma mark - Public methods
+
 - (void)removeAllTransfers {
-    [_transfers removeAllObjects];
+    [_dataChunksToTransfers removeAllObjects];
     [_allTransfers removeAllObjects];
+    [_fileIdentifierToTransfers removeAllObjects];
 
     [self.transfersTableView reloadData];
 }
@@ -75,7 +88,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
             [transfer setFileSize:[file length]];
         }
         [_allTransfers insertObject:transfer atIndex:0];
-        [_transfers setObject:transfer forKey:chunk];
+        [_dataChunksToTransfers setObject:transfer forKey:chunk];
 
         [self.transfersTableView reloadData];
     }
@@ -84,7 +97,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
 - (void)updateTransferForChunk:(DTBonjourDataChunk *)chunk {
 
-    QTRTransfer *theTransfer = [_transfers objectForKey:chunk];
+    QTRTransfer *theTransfer = [_dataChunksToTransfers objectForKey:chunk];
     if (theTransfer != nil) {
 
         BOOL shouldReload = NO;
@@ -99,7 +112,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
             }
 
             if ([chunk isTransmissionComplete]) {
-                [_transfers removeObjectForKey:chunk];
+                [_dataChunksToTransfers removeObjectForKey:chunk];
                 [theTransfer setState:QTRTransferStateCompleted];
                 [theTransfer setProgress:1.0f];
                 shouldReload = YES;
@@ -115,7 +128,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
             if (theTransfer.progress == 1.0f) {
                 [theTransfer setState:QTRTransferStateCompleted];
                 [theTransfer setCurrentChunkProgress:1.0f];
-                [_transfers removeObjectForKey:chunk];
+                [_dataChunksToTransfers removeObjectForKey:chunk];
                 shouldReload = YES;
             }
 
@@ -130,12 +143,12 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 }
 
 - (void)replaceChunk:(DTBonjourDataChunk *)oldChunk withChunk:(DTBonjourDataChunk *)newChunk {
-    QTRTransfer *transfer = [_transfers objectForKey:oldChunk];
+    QTRTransfer *transfer = [_dataChunksToTransfers objectForKey:oldChunk];
     if (transfer != nil) {
-        [_transfers removeObjectForKey:oldChunk];
+        [_dataChunksToTransfers removeObjectForKey:oldChunk];
         [transfer setCurrentChunkProgress:0.0f];
         ++transfer.transferedChunks;
-        [_transfers setObject:transfer forKey:newChunk];
+        [_dataChunksToTransfers setObject:transfer forKey:newChunk];
     }
 }
 
@@ -150,6 +163,37 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     [self.transfersTableView reloadData];
 }
 
+- (void)addTransferFromUser:(QTRUser *)user file:(QTRFile *)file {
+
+    QTRTransfer *transfer = [QTRTransfer new];
+    [transfer setUser:user];
+    [transfer setTimestamp:[NSDate date]];
+    [transfer setTotalParts:file.totalParts];
+    [transfer setState:QTRTransferStateInProgress];
+    [transfer setTransferedChunks:(file.partIndex + 1)];
+    [transfer setFileSize:file.totalSize];
+    [transfer setFileURL:file.url];
+    [_allTransfers insertObject:transfer atIndex:0];
+    _fileIdentifierToTransfers[file.identifier] = transfer;
+
+    [self.transfersTableView reloadData];
+}
+
+- (void)updateTransferForFile:(QTRFile *)file {
+    QTRTransfer *theTransfer = _fileIdentifierToTransfers[file.identifier];
+    if (theTransfer != nil && ![theTransfer isKindOfClass:[NSNull class]]) {
+        [theTransfer setTransferedChunks:(file.partIndex + 1)];
+        if (theTransfer.progress == 1) {
+            [theTransfer setState:QTRTransferStateCompleted];
+        }
+
+        NSInteger cellIndex = [_allTransfers indexOfObject:theTransfer];
+        [self.transfersTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:cellIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+    }
+
+
+}
+
 #pragma mark - NSTableViewDataSource methods
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
@@ -160,6 +204,8 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     return _allTransfers[rowIndex];
 
 }
+
+
 
 
 @end
