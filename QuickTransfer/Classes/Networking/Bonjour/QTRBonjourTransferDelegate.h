@@ -19,5 +19,9 @@
 - (void)addTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk;
 - (void)updateTransferForChunk:(DTBonjourDataChunk *)chunk;
 - (void)replaceChunk:(DTBonjourDataChunk *)oldChunk withChunk:(DTBonjourDataChunk *)newChunk;
+/*!
+ Marks all transfers for the particular user as failed
+ */
+- (void)failAllTransfersForUser:(QTRUser *)user;
 
 @end

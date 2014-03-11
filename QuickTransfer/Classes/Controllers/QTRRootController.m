@@ -61,6 +61,8 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 - (IBAction)clickQuit:(id)sender;
 - (void)showMenu:(id)sender;
 - (IBAction)clickTransfers:(id)sender;
+- (void)systemWillSleep:(NSNotification *)notification;
+- (void)systemDidWakeUpFromSleep:(NSNotification *)notification;
 
 @end
 
@@ -95,6 +97,9 @@ void refreshComputerModel() {
     [self refreshMenu];
 
     [self.devicesTableView registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
+
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemWillSleep:) name:NSWorkspaceWillSleepNotification object:nil];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemDidWakeUpFromSleep:) name:NSWorkspaceDidWakeNotification object:nil];
 
 }
 
@@ -448,6 +453,16 @@ void refreshComputerModel() {
 
 - (void)clickTransfers:(id)sender {
     [self showTransfers];
+}
+
+#pragma mark - Notification handlers
+
+- (void)systemWillSleep:(NSNotification *)notification {
+    [self stopServices];
+}
+
+- (void)systemDidWakeUpFromSleep:(NSNotification *)notification {
+    [self clickRefresh:nil];
 }
 
 #pragma mark - NSTableViewDataSource

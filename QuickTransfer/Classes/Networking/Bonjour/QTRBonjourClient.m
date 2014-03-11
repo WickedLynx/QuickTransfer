@@ -75,7 +75,11 @@
         [connection close];
     }
 
-
+    [self.dataChunksToMultipartTransfers removeAllObjects];
+    [self.pendingTransfers removeAllObjects];
+    [self.receivedFileParts removeAllObjects];
+    [self.foundServices removeAllObjects];
+    [self setNetServicesBrowser:nil];
     [self.discoveredServices removeAllObjects];
 
 }
@@ -294,6 +298,7 @@
     if ([self.delegate respondsToSelector:@selector(client:didDisconnectFromServerForUser:)]) {
         [self.delegate client:self didDisconnectFromServerForUser:user];
     }
+    [self.transferDelegate failAllTransfersForUser:user];
     [self.discoveredServices removeObjectForKey:user];
 }
 
@@ -356,11 +361,14 @@
                                 if (writer != nil) {
                                     [writer writeFilePart:theMessage.file completion:^{
                                         if (theMessage.file.partIndex == (theMessage.file.totalParts - 1)) {
-                                            [writer closeFile];
-                                            if ([sSelf.delegate respondsToSelector:@selector(client:didSaveReceivedFileAtURL:fromUser:)]) {
-                                                [sSelf.delegate client:sSelf didSaveReceivedFileAtURL:writer.saveURL fromUser:writer.user];
-                                            }
-                                            [sSelf.receivedFileParts removeObjectForKey:theMessage.file.identifier];
+                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                [writer closeFile];
+                                                if ([sSelf.delegate respondsToSelector:@selector(client:didSaveReceivedFileAtURL:fromUser:)]) {
+                                                    [sSelf.delegate client:sSelf didSaveReceivedFileAtURL:writer.saveURL fromUser:writer.user];
+                                                }
+                                                [sSelf.receivedFileParts removeObjectForKey:theMessage.file.identifier];
+                                            });
+
                                         }
                                     }];
                                 } else {

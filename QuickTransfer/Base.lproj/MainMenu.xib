@@ -542,14 +542,14 @@
                 <rect key="frame" x="0.0" y="0.0" width="276" height="378"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView autohidesScrollers="YES" horizontalLineScroll="62" horizontalPageScroll="10" verticalLineScroll="62" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="9HG-6v-PAF">
-                        <rect key="frame" x="-1" y="21" width="278" height="358"/>
+                    <scrollView autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="9HG-6v-PAF">
+                        <rect key="frame" x="0.0" y="21" width="278" height="358"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" copiesOnScroll="NO" id="dNJ-ix-0a0">
                             <rect key="frame" x="1" y="1" width="276" height="356"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" selectionHighlightStyle="none" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="60" rowSizeStyle="automatic" viewBased="YES" id="D2W-VY-ffi">
+                                <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" selectionHighlightStyle="none" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="50" rowSizeStyle="automatic" viewBased="YES" id="D2W-VY-ffi">
                                     <rect key="frame" x="0.0" y="0.0" width="276" height="356"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -571,11 +571,11 @@
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
                                                 <tableCellView id="iaD-Ve-ol2" customClass="QTRTransfersTableCellView">
-                                                    <rect key="frame" x="1" y="1" width="273" height="60"/>
+                                                    <rect key="frame" x="1" y="1" width="273" height="50"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" id="5Uf-h4-V3H">
-                                                            <rect key="frame" x="1" y="34" width="167" height="22"/>
+                                                            <rect key="frame" x="1" y="24" width="167" height="22"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingTail" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" title="User name" id="Svx-5L-KNu">
                                                                 <font key="font" metaFont="cellTitle"/>
@@ -584,7 +584,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" id="bfz-yn-BJ2">
-                                                            <rect key="frame" x="172" y="32" width="100" height="22"/>
+                                                            <rect key="frame" x="172" y="22" width="100" height="22"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" title="timestamp" id="tEb-U2-avG">
                                                                 <dateFormatter key="formatter" dateStyle="short" timeStyle="short" doesRelativeDateFormatting="YES" id="wbr-n8-bVM"/>
@@ -594,7 +594,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" id="deH-Bi-mZQ">
-                                                            <rect key="frame" x="1" y="3" width="167" height="22"/>
+                                                            <rect key="frame" x="1" y="-3" width="167" height="22"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" lineBreakMode="truncatingMiddle" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" title="file name" id="0WU-hD-tfz">
                                                                 <font key="font" metaFont="cellTitle"/>
@@ -603,7 +603,7 @@
                                                             </textFieldCell>
                                                         </textField>
                                                         <textField verticalHuggingPriority="750" id="i3o-HF-0yM">
-                                                            <rect key="frame" x="184" y="0.0" width="88" height="22"/>
+                                                            <rect key="frame" x="184" y="-5" width="88" height="22"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                                             <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" title="file size" id="0D0-r2-HQa">
                                                                 <byteCountFormatter key="formatter" id="03l-Va-wwU"/>

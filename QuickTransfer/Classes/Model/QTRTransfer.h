@@ -13,6 +13,26 @@
 @class DTBonjourDataChunk;
 
 /*!
+ The current state of the transfer.
+ */
+typedef NS_ENUM(NSInteger, QTRTransferState) {
+    /*!
+     The transfer is in progress
+     */
+    QTRTransferStateInProgress = 0,
+
+    /*!
+     The transfer is complete
+     */
+    QTRTransferStateCompleted,
+
+    /*!
+     The transfer has failed
+     */
+    QTRTransferStateFailed
+};
+
+/*!
  This class tracks the progress of a file transfer
  */
 @interface QTRTransfer : NSObject
@@ -56,5 +76,10 @@
  The progress of the file part that is currently being sent
  */
 @property (nonatomic) float currentChunkProgress;
+
+/*!
+ The state of the transfer
+ */
+@property (nonatomic) QTRTransferState state;
 
 @end

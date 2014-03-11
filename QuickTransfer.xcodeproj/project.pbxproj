@@ -89,6 +89,8 @@
 		FAEB334F18CDB55C00EA5993 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFEF18B33CA80098DA76 /* Images.xcassets */; };
 		FAEB335018CDB55C00EA5993 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFE618B33CA70098DA76 /* Credits.rtf */; };
 		FAEB335118CDB55C00EA5993 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFEC18B33CA80098DA76 /* MainMenu.xib */; };
+		FAEB335918CEE4ED00EA5993 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */; };
+		FAEB335A18CEE50500EA5993 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -188,6 +190,7 @@
 		FAD9FFFF18B33CA80098DA76 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FAEB335618CDB55C00EA5993 /* QuickTransfer copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickTransfer copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAEB335718CDB55C00EA5993 /* QuickTransfer copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "QuickTransfer copy-Info.plist"; path = "/Users/harshad/Documents/Development/Cocoa/QuickTransfer/QuickTransfer copy-Info.plist"; sourceTree = "<absolute>"; };
+		FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +218,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAEB335918CEE4ED00EA5993 /* QuartzCore.framework in Frameworks */,
 				FAD9FFD818B33CA70098DA76 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -232,6 +236,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAEB335A18CEE50500EA5993 /* QuartzCore.framework in Frameworks */,
 				FAEB334C18CDB55C00EA5993 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -477,6 +482,7 @@
 		FAD9FFD618B33CA70098DA76 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */,
 				FAD9FFD718B33CA70098DA76 /* Cocoa.framework */,
 				FAD9FFF618B33CA80098DA76 /* XCTest.framework */,
 				FA283EF318B494E5003D4FB6 /* Foundation.framework */,

@@ -34,7 +34,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
 - (IBAction)clickClearCompleted:(id)sender {
 
-    NSArray *completedTransfers = [_allTransfers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"progress >= 1"]];
+    NSArray *completedTransfers = [_allTransfers filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"state == %d OR state == %d", QTRTransferStateCompleted, QTRTransferStateFailed]];
     NSInteger count = [completedTransfers count];
     for (NSInteger transferIndex = 0; transferIndex != count; ++transferIndex) {
         QTRTransfer *theTransfer = completedTransfers[transferIndex];
@@ -68,6 +68,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         [transfer setFileURL:file.url];
         [transfer setTimestamp:[NSDate date]];
         [transfer setTotalParts:file.totalParts];
+        [transfer setState:QTRTransferStateInProgress];
         if (file.totalParts > 1) {
             [transfer setFileSize:file.totalSize];
         } else {
@@ -99,6 +100,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
             if ([chunk isTransmissionComplete]) {
                 [_transfers removeObjectForKey:chunk];
+                [theTransfer setState:QTRTransferStateCompleted];
                 [theTransfer setProgress:1.0f];
                 shouldReload = YES;
             }
@@ -111,6 +113,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
             }
 
             if (theTransfer.progress == 1.0f) {
+                [theTransfer setState:QTRTransferStateCompleted];
                 [theTransfer setCurrentChunkProgress:1.0f];
                 [_transfers removeObjectForKey:chunk];
                 shouldReload = YES;
@@ -134,6 +137,17 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         ++transfer.transferedChunks;
         [_transfers setObject:transfer forKey:newChunk];
     }
+}
+
+- (void)failAllTransfersForUser:(QTRUser *)user {
+
+    for (QTRTransfer *aTransfer in _allTransfers) {
+        if (aTransfer.progress < 1.0f && [aTransfer.user isEqual:user]) {
+            [aTransfer setState:QTRTransferStateFailed];
+        }
+    }
+
+    [self.transfersTableView reloadData];
 }
 
 #pragma mark - NSTableViewDataSource methods

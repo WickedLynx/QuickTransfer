@@ -95,7 +95,12 @@
 }
 
 - (void)stop {
-    [_mappedConnections removeAllObjects];
+    [self.mappedConnections removeAllObjects];
+    [self.receivedFileParts removeAllObjects];
+    [self.dataChunksToMultipartTransfers removeAllObjects];
+    [self.pendingTransfers removeAllObjects];
+    [self setFileDelegate:nil];
+    [self setTransferDelegate:nil];
     
     [super stop];
 }
@@ -305,10 +310,13 @@
 
 - (void)connectionDidClose:(DTBonjourDataConnection *)connection {
 
+    QTRUser *user = [self.mappedConnections objectForKey:connection];
     if ([self.fileDelegate respondsToSelector:@selector(server:didDisconnectUser:)]) {
-        [self.fileDelegate server:self didDisconnectUser:[self.mappedConnections objectForKey:connection]];
+        [self.fileDelegate server:self didDisconnectUser:user];
     }
 
+    [self.transferDelegate failAllTransfersForUser:user];
+    
     [self.mappedConnections removeObjectForKey:connection];
 
     [super connectionDidClose:connection];
