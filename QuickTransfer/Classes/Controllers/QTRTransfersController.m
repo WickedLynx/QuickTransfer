@@ -176,6 +176,11 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     [_allTransfers insertObject:transfer atIndex:0];
     _fileIdentifierToTransfers[file.identifier] = transfer;
 
+    if (file.totalParts == (file.partIndex + 1)) {
+        [transfer setProgress:1.0f];
+        [transfer setState:QTRTransferStateCompleted];
+    }
+
     [self.transfersTableView reloadData];
 }
 

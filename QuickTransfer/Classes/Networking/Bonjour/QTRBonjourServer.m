@@ -299,9 +299,15 @@
                                     }
                                 }
                             } else {
+                                if ([sSelf.transferDelegate respondsToSelector:@selector(addTransferFromUser:file:)]) {
+                                    NSURL *fileURL = [sSelf.fileDelegate saveURLForFile:theMessage.file];
+                                    [theMessage.file setUrl:fileURL];
+                                    [sSelf.transferDelegate addTransferFromUser:theMessage.user file:theMessage.file];
+                                }
                                 if ([sSelf.fileDelegate respondsToSelector:@selector(server:didReceiveFile:fromUser:)]) {
                                     [sSelf.fileDelegate server:sSelf didReceiveFile:theMessage.file fromUser:user];
                                 }
+                                
                             }
 
                             break;

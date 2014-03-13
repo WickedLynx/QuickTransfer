@@ -385,6 +385,11 @@
                                     }
                                 }
                             } else {
+                                if ([sSelf.transferDelegate respondsToSelector:@selector(addTransferFromUser:file:)]) {
+                                    NSURL *fileURL = [sSelf.delegate saveURLForFile:theMessage.file];
+                                    [theMessage.file setUrl:fileURL];
+                                    [sSelf.transferDelegate addTransferFromUser:theMessage.user file:theMessage.file];
+                                }
                                 if ([sSelf.delegate respondsToSelector:@selector(client:didReceiveFile:fromUser:)]) {
                                     [sSelf.delegate client:sSelf didReceiveFile:theMessage.file fromUser:user];
                                 }
