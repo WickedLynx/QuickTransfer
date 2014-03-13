@@ -23,6 +23,9 @@
 static char *computerModel = NULL;
 int const QTRRootControllerSendMenuItemBaseTag = 1000;
 
+NSString *const QTRDefaultsAutomaticallyAcceptFilesKey = @"automaticallyAcceptFiles";
+NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
+
 @interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRBonjourClientDelegate, QTRBonjourServerDelegate, QTRStatusItemViewDelegate> {
     NSStatusItem *_statusItem;
     QTRBonjourServer *_server;
@@ -34,6 +37,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
     NSString *_downloadsDirectory;
     long _clickedRow;
     BOOL _canRefresh;
+    BOOL _shouldAutoAccept;
 }
 
 @property (weak) IBOutlet NSTableView *devicesTableView;
@@ -45,7 +49,12 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 @property (weak) IBOutlet QTRStatusItemView *statusItemView;
 @property (strong) IBOutlet QTRTransfersController *transfersController;
 @property (strong) IBOutlet NSWindow *transfersPanel;
+@property (strong) IBOutlet NSWindow *preferencesWindow;
+@property (weak) IBOutlet NSTextField *computerNameTextField;
+@property (weak) IBOutlet NSButton *automaticallyAcceptCheckBox;
+@property (weak) IBOutlet NSButton *launchAtLoginCheckBox;
 
+- (IBAction)clickSavePreferences:(id)sender;
 - (IBAction)clickSendFile:(id)sender;
 - (NSString *)downloadsDirectory;
 - (void)saveFile:(QTRFile *)file;
@@ -63,6 +72,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 - (IBAction)clickTransfers:(id)sender;
 - (void)systemWillSleep:(NSNotification *)notification;
 - (void)systemDidWakeUpFromSleep:(NSNotification *)notification;
+- (IBAction)clickPreferences:(id)sender;
 
 @end
 
@@ -89,6 +99,9 @@ void refreshComputerModel() {
     [self.statusItemView.button setTarget:self];
     [self.statusItemView.button setAction:@selector(showMenu:)];
     [self.statusItemView setDelegate:self];
+
+    _connectedServers = [NSMutableArray new];
+    _connectedClients = [NSMutableArray new];
 
     _canRefresh = YES;
 
@@ -176,6 +189,23 @@ void refreshComputerModel() {
 
     }
 
+}
+
+- (void)preferencesAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        if ([[self.computerNameTextField stringValue] length] > 0) {
+            [[NSUserDefaults standardUserDefaults] setObject:[self.computerNameTextField stringValue] forKey:QTRBonjourTXTRecordNameKey];
+        }
+
+        BOOL shouldAutoAccept = (self.automaticallyAcceptCheckBox.state == NSOnState);
+        [[NSUserDefaults standardUserDefaults] setBool:shouldAutoAccept forKey:QTRDefaultsAutomaticallyAcceptFilesKey];
+
+        [[NSUserDefaults standardUserDefaults] synchronize];
+
+        [self clickRefresh:nil];
+    }
+
+    [self.preferencesWindow close];
 }
 
 - (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user {
@@ -297,23 +327,32 @@ void refreshComputerModel() {
 }
 
 - (void)startServices {
-    if (computerModel == NULL) {
-        refreshComputerModel();
+    NSString *userName = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordNameKey];
+    if (userName == nil || [userName isKindOfClass:[NSNull class]] || userName.length == 0) {
+        if (computerModel == NULL) {
+            refreshComputerModel();
+        }
+
+        NSString *computerName = @"Mac";
+        if (computerModel != NULL) {
+            computerName = [NSString stringWithCString:computerModel encoding:NSUTF8StringEncoding];
+        }
+        userName = [NSString stringWithFormat:@"%@'s %@", NSUserName(), computerName];
+
+        [[NSUserDefaults standardUserDefaults] setObject:userName forKey:QTRBonjourTXTRecordNameKey];
     }
-    _connectedServers = [NSMutableArray new];
-    _connectedClients = [NSMutableArray new];
+
     NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordIdentifierKey];
     if ([uuid isKindOfClass:[NSNull class]] || uuid == nil) {
         uuid = [[NSUUID UUID] UUIDString];
         [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:QTRBonjourTXTRecordIdentifierKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    NSString *computerName = @"Mac";
-    if (computerModel != NULL) {
-        computerName = [NSString stringWithCString:computerModel encoding:NSUTF8StringEncoding];
-    }
-    NSString *username = [NSString stringWithFormat:@"%@'s %@", NSUserName(), computerName];
-    _localUser = [[QTRUser alloc] initWithName:username identifier:uuid platform:QTRUserPlatformMac];
+
+    _shouldAutoAccept = [[NSUserDefaults standardUserDefaults] boolForKey:QTRDefaultsAutomaticallyAcceptFilesKey];
+
+    _localUser = [[QTRUser alloc] initWithName:userName identifier:uuid platform:QTRUserPlatformMac];
+
+    [[NSUserDefaults standardUserDefaults] synchronize];
 
     _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
     [_server setTransferDelegate:self.transfersController];
@@ -422,6 +461,11 @@ void refreshComputerModel() {
 
 }
 
+- (IBAction)clickSavePreferences:(id)sender {
+    NSAlert *alert = [NSAlert alertWithMessageText:@"Save Preferences?" defaultButton:@"Save" alternateButton:@"Cancel" otherButton:nil informativeTextWithFormat:@"Clicking save will save your settings and restart services.\nAll active transfers will be cancelled."];
+    [alert beginSheetModalForWindow:self.preferencesWindow modalDelegate:self didEndSelector:@selector(preferencesAlertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+}
+
 - (IBAction)clickSendFile:(id)sender {
 
     _clickedRow = [self.devicesTableView clickedRow];
@@ -454,6 +498,17 @@ void refreshComputerModel() {
 
 - (void)clickTransfers:(id)sender {
     [self showTransfers];
+}
+
+- (IBAction)clickPreferences:(id)sender {
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    [[self.computerNameTextField cell] setPlaceholderString:_localUser.name];
+    if (_shouldAutoAccept) {
+        [self.automaticallyAcceptCheckBox setState:NSOnState];
+    } else {
+        [self.automaticallyAcceptCheckBox setState:NSOffState];
+    }
+    [self.preferencesWindow makeKeyAndOrderFront:self];
 }
 
 #pragma mark - Notification handlers
@@ -559,7 +614,12 @@ void refreshComputerModel() {
 }
 
 - (void)server:(QTRBonjourServer *)server didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
-    [self showConfirmationAlertForFile:file user:user receiver:server];
+    if (_shouldAutoAccept) {
+        [server acceptFile:file accept:YES fromUser:user];
+    } else {
+        [self showConfirmationAlertForFile:file user:user receiver:server];
+    }
+
 }
 
 - (void)user:(QTRUser *)user didRejectFile:(QTRFile *)file {
@@ -607,7 +667,12 @@ void refreshComputerModel() {
 }
 
 - (void)client:(QTRBonjourClient *)client didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
-    [self showConfirmationAlertForFile:file user:user receiver:client];
+    if (_shouldAutoAccept) {
+        [client acceptFile:file accept:YES fromUser:user];
+    } else {
+        [self showConfirmationAlertForFile:file user:user receiver:client];
+    }
+
 }
 
 - (void)client:(QTRBonjourClient *)client didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user {
