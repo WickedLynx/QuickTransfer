@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		590C41AF18D2C6320073F160 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 590C41AE18D2C6320073F160 /* MobileCoreServices.framework */; };
+		590C41B118D2E3A80073F160 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 590C41B018D2E3A80073F160 /* AssetsLibrary.framework */; };
 		FA12BB0318BF06000030911F /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
 		FA12BB0418BF06000030911F /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
 		FA12BB0718BF29320030911F /* QTRTransfersController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0618BF29320030911F /* QTRTransfersController.m */; };
@@ -111,6 +113,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		590C41AE18D2C6320073F160 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/MobileCoreServices.framework; sourceTree = DEVELOPER_DIR; };
+		590C41B018D2E3A80073F160 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/AssetsLibrary.framework; sourceTree = DEVELOPER_DIR; };
 		FA12BB0118BF06000030911F /* QTRTransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfer.h; sourceTree = "<group>"; };
 		FA12BB0218BF06000030911F /* QTRTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfer.m; sourceTree = "<group>"; };
 		FA12BB0518BF29320030911F /* QTRTransfersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersController.h; sourceTree = "<group>"; };
@@ -198,6 +202,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				590C41B118D2E3A80073F160 /* AssetsLibrary.framework in Frameworks */,
+				590C41AF18D2C6320073F160 /* MobileCoreServices.framework in Frameworks */,
 				FA283EF618B494E5003D4FB6 /* CoreGraphics.framework in Frameworks */,
 				FA283EF818B494E5003D4FB6 /* UIKit.framework in Frameworks */,
 				FA283EF418B494E5003D4FB6 /* Foundation.framework in Frameworks */,
@@ -482,6 +488,8 @@
 		FAD9FFD618B33CA70098DA76 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				590C41B018D2E3A80073F160 /* AssetsLibrary.framework */,
+				590C41AE18D2C6320073F160 /* MobileCoreServices.framework */,
 				FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */,
 				FAD9FFD718B33CA70098DA76 /* Cocoa.framework */,
 				FAD9FFF618B33CA80098DA76 /* XCTest.framework */,

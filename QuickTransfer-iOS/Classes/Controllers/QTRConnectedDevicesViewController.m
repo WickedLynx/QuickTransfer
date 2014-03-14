@@ -6,6 +6,9 @@
 //  Copyright (c) 2014 Laughing Buddha Software. All rights reserved.
 //
 
+#import <MobileCoreServices/MobileCoreServices.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+
 #import "QTRConnectedDevicesViewController.h"
 #import "QTRConnectedDevicesView.h"
 
@@ -14,6 +17,7 @@
 #import "QTRUser.h"
 #import "QTRFile.h"
 #import "QTRConstants.h"
+
 
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
 
@@ -27,15 +31,22 @@
 
     QTRUser *_selectedUser;
     NSMapTable *_alertToFileMapTable;
+    
+    NSURL *_fileCacheDirectory;
+    
+    ALAssetsLibrary *_assetsLibrary;
+
 }
 
 - (void)touchShare:(UIBarButtonItem *)barButton;
 - (void)touchRefresh:(UIBarButtonItem *)barButton;
 - (void)startServices;
-- (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user;
+- (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user receiver:(id)receiver;
 - (void)saveFile:(QTRFile *)file;
 - (BOOL)userConnected:(QTRUser *)user;
 - (QTRUser *)userAtIndexPath:(NSIndexPath *)indexPath isServer:(BOOL *)isServer;
+- (NSURL *)fileCacheDirectory;
+- (NSURL *)uniqueURLForFileWithName:(NSString *)fileName;
 
 @end
 
@@ -63,8 +74,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-
+    
     [self setTitle:@"Select Devices"];
+    
+    
+    
+    _assetsLibrary = [[ALAssetsLibrary alloc] init];
 
     [[_devicesView devicesTableView] setDataSource:self];
     [[_devicesView devicesTableView] setDelegate:self];
@@ -119,8 +134,52 @@
 
 #pragma mark - Private methods
 
+- (NSURL *)uniqueURLForFileWithName:(NSString *)fileName {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *cachesURL = [self fileCacheDirectory];
+    
+    NSString *filePath = [[cachesURL path] stringByAppendingPathComponent:fileName];
+    
+    if ([fileManager fileExistsAtPath:filePath]) {
+        NSString *name = [[filePath lastPathComponent] stringByDeletingPathExtension];
+        NSString *extension = [filePath pathExtension];
+        NSString *nameWithExtension = [name stringByAppendingPathExtension:extension];
+        NSString *tempName = name;
+        int fileCount = 0;
+        while ([fileManager fileExistsAtPath:filePath]) {
+            ++fileCount;
+            tempName = [name stringByAppendingFormat:@"%d", fileCount];
+            nameWithExtension = [tempName stringByAppendingPathExtension:extension];
+            filePath = [[cachesURL path] stringByAppendingPathComponent:nameWithExtension];
+        }
+    }
+    
+    
+    return [NSURL fileURLWithPath:filePath];
+}
+
 - (BOOL)userConnected:(QTRUser *)user {
     return [_connectedClients containsObject:user] || [_connectedServers containsObject:user] || [_localUser isEqual:user];
+}
+
+- (NSURL *)fileCacheDirectory {
+    if (_fileCacheDirectory == nil) {
+        NSString *directoryName = @"FileCache";
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSString *cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
+        BOOL isDirectory = NO;
+        cachesPath = [cachesPath stringByAppendingPathComponent:directoryName];
+        
+        if ([fileManager fileExistsAtPath:cachesPath isDirectory:&isDirectory]) {
+            [fileManager removeItemAtPath:cachesPath error:nil];
+        }
+        
+        [fileManager createDirectoryAtPath:cachesPath withIntermediateDirectories:YES attributes:nil error:nil];
+        
+        _fileCacheDirectory = [NSURL fileURLWithPath:cachesPath];
+    }
+    
+    return _fileCacheDirectory;
 }
 
 - (QTRUser *)userAtIndexPath:(NSIndexPath *)indexPath isServer:(BOOL *)isServer {
@@ -170,10 +229,10 @@
     [_client start];
 }
 
-- (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user {
+- (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user receiver:(id)receiver {
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Received File" message:[NSString stringWithFormat:@"%@ sent you  a file: %@", user.name, file.name] delegate:self cancelButtonTitle:@"Save" otherButtonTitles:@"Discard", nil];
-    [_alertToFileMapTable setObject:file forKey:alert];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Accept File?" message:[NSString stringWithFormat:@"%@ wants to send you a file: %@", user.name, file.name] delegate:self cancelButtonTitle:@"Accept" otherButtonTitles:@"Reject", nil];
+    [_alertToFileMapTable setObject:@{@"file" : file, @"receiver" : receiver, @"user" : user} forKey:alert];
     [alert show];
 }
 
@@ -182,6 +241,9 @@
 
     if (theImage != nil) {
         UIImageWriteToSavedPhotosAlbum(theImage, nil, nil, nil);
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"File Saved" message:[NSString stringWithFormat:@"Saved %@ to your photos album", file.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+        [alert show];
+        
     } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The file doesn't appear to be an image" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
         [alert show];
@@ -242,7 +304,20 @@
 }
 
 - (void)server:(QTRBonjourServer *)server didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
-    [self showAlertForFile:file user:user];
+    [self saveFile:file];
+}
+
+- (void)user:(QTRUser *)user didRejectFile:(QTRFile *)file {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"File Rejected" message:[NSString stringWithFormat:@"%@ rejected file: %@", user.name, file.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+    [alert show];
+}
+
+- (void)server:(QTRBonjourServer *)server didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
+    [self showAlertForFile:file user:user receiver:server];
+}
+
+- (NSURL *)saveURLForFile:(QTRFile *)file {
+    return [self uniqueURLForFileWithName:file.name];
 }
 
 #pragma mark - QTRBonjourClientDelegate methods
@@ -272,16 +347,32 @@
 }
 
 - (void)client:(QTRBonjourClient *)client didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
-    [self showAlertForFile:file user:user];
+    [self saveFile:file];
+}
+
+- (void)client:(QTRBonjourClient *)client didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
+    [self showAlertForFile:file user:user receiver:client];
 }
 
 #pragma mark - UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    NSDictionary *context = [_alertToFileMapTable objectForKey:alertView];
+    QTRFile *theFile = context[@"file"];
+    id receiver = context[@"receiver"];
+    QTRUser *theUser = context[@"user"];
+    
+    BOOL shouldAccept = NO;
 
     if (buttonIndex == [alertView cancelButtonIndex]) {
-        QTRFile *theFile = [_alertToFileMapTable objectForKey:alertView];
-        [self saveFile:theFile];
+        shouldAccept = YES;
+    }
+    
+    if (receiver == _client) {
+        [_client acceptFile:theFile accept:shouldAccept fromUser:theUser];
+    } else {
+        [_server acceptFile:theFile accept:shouldAccept fromUser:theUser];
     }
 
     [_alertToFileMapTable removeObjectForKey:alertView];
@@ -291,33 +382,38 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
 
-    UIImage *image = info[UIImagePickerControllerOriginalImage];
     NSURL *referenceURL = info[UIImagePickerControllerReferenceURL];
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSString *imageName = [[referenceURL path] lastPathComponent];
-        if (imageName == nil) {
-            imageName = @"Image.png";
+    
+    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
+        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
+        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
+        
+        uint8_t *imageBytes = malloc((long)[assetRepresentation size]);
+        [assetRepresentation getBytes:imageBytes fromOffset:0 length:(long)[assetRepresentation size] error:nil];
+        
+        NSData *imageData = [NSData dataWithBytes:imageBytes length:(long)[assetRepresentation size]];
+        [imageData writeToURL:localURL atomically:YES];
+        
+        free(imageBytes);
+        
+        
+        if ([_connectedClients containsObject:_selectedUser]) {
+            [_server sendFileAtURL:localURL toUser:_selectedUser];
+        } else if ([_connectedServers containsObject:_selectedUser]) {
+            [_client sendFileAtURL:localURL toUser:_selectedUser];
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+            [alert show];
         }
-
-        NSData *imageData = [NSData dataWithContentsOfURL:referenceURL];
-        if (imageData == nil) {
-            imageData = UIImagePNGRepresentation(image);
-        }
-
-        QTRFile *file = [[QTRFile alloc] initWithName:imageName type:@"png" data:imageData];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([_connectedClients containsObject:_selectedUser]) {
-                [_server sendFile:file toUser:_selectedUser];
-            } else if ([_connectedServers containsObject:_selectedUser]) {
-                [_client sendFile:file toUser:_selectedUser];
-            } else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-                [alert show];
-            }
-        });
-
-    });
-
+        
+        _selectedUser = nil;
+        
+        
+    } failureBlock:^(NSError *error) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+        [alertView show];
+    }];
+    
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 

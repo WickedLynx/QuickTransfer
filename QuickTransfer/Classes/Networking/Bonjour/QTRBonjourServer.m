@@ -11,7 +11,6 @@
 #import "QTRMessage.h"
 #import "QTRUser.h"
 #import "QTRFile.h"
-#import "QTRTransfersController.h"
 #import "DTBonjourDataChunk.h"
 #import "QTRMultipartWriter.h"
 #import "QTRMultipartTransfer.h"
