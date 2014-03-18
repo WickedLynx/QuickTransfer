@@ -14,6 +14,7 @@
 #import "QTRFile.h"
 #import "QTRStatusItemView.h"
 #import "QTRTransfersController.h"
+#import "QTRBeaconHelper.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -38,6 +39,8 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
     long _clickedRow;
     BOOL _canRefresh;
     BOOL _shouldAutoAccept;
+    QTRBeaconAdvertiser *_beaconAdvertiser;
+
 }
 
 @property (weak) IBOutlet NSTableView *devicesTableView;
@@ -113,6 +116,11 @@ void refreshComputerModel() {
 
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemWillSleep:) name:NSWorkspaceWillSleepNotification object:nil];
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemDidWakeUpFromSleep:) name:NSWorkspaceDidWakeNotification object:nil];
+
+    if ([QTRBeaconHelper isBLEAvailable]) {
+        _beaconAdvertiser = [[QTRBeaconAdvertiser alloc] init];
+        [_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
+    }
 
 }
 

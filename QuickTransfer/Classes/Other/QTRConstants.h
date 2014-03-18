@@ -27,3 +27,13 @@ FOUNDATION_EXPORT NSString *const QTRBonjourTXTRecordNameKey;
  The key in the TXT record dictionary representing the platform of the user
  */
 FOUNDATION_EXPORT NSString *const QTRBonjourTXTRecordPlatformKey;
+
+/*!
+ The proximity UUID for the beacon region created by the Mac app
+ */
+FOUNDATION_EXPORT NSString *const QTRBeaconRegionProximityUUID;
+
+/*!
+ The identifier for the beacon region created by the Mac app
+ */
+FOUNDATION_EXPORT NSString *const QTRBeaconRegionIdentifier;

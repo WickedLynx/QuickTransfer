@@ -18,10 +18,12 @@
 #import "QTRFile.h"
 #import "QTRConstants.h"
 
+#import "QTRBeaconHelper.h"
 
 
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
 
@@ -41,6 +43,7 @@
     UIBackgroundTaskIdentifier _backgroundTaskIdentifier;
     NSDate *_killDate;
 
+    QTRBeaconRanger *_beaconRanger;
 }
 
 - (void)touchShare:(UIBarButtonItem *)barButton;
@@ -58,6 +61,36 @@
 @end
 
 @implementation QTRConnectedDevicesViewController
+
+#pragma mark - Initialisation
+
+- (id)init {
+    self = [super init];
+    if (self != nil) {
+
+        if ([QTRBeaconHelper isBLEAvailable]) {
+            _beaconRanger = [[QTRBeaconRanger alloc] init];
+            [_beaconRanger setDelegate:self];
+            [_beaconRanger startRangingBeaconsWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionProximityUUID majorValue:0 minorValue:0];
+        }
+
+        _assetsLibrary = [[ALAssetsLibrary alloc] init];
+
+        _alertToFileMapTable = [NSMapTable weakToStrongObjectsMapTable];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+
+        _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
+            _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+        }];
+
+        [self startServices];
+    }
+
+    return self;
+}
 
 #pragma mark - View lifecycle
 
@@ -83,26 +116,12 @@
 	// Do any additional setup after loading the view.
     
     [self setTitle:@"Select Devices"];
-    
-    _assetsLibrary = [[ALAssetsLibrary alloc] init];
 
     [[_devicesView devicesTableView] setDataSource:self];
     [[_devicesView devicesTableView] setDelegate:self];
 
-    _alertToFileMapTable = [NSMapTable weakToStrongObjectsMapTable];
-
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStylePlain target:self action:@selector(touchRefresh:)];
     [self.navigationItem setRightBarButtonItem:barButton];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
-
-    _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-        [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
-        _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
-    }];
-
-    [self startServices];
 }
 
 #pragma mark - Actions
@@ -475,6 +494,19 @@
     }];
     
     [self dismissViewControllerAnimated:YES completion:NULL];
+}
+
+#pragma mark - QTRBeaconRangerDelegate methods
+
+- (void)beaconRangerDidEnterRegion:(QTRBeaconRanger *)beaconRanger {
+    
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    [localNotification setFireDate:[NSDate date]];
+    [localNotification setSoundName:UILocalNotificationDefaultSoundName];
+    [localNotification setAlertBody:@"Entered beacon region!"];
+    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+
+    [self touchRefresh:nil];
 }
 
 

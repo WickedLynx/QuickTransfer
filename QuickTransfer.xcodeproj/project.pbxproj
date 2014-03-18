@@ -45,6 +45,11 @@
 		FA6DA6B818C453E30097742B /* QTRMultipartTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */; };
 		FA6DA6BB18C5C2BC0097742B /* QTRMultipartWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */; };
 		FA6DA6BC18C5C2BC0097742B /* QTRMultipartWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */; };
+		FAD009CA18D840AD0014DCC5 /* QTRBeaconHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD009C918D840AD0014DCC5 /* QTRBeaconHelper.m */; };
+		FAD009CB18D840AD0014DCC5 /* QTRBeaconHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD009C918D840AD0014DCC5 /* QTRBeaconHelper.m */; };
+		FAD009CC18D840AD0014DCC5 /* QTRBeaconHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD009C918D840AD0014DCC5 /* QTRBeaconHelper.m */; };
+		FAD009CD18D840CC0014DCC5 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD009C518D83CDF0014DCC5 /* CoreBluetooth.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		FAD009CF18D84AC50014DCC5 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAD009CE18D84AC50014DCC5 /* CoreLocation.framework */; };
 		FAD9000018B33CA80098DA76 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFFE18B33CA80098DA76 /* InfoPlist.strings */; };
 		FAD9000218B33CA80098DA76 /* QuickTransferTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9000118B33CA80098DA76 /* QuickTransferTests.m */; };
 		FAD9001B18B33F010098DA76 /* DTBonjourDataChunk.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9001418B33F010098DA76 /* DTBonjourDataChunk.m */; };
@@ -152,6 +157,9 @@
 		FA6DA6B918C5C2BC0097742B /* QTRMultipartWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRMultipartWriter.h; sourceTree = "<group>"; };
 		FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRMultipartWriter.m; sourceTree = "<group>"; };
 		FAD009C518D83CDF0014DCC5 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreBluetooth.framework; sourceTree = DEVELOPER_DIR; };
+		FAD009C818D840AD0014DCC5 /* QTRBeaconHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRBeaconHelper.h; sourceTree = "<group>"; };
+		FAD009C918D840AD0014DCC5 /* QTRBeaconHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRBeaconHelper.m; sourceTree = "<group>"; };
+		FAD009CE18D84AC50014DCC5 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreLocation.framework; sourceTree = DEVELOPER_DIR; };
 		FAD9000118B33CA80098DA76 /* QuickTransferTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuickTransferTests.m; sourceTree = "<group>"; };
 		FAD9001318B33F010098DA76 /* DTBonjourDataChunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBonjourDataChunk.h; sourceTree = "<group>"; };
 		FAD9001418B33F010098DA76 /* DTBonjourDataChunk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBonjourDataChunk.m; sourceTree = "<group>"; };
@@ -203,6 +211,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAD009CF18D84AC50014DCC5 /* CoreLocation.framework in Frameworks */,
+				FAD009CD18D840CC0014DCC5 /* CoreBluetooth.framework in Frameworks */,
 				590C41B118D2E3A80073F160 /* AssetsLibrary.framework in Frameworks */,
 				590C41AF18D2C6320073F160 /* MobileCoreServices.framework in Frameworks */,
 				FA283EF618B494E5003D4FB6 /* CoreGraphics.framework in Frameworks */,
@@ -344,6 +354,15 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		FAD009C718D840910014DCC5 /* Bluetooth */ = {
+			isa = PBXGroup;
+			children = (
+				FAD009C818D840AD0014DCC5 /* QTRBeaconHelper.h */,
+				FAD009C918D840AD0014DCC5 /* QTRBeaconHelper.m */,
+			);
+			path = Bluetooth;
+			sourceTree = "<group>";
+		};
 		FAD9000B18B33EE30098DA76 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -441,6 +460,7 @@
 		FAD9002418B34DDB0098DA76 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				FAD009C718D840910014DCC5 /* Bluetooth */,
 				FAD9002518B34DDB0098DA76 /* Bonjour */,
 			);
 			path = Networking;
@@ -489,6 +509,7 @@
 		FAD9FFD618B33CA70098DA76 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FAD009CE18D84AC50014DCC5 /* CoreLocation.framework */,
 				FAD009C518D83CDF0014DCC5 /* CoreBluetooth.framework */,
 				590C41B018D2E3A80073F160 /* AssetsLibrary.framework */,
 				590C41AE18D2C6320073F160 /* MobileCoreServices.framework */,
@@ -772,6 +793,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FAD009CB18D840AD0014DCC5 /* QTRBeaconHelper.m in Sources */,
 				FA283F3218B4C3B3003D4FB6 /* Base64.m in Sources */,
 				FA283F2318B49582003D4FB6 /* QTRBonjourServer.m in Sources */,
 				FA283F2418B49582003D4FB6 /* QTRBonjourClient.m in Sources */,
@@ -819,6 +841,7 @@
 				FAD9001C18B33F010098DA76 /* DTBonjourDataConnection.m in Sources */,
 				FA38B29318BDCFA4003BB8E5 /* QTRStatusItemView.m in Sources */,
 				FA12BB0718BF29320030911F /* QTRTransfersController.m in Sources */,
+				FAD009CA18D840AD0014DCC5 /* QTRBeaconHelper.m in Sources */,
 				FAD9002E18B351DE0098DA76 /* QTRConstants.m in Sources */,
 				FAD9001B18B33F010098DA76 /* DTBonjourDataChunk.m in Sources */,
 				FAD9001D18B33F010098DA76 /* DTBonjourServer.m in Sources */,
@@ -854,6 +877,7 @@
 				FAEB334218CDB55C00EA5993 /* DTBonjourDataConnection.m in Sources */,
 				FAEB334318CDB55C00EA5993 /* QTRStatusItemView.m in Sources */,
 				FAEB334418CDB55C00EA5993 /* QTRTransfersController.m in Sources */,
+				FAD009CC18D840AD0014DCC5 /* QTRBeaconHelper.m in Sources */,
 				FAEB334518CDB55C00EA5993 /* QTRConstants.m in Sources */,
 				FAEB334618CDB55C00EA5993 /* DTBonjourDataChunk.m in Sources */,
 				FAEB334718CDB55C00EA5993 /* DTBonjourServer.m in Sources */,
