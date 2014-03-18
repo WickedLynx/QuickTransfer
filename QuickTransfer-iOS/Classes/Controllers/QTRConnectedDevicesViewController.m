@@ -19,6 +19,8 @@
 #import "QTRConstants.h"
 
 
+
+
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
@@ -36,6 +38,9 @@
     
     ALAssetsLibrary *_assetsLibrary;
 
+    UIBackgroundTaskIdentifier _backgroundTaskIdentifier;
+    NSDate *_killDate;
+
 }
 
 - (void)touchShare:(UIBarButtonItem *)barButton;
@@ -47,6 +52,8 @@
 - (QTRUser *)userAtIndexPath:(NSIndexPath *)indexPath isServer:(BOOL *)isServer;
 - (NSURL *)fileCacheDirectory;
 - (NSURL *)uniqueURLForFileWithName:(NSString *)fileName;
+- (void)applicationDidEnterForeground:(NSNotification *)notification;
+- (void)applicationDidEnterBackground:(NSNotification *)notification;
 
 @end
 
@@ -77,8 +84,6 @@
     
     [self setTitle:@"Select Devices"];
     
-    
-    
     _assetsLibrary = [[ALAssetsLibrary alloc] init];
 
     [[_devicesView devicesTableView] setDataSource:self];
@@ -86,30 +91,41 @@
 
     _alertToFileMapTable = [NSMapTable weakToStrongObjectsMapTable];
 
-    [self startServices];
-
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStylePlain target:self action:@selector(touchRefresh:)];
     [self.navigationItem setRightBarButtonItem:barButton];
-}
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+
+    _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
+        _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+    }];
+
+    [self startServices];
+}
 
 #pragma mark - Actions
 
-- (void)touchRefresh:(UIBarButtonItem *)barButton {
-
+- (void)stopServices {
     [_server setDelegate:nil];
     [_server stop];
     _server = nil;
-
+    
     [_client setDelegate:nil];
     [_client stop];
     _client = nil;
-
+    
     [_connectedClients removeAllObjects];
-
+    
     [_connectedServers removeAllObjects];
-
+    
     [[_devicesView devicesTableView] reloadData];
+}
+
+- (void)touchRefresh:(UIBarButtonItem *)barButton {
+
+    [self stopServices];
 
     double delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -229,11 +245,29 @@
     [_client start];
 }
 
+- (void)showNotificationIfRequiredWithMessage:(NSString *)message {
+
+    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) {
+        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+        [localNotification setFireDate:[NSDate date]];
+        [localNotification setHasAction:NO];
+        [localNotification setSoundName:UILocalNotificationDefaultSoundName];
+        [localNotification setAlertBody:message];
+
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    }
+
+}
+
 - (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user receiver:(id)receiver {
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Accept File?" message:[NSString stringWithFormat:@"%@ wants to send you a file: %@", user.name, file.name] delegate:self cancelButtonTitle:@"Accept" otherButtonTitles:@"Reject", nil];
+    NSString *alertMessage = [NSString stringWithFormat:@"%@ wants to send you a file: %@", user.name, file.name];
+
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Accept File?" message:alertMessage delegate:self cancelButtonTitle:@"Accept" otherButtonTitles:@"Reject", nil];
     [_alertToFileMapTable setObject:@{@"file" : file, @"receiver" : receiver, @"user" : user} forKey:alert];
     [alert show];
+
+    [self showNotificationIfRequiredWithMessage:alertMessage];
 }
 
 - (void)saveFile:(QTRFile *)file {
@@ -247,6 +281,32 @@
     } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The file doesn't appear to be an image" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
         [alert show];
+    }
+}
+
+#pragma mark - Notifications
+
+- (void)applicationDidEnterBackground:(NSNotification *)notification {
+    NSTimeInterval backgroundTimeRemaining = [[UIApplication sharedApplication] backgroundTimeRemaining];
+    if (backgroundTimeRemaining > 25) {
+        _killDate = [NSDate dateWithTimeIntervalSinceNow:backgroundTimeRemaining];
+        backgroundTimeRemaining -= 20;
+        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+        [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:backgroundTimeRemaining]];
+        [localNotification setAlertBody:@"You will be disconnected from other devices if you do not launch the app now."];
+        [localNotification setSoundName:UILocalNotificationDefaultSoundName];
+        [[UIApplication sharedApplication] cancelAllLocalNotifications];
+        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    }
+}
+
+- (void)applicationDidEnterForeground:(NSNotification *)notification {
+    if ([[NSDate date] compare:_killDate] == NSOrderedDescending) {
+
+        [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
+        _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+
+        [self touchRefresh:nil];
     }
 }
 
@@ -416,8 +476,6 @@
     
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
-
-
 
 
 @end

@@ -151,6 +151,7 @@
 		FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRMultipartTransfer.m; sourceTree = "<group>"; };
 		FA6DA6B918C5C2BC0097742B /* QTRMultipartWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRMultipartWriter.h; sourceTree = "<group>"; };
 		FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRMultipartWriter.m; sourceTree = "<group>"; };
+		FAD009C518D83CDF0014DCC5 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/CoreBluetooth.framework; sourceTree = DEVELOPER_DIR; };
 		FAD9000118B33CA80098DA76 /* QuickTransferTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuickTransferTests.m; sourceTree = "<group>"; };
 		FAD9001318B33F010098DA76 /* DTBonjourDataChunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DTBonjourDataChunk.h; sourceTree = "<group>"; };
 		FAD9001418B33F010098DA76 /* DTBonjourDataChunk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DTBonjourDataChunk.m; sourceTree = "<group>"; };
@@ -488,6 +489,7 @@
 		FAD9FFD618B33CA70098DA76 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FAD009C518D83CDF0014DCC5 /* CoreBluetooth.framework */,
 				590C41B018D2E3A80073F160 /* AssetsLibrary.framework */,
 				590C41AE18D2C6320073F160 /* MobileCoreServices.framework */,
 				FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */,
