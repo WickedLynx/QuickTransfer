@@ -117,7 +117,7 @@ void refreshComputerModel() {
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemWillSleep:) name:NSWorkspaceWillSleepNotification object:nil];
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemDidWakeUpFromSleep:) name:NSWorkspaceDidWakeNotification object:nil];
 
-    if ([QTRBeaconHelper isBLEAvailable] || 1) {
+    if ([QTRBeaconHelper isBLEAvailable]) {
         _beaconAdvertiser = [[QTRBeaconAdvertiser alloc] init];
         [_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
     }
