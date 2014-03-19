@@ -8,6 +8,14 @@
 
 #import "QTRBeaconHelper.h"
 
+/*!
+ Set this to 1 to compile QTRBeaconHelper and QTRBeaconRanger for OS X targets.
+ This requires the Mac to have CoreBluetooth.framework installed.
+ 
+ For iOS targets, QTRBeaconHelper and QTRBeaconRanger are always compiled.
+ */
+#define QTRCompileBeacons   0
+
 @implementation QTRBeaconHelper
 
 + (BOOL)isBLEAvailable {
@@ -23,9 +31,7 @@
 
 @end
 
-#define QTRCompileBeacons   1
-
-#if QTRCompileBeacons
+#if (QTRCompileBeacons || TARGET_OS_IPHONE)
 
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <CoreLocation/CoreLocation.h>
@@ -135,6 +141,33 @@
         [self.delegate beaconRangerDidExitRegion:self];
     }
 }
+
+@end
+
+#else
+
+@implementation QTRBeaconAdvertiser
+
+- (void)startAdvertisingRegionWithProximityUUID:(NSString *)proximityUUID identifier:(NSString *)identifier majorValue:(uint16_t)majorValue minorValue:(uint16_t)minorValue {
+    NSLog(@"%s\nWarning: %@ is compiled as a dummy class. Instances of %@ are not functional.\nTo fix this, recompile setting QTRCompileBeacons=1 and link with the CoreBluetooth framework.", __PRETTY_FUNCTION__, NSStringFromClass([self class]), NSStringFromClass([self class]));
+}
+
+- (void)stopAdvertisingBeaconRegion {
+    NSLog(@"%s\nWarning: %@ is compiled as a dummy class. Instances of %@ are not functional.\nTo fix this, recompile setting QTRCompileBeacons=1 and link with the CoreBluetooth framework.", __PRETTY_FUNCTION__, NSStringFromClass([self class]), NSStringFromClass([self class]));
+}
+
+@end
+
+@implementation QTRBeaconRanger
+
+- (void)startRangingBeaconsWithProximityUUID:(NSString *)proximityUUID identifier:(NSString *)identifier majorValue:(uint16_t)majorValue minorValue:(uint16_t)minorValue {
+    NSLog(@"%s\nWarning: %@ is compiled as a dummy class. Instances of %@ are not functional.\nTo fix this, recompile setting QTRCompileBeacons=1 and link with the CoreBluetooth framework.", __PRETTY_FUNCTION__, NSStringFromClass([self class]), NSStringFromClass([self class]));
+}
+
+- (void)stopRangingBeacons {
+    NSLog(@"%s\nWarning: %@ is compiled as a dummy class. Instances of %@ are not functional.\nTo fix this, recompile setting QTRCompileBeacons=1 and link with the CoreBluetooth framework.", __PRETTY_FUNCTION__, NSStringFromClass([self class]), NSStringFromClass([self class]));
+}
+
 
 @end
 

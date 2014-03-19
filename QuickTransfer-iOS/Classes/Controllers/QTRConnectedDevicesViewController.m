@@ -20,9 +20,6 @@
 
 #import "QTRBeaconHelper.h"
 
-
-
-
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
@@ -119,6 +116,8 @@
 
     [[_devicesView devicesTableView] setDataSource:self];
     [[_devicesView devicesTableView] setDelegate:self];
+
+    [[_devicesView devicesTableView] reloadData];
 
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStylePlain target:self action:@selector(touchRefresh:)];
     [self.navigationItem setRightBarButtonItem:barButton];
@@ -506,7 +505,10 @@
     [localNotification setAlertBody:@"Entered beacon region!"];
     [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
 
-    [self touchRefresh:nil];
+    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground && [_connectedClients count] + [_connectedServers count] == 0) {
+        [self touchRefresh:nil];
+    }
+
 }
 
 
