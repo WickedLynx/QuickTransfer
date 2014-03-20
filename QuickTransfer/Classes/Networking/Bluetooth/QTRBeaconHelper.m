@@ -119,9 +119,11 @@
         [_locationManager setDelegate:self];
     }
 
-    _beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:proximityUUID] major:majorValue minor:minorValue identifier:identifier];
+    _beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:[[NSUUID alloc] initWithUUIDString:proximityUUID] identifier:identifier];
+    [_beaconRegion setNotifyOnEntry:YES];
+    [_beaconRegion setNotifyOnExit:YES];
+    [_beaconRegion setNotifyEntryStateOnDisplay:YES];
     [_locationManager startMonitoringForRegion:_beaconRegion];
-
 }
 
 - (void)stopRangingBeacons {
@@ -141,6 +143,25 @@
         [self.delegate beaconRangerDidExitRegion:self];
     }
 }
+
+- (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region {
+    if ([region isKindOfClass:[CLBeaconRegion class]]) {
+        switch (state) {
+            case CLRegionStateInside:
+
+            case CLRegionStateUnknown:
+                if ([self.delegate respondsToSelector:@selector(beaconRangerDidEnterRegion:)]) {
+                    [self.delegate beaconRangerDidEnterRegion:self];
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+}
+
 
 @end
 

@@ -63,6 +63,11 @@
 - (void)beaconRangerDidEnterRegion:(QTRBeaconRanger *)beaconRanger;
 
 /*!
+ The beacon ranger call this method when it ranges beacons in the region
+ */
+- (void)beaconRangerDidRangeBeacons:(QTRBeaconRanger *)beaconRanger;
+
+/*!
  The beacon ranger calls this method when it exists the beacon region it is monotoring.
  
  @param beaconRanger The beacon ranger that exit the region.

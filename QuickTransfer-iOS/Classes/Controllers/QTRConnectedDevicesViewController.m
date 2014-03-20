@@ -41,6 +41,7 @@
     NSDate *_killDate;
 
     QTRBeaconRanger *_beaconRanger;
+    QTRBeaconAdvertiser *_beaconAdvertiser;
 }
 
 - (void)touchShare:(UIBarButtonItem *)barButton;
@@ -65,15 +66,14 @@
     self = [super init];
     if (self != nil) {
 
-        if ([QTRBeaconHelper isBLEAvailable]) {
-            _beaconRanger = [[QTRBeaconRanger alloc] init];
-            [_beaconRanger setDelegate:self];
-            [_beaconRanger startRangingBeaconsWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionProximityUUID majorValue:0 minorValue:0];
-        }
-
         _assetsLibrary = [[ALAssetsLibrary alloc] init];
 
         _alertToFileMapTable = [NSMapTable weakToStrongObjectsMapTable];
+
+        if ([QTRBeaconHelper isBLEAvailable]) {
+            _beaconAdvertiser = [[QTRBeaconAdvertiser alloc] init];
+            _beaconRanger = [[QTRBeaconRanger alloc] init];
+        }
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
@@ -81,9 +81,12 @@
         _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
             [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
             _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+            NSLog(@"%s", __PRETTY_FUNCTION__);
         }];
 
         [self startServices];
+
+        _killDate = [NSDate date];
     }
 
     return self;
@@ -125,31 +128,8 @@
 
 #pragma mark - Actions
 
-- (void)stopServices {
-    [_server setDelegate:nil];
-    [_server stop];
-    _server = nil;
-    
-    [_client setDelegate:nil];
-    [_client stop];
-    _client = nil;
-    
-    [_connectedClients removeAllObjects];
-    
-    [_connectedServers removeAllObjects];
-    
-    [[_devicesView devicesTableView] reloadData];
-}
-
 - (void)touchRefresh:(UIBarButtonItem *)barButton {
-
-    [self stopServices];
-
-    double delayInSeconds = 2.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [self startServices];
-    });
+    [self refresh];
 }
 
 - (void)touchShare:(UIBarButtonItem *)barButton {
@@ -167,6 +147,80 @@
 }
 
 #pragma mark - Private methods
+
+- (void)stopServices {
+    [_server setDelegate:nil];
+    [_server stop];
+    _server = nil;
+
+    [_client setDelegate:nil];
+    [_client stop];
+    _client = nil;
+
+    [_connectedClients removeAllObjects];
+
+    [_connectedServers removeAllObjects];
+
+    [[_devicesView devicesTableView] reloadData];
+
+    [_beaconAdvertiser stopAdvertisingBeaconRegion];
+    [_beaconRanger stopRangingBeacons];
+}
+
+- (void)startServices {
+
+    _connectedServers = [NSMutableArray new];
+    _connectedClients = [NSMutableArray new];
+    NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordIdentifierKey];
+    if ([uuid isKindOfClass:[NSNull class]] || uuid == nil) {
+        uuid = [[NSUUID UUID] UUIDString];
+        [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:QTRBonjourTXTRecordIdentifierKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+
+    _localUser = [[QTRUser alloc] initWithName:[[UIDevice currentDevice] name] identifier:uuid platform:QTRUserPlatformIOS];
+
+    _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
+
+    if (![_server start]) {
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not start server" message:@"Please check that Wifi is turned on" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+
+    _client = [[QTRBonjourClient alloc] initWithDelegate:self];
+    [_client start];
+
+    [self refreshBeacons];
+}
+
+- (void)refresh {
+    [self stopServices];
+
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [self startServices];
+    });
+}
+
+- (void)refreshBeacons {
+    if ([QTRBeaconHelper isBLEAvailable]) {
+        if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
+
+            [_beaconRanger stopRangingBeacons];
+
+            [_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
+
+        } else {
+
+            [_beaconAdvertiser stopAdvertisingBeaconRegion];
+
+            [_beaconRanger setDelegate:self];
+            [_beaconRanger startRangingBeaconsWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
+        }
+    }
+}
 
 - (NSURL *)uniqueURLForFileWithName:(NSString *)fileName {
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -239,30 +293,6 @@
     return theUser;
 }
 
-- (void)startServices {
-    _connectedServers = [NSMutableArray new];
-    _connectedClients = [NSMutableArray new];
-    NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordIdentifierKey];
-    if ([uuid isKindOfClass:[NSNull class]] || uuid == nil) {
-        uuid = [[NSUUID UUID] UUIDString];
-        [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:QTRBonjourTXTRecordIdentifierKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-
-    _localUser = [[QTRUser alloc] initWithName:[[UIDevice currentDevice] name] identifier:uuid platform:QTRUserPlatformIOS];
-
-    _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
-
-    if (![_server start]) {
-
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not start server" message:@"Please check that Wifi is turned on" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-        [alert show];
-    }
-
-    _client = [[QTRBonjourClient alloc] initWithDelegate:self];
-    [_client start];
-}
-
 - (void)showNotificationIfRequiredWithMessage:(NSString *)message {
 
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) {
@@ -305,6 +335,8 @@
 #pragma mark - Notifications
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
+    [self refreshBeacons];
+    /*
     NSTimeInterval backgroundTimeRemaining = [[UIApplication sharedApplication] backgroundTimeRemaining];
     if (backgroundTimeRemaining > 25) {
         _killDate = [NSDate dateWithTimeIntervalSinceNow:backgroundTimeRemaining];
@@ -315,17 +347,29 @@
         [localNotification setSoundName:UILocalNotificationDefaultSoundName];
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
         [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-    }
+    } */
 }
 
 - (void)applicationDidEnterForeground:(NSNotification *)notification {
+    [self refreshBeacons];
+
+    if (_backgroundTaskIdentifier == UIBackgroundTaskInvalid) {
+        _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+            [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
+            _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+            NSLog(@"%s", __PRETTY_FUNCTION__);
+        }];
+
+        [self refresh];
+    }
+    /*
     if ([[NSDate date] compare:_killDate] == NSOrderedDescending) {
 
         [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
         _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
 
         [self touchRefresh:nil];
-    }
+    }*/
 }
 
 #pragma mark - UITableViewDataSource methods
@@ -498,17 +542,23 @@
 #pragma mark - QTRBeaconRangerDelegate methods
 
 - (void)beaconRangerDidEnterRegion:(QTRBeaconRanger *)beaconRanger {
-    
-    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-    [localNotification setFireDate:[NSDate date]];
-    [localNotification setSoundName:UILocalNotificationDefaultSoundName];
-    [localNotification setAlertBody:@"Entered beacon region!"];
-    [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+    if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
+        NSLog(@"Did enter region");
+        if (_backgroundTaskIdentifier == UIBackgroundTaskInvalid) {
 
-    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground && [_connectedClients count] + [_connectedServers count] == 0) {
-        [self touchRefresh:nil];
+            _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+                [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
+                _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+            }];
+
+            [self stopServices];
+
+            [NSThread sleepForTimeInterval:2];
+
+            [self startServices];
+        }
+
     }
-
 }
 
 

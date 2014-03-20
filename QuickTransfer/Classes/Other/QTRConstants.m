@@ -12,5 +12,5 @@ NSString *const QTRBonjourServiceType = @"_qtr8._tcp";
 NSString *const QTRBonjourTXTRecordIdentifierKey = @"identifier";
 NSString *const QTRBonjourTXTRecordNameKey = @"name";
 NSString *const QTRBonjourTXTRecordPlatformKey = @"platform";
-NSString *const QTRBeaconRegionProximityUUID = @"FBEA60D2-CAFD-4FDA-B278-6F2E87AD9C30";
-NSString *const QTRBeaconRegionIdentifier = @"qtr-local";
+NSString *const QTRBeaconRegionProximityUUID = @"F932862C-3026-49D4-8531-4B2701A8A904";
+NSString *const QTRBeaconRegionIdentifier = @"com.vxt.beacons";
