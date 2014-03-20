@@ -119,7 +119,6 @@ void refreshComputerModel() {
 
     if ([QTRBeaconHelper isBLEAvailable]) {
         _beaconAdvertiser = [[QTRBeaconAdvertiser alloc] init];
-        [_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
     }
 
 }
@@ -313,6 +312,8 @@ void refreshComputerModel() {
 
 - (void)stopServices {
 
+    [_beaconAdvertiser stopAdvertisingBeaconRegion];
+    
     [_connectedClients removeAllObjects];
     
     [_connectedServers removeAllObjects];
@@ -373,6 +374,8 @@ void refreshComputerModel() {
     _client = [[QTRBonjourClient alloc] initWithDelegate:self];
     [_client setTransferDelegate:self.transfersController];
     [_client start];
+
+    [_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
 }
 
 - (void)refreshMenu {
