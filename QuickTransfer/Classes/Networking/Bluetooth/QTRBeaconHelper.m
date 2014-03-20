@@ -6,6 +6,14 @@
 //  Copyright (c) 2014 Laughing Buddha Software. All rights reserved.
 //
 
+/*
+ * This cluster has iBeacon implementations for both iOS and OS X
+ * CLBeaconRegion and the corresponding CoreLocation APIs are not
+ * available on OS X.
+ * 
+ * CLBeaconRanger isn't compiled for OS X
+ */
+
 #import "QTRBeaconHelper.h"
 
 #if TARGET_OS_IPHONE

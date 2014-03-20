@@ -504,7 +504,20 @@ void refreshComputerModel() {
 }
 
 - (void)showMenu:(id)sender {
+
+    [_beaconAdvertiser stopAdvertisingBeaconRegion];
     [_statusItem popUpStatusItemMenu:_statusItem.menu];
+
+    __weak typeof(self) wSelf = self;
+    double delayInSeconds = 1.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        if (wSelf != nil) {
+            typeof(self) sSelf = wSelf;
+            [sSelf->_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
+        }
+
+    });
 }
 
 - (void)clickTransfers:(id)sender {

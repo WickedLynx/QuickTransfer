@@ -46,6 +46,11 @@
 
 @end
 
+/*
+ * iBeacon ranging is not supported on OS X
+ */
+#if TARGET_OS_IPHONE
+
 @class QTRBeaconRanger;
 
 /*!
@@ -102,3 +107,5 @@
 @property (weak) id <QTRBeaconRangerDelegate> delegate;
 
 @end
+
+#endif
