@@ -313,7 +313,7 @@ void refreshComputerModel() {
 - (void)stopServices {
 
     [_beaconAdvertiser stopAdvertisingBeaconRegion];
-    
+
     [_connectedClients removeAllObjects];
     
     [_connectedServers removeAllObjects];

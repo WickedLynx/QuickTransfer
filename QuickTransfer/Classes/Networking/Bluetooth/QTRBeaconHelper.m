@@ -8,13 +8,15 @@
 
 #import "QTRBeaconHelper.h"
 
-/*!
- Set this to 1 to compile QTRBeaconHelper and QTRBeaconRanger for OS X targets.
- This requires the Mac to have CoreBluetooth.framework installed.
- 
- For iOS targets, QTRBeaconHelper and QTRBeaconRanger are always compiled.
- */
-#define QTRCompileBeacons   0
+#if TARGET_OS_IPHONE
+#import <CoreBluetooth/CoreBluetooth.h>
+
+#elif TARGET_OS_MAC
+#import <IOBluetooth/IOBluetooth.h>
+
+#endif
+
+#import <CoreLocation/CoreLocation.h>
 
 @implementation QTRBeaconHelper
 
@@ -31,16 +33,15 @@
 
 @end
 
-#if (QTRCompileBeacons || TARGET_OS_IPHONE)
-
-#import <CoreBluetooth/CoreBluetooth.h>
-#import <CoreLocation/CoreLocation.h>
-
 @interface QTRBeaconAdvertiser () <CBPeripheralManagerDelegate> {
     BOOL _bluetoothConnected;
     BOOL _isAdvertising;
     dispatch_queue_t _peripheralManagerQueue;
+#if TARGET_OS_IPHONE
     CLBeaconRegion *_beaconRegion;
+#elif TARGET_OS_MAC
+    NSDictionary *_beaconDictionary;
+#endif
     CBPeripheralManager *_peripheralManager;
 }
 
@@ -67,7 +68,31 @@
 - (void)startAdvertisingRegionWithProximityUUID:(NSString *)proximityUUID identifier:(NSString *)identifier majorValue:(uint16_t )majorValue minorValue:(uint16_t)minorValue {
 
     NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:proximityUUID];
+
+#if TARGET_OS_IPHONE
+
     _beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:uuid major:majorValue minor:minorValue identifier:identifier];
+
+#elif TARGET_OS_MAC
+    NSString *beaconKey = @"kCBAdvDataAppleBeaconKey";
+
+    unsigned char advertisementBytes[21] = {0};
+
+    [uuid getUUIDBytes:(unsigned char *)&advertisementBytes];
+
+    advertisementBytes[16] = (unsigned char)(majorValue >> 8);
+    advertisementBytes[17] = (unsigned char)(majorValue & 255);
+
+    advertisementBytes[18] = (unsigned char)(minorValue >> 8);
+    advertisementBytes[19] = (unsigned char)(minorValue & 255);
+
+    advertisementBytes[20] = 1;
+
+    NSMutableData *advertisement = [NSMutableData dataWithBytes:advertisementBytes length:21];
+
+    _beaconDictionary = @{beaconKey : advertisement};
+
+#endif
 
     [self advertiseBeacon];
 }
@@ -81,9 +106,23 @@
 #pragma mark - Private methods
 
 - (void)advertiseBeacon {
-    if (!_isAdvertising && _bluetoothConnected && _beaconRegion != nil) {
-        NSDictionary *beaconData = [_beaconRegion peripheralDataWithMeasuredPower:nil];
-        [_peripheralManager startAdvertising:beaconData];
+    if (!_isAdvertising && _bluetoothConnected) {
+
+#if TARGET_OS_IPHONE
+
+        if (_beaconRegion != nil) {
+            NSDictionary *beaconData = [_beaconRegion peripheralDataWithMeasuredPower:nil];
+            [_peripheralManager startAdvertising:beaconData];
+        }
+
+#elif TARGET_OS_MAC
+
+        if (_beaconDictionary != Nil) {
+            [_peripheralManager startAdvertising:_beaconDictionary];
+        }
+
+#endif
+
         _isAdvertising = YES;
     }
 }
@@ -100,6 +139,8 @@
 }
 
 @end
+
+#if TARGET_OS_IPHONE
 
 @interface QTRBeaconRanger () <CLLocationManagerDelegate> {
     CLBeaconRegion *_beaconRegion;
@@ -160,33 +201,6 @@
         }
     }
 
-}
-
-
-@end
-
-#else
-
-@implementation QTRBeaconAdvertiser
-
-- (void)startAdvertisingRegionWithProximityUUID:(NSString *)proximityUUID identifier:(NSString *)identifier majorValue:(uint16_t)majorValue minorValue:(uint16_t)minorValue {
-    NSLog(@"%s\nWarning: %@ is compiled as a dummy class. Instances of %@ are not functional.\nTo fix this, recompile setting QTRCompileBeacons=1 and link with the CoreBluetooth framework.", __PRETTY_FUNCTION__, NSStringFromClass([self class]), NSStringFromClass([self class]));
-}
-
-- (void)stopAdvertisingBeaconRegion {
-    NSLog(@"%s\nWarning: %@ is compiled as a dummy class. Instances of %@ are not functional.\nTo fix this, recompile setting QTRCompileBeacons=1 and link with the CoreBluetooth framework.", __PRETTY_FUNCTION__, NSStringFromClass([self class]), NSStringFromClass([self class]));
-}
-
-@end
-
-@implementation QTRBeaconRanger
-
-- (void)startRangingBeaconsWithProximityUUID:(NSString *)proximityUUID identifier:(NSString *)identifier majorValue:(uint16_t)majorValue minorValue:(uint16_t)minorValue {
-    NSLog(@"%s\nWarning: %@ is compiled as a dummy class. Instances of %@ are not functional.\nTo fix this, recompile setting QTRCompileBeacons=1 and link with the CoreBluetooth framework.", __PRETTY_FUNCTION__, NSStringFromClass([self class]), NSStringFromClass([self class]));
-}
-
-- (void)stopRangingBeacons {
-    NSLog(@"%s\nWarning: %@ is compiled as a dummy class. Instances of %@ are not functional.\nTo fix this, recompile setting QTRCompileBeacons=1 and link with the CoreBluetooth framework.", __PRETTY_FUNCTION__, NSStringFromClass([self class]), NSStringFromClass([self class]));
 }
 
 
