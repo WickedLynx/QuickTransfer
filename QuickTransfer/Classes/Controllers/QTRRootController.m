@@ -21,6 +21,8 @@
 #include <sys/types.h>
 #include <sys/sysctl.h>
 
+const NSString *const MyConst = @"";
+
 static char *computerModel = NULL;
 int const QTRRootControllerSendMenuItemBaseTag = 1000;
 
@@ -94,6 +96,10 @@ void refreshComputerModel() {
 - (void)awakeFromNib {
     [super awakeFromNib];
 
+    if ([QTRBeaconHelper isBLEAvailable]) {
+        _beaconAdvertiser = [[QTRBeaconAdvertiser alloc] init];
+    }
+
     _statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     [_statusItem setHighlightMode:YES];
 
@@ -116,10 +122,6 @@ void refreshComputerModel() {
 
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemWillSleep:) name:NSWorkspaceWillSleepNotification object:nil];
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemDidWakeUpFromSleep:) name:NSWorkspaceDidWakeNotification object:nil];
-
-    if ([QTRBeaconHelper isBLEAvailable]) {
-        _beaconAdvertiser = [[QTRBeaconAdvertiser alloc] init];
-    }
 
 }
 
@@ -312,7 +314,7 @@ void refreshComputerModel() {
 
 - (void)stopServices {
 
-    [_beaconAdvertiser stopAdvertisingBeaconRegion];
+    [_beaconAdvertiser stopAdvertisingBeaconRegions];
 
     [_connectedClients removeAllObjects];
     
@@ -375,7 +377,7 @@ void refreshComputerModel() {
     [_client setTransferDelegate:self.transfersController];
     [_client start];
 
-    [_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
+    [_beaconAdvertiser startAdvertisingPrimaryBeaconRegion];
 }
 
 - (void)refreshMenu {
@@ -432,7 +434,6 @@ void refreshComputerModel() {
 }
 
 - (void)showTransfers {
-//    [self.transfersPanel makeKeyAndOrderFront:self];
     [self.transfersPanel orderFront:self];
 }
 
@@ -505,19 +506,20 @@ void refreshComputerModel() {
 
 - (void)showMenu:(id)sender {
 
-    [_beaconAdvertiser stopAdvertisingBeaconRegion];
-    [_statusItem popUpStatusItemMenu:_statusItem.menu];
+    [_beaconAdvertiser startAdvertisingSecondaryBeaconRegion];
 
     __weak typeof(self) wSelf = self;
-    double delayInSeconds = 1.0;
+    double delayInSeconds = 30.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         if (wSelf != nil) {
             typeof(self) sSelf = wSelf;
-            [sSelf->_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
+            [sSelf->_beaconAdvertiser stopAdvertisingSecondaryBeaconRegion];
         }
-
     });
+
+    [_statusItem popUpStatusItemMenu:_statusItem.menu];
+
 }
 
 - (void)clickTransfers:(id)sender {

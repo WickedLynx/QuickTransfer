@@ -28,21 +28,30 @@
 @interface QTRBeaconAdvertiser : NSObject
 
 /*!
- Starts advertising a beacon region.
- 
- This method is asynchronous and returns immediately.
-
- @param proximityUUID The proximity UUID of the beacon
- @param identifier The identifier of the beacon
- @param majorValue The major value of the beacon
- @param minorValue The minor value of the beacon
+ Starts advertising the primary beacon region
  */
-- (void)startAdvertisingRegionWithProximityUUID:(NSString *)proximityUUID identifier:(NSString *)identifier majorValue:(uint16_t )majorValue minorValue:(uint16_t)minorValue;
+- (void)startAdvertisingPrimaryBeaconRegion;
 
 /*!
- Stops advertising the beacon region.
+ Starts advertising the secondary beacon region
  */
-- (void)stopAdvertisingBeaconRegion;
+- (void)startAdvertisingSecondaryBeaconRegion;
+
+/*!
+ Stops advertising the primary beacon region
+ */
+- (void)stopAdvertisingPrimaryBeaconRegion;
+
+/*!
+ Stops advertising the secondary beacon region
+ */
+- (void)stopAdvertisingSecondaryBeaconRegion;
+
+/*!
+ Stops advertising all beacon regions.
+ */
+- (void)stopAdvertisingBeaconRegions;
+
 
 @end
 
@@ -87,19 +96,14 @@
 @interface QTRBeaconRanger : NSObject
 
 /*!
- Starts ranging the beacon with the specified parameters.
- 
- @param proximityUUID The proximity UUID of the beacon
- @param identifier The identifier of the beacon
- @param majorValue The major value of the beacon
- @param minorValue The minor value of the beacon
+ Starts monitoring the primary and secondary beacon regions
  */
-- (void)startRangingBeaconsWithProximityUUID:(NSString *)proximityUUID identifier:(NSString *)identifier majorValue:(uint16_t)majorValue minorValue:(uint16_t)minorValue;
+- (void)startMonitoringPrimaryAndSecondaryBeacons;
 
 /*!
- Stops ranging the beacon region.
+ Stops monitoring the beacon region.
  */
-- (void)stopRangingBeacons;
+- (void)stopMonitoringBeaconRegions;
 
 /*!
  The delegate of the receiver.

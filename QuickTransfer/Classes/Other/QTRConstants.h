@@ -29,9 +29,21 @@ FOUNDATION_EXPORT NSString *const QTRBonjourTXTRecordNameKey;
 FOUNDATION_EXPORT NSString *const QTRBonjourTXTRecordPlatformKey;
 
 /*!
- The proximity UUID for the beacon region created by the Mac app
+ The proximity UUID for the primary iBeacon region.
+ 
+ The Mac application always advertises the primary beacon.
+ The iOS application only advertises the primary beacon when it is active.
  */
-FOUNDATION_EXPORT NSString *const QTRBeaconRegionProximityUUID;
+FOUNDATION_EXPORT NSString *const QTRPrimaryBeaconRegionProximityUUID;
+
+/*!
+ The proximity UUID for the secondary iBeacon region.
+ 
+ The secondary beacon is advertised only for a specific duration when 
+ the connections are refreshed. Its main purpose is to simulate a 
+ beacon region entry.
+ */
+FOUNDATION_EXPORT NSString *const QTRSecondaryBeaconRegionProximityUUID;
 
 /*!
  The identifier for the beacon region created by the Mac app

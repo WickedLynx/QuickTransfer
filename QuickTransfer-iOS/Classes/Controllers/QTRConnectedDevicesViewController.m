@@ -163,8 +163,8 @@
 
     [[_devicesView devicesTableView] reloadData];
 
-    [_beaconAdvertiser stopAdvertisingBeaconRegion];
-    [_beaconRanger stopRangingBeacons];
+    [_beaconAdvertiser stopAdvertisingBeaconRegions];
+    [_beaconRanger stopMonitoringBeaconRegions];
 }
 
 - (void)startServices {
@@ -191,7 +191,7 @@
     _client = [[QTRBonjourClient alloc] initWithDelegate:self];
     [_client start];
 
-    [self refreshBeacons];
+    [_beaconAdvertiser startAdvertisingPrimaryBeaconRegion];
 }
 
 - (void)refresh {
@@ -202,25 +202,35 @@
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         [self startServices];
     });
+
+    [_beaconAdvertiser startAdvertisingSecondaryBeaconRegion];
+
+    double delayInSecondsForBeacon = 30.0;
+    dispatch_time_t popTimeForBeacon = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSecondsForBeacon * NSEC_PER_SEC));
+    dispatch_after(popTimeForBeacon, dispatch_get_main_queue(), ^(void){
+        [_beaconAdvertiser stopAdvertisingSecondaryBeaconRegion];
+    });
 }
 
+/*
 - (void)refreshBeacons {
     if ([QTRBeaconHelper isBLEAvailable]) {
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
 
             [_beaconRanger stopRangingBeacons];
 
-            [_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
+            [_beaconAdvertiser startAdvertisingPrimaryBeaconRegion];
 
         } else {
 
-            [_beaconAdvertiser stopAdvertisingBeaconRegion];
+            [_beaconAdvertiser stopAdvertisingBeaconRegions];
 
             [_beaconRanger setDelegate:self];
-            [_beaconRanger startRangingBeaconsWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
+            [_beaconRanger startRangingBeaconsWithProximityUUID:QTRPrimaryBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
         }
     }
 }
+*/
 
 - (NSURL *)uniqueURLForFileWithName:(NSString *)fileName {
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -335,7 +345,7 @@
 #pragma mark - Notifications
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
-    [self refreshBeacons];
+    [_beaconAdvertiser stopAdvertisingBeaconRegions];
     /*
     NSTimeInterval backgroundTimeRemaining = [[UIApplication sharedApplication] backgroundTimeRemaining];
     if (backgroundTimeRemaining > 25) {
@@ -351,7 +361,9 @@
 }
 
 - (void)applicationDidEnterForeground:(NSNotification *)notification {
-    [self refreshBeacons];
+
+    [_beaconRanger stopMonitoringBeaconRegions];
+    [_beaconAdvertiser startAdvertisingPrimaryBeaconRegion];
 
     if (_backgroundTaskIdentifier == UIBackgroundTaskInvalid) {
         _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
