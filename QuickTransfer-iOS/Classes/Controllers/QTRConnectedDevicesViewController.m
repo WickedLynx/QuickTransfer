@@ -346,6 +346,7 @@
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
     [_beaconAdvertiser stopAdvertisingBeaconRegions];
+    [_beaconRanger startMonitoringPrimaryAndSecondaryBeacons];
     /*
     NSTimeInterval backgroundTimeRemaining = [[UIApplication sharedApplication] backgroundTimeRemaining];
     if (backgroundTimeRemaining > 25) {
@@ -568,8 +569,32 @@
             [NSThread sleepForTimeInterval:2];
 
             [self startServices];
+
+            [_beaconRanger startMonitoringPrimaryAndSecondaryBeacons];
         }
 
+    }
+}
+
+- (void)beaconRangerDidExitRegion:(QTRBeaconRanger *)beaconRanger {
+    if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
+        NSLog(@"Did enter region");
+        if (_backgroundTaskIdentifier == UIBackgroundTaskInvalid) {
+
+            _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+                [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
+                _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+            }];
+
+            [self stopServices];
+
+            [NSThread sleepForTimeInterval:2];
+
+            [self startServices];
+
+            [_beaconRanger startMonitoringPrimaryAndSecondaryBeacons];
+        }
+        
     }
 }
 
