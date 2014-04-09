@@ -17,6 +17,8 @@ NSString *const QTRUserPlatformWindows = @"Windows";
 
 @implementation QTRUser
 
+#pragma mark - Initialisation
+
 - (instancetype)initWithName:(NSString *)name identifier:(NSString *)identifier platform:(NSString *)platform {
     self = [super init];
 
@@ -57,6 +59,8 @@ NSString *const QTRUserPlatformWindows = @"Windows";
     return self;
 }
 
+#pragma mark - Public methods
+
 - (BOOL)isEqual:(id)object {
     BOOL isEqual = NO;
 
@@ -89,5 +93,28 @@ NSString *const QTRUserPlatformWindows = @"Windows";
 - (NSString *)description {
     return [NSString stringWithFormat:@"%@ {\nname: %@,\nidentifier: %@,\nplatform: %@\n}", [super description], self.name, self.identifier, self.platform];
 }
+
+#pragma mark - NSCoding methods
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super init];
+
+    if (self != nil) {
+        _name = [aDecoder decodeObjectForKey:QTRBonjourTXTRecordNameKey];
+        _identifier = [aDecoder decodeObjectForKey:QTRBonjourTXTRecordIdentifierKey];
+        _platform = [aDecoder decodeObjectForKey:QTRBonjourTXTRecordPlatformKey];
+    }
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+
+    [aCoder encodeObject:self.name forKey:QTRBonjourTXTRecordNameKey];
+    [aCoder encodeObject:self.identifier forKey:QTRBonjourTXTRecordIdentifierKey];
+    [aCoder encodeObject:self.platform forKey:QTRBonjourTXTRecordPlatformKey];
+}
+
+
 
 @end

@@ -17,6 +17,7 @@
     if (self != nil) {
 
         UITableView *aTableView = [[UITableView alloc] initWithFrame:self.bounds];
+        [aTableView setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
         [self addSubview:aTableView];
         _devicesTableView = aTableView;
     }

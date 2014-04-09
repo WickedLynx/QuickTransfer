@@ -42,6 +42,8 @@
 
     QTRBeaconRanger *_beaconRanger;
     QTRBeaconAdvertiser *_beaconAdvertiser;
+
+    __weak id <QTRBonjourTransferDelegate> _transfersController;
 }
 
 - (void)touchShare:(UIBarButtonItem *)barButton;
@@ -62,9 +64,11 @@
 
 #pragma mark - Initialisation
 
-- (id)init {
+- (instancetype)initWithTransfersController:(id<QTRBonjourTransferDelegate>)transfersController {
     self = [super init];
     if (self != nil) {
+
+        _transfersController = transfersController;
 
         _assetsLibrary = [[ALAssetsLibrary alloc] init];
 
@@ -81,15 +85,15 @@
         _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
             [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
             _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
-            NSLog(@"%s", __PRETTY_FUNCTION__);
         }];
 
         [self startServices];
 
         _killDate = [NSDate date];
     }
-
+    
     return self;
+
 }
 
 #pragma mark - View lifecycle
@@ -150,10 +154,12 @@
 
 - (void)stopServices {
     [_server setDelegate:nil];
+    [_server setTransferDelegate:nil];
     [_server stop];
     _server = nil;
 
     [_client setDelegate:nil];
+    [_client setTransferDelegate:nil];
     [_client stop];
     _client = nil;
 
@@ -181,6 +187,7 @@
     _localUser = [[QTRUser alloc] initWithName:[[UIDevice currentDevice] name] identifier:uuid platform:QTRUserPlatformIOS];
 
     _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
+    [_server setTransferDelegate:_transfersController];
 
     if (![_server start]) {
 
@@ -189,6 +196,7 @@
     }
 
     _client = [[QTRBonjourClient alloc] initWithDelegate:self];
+    [_client setTransferDelegate:_transfersController];
     [_client start];
 
     [self refreshBeacons];
@@ -325,6 +333,8 @@
         UIImageWriteToSavedPhotosAlbum(theImage, nil, nil, nil);
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"File Saved" message:[NSString stringWithFormat:@"Saved %@ to your photos album", file.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
         [alert show];
+
+        [_transfersController archiveTransfers];
         
     } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The file doesn't appear to be an image" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
@@ -336,18 +346,6 @@
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
     [self refreshBeacons];
-    /*
-    NSTimeInterval backgroundTimeRemaining = [[UIApplication sharedApplication] backgroundTimeRemaining];
-    if (backgroundTimeRemaining > 25) {
-        _killDate = [NSDate dateWithTimeIntervalSinceNow:backgroundTimeRemaining];
-        backgroundTimeRemaining -= 20;
-        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-        [localNotification setFireDate:[NSDate dateWithTimeIntervalSinceNow:backgroundTimeRemaining]];
-        [localNotification setAlertBody:@"You will be disconnected from other devices if you do not launch the app now."];
-        [localNotification setSoundName:UILocalNotificationDefaultSoundName];
-        [[UIApplication sharedApplication] cancelAllLocalNotifications];
-        [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
-    } */
 }
 
 - (void)applicationDidEnterForeground:(NSNotification *)notification {
@@ -357,19 +355,10 @@
         _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
             [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
             _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
-            NSLog(@"%s", __PRETTY_FUNCTION__);
         }];
 
         [self refresh];
     }
-    /*
-    if ([[NSDate date] compare:_killDate] == NSOrderedDescending) {
-
-        [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
-        _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
-
-        [self touchRefresh:nil];
-    }*/
 }
 
 #pragma mark - UITableViewDataSource methods

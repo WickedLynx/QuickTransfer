@@ -539,6 +539,8 @@ void refreshComputerModel() {
 
 - (void)systemWillSleep:(NSNotification *)notification {
     [self stopServices];
+
+    [self.transfersController archiveTransfers];
 }
 
 - (void)systemDidWakeUpFromSleep:(NSNotification *)notification {

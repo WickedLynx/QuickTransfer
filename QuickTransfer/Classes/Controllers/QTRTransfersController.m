@@ -11,6 +11,7 @@
 #import "QTRFile.h"
 #import "QTRTransfer.h"
 #import "DTBonjourDataChunk.h"
+#import "QTRHelper.h"
 
 float QTRTransfersControllerProgressThreshold = 0.02f;
 
@@ -18,15 +19,28 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     NSMapTable *_dataChunksToTransfers;
     NSMutableArray *_allTransfers;
     NSMutableDictionary *_fileIdentifierToTransfers;
+    NSString *_archivedTransfersFilePath;
 }
+
+#pragma mark - Initialisation
 
 - (id)init {
     self = [super init];
 
     if (self != nil) {
         _dataChunksToTransfers = [NSMapTable strongToStrongObjectsMapTable];
-        _allTransfers = [NSMutableArray new];
+
         _fileIdentifierToTransfers = [NSMutableDictionary new];
+
+        NSURL *appSupportDirectoryURL = [QTRHelper applicationSupportDirectoryURL];
+        _archivedTransfersFilePath = [[appSupportDirectoryURL path] stringByAppendingPathComponent:@"Transfers"];
+
+        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:_archivedTransfersFilePath];
+        if (array != nil) {
+            _allTransfers = [array mutableCopy];
+        } else {
+            _allTransfers = [NSMutableArray new];
+        }
     }
 
     return self;
@@ -49,6 +63,8 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         [_allTransfers removeObject:theTransfer];
     }
 
+    [self archiveTransfers];
+
     [self.transfersTableView reloadData];
 }
 
@@ -68,6 +84,8 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     [_dataChunksToTransfers removeAllObjects];
     [_allTransfers removeAllObjects];
     [_fileIdentifierToTransfers removeAllObjects];
+
+    [self archiveTransfers];
 
     [self.transfersTableView reloadData];
 }
@@ -160,6 +178,8 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         }
     }
 
+    [self archiveTransfers];
+
     [self.transfersTableView reloadData];
 }
 
@@ -197,6 +217,10 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     }
 
 
+}
+
+- (void)archiveTransfers {
+    [NSKeyedArchiver archiveRootObject:_allTransfers toFile:_archivedTransfersFilePath];
 }
 
 #pragma mark - NSTableViewDataSource methods

@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QTRBonjourTransferDelegate.h"
 
 @interface QTRConnectedDevicesViewController : UIViewController
+
+/*!
+ Initialises the receiver.
+ 
+ @param transfersController An object confirming to QTRBonjourTransferDelegate protocol. The receiver weakly retains this controller.
+ */
+- (instancetype)initWithTransfersController:(id <QTRBonjourTransferDelegate>)transfersController;
 
 @end

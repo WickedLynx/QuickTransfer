@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @class QTRUser;
-@class QTRFile;
-@class DTBonjourDataChunk;
 
 /*!
  The current state of the transfer.
@@ -35,7 +33,7 @@ typedef NS_ENUM(NSInteger, QTRTransferState) {
 /*!
  This class tracks the progress of a file transfer
  */
-@interface QTRTransfer : NSObject
+@interface QTRTransfer : NSObject <NSCoding>
 
 /*!
  The progress of the transfer

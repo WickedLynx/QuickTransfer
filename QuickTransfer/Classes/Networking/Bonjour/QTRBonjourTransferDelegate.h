@@ -41,4 +41,9 @@
  */
 - (void)updateTransferForFile:(QTRFile *)file;
 
+/*!
+ Saves meta of transfered files to disk.
+ */
+- (void)archiveTransfers;
+
 @end

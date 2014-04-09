@@ -7,7 +7,7 @@
 //
 
 #import "QTRAppDelegate.h"
-#import "QTRConnectedDevicesViewController.h"
+#import "QTRRootViewController.h"
 
 @implementation QTRAppDelegate
 
@@ -15,10 +15,11 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[QTRConnectedDevicesViewController new]];
-    [self.window setRootViewController:navigationController];
+
+    [self.window setRootViewController:[QTRRootViewController new]];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+
     return YES;
 }
 

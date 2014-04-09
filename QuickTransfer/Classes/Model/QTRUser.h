@@ -40,7 +40,7 @@ FOUNDATION_EXPORT NSString *const QTRUserPlatformWindows;
 /*!
  This class represents a user of the application
  */
-@interface QTRUser : NSObject
+@interface QTRUser : NSObject <NSCoding>
 
 /*!
  @name Creating users
