@@ -136,6 +136,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
                 [theTransfer setState:QTRTransferStateCompleted];
                 [theTransfer setProgress:1.0f];
                 isSignificantUpdate = YES;
+                [self archiveTransfers];
             }
 
         } else {
@@ -150,6 +151,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
                 [theTransfer setCurrentChunkProgress:1.0f];
                 [_dataChunksToTransfers removeObjectForKey:chunk];
                 isSignificantUpdate = YES;
+                [self archiveTransfers];
             }
 
         }
@@ -210,6 +212,8 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     if (file.totalParts == (file.partIndex + 1)) {
         [transfer setProgress:1.0f];
         [transfer setState:QTRTransferStateCompleted];
+
+        [self archiveTransfers];
     }
 
     if ([self.delegate respondsToSelector:@selector(transfersStore:didAddTransfersAtIndices:)]) {
@@ -223,6 +227,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         [theTransfer setTransferedChunks:(file.partIndex + 1)];
         if (theTransfer.progress == 1) {
             [theTransfer setState:QTRTransferStateCompleted];
+            [self archiveTransfers];
         }
 
         if ([self.delegate respondsToSelector:@selector(transfersStore:didUpdateTransfersAtIndices:)]) {

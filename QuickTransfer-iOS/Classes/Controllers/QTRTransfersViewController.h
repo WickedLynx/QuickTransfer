@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "QTRBonjourTransferDelegate.h"
-#import "QTRBonjourTransferDelegate.h"
+#import "QTRTransfersStoreDelegate.h"
 
-@interface QTRTransfersViewController : UIViewController <QTRBonjourTransferDelegate, QTRBonjourTransferDelegate>
+@interface QTRTransfersViewController : UIViewController <QTRTransfersStoreDelegate>
+
+- (QTRTransfersStore *)transfersStore;
 
 @end

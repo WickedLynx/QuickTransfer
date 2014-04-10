@@ -64,11 +64,11 @@
 
 #pragma mark - Initialisation
 
-- (instancetype)initWithTransfersController:(id<QTRBonjourTransferDelegate>)transfersController {
+- (instancetype)initWithTransfersStore:(id<QTRBonjourTransferDelegate>)transfersStore {
     self = [super init];
     if (self != nil) {
 
-        _transfersController = transfersController;
+        _transfersController = transfersStore;
 
         _assetsLibrary = [[ALAssetsLibrary alloc] init];
 
@@ -333,8 +333,6 @@
         UIImageWriteToSavedPhotosAlbum(theImage, nil, nil, nil);
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"File Saved" message:[NSString stringWithFormat:@"Saved %@ to your photos album", file.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
         [alert show];
-
-        [_transfersController archiveTransfers];
         
     } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The file doesn't appear to be an image" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];

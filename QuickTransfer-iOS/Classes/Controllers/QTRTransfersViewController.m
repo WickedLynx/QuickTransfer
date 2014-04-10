@@ -9,22 +9,19 @@
 #import "QTRTransfersViewController.h"
 #import "QTRConnectedDevicesView.h"
 #import "QTRTransfersTableCell.h"
-#import "DTBonjourDataChunk.h"
 #import "QTRTransfer.h"
 #import "QTRFile.h"
 #import "QTRUser.h"
 #import "QTRHelper.h"
+#import "QTRTransfersStore.h"
 
 float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
 
 @interface QTRTransfersViewController () <UITableViewDataSource, UITableViewDelegate> {
     __weak QTRConnectedDevicesView *_transfersView;
-    NSMutableArray *_transfers;
-    NSString *_archivedTransfersFilePath;
     NSByteCountFormatter *_byteCountFormatter;
     NSDateFormatter *_dateFormatter;
-    NSMapTable *_dataChunksToTransfers;
-    NSMutableDictionary *_fileIdentifierToTransfers;
+    QTRTransfersStore *_transfersStore;
 }
 
 @end
@@ -37,9 +34,10 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
     self = [super init];
     if (self != nil) {
 
-        _dataChunksToTransfers = [NSMapTable strongToStrongObjectsMapTable];
-
-        _fileIdentifierToTransfers = [NSMutableDictionary new];
+        NSURL *fileCacheDirectoryURL = [QTRHelper fileCacheDirectory];
+        NSString *transfersArchiveFilePath = [[fileCacheDirectoryURL path] stringByAppendingPathComponent:@"Transfers"];
+        _transfersStore = [[QTRTransfersStore alloc] initWithArchiveLocation:transfersArchiveFilePath];
+        [_transfersStore setDelegate:self];
 
         _byteCountFormatter = [[NSByteCountFormatter alloc] init];
         _dateFormatter = [[NSDateFormatter alloc] init];
@@ -47,16 +45,6 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
         [_dateFormatter setDateStyle:NSDateFormatterShortStyle];
         [_dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [_dateFormatter setDoesRelativeDateFormatting:YES];
-
-        NSURL *appSupportDirectoryURL = [QTRHelper fileCacheDirectory];
-        _archivedTransfersFilePath = [[appSupportDirectoryURL path] stringByAppendingPathComponent:@"Transfers"];
-
-        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:_archivedTransfersFilePath];
-        if (array != nil) {
-            _transfers = [array mutableCopy];
-        } else {
-            _transfers = [NSMutableArray new];
-        }
 
     }
 
@@ -100,6 +88,12 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.95f green:0.91f blue:0.40f alpha:1.00f]];
 }
 
+#pragma mark - Public methods
+
+- (QTRTransfersStore *)transfersStore {
+    return _transfersStore;
+}
+
 #pragma mark - Cleanup
 
 - (void)didReceiveMemoryWarning
@@ -112,6 +106,7 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
 
     [[_transfersView devicesTableView] setDataSource:nil];
     [[_transfersView devicesTableView] setDelegate:nil];
+    [_transfersStore setDelegate:nil];
 }
 
 
@@ -122,7 +117,7 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_transfers count];
+    return [[_transfersStore transfers] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -136,7 +131,7 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         [[cell footerLabel] setTextColor:[UIColor colorWithRed:0.44f green:0.74f blue:0.64f alpha:1.00f]];
     }
-    QTRTransfer *theTransfer = _transfers[[indexPath row]];
+    QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:[indexPath row]];
     [[cell titleLabel] setText:[theTransfer.fileURL.absoluteString lastPathComponent]];
     [[cell subtitleLabel] setText:theTransfer.user.name];
 
@@ -154,137 +149,34 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
 
 }
 
-#pragma mark - QTRBonjourTransferDelegate methods
+#pragma mark - QTRTransfersStoreDelegate methods
 
-- (void)addTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk {
-    if (file != nil) {
-        QTRTransfer *transfer = [QTRTransfer new];
-        [transfer setUser:user];
-        [transfer setFileURL:file.url];
-        [transfer setTimestamp:[NSDate date]];
-        [transfer setTotalParts:file.totalParts];
-        [transfer setState:QTRTransferStateInProgress];
-        if (file.totalParts > 1) {
-            [transfer setFileSize:file.totalSize];
-        } else {
-            [transfer setFileSize:[file length]];
-        }
-        [_transfers insertObject:transfer atIndex:0];
-        [_dataChunksToTransfers setObject:transfer forKey:chunk];
+- (void)transfersStore:(QTRTransfersStore *)transfersStore didAddTransfersAtIndices:(NSIndexSet *)addedIndices {
 
-        [[_transfersView devicesTableView] reloadData];
-    }
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:[addedIndices count]];
+    [addedIndices enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+    }];
 
+    [[_transfersView devicesTableView] insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-- (void)updateTransferForChunk:(DTBonjourDataChunk *)chunk {
+- (void)transfersStore:(QTRTransfersStore *)transfersStore didDeleteTransfersAtIndices:(NSIndexSet *)deletedIndices {
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:[deletedIndices count]];
+    [deletedIndices enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+    }];
 
-    QTRTransfer *theTransfer = [_dataChunksToTransfers objectForKey:chunk];
-    if (theTransfer != nil) {
-
-        BOOL shouldReload = NO;
-
-        float progress = (double)(chunk.numberOfTransferredBytes) / (double)(chunk.totalBytes);
-
-        if (theTransfer.totalParts == 1) {
-
-            if (progress - theTransfer.progress > QTRTransfersControllerProgressThresholdIOS) {
-                [theTransfer setProgress:progress];
-                shouldReload = YES;
-            }
-
-            if ([chunk isTransmissionComplete]) {
-                [_dataChunksToTransfers removeObjectForKey:chunk];
-                [theTransfer setState:QTRTransferStateCompleted];
-                [theTransfer setProgress:1.0f];
-                shouldReload = YES;
-            }
-
-        } else {
-
-            if (progress == 1.0f || (progress - theTransfer.currentChunkProgress > QTRTransfersControllerProgressThresholdIOS * 2)) {
-                [theTransfer setCurrentChunkProgress:progress];
-                shouldReload = YES;
-            }
-
-            if (theTransfer.progress == 1.0f) {
-                [theTransfer setState:QTRTransferStateCompleted];
-                [theTransfer setCurrentChunkProgress:1.0f];
-                [_dataChunksToTransfers removeObjectForKey:chunk];
-                shouldReload = YES;
-            }
-
-        }
-
-        if (shouldReload) {
-
-            NSInteger row = [_transfers indexOfObject:theTransfer];
-            [[_transfersView devicesTableView] reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:row inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-    }
+    [[_transfersView devicesTableView] deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-- (void)replaceChunk:(DTBonjourDataChunk *)oldChunk withChunk:(DTBonjourDataChunk *)newChunk {
-    QTRTransfer *transfer = [_dataChunksToTransfers objectForKey:oldChunk];
-    if (transfer != nil) {
-        [_dataChunksToTransfers removeObjectForKey:oldChunk];
-        [transfer setCurrentChunkProgress:0.0f];
-        ++transfer.transferedChunks;
-        [_dataChunksToTransfers setObject:transfer forKey:newChunk];
-    }
-}
+- (void)transfersStore:(QTRTransfersStore *)transfersStore didUpdateTransfersAtIndices:(NSIndexSet *)updatedIndices {
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:[updatedIndices count]];
+    [updatedIndices enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+    }];
 
-- (void)failAllTransfersForUser:(QTRUser *)user {
-
-    for (QTRTransfer *aTransfer in _transfers) {
-        if (aTransfer.progress < 1.0f && [aTransfer.user isEqual:user]) {
-            [aTransfer setState:QTRTransferStateFailed];
-        }
-    }
-
-    [self archiveTransfers];
-
-    [[_transfersView devicesTableView] reloadData];
-}
-
-- (void)addTransferFromUser:(QTRUser *)user file:(QTRFile *)file {
-
-    QTRTransfer *transfer = [QTRTransfer new];
-    [transfer setUser:user];
-    [transfer setTimestamp:[NSDate date]];
-    [transfer setTotalParts:file.totalParts];
-    [transfer setState:QTRTransferStateInProgress];
-    [transfer setTransferedChunks:(file.partIndex + 1)];
-    [transfer setFileSize:file.totalSize];
-    [transfer setFileURL:file.url];
-    [_transfers insertObject:transfer atIndex:0];
-    _fileIdentifierToTransfers[file.identifier] = transfer;
-
-    if (file.totalParts == (file.partIndex + 1)) {
-        [transfer setProgress:1.0f];
-        [transfer setState:QTRTransferStateCompleted];
-    }
-
-    [[_transfersView devicesTableView] reloadData];
-}
-
-- (void)updateTransferForFile:(QTRFile *)file {
-    QTRTransfer *theTransfer = _fileIdentifierToTransfers[file.identifier];
-    if (theTransfer != nil && ![theTransfer isKindOfClass:[NSNull class]]) {
-        [theTransfer setTransferedChunks:(file.partIndex + 1)];
-        if (theTransfer.progress == 1) {
-            [theTransfer setState:QTRTransferStateCompleted];
-        }
-
-        NSInteger cellIndex = [_transfers indexOfObject:theTransfer];
-        [[_transfersView devicesTableView] reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:cellIndex inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }
-    
-    
-}
-
-- (void)archiveTransfers {
-    [NSKeyedArchiver archiveRootObject:_transfers toFile:_archivedTransfersFilePath];
+    [[_transfersView devicesTableView] reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 

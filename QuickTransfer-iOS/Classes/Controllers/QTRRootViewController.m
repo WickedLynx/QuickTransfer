@@ -11,6 +11,8 @@
 #import "QTRConnectedDevicesViewController.h"
 #import "QTRTransfersViewController.h"
 
+#import "QTRTransfersStore.h"
+
 @interface QTRRootViewController ()
 
 @end
@@ -24,7 +26,7 @@
 
     QTRTransfersViewController *transfersController = [QTRTransfersViewController new];
 
-    QTRConnectedDevicesViewController *connectedDevicesController = [[QTRConnectedDevicesViewController alloc] initWithTransfersController:transfersController];
+    QTRConnectedDevicesViewController *connectedDevicesController = [[QTRConnectedDevicesViewController alloc] initWithTransfersStore:[transfersController transfersStore]];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:connectedDevicesController];
 
     [navigationController.view setFrame:CGRectMake(0, 0, 320, 240)];

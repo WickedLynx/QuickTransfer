@@ -16,6 +16,6 @@
  
  @param transfersController An object confirming to QTRBonjourTransferDelegate protocol. The receiver weakly retains this controller.
  */
-- (instancetype)initWithTransfersController:(id <QTRBonjourTransferDelegate>)transfersController;
+- (instancetype)initWithTransfersStore:(id <QTRBonjourTransferDelegate>)transfersStore;
 
 @end
