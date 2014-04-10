@@ -12,13 +12,37 @@
 @class QTRFile;
 @class DTBonjourDataChunk;
 
+/*!
+ The Bonjour client/server notifies interested delegates about the the transfer progress and state through this protocol
+ */
 @protocol QTRBonjourTransferDelegate <NSObject>
 
 @optional
 
+/*!
+ Add a new transfer.
+ 
+ @param user The remote user
+ @param file The file being sent
+ @param chunk The data chunk that is currently being sent
+ */
 - (void)addTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk;
+
+/*!
+ Called after bytes are read/written for a transfer.
+ 
+ @param chunk The chunk that is currently being sent/received
+ */
 - (void)updateTransferForChunk:(DTBonjourDataChunk *)chunk;
+
+/*!
+ Called after the transmission of the current chunk is over and a new chunk is prepared for transmitting.
+ 
+ @param oldChunk The chunk that was previously transmitted
+ @param newChunk The chunk that will be sent next
+ */
 - (void)replaceChunk:(DTBonjourDataChunk *)oldChunk withChunk:(DTBonjourDataChunk *)newChunk;
+
 /*!
  Marks all transfers for the particular user as failed
  
@@ -40,10 +64,5 @@
  @param file The file being received
  */
 - (void)updateTransferForFile:(QTRFile *)file;
-
-/*!
- Saves meta of transfered files to disk.
- */
-- (void)archiveTransfers;
 
 @end

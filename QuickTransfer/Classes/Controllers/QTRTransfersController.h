@@ -10,18 +10,12 @@
 
 #import "QTRBonjourTransferDelegate.h"
 
+#import "QTRTransfersStore.h"
 
 /*!
- This class updates the progress of ongoing and completed file transfers
+ This class drives the transfers view which displays the progress of transfers
  */
-@interface QTRTransfersController : NSObject <QTRBonjourTransferDelegate, NSTableViewDataSource, NSTableViewDelegate>
-
-/*!
- Removes all transfers currently being tracked by the receiver.
- 
- This does not stop ongoing transfers from being transmitted
- */
-- (void)removeAllTransfers;
+@interface QTRTransfersController : NSObject <NSTableViewDataSource, NSTableViewDelegate, QTRTransfersStoreDelegate>
 
 - (IBAction)clickClearCompleted:(id)sender;
 
@@ -29,5 +23,10 @@
  The table view which displays the transfers and their progress
  */
 @property (weak) IBOutlet NSTableView *transfersTableView;
+
+/*!
+ The transfers store of the receiver
+ */
+@property (strong, nonatomic) QTRTransfersStore *transfersStore;
 
 @end

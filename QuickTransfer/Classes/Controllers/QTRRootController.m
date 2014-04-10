@@ -15,6 +15,8 @@
 #import "QTRStatusItemView.h"
 #import "QTRTransfersController.h"
 #import "QTRBeaconHelper.h"
+#import "QTRTransfersStore.h"
+#import "QTRHelper.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -40,7 +42,6 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
     BOOL _canRefresh;
     BOOL _shouldAutoAccept;
     QTRBeaconAdvertiser *_beaconAdvertiser;
-
 }
 
 @property (weak) IBOutlet NSTableView *devicesTableView;
@@ -107,6 +108,12 @@ void refreshComputerModel() {
     _connectedClients = [NSMutableArray new];
 
     _canRefresh = YES;
+
+    NSURL *appSupportDirectoryURL = [QTRHelper applicationSupportDirectoryURL];
+    NSString *archiveFilePath = [[appSupportDirectoryURL path] stringByAppendingPathComponent:@"Transfers"];
+
+    QTRTransfersStore *transfersStore = [[QTRTransfersStore alloc] initWithArchiveLocation:archiveFilePath];
+    [_transfersController setTransfersStore:transfersStore];
 
     [self startServices];
 
@@ -317,8 +324,6 @@ void refreshComputerModel() {
     [_connectedClients removeAllObjects];
     
     [_connectedServers removeAllObjects];
-
-    [self.transfersController removeAllTransfers];
     
     [self.devicesTableView reloadData];
 
@@ -364,7 +369,7 @@ void refreshComputerModel() {
     [[NSUserDefaults standardUserDefaults] synchronize];
 
     _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
-    [_server setTransferDelegate:self.transfersController];
+    [_server setTransferDelegate:self.transfersController.transfersStore];
 
     if (![_server start]) {
         NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Please make sure WiFi/Ethernet is enabled and connected"];
@@ -372,7 +377,7 @@ void refreshComputerModel() {
     }
 
     _client = [[QTRBonjourClient alloc] initWithDelegate:self];
-    [_client setTransferDelegate:self.transfersController];
+    [_client setTransferDelegate:self.transfersController.transfersStore];
     [_client start];
 
     [_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
@@ -539,8 +544,6 @@ void refreshComputerModel() {
 
 - (void)systemWillSleep:(NSNotification *)notification {
     [self stopServices];
-
-    [self.transfersController archiveTransfers];
 }
 
 - (void)systemDidWakeUpFromSleep:(NSNotification *)notification {

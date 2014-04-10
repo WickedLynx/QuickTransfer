@@ -76,6 +76,7 @@
 		FADEB05718F53177002F1C00 /* QTRHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05618F53177002F1C00 /* QTRHelper.m */; };
 		FADEB05818F53177002F1C00 /* QTRHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05618F53177002F1C00 /* QTRHelper.m */; };
 		FADEB05B18F5577E002F1C00 /* QTRRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05A18F5577E002F1C00 /* QTRRootViewController.m */; };
+		FADEB05F18F56202002F1C00 /* QTRTransfersStore.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05E18F56202002F1C00 /* QTRTransfersStore.m */; };
 		FAEB333718CDB55C00EA5993 /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2F18B4C3B3003D4FB6 /* Base64.m */; };
 		FAEB333818CDB55C00EA5993 /* QTRRootController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002018B3458B0098DA76 /* QTRRootController.m */; };
 		FAEB333918CDB55C00EA5993 /* QTRMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9003018B3534A0098DA76 /* QTRMessage.m */; };
@@ -215,6 +216,9 @@
 		FADEB05618F53177002F1C00 /* QTRHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRHelper.m; sourceTree = "<group>"; };
 		FADEB05918F5577E002F1C00 /* QTRRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRRootViewController.h; sourceTree = "<group>"; };
 		FADEB05A18F5577E002F1C00 /* QTRRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRRootViewController.m; sourceTree = "<group>"; };
+		FADEB05D18F56202002F1C00 /* QTRTransfersStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersStore.h; sourceTree = "<group>"; };
+		FADEB05E18F56202002F1C00 /* QTRTransfersStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersStore.m; sourceTree = "<group>"; };
+		FADEB06018F562DA002F1C00 /* QTRTransfersStoreDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersStoreDelegate.h; sourceTree = "<group>"; };
 		FAEB335618CDB55C00EA5993 /* QuickTransfer copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickTransfer copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAEB335718CDB55C00EA5993 /* QuickTransfer copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "QuickTransfer copy-Info.plist"; path = "/Users/harshad/Documents/Development/Cocoa/QuickTransfer/QuickTransfer copy-Info.plist"; sourceTree = "<absolute>"; };
 		FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -404,6 +408,9 @@
 				FAD9002018B3458B0098DA76 /* QTRRootController.m */,
 				FA12BB0518BF29320030911F /* QTRTransfersController.h */,
 				FA12BB0618BF29320030911F /* QTRTransfersController.m */,
+				FADEB05D18F56202002F1C00 /* QTRTransfersStore.h */,
+				FADEB05E18F56202002F1C00 /* QTRTransfersStore.m */,
+				FADEB06018F562DA002F1C00 /* QTRTransfersStoreDelegate.h */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -859,6 +866,7 @@
 				FA283F3018B4C3B3003D4FB6 /* Base64.m in Sources */,
 				FAD9002118B3458B0098DA76 /* QTRRootController.m in Sources */,
 				FAD9003118B3534A0098DA76 /* QTRMessage.m in Sources */,
+				FADEB05F18F56202002F1C00 /* QTRTransfersStore.m in Sources */,
 				FAD9002B18B3515A0098DA76 /* QTRBonjourClient.m in Sources */,
 				FA12BB0318BF06000030911F /* QTRTransfer.m in Sources */,
 				FA6DA6BB18C5C2BC0097742B /* QTRMultipartWriter.m in Sources */,
