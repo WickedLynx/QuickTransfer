@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Laughing Buddha Software. All rights reserved.
 //
 
+#import <QuickLook/QuickLook.h>
+
 #import "QTRTransfersViewController.h"
 #import "QTRConnectedDevicesView.h"
 #import "QTRTransfersTableCell.h"
@@ -15,13 +17,13 @@
 #import "QTRHelper.h"
 #import "QTRTransfersStore.h"
 
-float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
 
-@interface QTRTransfersViewController () <UITableViewDataSource, UITableViewDelegate> {
+@interface QTRTransfersViewController () <UITableViewDataSource, UITableViewDelegate, QLPreviewControllerDataSource> {
     __weak QTRConnectedDevicesView *_transfersView;
     NSByteCountFormatter *_byteCountFormatter;
     NSDateFormatter *_dateFormatter;
     QTRTransfersStore *_transfersStore;
+    QTRTransfer *_selectedTransfer;
 }
 
 @end
@@ -70,10 +72,11 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
     _transfersView = (QTRConnectedDevicesView *)view;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+
+    [self setTitle:@"Transfers"];
 
     [[_transfersView devicesTableView] setDataSource:self];
     [[_transfersView devicesTableView] setDelegate:self];
@@ -96,8 +99,7 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
 
 #pragma mark - Cleanup
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
@@ -143,11 +145,39 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
     return cell;
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:indexPath.row];
+        [[NSFileManager defaultManager] removeItemAtPath:[theTransfer.fileURL path] error:nil];
+        [_transfersStore deleteTransfer:theTransfer];
+
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+
 #pragma mark - UITableViewDelegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
+    QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:indexPath.row];
+    _selectedTransfer = theTransfer;
+
+    QLPreviewController *previewController = [[QLPreviewController alloc] init];
+    [previewController setDataSource:self];
+
+    [self.navigationController pushViewController:previewController animated:YES];
+
 }
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return UITableViewCellEditingStyleDelete;
+}
+
+
 
 #pragma mark - QTRTransfersStoreDelegate methods
 
@@ -179,6 +209,15 @@ float const QTRTransfersControllerProgressThresholdIOS = 0.02f;
     [[_transfersView devicesTableView] reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
+#pragma mark - QLPreviewControllerDatasource methods
+
+- (NSInteger)numberOfPreviewItemsInPreviewController:(QLPreviewController *)controller {
+    return 1;
+}
+
+- (id<QLPreviewItem>)previewController:(QLPreviewController *)controller previewItemAtIndex:(NSInteger)index {
+    return _selectedTransfer;
+}
 
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <QuickLook/QuickLook.h>
 
 @class QTRUser;
 
@@ -33,7 +34,7 @@ typedef NS_ENUM(NSInteger, QTRTransferState) {
 /*!
  This class tracks the progress of a file transfer
  */
-@interface QTRTransfer : NSObject <NSCoding>
+@interface QTRTransfer : NSObject <NSCoding, QLPreviewItem>
 
 /*!
  The progress of the transfer

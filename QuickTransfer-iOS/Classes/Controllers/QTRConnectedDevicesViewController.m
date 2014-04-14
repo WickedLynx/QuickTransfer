@@ -44,6 +44,8 @@
     QTRBeaconAdvertiser *_beaconAdvertiser;
 
     __weak id <QTRBonjourTransferDelegate> _transfersController;
+
+    NSURL *_importedFileURL;
 }
 
 - (void)touchShare:(UIBarButtonItem *)barButton;
@@ -119,7 +121,9 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    [self setTitle:@"Select Devices"];
+    [self setTitle:@"Devices"];
+
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.56f green:0.80f blue:0.62f alpha:1.00f]];
 
     [[_devicesView devicesTableView] setDataSource:self];
     [[_devicesView devicesTableView] setDelegate:self];
@@ -127,7 +131,16 @@
     [[_devicesView devicesTableView] reloadData];
 
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStylePlain target:self action:@selector(touchRefresh:)];
-    [self.navigationItem setRightBarButtonItem:barButton];
+    [self.navigationItem setLeftBarButtonItem:barButton];
+}
+
+#pragma mark - Public methods
+
+- (void)setImportedFile:(NSURL *)fileURL {
+    _importedFileURL = [fileURL copy];
+
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Select User" message:@"Select the user to whom you want to send the file" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+    [alertView show];
 }
 
 #pragma mark - Actions
@@ -171,6 +184,8 @@
 
     [_beaconAdvertiser stopAdvertisingBeaconRegion];
     [_beaconRanger stopRangingBeacons];
+
+    _importedFileURL = nil;
 }
 
 - (void)startServices {
@@ -340,6 +355,11 @@
     }
 }
 
+- (void)updateTitle {
+    int totalUsers = [_connectedClients count] + [_connectedServers count];
+    [self setTitle:[NSString stringWithFormat:@"Devices (%d)", totalUsers]];
+}
+
 #pragma mark - Notifications
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
@@ -388,12 +408,27 @@
 #pragma mark - UITableViewDelegate methods
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
-    _selectedUser = theUser;
-    [self touchShare:nil];
+
+    BOOL isServer = NO;
+    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:&isServer];
+
+    if (_importedFileURL == nil) {
+
+        _selectedUser = theUser;
+        [self touchShare:nil];
+
+    } else {
+
+        if (isServer) {
+            [_client sendFileAtURL:_importedFileURL toUser:theUser];
+        } else {
+            [_server sendFileAtURL:_importedFileURL toUser:theUser];
+        }
+
+        _importedFileURL = nil;
+    }
 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
 }
 
 #pragma mark - QTRBonjourServerDelegate methods
@@ -402,6 +437,7 @@
     if (![self userConnected:user]) {
 
         [_connectedClients addObject:user];
+        [self updateTitle];
         [[_devicesView devicesTableView] reloadData];
 
     }
@@ -409,6 +445,7 @@
 
 - (void)server:(QTRBonjourServer *)server didDisconnectUser:(QTRUser *)user {
     [_connectedClients removeObject:user];
+    [self updateTitle];
     [[_devicesView devicesTableView] reloadData];
 }
 
@@ -444,6 +481,7 @@
     if (![self userConnected:user]) {
 
         [_connectedServers addObject:user];
+        [self updateTitle];
         [[_devicesView devicesTableView] reloadData];
 
     }
@@ -451,7 +489,7 @@
 
 - (void)client:(QTRBonjourClient *)client didDisconnectFromServerForUser:(QTRUser *)user {
     [_connectedServers removeObject:user];
-
+    [self updateTitle];
     [[_devicesView devicesTableView] reloadData];
 }
 

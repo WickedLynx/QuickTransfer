@@ -16,11 +16,23 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
 
-    [self.window setRootViewController:[QTRRootViewController new]];
+    QTRRootViewController *rootViewController = [QTRRootViewController new];
+
+    [self.window setRootViewController:rootViewController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
 
+    NSURL *fileURL = launchOptions[UIApplicationLaunchOptionsURLKey];
+    if (fileURL != nil) {
+        [rootViewController importFileAtURL:fileURL];
+    }
+
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    QTRRootViewController *rootViewController = (QTRRootViewController *)self.window.rootViewController;
+    return [rootViewController importFileAtURL:url];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

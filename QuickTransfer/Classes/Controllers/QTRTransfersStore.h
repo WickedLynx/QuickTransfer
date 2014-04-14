@@ -11,6 +11,8 @@
 #import "QTRBonjourTransferDelegate.h"
 #import "QTRTransfersStoreDelegate.h"
 
+@class QTRTransfer;
+
 /*!
  This class updates the progress of ongoing file transfers and caches saves them to a persistent store.
  
@@ -34,6 +36,15 @@
  Saves meta of transfered files history to disk
  */
 - (void)archiveTransfers;
+
+/*!
+ Delete the metadata for a transfer.
+ 
+ This does not actually delete the file the transfer represents.
+ 
+ @param transfer The transfer to delete
+ */
+- (void)deleteTransfer:(QTRTransfer *)transfer;
 
 /*!
  Removes all transfers currently being tracked by the receiver.

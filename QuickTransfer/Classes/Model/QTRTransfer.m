@@ -63,4 +63,10 @@ NSString *const QTRTransferStateKey = @"QTRTransferState";
     [aCoder encodeInteger:self.state forKey:QTRTransferStateKey];
 }
 
+#pragma mark - QLPreviewItem methods
+
+- (NSURL *)previewItemURL {
+    return self.fileURL;
+}
+
 @end

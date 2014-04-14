@@ -18,4 +18,6 @@
  */
 - (instancetype)initWithTransfersStore:(id <QTRBonjourTransferDelegate>)transfersStore;
 
+- (void)setImportedFile:(NSURL *)fileURL;
+
 @end

@@ -10,4 +10,6 @@
 
 @interface QTRRootViewController : UIViewController
 
+- (BOOL)importFileAtURL:(NSURL *)fileURL;
+
 @end

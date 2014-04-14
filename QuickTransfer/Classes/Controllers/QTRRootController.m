@@ -338,6 +338,7 @@ void refreshComputerModel() {
     [_client setTransferDelegate:nil];
     [_client stop];
     _client = nil;
+
 }
 
 - (void)startServices {

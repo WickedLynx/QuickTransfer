@@ -51,6 +51,11 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     return [NSArray arrayWithArray:_allTransfers];
 }
 
+- (void)deleteTransfer:(id)transfer {
+    [_allTransfers removeObject:transfer];
+    [self archiveTransfers];
+}
+
 - (void)removeAllTransfers {
 
     NSIndexSet *deletedIndices = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [_allTransfers count])];
