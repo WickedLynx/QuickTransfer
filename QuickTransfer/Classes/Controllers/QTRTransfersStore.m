@@ -126,6 +126,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     if (theTransfer != nil) {
 
         BOOL isSignificantUpdate = NO;
+        BOOL transferComplete = NO;
 
         float progress = (double)(chunk.numberOfTransferredBytes) / (double)(chunk.totalBytes);
 
@@ -140,14 +141,16 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
                 [_dataChunksToTransfers removeObjectForKey:chunk];
                 [theTransfer setState:QTRTransferStateCompleted];
                 [theTransfer setProgress:1.0f];
-                isSignificantUpdate = YES;
+                transferComplete = YES;
                 [self archiveTransfers];
             }
 
         } else {
 
-            if (progress == 1.0f || (progress - theTransfer.currentChunkProgress > QTRTransfersControllerProgressThreshold * 2)) {
+            if (progress == 1.0f || (progress - theTransfer.currentChunkProgress > QTRTransfersControllerProgressThreshold * 8)) {
+                
                 [theTransfer setCurrentChunkProgress:progress];
+
                 isSignificantUpdate = YES;
             }
 
@@ -155,17 +158,23 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
                 [theTransfer setState:QTRTransferStateCompleted];
                 [theTransfer setCurrentChunkProgress:1.0f];
                 [_dataChunksToTransfers removeObjectForKey:chunk];
-                isSignificantUpdate = YES;
+                transferComplete = YES;
                 [self archiveTransfers];
             }
 
         }
+        NSInteger index = [_allTransfers indexOfObject:theTransfer];
 
-        if (isSignificantUpdate) {
+        if (transferComplete) {
 
-            NSInteger index = [_allTransfers indexOfObject:theTransfer];
             if ([self.delegate respondsToSelector:@selector(transfersStore:didUpdateTransfersAtIndices:)]) {
                 [self.delegate transfersStore:self didUpdateTransfersAtIndices:[NSIndexSet indexSetWithIndex:index]];
+            }
+
+        } else if (isSignificantUpdate) {
+
+            if ([self.delegate respondsToSelector:@selector(transfersStore:didUpdateProgressOfTransferAtIndex:)]) {
+                [self.delegate transfersStore:self didUpdateProgressOfTransferAtIndex:index];
             }
 
         }
@@ -227,18 +236,25 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 }
 
 - (void)updateTransferForFile:(QTRFile *)file {
+
     QTRTransfer *theTransfer = _fileIdentifierToTransfers[file.identifier];
     if (theTransfer != nil && ![theTransfer isKindOfClass:[NSNull class]]) {
         [theTransfer setTransferedChunks:(file.partIndex + 1)];
+
+        NSInteger transferIndex = [_allTransfers indexOfObject:theTransfer];
+
         if (theTransfer.progress == 1) {
             [theTransfer setState:QTRTransferStateCompleted];
             [self archiveTransfers];
+            if ([self.delegate respondsToSelector:@selector(transfersStore:didUpdateTransfersAtIndices:)]) {
+                [self.delegate transfersStore:self didUpdateTransfersAtIndices:[NSIndexSet indexSetWithIndex:transferIndex]];
+            }
+        } else {
+            if ([self.delegate respondsToSelector:@selector(transfersStore:didUpdateProgressOfTransferAtIndex:)]) {
+                [self.delegate transfersStore:self didUpdateProgressOfTransferAtIndex:transferIndex];
+            }
         }
 
-        if ([self.delegate respondsToSelector:@selector(transfersStore:didUpdateTransfersAtIndices:)]) {
-            NSInteger transferIndex = [_allTransfers indexOfObject:theTransfer];
-            [self.delegate transfersStore:self didUpdateTransfersAtIndices:[NSIndexSet indexSetWithIndex:transferIndex]];
-        }
     }
 }
 

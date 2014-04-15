@@ -361,7 +361,9 @@
                                 if (writer != nil) {
                                     [writer writeFilePart:theMessage.file completion:^{
                                         if ([sSelf.transferDelegate respondsToSelector:@selector(updateTransferForFile:)]) {
-                                            [sSelf.transferDelegate updateTransferForFile:theMessage.file];
+                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                [sSelf.transferDelegate updateTransferForFile:theMessage.file];
+                                            });
                                         }
                                         dispatch_async(dispatch_get_main_queue(), ^{
                                             

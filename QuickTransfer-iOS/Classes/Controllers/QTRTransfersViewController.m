@@ -16,6 +16,7 @@
 #import "QTRUser.h"
 #import "QTRHelper.h"
 #import "QTRTransfersStore.h"
+#import "QTRRootViewController.h"
 
 
 @interface QTRTransfersViewController () <UITableViewDataSource, UITableViewDelegate, QLPreviewControllerDataSource> {
@@ -89,6 +90,10 @@
     [super viewWillAppear:animated];
 
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.95f green:0.91f blue:0.40f alpha:1.00f]];
+    NSIndexPath *selectedIndexPath = [[_transfersView devicesTableView] indexPathForSelectedRow];
+    if (selectedIndexPath != nil && selectedIndexPath.row < [[_transfersStore transfers] count]) {
+        [[_transfersView devicesTableView] deselectRowAtIndexPath:selectedIndexPath animated:YES];
+    }
 }
 
 #pragma mark - Public methods
@@ -130,8 +135,13 @@
 
     if (cell == nil) {
         cell = [[QTRTransfersTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:QTRTransfersTableCellIdentifier];
-        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-        [[cell footerLabel] setTextColor:[UIColor colorWithRed:0.44f green:0.74f blue:0.64f alpha:1.00f]];
+
+        [cell setSelectionStyle:UITableViewCellSelectionStyleDefault];
+        [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
+
+        [[cell progressView] setTrackTintColor:[UIColor colorWithWhite:0.92f alpha:1.0f]];
+        [[cell progressView] setProgressTintColor:[UIColor colorWithRed:0.36f green:0.81f blue:1.00f alpha:1.00f]];
+
     }
     QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:[indexPath row]];
     [[cell titleLabel] setText:[theTransfer.fileURL.absoluteString lastPathComponent]];
@@ -139,6 +149,34 @@
 
     NSString *footerLabelText = [NSString stringWithFormat:@"%@, %@", [_dateFormatter stringFromDate:theTransfer.timestamp], [_byteCountFormatter stringFromByteCount:theTransfer.fileSize]];
     [[cell footerLabel] setText:footerLabelText];
+
+
+    UIColor *footerLabelColor = nil;
+
+    switch (theTransfer.state) {
+        case QTRTransferStateCompleted:
+            footerLabelColor = [UIColor colorWithRed:0.44f green:0.74f blue:0.64f alpha:1.00f];
+            [[cell progressView] setHidden:YES];
+
+            break;
+
+        case QTRTransferStateInProgress:
+            footerLabelColor = [UIColor colorWithRed:0.41f green:0.77f blue:0.94f alpha:1.00f];
+            [[cell progressView] setProgress:theTransfer.progress];
+
+            break;
+
+        case QTRTransferStateFailed:
+            footerLabelColor = [UIColor colorWithRed:0.96f green:0.58f blue:0.56f alpha:1.00f];;
+            [[cell progressView] setHidden:YES];
+
+            break;
+
+        default:
+            break;
+    }
+
+    [[cell footerLabel] setTextColor:footerLabelColor];
 
     [cell.imageView setImage:[UIImage imageNamed:@"FileIconPlaceholder.png"]];
 
@@ -164,12 +202,17 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
     QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:indexPath.row];
-    _selectedTransfer = theTransfer;
+    if (theTransfer.state == QTRTransferStateCompleted) {
+        _selectedTransfer = theTransfer;
 
-    QLPreviewController *previewController = [[QLPreviewController alloc] init];
-    [previewController setDataSource:self];
+        QLPreviewController *previewController = [[QLPreviewController alloc] init];
+        [previewController setDataSource:self];
 
-    [self.navigationController pushViewController:previewController animated:YES];
+        [self.navigationController pushViewController:previewController animated:YES];
+    } else {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
+
 
 }
 
@@ -177,6 +220,15 @@
     return UITableViewCellEditingStyleDelete;
 }
 
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:indexPath.row];
+    if (theTransfer.state == QTRTransferStateCompleted) {
+        if ([self.navigationController.parentViewController isKindOfClass:[QTRRootViewController class]]) {
+            QTRRootViewController *rootController = (QTRRootViewController *)self.navigationController.parentViewController;
+            [rootController importFileAtURL:theTransfer.fileURL];
+        }
+    }
+}
 
 
 #pragma mark - QTRTransfersStoreDelegate methods
@@ -207,6 +259,14 @@
     }];
 
     [[_transfersView devicesTableView] reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)transfersStore:(QTRTransfersStore *)transfersStore didUpdateProgressOfTransferAtIndex:(NSUInteger)transferIndex {
+    QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:transferIndex];
+
+    QTRTransfersTableCell *tableCell = (QTRTransfersTableCell *)[[_transfersView devicesTableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:transferIndex inSection:0]];
+    [[tableCell progressView] setProgress:theTransfer.progress animated:YES];
+
 }
 
 #pragma mark - QLPreviewControllerDatasource methods

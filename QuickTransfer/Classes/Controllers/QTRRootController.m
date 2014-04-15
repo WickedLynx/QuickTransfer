@@ -259,12 +259,9 @@ void refreshComputerModel() {
 }
 
 - (void)showOpenPanelForSelectedUser {
-    QTRUser *theUser = [self userAtRow:_clickedRow isServer:NULL];
 
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
-    if ([theUser.platform isEqualToString:QTRUserPlatformIOS] || [theUser.platform isEqualToString:QTRUserPlatformLinux]) {
-        [openPanel setAllowedFileTypes:@[(NSString *)kUTTypeImage]];
-    }
+
     [openPanel setAllowsMultipleSelection:NO];
     [openPanel setAllowsOtherFileTypes:NO];
     [openPanel setAllowsMultipleSelection:NO];
@@ -293,15 +290,9 @@ void refreshComputerModel() {
 - (NSURL *)validateDraggedFileURLOnRow:(NSInteger)row info:(id <NSDraggingInfo>)info {
 
     NSURL *validatedURL = nil;
-    QTRUser *user = [self userAtRow:row isServer:NULL];
 
     NSPasteboard *thePasteboard = [info draggingPasteboard];
-    NSArray *supportedURLs = nil;
-    if ([user.platform isEqualToString:QTRUserPlatformIOS] || [user.platform isEqualToString:QTRUserPlatformAndroid]) {
-        supportedURLs = @[(NSString *)kUTTypeImage];
-    } else {
-        supportedURLs = @[(NSString *)kUTTypeItem];
-    }
+    NSArray *supportedURLs = @[(NSString *)kUTTypeItem];
 
     NSArray *draggedURLs = [thePasteboard readObjectsForClasses:@[[NSURL class]] options:@{NSPasteboardURLReadingFileURLsOnlyKey : @(YES), NSPasteboardURLReadingContentsConformToTypesKey : supportedURLs}];
 

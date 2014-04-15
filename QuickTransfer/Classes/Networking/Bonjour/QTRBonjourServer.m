@@ -274,7 +274,10 @@
                                 QTRMultipartWriter *writer = sSelf.receivedFileParts[theMessage.file.identifier];
                                 if (writer != nil) {
                                     if ([sSelf.transferDelegate respondsToSelector:@selector(updateTransferForFile:)]) {
-                                        [sSelf.transferDelegate updateTransferForFile:theMessage.file];
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            [sSelf.transferDelegate updateTransferForFile:theMessage.file];
+                                        });
+
                                     }
                                     [writer writeFilePart:theMessage.file completion:^{
                                         dispatch_async(dispatch_get_main_queue(), ^{

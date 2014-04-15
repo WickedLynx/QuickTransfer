@@ -74,6 +74,10 @@
     [self.transfersTableView reloadDataForRowIndexes:updatedIndices columnIndexes:[NSIndexSet indexSetWithIndex:0]];
 }
 
+- (void)transfersStore:(QTRTransfersStore *)transfersStore didUpdateProgressOfTransferAtIndex:(NSUInteger)transferIndex {
+    [self.transfersTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:transferIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+}
+
 #pragma mark - Notification callbacks
 
 - (void)appWillTerminate:(NSNotification *)aNotification {

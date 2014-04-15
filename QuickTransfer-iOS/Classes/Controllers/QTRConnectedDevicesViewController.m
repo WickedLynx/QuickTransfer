@@ -19,6 +19,7 @@
 #import "QTRConstants.h"
 
 #import "QTRBeaconHelper.h"
+#import "QTRHelper.h"
 
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate> {
 
@@ -247,7 +248,8 @@
 
 - (NSURL *)uniqueURLForFileWithName:(NSString *)fileName {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *cachesURL = [self fileCacheDirectory];
+
+    NSURL *cachesURL = [QTRHelper fileCacheDirectory];
     
     NSString *filePath = [[cachesURL path] stringByAppendingPathComponent:fileName];
     
@@ -342,22 +344,13 @@
 }
 
 - (void)saveFile:(QTRFile *)file {
-    UIImage *theImage = [[UIImage alloc] initWithData:file.data];
+    [file.data writeToURL:[self uniqueURLForFileWithName:file.name] atomically:YES];
 
-    if (theImage != nil) {
-        UIImageWriteToSavedPhotosAlbum(theImage, nil, nil, nil);
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"File Saved" message:[NSString stringWithFormat:@"Saved %@ to your photos album", file.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-        [alert show];
-        
-    } else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:@"The file doesn't appear to be an image" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-        [alert show];
-    }
 }
 
 - (void)updateTitle {
-    int totalUsers = [_connectedClients count] + [_connectedServers count];
-    [self setTitle:[NSString stringWithFormat:@"Devices (%d)", totalUsers]];
+    unsigned long totalUsers = [_connectedClients count] + [_connectedServers count];
+    [self setTitle:[NSString stringWithFormat:@"Devices (%lu)", totalUsers]];
 }
 
 #pragma mark - Notifications

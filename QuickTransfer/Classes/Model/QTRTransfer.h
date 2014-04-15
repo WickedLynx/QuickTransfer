@@ -7,7 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#if TARGET_OS_IPHONE
 #import <QuickLook/QuickLook.h>
+
+#elif TARGET_OS_MAC
+#import <Quartz/Quartz.h>
+
+#endif
 
 @class QTRUser;
 

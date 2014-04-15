@@ -13,6 +13,7 @@
     __weak UILabel *_titleLabel;
     __weak UILabel *_subtitleLabel;
     __weak UILabel *_footerLabel;
+    __weak UIProgressView *_progressView;
 
 }
 
@@ -35,20 +36,26 @@
                 return aLabel;
             };
 
-            _titleLabel = addLabel(CGRectMake(85.00f, 14.00f, 200.00f, 22.00f), [UIFont boldSystemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
-            _subtitleLabel = addLabel(CGRectMake(85.00f, 35.00f, 200.00f, 18.00f), [UIFont systemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
-            _footerLabel = addLabel(CGRectMake(85.00f, 53.00f, 200.00f, 18.00f), [UIFont italicSystemFontOfSize:12.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            _titleLabel = addLabel(CGRectMake(85.00f, 12.00f, 190.00f, 22.00f), [UIFont boldSystemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            _subtitleLabel = addLabel(CGRectMake(85.00f, 33.00f, 190.0f, 18.00f), [UIFont systemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+
+            UIProgressView *aProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+            [aProgressView setFrame:CGRectMake(85.0f, 55.0f, 190.0f, 10.0f)];
+            [self addSubview:aProgressView];
+            _progressView = aProgressView;
+
+            _footerLabel = addLabel(CGRectMake(85.00f, 60.00f, 190.0f, 18.00f), [UIFont italicSystemFontOfSize:12.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
 
         }
     }
     return self;
 }
 
-//- (void)layoutSubviews {
-//    [super layoutSubviews];
-//    [self.imageView setFrame:CGRectMake(self.bounds.origin.x + 5, 5, self.bounds.size.height - 10, self.bounds.size.height - 10)];
-//    [self.imageView setBackgroundColor:[UIColor redColor]];
-//}
+- (void)prepareForReuse {
+    [super prepareForReuse];
+
+    [_progressView setProgress:0.0f];
+}
 
 #pragma mark - Public methods
 
@@ -62,6 +69,10 @@
 
 - (UILabel *)footerLabel {
     return _footerLabel;
+}
+
+- (UIProgressView *)progressView {
+    return _progressView;
 }
 
 - (CGFloat)requiredHeightInTableView {

@@ -15,6 +15,7 @@
 #import "QTRTransfersStore.h"
 
 
+
 CGFloat const QTRRootViewControllerXOffset = 50.0f;
 
 @interface QTRRootViewController () <UIGestureRecognizerDelegate> {

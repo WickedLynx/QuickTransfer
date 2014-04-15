@@ -14,5 +14,6 @@
 - (UILabel *)subtitleLabel;
 - (UILabel *)footerLabel;
 - (CGFloat)requiredHeightInTableView;
+- (UIProgressView *)progressView;
 
 @end
