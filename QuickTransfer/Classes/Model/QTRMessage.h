@@ -64,7 +64,7 @@ typedef NS_ENUM(NSInteger, QTRMessageType) {
 /*!
  This class represents the messages that are sent between users
  */
-@interface QTRMessage : NSObject
+@interface QTRMessage : NSObject <NSCoding>
 
 /*!
  Creates a message with a sender and a file

@@ -92,4 +92,23 @@ NSString *const QTRMessageTypeKey = @"type";
 
 }
 
+#pragma mark - NSCoding methods
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super init];
+    if (self != nil) {
+        _user = [aDecoder decodeObjectForKey:QTRMessageSenderKey];
+        _file = [aDecoder decodeObjectForKey:QTRMessageFileKey];
+        _type = [aDecoder decodeIntegerForKey:QTRMessageTypeKey];
+    }
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:_user forKey:QTRMessageSenderKey];
+    [aCoder encodeObject:_file forKey:QTRMessageFileKey];
+    [aCoder encodeInteger:_type forKey:QTRMessageTypeKey];
+}
+
 @end

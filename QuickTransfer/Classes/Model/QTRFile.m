@@ -132,4 +132,34 @@ NSString *const QTRFileIdentifierKey = @"identifier";
     return isEqual;
 }
 
+#pragma mark - NSCoding methods
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super init];
+
+    if (self != nil) {
+        _name = [aDecoder decodeObjectForKey:QTRFileNameKey];
+        _type = [aDecoder decodeObjectForKey:QTRFileTypeKey];
+        _data = [aDecoder decodeObjectForKey:QTRFileDataKey];
+        _partIndex = [aDecoder decodeIntegerForKey:QTRFilePartIndexKey];
+        _totalParts = [aDecoder decodeIntegerForKey:QTRFileTotalPartsKey];
+        NSNumber *sizeAsNumber = [aDecoder decodeObjectForKey:QTRFileTotalSizeKey];
+        _totalSize = [sizeAsNumber longLongValue];
+        _identifier = [aDecoder decodeObjectForKey:QTRFileIdentifierKey];
+    }
+
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:_name forKey:QTRFileNameKey];
+    [aCoder encodeObject:_type forKey:QTRFileTypeKey];
+    [aCoder encodeObject:_data forKey:QTRFileDataKey];
+    [aCoder encodeInteger:_partIndex forKey:QTRFilePartIndexKey];
+    [aCoder encodeInteger:_totalParts forKey:QTRFileTotalPartsKey];
+    NSNumber *sizeAsNumber = @(_totalSize);
+    [aCoder encodeObject:sizeAsNumber forKey:QTRFileTotalSizeKey];
+    [aCoder encodeObject:_identifier forKey:QTRFileIdentifierKey];
+}
+
 @end

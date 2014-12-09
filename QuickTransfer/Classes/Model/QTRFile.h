@@ -11,7 +11,7 @@
 /*!
  This class represents the file object intended to be shared with users
  */
-@interface QTRFile : NSObject
+@interface QTRFile : NSObject <NSCoding>
 
 /*!
  Creates a file with its data
