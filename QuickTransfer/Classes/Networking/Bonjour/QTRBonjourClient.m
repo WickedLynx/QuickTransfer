@@ -16,7 +16,9 @@
 #import "QTRMultipartTransfer.h"
 #import "QTRMultipartWriter.h"
 
-@interface QTRBonjourClient () <DTBonjourDataConnectionDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate>
+@interface QTRBonjourClient () <DTBonjourDataConnectionDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate> {
+    dispatch_queue_t _fileWritingQueue;
+}
 
 - (QTRUser *)userForConnection:(DTBonjourDataConnection *)connection;
 - (DTBonjourDataConnection *)connectionForUser:(QTRUser *)user;
@@ -46,6 +48,7 @@
         _dataChunksToMultipartTransfers = [NSMapTable strongToStrongObjectsMapTable];
         _receivedFileParts = [NSMutableDictionary new];
         _pendingTransfers = [NSMutableArray new];
+        _fileWritingQueue = dispatch_queue_create("com.lbs.fileWritingQueue", DISPATCH_QUEUE_SERIAL);
     }
 
     return self;
@@ -357,7 +360,7 @@
                             if (theMessage.file.totalParts > 1) {
                                 QTRMultipartWriter *writer = sSelf.receivedFileParts[theMessage.file.identifier];
                                 if (writer != nil) {
-                                    [writer writeFilePart:theMessage.file completion:^{
+                                    [writer writeFilePart:theMessage.file queue:sSelf->_fileWritingQueue completion:^{
                                         if ([sSelf.transferDelegate respondsToSelector:@selector(updateTransferForFile:)]) {
                                             dispatch_async(dispatch_get_main_queue(), ^{
                                                 [sSelf.transferDelegate updateTransferForFile:theMessage.file];

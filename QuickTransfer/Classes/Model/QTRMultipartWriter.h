@@ -24,17 +24,18 @@
  */
 - (instancetype)initWithFilePart:(QTRFile *)filePart sender:(QTRUser *)user saveURL:(NSURL *)url;
 
+
 /*!
  Appends data passed in filePart to the file at saveURL of the receiver.
- 
+
  The receiver calls the completionBlock once it has finished writing the part.
- 
+
  @param filePart The file part to write
- @param completionBlock The block called after writing the file part.
- 
-                        This block is not called on the main thread.
+ @param queue The queue to write the file part in. If nil, uses the main queue.
+ @param completionBlock The block called after writing the file part. The completion block is called in the writing queue.
+
  */
-- (void)writeFilePart:(QTRFile *)filePart completion:(void (^)())completionBlock;
+- (void)writeFilePart:(QTRFile *)filePart queue:(dispatch_queue_t)queue completion:(void (^)())completionBlock;
 
 /*!
  Closes the file and prevents further write operations to it.

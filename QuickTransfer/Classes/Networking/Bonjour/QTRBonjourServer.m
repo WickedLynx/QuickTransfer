@@ -15,7 +15,9 @@
 #import "QTRMultipartWriter.h"
 #import "QTRMultipartTransfer.h"
 
-@interface QTRBonjourServer ()
+@interface QTRBonjourServer () {
+    dispatch_queue_t _fileWritingQueue;
+}
 
 @property (strong) NSMapTable *mappedConnections;
 @property (strong) QTRUser *localUser;
@@ -47,6 +49,7 @@
         _receivedFileParts = [NSMutableDictionary new];
         _dataChunksToMultipartTransfers = [NSMapTable strongToStrongObjectsMapTable];
         _pendingTransfers = [NSMutableArray new];
+        _fileWritingQueue = dispatch_queue_create("com.lbs.fileWritingQueue", DISPATCH_QUEUE_SERIAL);
     }
 
     return self;
@@ -278,7 +281,7 @@
                                             });
 
                                         }
-                                        [writer writeFilePart:theMessage.file completion:^{
+                                        [writer writeFilePart:theMessage.file queue:sSelf->_fileWritingQueue completion:^{
                                             dispatch_async(dispatch_get_main_queue(), ^{
                                                 if (theMessage.file.partIndex == (theMessage.file.totalParts - 1)) {
                                                     [writer closeFile];
@@ -290,6 +293,7 @@
                                             });
 
                                         }];
+
                                     } else {
                                         writer = [[QTRMultipartWriter alloc] initWithFilePart:theMessage.file sender:user saveURL:[sSelf.fileDelegate saveURLForFile:theMessage.file]];
                                         sSelf.receivedFileParts[theMessage.file.identifier] = writer;

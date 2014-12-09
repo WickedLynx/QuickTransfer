@@ -32,9 +32,13 @@
     return self;
 }
 
-- (void)writeFilePart:(QTRFile *)filePart completion:(void (^)())completionBlock {
+- (void)writeFilePart:(QTRFile *)filePart queue:(dispatch_queue_t)queue completion:(void (^)())completionBlock {
+    dispatch_queue_t writingQueue = queue;
+    if (writingQueue == nil) {
+        writingQueue = dispatch_get_main_queue();
+    }
     __weak typeof(self) wSelf = self;
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+    dispatch_async(writingQueue, ^{
         if (wSelf != nil) {
             typeof(self) sSelf = wSelf;
             [sSelf->_fileHandle writeData:filePart.data];
