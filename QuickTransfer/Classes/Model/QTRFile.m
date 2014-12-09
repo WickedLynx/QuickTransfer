@@ -7,7 +7,6 @@
 //
 
 #import "QTRFile.h"
-#import "Base64.h"
 
 NSString *const QTRFileNameKey = @"name";
 NSString *const QTRFileTypeKey = @"type";
@@ -46,73 +45,6 @@ NSString *const QTRFileIdentifierKey = @"identifier";
     }
 
     return self;
-}
-
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary {
-    self = [super init];
-    if (self != nil) {
-        _name = dictionary[QTRFileNameKey];
-        _type = dictionary[QTRFileTypeKey];
-
-        NSString *encodedData = dictionary[QTRFileDataKey];
-        if (encodedData.length > 0) {
-            @autoreleasepool {
-                _data = [NSData dataWithBase64EncodedString:encodedData];
-            }
-
-        }
-
-        NSNumber *partIndex = dictionary[QTRFilePartIndexKey];
-        if (![partIndex isKindOfClass:[NSNull class]]) {
-            _partIndex = [partIndex integerValue];
-        }
-
-        NSNumber *totalParts = dictionary[QTRFileTotalPartsKey];
-        if (![totalParts isKindOfClass:[NSNull class]]) {
-            _totalParts = [totalParts integerValue];
-        }
-
-        NSNumber *totalSizeKey = dictionary[QTRFileTotalSizeKey];
-        if (![totalSizeKey isKindOfClass:[NSNull class]]) {
-            _totalSize = [totalSizeKey longLongValue];
-        }
-
-        _identifier = dictionary[QTRFileIdentifierKey];
-    }
-
-    return self;
-}
-
-- (NSDictionary *)dictionaryRepresentation {
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionaryWithCapacity:6];
-
-    if (_name != nil) {
-        dictionary[QTRFileNameKey] = _name;
-    }
-
-    if (_type != nil) {
-        dictionary[QTRFileTypeKey] = _type;
-    }
-    @autoreleasepool {
-        if (_data != nil) {
-
-            NSString *encodedData = [_data base64EncodedString];
-            if (encodedData != nil) {
-                dictionary[QTRFileDataKey] = encodedData;
-            }
-        }
-    }
-
-
-    dictionary[QTRFilePartIndexKey] = @(_partIndex);
-    dictionary[QTRFileTotalPartsKey] = @(_totalParts);
-    dictionary[QTRFileTotalSizeKey] = @(_totalSize);
-
-    if (_identifier != nil) {
-        dictionary[QTRFileIdentifierKey] = _identifier;
-    }
-
-    return dictionary;
 }
 
 - (NSUInteger)length {

@@ -91,11 +91,10 @@
             typeof(self) sSelf = wSelf;
             QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
             [message setType:QTRMessageTypeFileTransfer];
-            NSData *jsonData = [message JSONData];
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 DTBonjourDataChunk *chunk = nil;
-                [[sSelf connectionForUser:user] sendObject:jsonData error:nil dataChunk:&chunk];
+                [[sSelf connectionForUser:user] sendObject:message error:nil dataChunk:&chunk];
                 if ([sSelf.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
                     [sSelf.transferDelegate addTransferForUser:user file:file chunk:chunk];
                 }
@@ -117,7 +116,7 @@
     [confirmationMessage setType:QTRMessageTypeConfirmFileTransfer];
 
     DTBonjourDataConnection *connectionForUser = [self connectionForUser:user];
-    [connectionForUser sendObject:[confirmationMessage JSONData] error:nil dataChunk:nil];
+    [connectionForUser sendObject:confirmationMessage error:nil dataChunk:nil];
 }
 
 - (void)acceptFile:(QTRFile *)file accept:(BOOL)shouldAccept fromUser:(QTRUser *)user {
@@ -129,7 +128,7 @@
     QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
     [message setType:messageType];
 
-    [[self connectionForUser:user] sendObject:[message JSONData] error:nil dataChunk:nil];
+    [[self connectionForUser:user] sendObject:message error:nil dataChunk:nil];
 }
 
 #pragma mark - Private methods
@@ -209,11 +208,10 @@
 
                         QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
                         [message setType:QTRMessageTypeFileTransfer];
-                        NSData *jsonData = [message JSONData];
 
                         dispatch_async(dispatch_get_main_queue(), ^{
                             DTBonjourDataChunk *chunk = nil;
-                            [[sSelf connectionForUser:user] sendObject:jsonData error:nil dataChunk:&chunk];
+                            [[sSelf connectionForUser:user] sendObject:message error:nil dataChunk:&chunk];
                             [sSelf.dataChunksToMultipartTransfers setObject:transfer forKey:chunk];
                             if ([sSelf.transferDelegate respondsToSelector:@selector(addTransferForUser:file:chunk:)]) {
                                 [sSelf.transferDelegate addTransferForUser:user file:file chunk:chunk];
@@ -283,7 +281,7 @@
 
     QTRMessage *userInfoMessage = [QTRMessage messageWithUser:_localUser file:nil];
     [userInfoMessage setType:QTRMessageTypeUserInfo];
-    [connection sendObject:[userInfoMessage JSONData] error:nil dataChunk:nil];
+    [connection sendObject:userInfoMessage error:nil dataChunk:nil];
 
     if ([self.delegate respondsToSelector:@selector(client:didConnectToServerForUser:)]) {
         QTRUser *user = [self userForConnection:connection];
@@ -309,8 +307,8 @@
 
         if (wSelf != nil) {
             typeof(self) sSelf = wSelf;
-            if ([object isKindOfClass:[NSData class]]) {
-                QTRMessage *theMessage = [QTRMessage messageWithJSONData:object];
+            if ([object isKindOfClass:[QTRMessage class]]) {
+                QTRMessage *theMessage = (QTRMessage *)object;
                 QTRUser *user = theMessage.user;
 
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -366,7 +364,7 @@
                                             });
                                         }
                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                            
+
                                             if (theMessage.file.partIndex == (theMessage.file.totalParts - 1)) {
                                                 [writer closeFile];
                                                 if ([sSelf.delegate respondsToSelector:@selector(client:didSaveReceivedFileAtURL:fromUser:)]) {
@@ -405,7 +403,7 @@
                     }
                     
                 });
-                
+
             }
         }
         
@@ -429,11 +427,10 @@
 
                 QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
                 [message setType:QTRMessageTypeFileTransfer];
-                NSData *jsonData = [message JSONData];
 
                 dispatch_async(dispatch_get_main_queue(), ^{
                     DTBonjourDataChunk *dataChunk = nil;
-                    [[sSelf connectionForUser:transfer.user] sendObject:jsonData error:nil dataChunk:&dataChunk];
+                    [[sSelf connectionForUser:transfer.user] sendObject:message error:nil dataChunk:&dataChunk];
                     [sSelf.transferDelegate replaceChunk:chunk withChunk:dataChunk];
                     [sSelf.dataChunksToMultipartTransfers removeObjectForKey:chunk];
 

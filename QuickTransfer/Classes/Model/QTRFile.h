@@ -32,17 +32,6 @@
 - (instancetype)initWithName:(NSString *)fileName type:(NSString *)fileType partIndex:(NSUInteger)partIndex totalParts:(NSUInteger)totalParts totalSize:(long long)totalSize;
 
 /*!
- Creates a file object, setting its properties from the key-value pairs of a dictionary
- @param dictionary The dictionary representing the properties of the file as key-value pairs
- */
-- (instancetype)initWithDictionary:(NSDictionary *)dictionary;
-
-/*!
- Returns a dictionary with the properties of the receiver as key-value pairs. The data of the receiver is encoded to a base64 string before adding it to the dictionary.
- */
-- (NSDictionary *)dictionaryRepresentation;
-
-/*!
  The length of the data of the receiver
  */
 - (NSUInteger)length;

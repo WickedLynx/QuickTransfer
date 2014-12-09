@@ -74,17 +74,6 @@ typedef NS_ENUM(NSInteger, QTRMessageType) {
 + (instancetype)messageWithUser:(QTRUser *)sender file:(QTRFile *)file;
 
 /*!
- Creates a message by reading the key value pairs specified in the json data
- @param data The json encoded binary data which contains the key-value pairs of a message
- */
-+ (instancetype)messageWithJSONData:(NSData *)data;
-
-/*!
- Returns json encoded data with the properties of the receiver as key-value pairs
- */
-- (NSData *)JSONData;
-
-/*!
  The user/sender of the receiver
  */
 @property (strong) QTRUser *user;

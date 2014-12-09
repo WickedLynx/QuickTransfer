@@ -35,8 +35,6 @@
 		FA283F2718B49582003D4FB6 /* QTRConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002D18B351DE0098DA76 /* QTRConstants.m */; };
 		FA283F2A18B49BA8003D4FB6 /* QTRFile.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2918B49BA8003D4FB6 /* QTRFile.m */; };
 		FA283F2C18B49BA8003D4FB6 /* QTRFile.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2918B49BA8003D4FB6 /* QTRFile.m */; };
-		FA283F3018B4C3B3003D4FB6 /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2F18B4C3B3003D4FB6 /* Base64.m */; };
-		FA283F3218B4C3B3003D4FB6 /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2F18B4C3B3003D4FB6 /* Base64.m */; };
 		FA283F3A18B5BD9F003D4FB6 /* QTRConnectedDevicesView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F3918B5BD9F003D4FB6 /* QTRConnectedDevicesView.m */; };
 		FA283F3D18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F3C18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m */; };
 		FA38B29318BDCFA4003BB8E5 /* QTRStatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA38B29218BDCFA4003BB8E5 /* QTRStatusItemView.m */; };
@@ -82,7 +80,6 @@
 		FADEB05818F53177002F1C00 /* QTRHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05618F53177002F1C00 /* QTRHelper.m */; };
 		FADEB05B18F5577E002F1C00 /* QTRRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05A18F5577E002F1C00 /* QTRRootViewController.m */; };
 		FADEB05F18F56202002F1C00 /* QTRTransfersStore.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05E18F56202002F1C00 /* QTRTransfersStore.m */; };
-		FAEB333718CDB55C00EA5993 /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2F18B4C3B3003D4FB6 /* Base64.m */; };
 		FAEB333818CDB55C00EA5993 /* QTRRootController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002018B3458B0098DA76 /* QTRRootController.m */; };
 		FAEB333918CDB55C00EA5993 /* QTRMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9003018B3534A0098DA76 /* QTRMessage.m */; };
 		FAEB333A18CDB55C00EA5993 /* QTRBonjourClient.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002A18B3515A0098DA76 /* QTRBonjourClient.m */; };
@@ -154,8 +151,6 @@
 		FA283F1718B494E5003D4FB6 /* QuickTransfer_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuickTransfer_iOSTests.m; sourceTree = "<group>"; };
 		FA283F2818B49BA8003D4FB6 /* QTRFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRFile.h; sourceTree = "<group>"; };
 		FA283F2918B49BA8003D4FB6 /* QTRFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRFile.m; sourceTree = "<group>"; };
-		FA283F2E18B4C3B3003D4FB6 /* Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
-		FA283F2F18B4C3B3003D4FB6 /* Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Base64.m; sourceTree = "<group>"; };
 		FA283F3818B5BD9F003D4FB6 /* QTRConnectedDevicesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRConnectedDevicesView.h; sourceTree = "<group>"; };
 		FA283F3918B5BD9F003D4FB6 /* QTRConnectedDevicesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRConnectedDevicesView.m; sourceTree = "<group>"; };
 		FA283F3B18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRConnectedDevicesViewController.h; sourceTree = "<group>"; };
@@ -335,15 +330,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		FA283F2D18B4C3B3003D4FB6 /* Base64 */ = {
-			isa = PBXGroup;
-			children = (
-				FA283F2E18B4C3B3003D4FB6 /* Base64.h */,
-				FA283F2F18B4C3B3003D4FB6 /* Base64.m */,
-			);
-			path = Base64;
-			sourceTree = "<group>";
-		};
 		FA283F3318B5BD73003D4FB6 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -472,7 +458,6 @@
 		FAD9001018B33F010098DA76 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				FA283F2D18B4C3B3003D4FB6 /* Base64 */,
 				FAD9001118B33F010098DA76 /* DTBonjour */,
 			);
 			path = ThirdParty;
@@ -847,7 +832,6 @@
 			files = (
 				FA67440918F69D9900A34C24 /* QTRTransfersStore.m in Sources */,
 				FAD009CB18D840AD0014DCC5 /* QTRBeaconHelper.m in Sources */,
-				FA283F3218B4C3B3003D4FB6 /* Base64.m in Sources */,
 				FA283F2318B49582003D4FB6 /* QTRBonjourServer.m in Sources */,
 				FA283F2418B49582003D4FB6 /* QTRBonjourClient.m in Sources */,
 				FA283F2518B49582003D4FB6 /* QTRMessage.m in Sources */,
@@ -884,7 +868,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA283F3018B4C3B3003D4FB6 /* Base64.m in Sources */,
 				FAD9002118B3458B0098DA76 /* QTRRootController.m in Sources */,
 				FAD9003118B3534A0098DA76 /* QTRMessage.m in Sources */,
 				FADEB05F18F56202002F1C00 /* QTRTransfersStore.m in Sources */,
@@ -922,7 +905,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAEB333718CDB55C00EA5993 /* Base64.m in Sources */,
 				FAEB333818CDB55C00EA5993 /* QTRRootController.m in Sources */,
 				FAEB333918CDB55C00EA5993 /* QTRMessage.m in Sources */,
 				FAEB333A18CDB55C00EA5993 /* QTRBonjourClient.m in Sources */,
