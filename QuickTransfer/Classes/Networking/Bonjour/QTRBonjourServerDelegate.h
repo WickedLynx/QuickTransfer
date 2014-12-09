@@ -94,5 +94,10 @@
  */
 - (void)server:(QTRBonjourServer *)server didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user;
 
+/*!
+ * Called when the server receives a text message from a user
+ */
+- (void)server:(QTRBonjourServer *)server didReiveTextMessage:(NSString *)messageText fromUser:(QTRUser *)user;
+
 
 @end

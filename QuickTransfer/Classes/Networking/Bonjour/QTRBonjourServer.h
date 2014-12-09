@@ -41,6 +41,8 @@
  */
 - (void)acceptFile:(QTRFile *)file accept:(BOOL)shouldAccept fromUser:(QTRUser *)user;
 
+- (void)sendText:(NSString *)text toUser:(QTRUser *)user;
+
 /*!
  The object which is interested in getting notified of connection and file related events
  */

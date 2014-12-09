@@ -134,6 +134,14 @@
     [[self connectionForUser:user] sendObject:message error:nil dataChunk:nil];
 }
 
+- (void)sendText:(NSString *)text toUser:(QTRUser *)user {
+    DTBonjourDataConnection *connection = [self connectionForUser:user];
+    if (connection != nil) {
+        QTRMessage *message = [QTRMessage messageWithUser:_localUser text:text];
+        [connection sendObject:message error:nil dataChunk:nil];
+    }
+}
+
 #pragma mark - Private methods
 
 - (QTRUser *)userForConnection:(DTBonjourDataConnection *)connection {
@@ -400,7 +408,14 @@
                             
                             break;
                         }
-                            
+
+                        case QTRMessageTypeText: {
+                            if ([sSelf.delegate respondsToSelector:@selector(client:didReiveTextMessage:fromUser:)]) {
+                                [sSelf.delegate client:sSelf didReiveTextMessage:theMessage.text fromUser:user];
+                            }
+                            break;
+                        }
+
                         default:
                             break;
                     }

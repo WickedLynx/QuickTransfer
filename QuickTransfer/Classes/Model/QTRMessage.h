@@ -57,7 +57,14 @@ typedef NS_ENUM(NSInteger, QTRMessageType) {
      The message must contain a File object with its data. The file can be a single
      part or a multipart transfer.
      */
-    QTRMessageTypeFileTransfer
+    QTRMessageTypeFileTransfer,
+
+    /*!
+     The sender is sending text.
+
+     The text can be obtained from the text property
+     */
+    QTRMessageTypeText
 
 };
 
@@ -74,6 +81,11 @@ typedef NS_ENUM(NSInteger, QTRMessageType) {
 + (instancetype)messageWithUser:(QTRUser *)sender file:(QTRFile *)file;
 
 /*!
+ * Creates a text message
+ */
++ (instancetype)messageWithUser:(QTRUser *)sender text:(NSString *)text;
+
+/*!
  The user/sender of the receiver
  */
 @property (strong) QTRUser *user;
@@ -87,5 +99,10 @@ typedef NS_ENUM(NSInteger, QTRMessageType) {
  The type of the message
  */
 @property (nonatomic) QTRMessageType type;
+
+/*!
+ * The text content of the message
+ */
+@property (strong, nonatomic, readonly) NSString *text;
 
 @end

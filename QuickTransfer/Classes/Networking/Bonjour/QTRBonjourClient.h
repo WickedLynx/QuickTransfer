@@ -50,6 +50,8 @@
  */
 - (void)acceptFile:(QTRFile *)file accept:(BOOL)shouldAccept fromUser:(QTRUser *)user;
 
+- (void)sendText:(NSString *)text toUser:(QTRUser *)user;
+
 /*!
  The delegate of the receiver to  whom connection and file related events are sent
  */

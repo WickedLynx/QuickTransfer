@@ -13,6 +13,7 @@
 NSString *const QTRMessageSenderKey = @"sender";
 NSString *const QTRMessageFileKey = @"file";
 NSString *const QTRMessageTypeKey = @"type";
+NSString *const QTRMessageTextKey = @"text";
 
 @implementation QTRMessage
 
@@ -27,6 +28,18 @@ NSString *const QTRMessageTypeKey = @"type";
     return message;
 }
 
++ (instancetype)messageWithUser:(QTRUser *)sender text:(NSString *)text {
+    QTRMessage *message = nil;
+
+    message = [[[self class] alloc] init];
+
+    [message setUser:sender];
+    message->_text = text;
+    [message setType:QTRMessageTypeText];
+
+    return message;
+}
+
 #pragma mark - NSCoding methods
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -35,6 +48,7 @@ NSString *const QTRMessageTypeKey = @"type";
         _user = [aDecoder decodeObjectForKey:QTRMessageSenderKey];
         _file = [aDecoder decodeObjectForKey:QTRMessageFileKey];
         _type = [aDecoder decodeIntegerForKey:QTRMessageTypeKey];
+        _text = [aDecoder decodeObjectForKey:QTRMessageTextKey];
     }
 
     return self;
@@ -44,6 +58,7 @@ NSString *const QTRMessageTypeKey = @"type";
     [aCoder encodeObject:_user forKey:QTRMessageSenderKey];
     [aCoder encodeObject:_file forKey:QTRMessageFileKey];
     [aCoder encodeInteger:_type forKey:QTRMessageTypeKey];
+    [aCoder encodeObject:_text forKey:QTRMessageTextKey];
 }
 
 @end

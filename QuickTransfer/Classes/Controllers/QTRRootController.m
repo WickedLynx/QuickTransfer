@@ -255,7 +255,6 @@ void refreshComputerModel() {
 
     }
 
-
 }
 
 - (void)showOpenPanelForSelectedUser {
@@ -449,6 +448,14 @@ void refreshComputerModel() {
     [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
+- (void)showTextMessage:(NSString *)textMessage fromUser:(QTRUser *)user {
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+
+    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:@"%@ says", user.name] defaultButton:@"Accept" alternateButton:@"Reject" otherButton:nil informativeTextWithFormat:@"%@", textMessage];
+    [[alert window] setTitle:@"QuickTransfer"];
+    [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+}
+
 #pragma mark - Actions
 
 - (IBAction)clickRefresh:(id)sender {
@@ -530,6 +537,17 @@ void refreshComputerModel() {
         [self.automaticallyAcceptCheckBox setState:NSOffState];
     }
     [self.preferencesWindow makeKeyAndOrderFront:self];
+}
+
+- (IBAction)clickSendMessage:(id)sender {
+    long clickedRow = [self.devicesTableView clickedRow];
+    if ([_connectedServers count] > clickedRow) {
+        QTRUser *theUser = _connectedServers[clickedRow];
+        [_client sendText:@"Test" toUser:theUser];
+    } else {
+        QTRUser *theUser = _connectedClients[clickedRow - [_connectedServers count]];
+        [_server sendText:@"Test" toUser:theUser];
+    }
 }
 
 #pragma mark - Notification handlers
@@ -651,6 +669,10 @@ void refreshComputerModel() {
     [self showTransfers];
 }
 
+- (void)server:(QTRBonjourServer *)server didReiveTextMessage:(NSString *)messageText fromUser:(QTRUser *)user {
+    [self showTextMessage:messageText fromUser:user];
+}
+
 #pragma mark - QTRBonjourClientDelegate methods
 
 - (QTRUser *)localUser {
@@ -698,6 +720,10 @@ void refreshComputerModel() {
 
 - (void)client:(QTRBonjourClient *)client didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user {
     [self showTransfers];
+}
+
+- (void)client:(QTRBonjourClient *)client didReiveTextMessage:(NSString *)messageText fromUser:(QTRUser *)user {
+    [self showTextMessage:messageText fromUser:user];
 }
 
 #pragma mark - QTRStatusItemViewDelegate methods
