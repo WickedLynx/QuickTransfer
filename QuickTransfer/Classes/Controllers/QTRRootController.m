@@ -17,6 +17,7 @@
 #import "QTRBeaconHelper.h"
 #import "QTRTransfersStore.h"
 #import "QTRHelper.h"
+#import "QTRConversationsController.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -57,6 +58,7 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @property (weak) IBOutlet NSTextField *computerNameTextField;
 @property (weak) IBOutlet NSButton *automaticallyAcceptCheckBox;
 @property (weak) IBOutlet NSButton *launchAtLoginCheckBox;
+@property (strong, nonatomic) QTRConversationsController *conversationsController;
 
 - (IBAction)clickSavePreferences:(id)sender;
 - (IBAction)clickSendFile:(id)sender;
@@ -456,6 +458,13 @@ void refreshComputerModel() {
     [alert beginSheetModalForWindow:[[NSApplication sharedApplication] keyWindow] modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
+- (QTRConversationsController *)conversationsController {
+    if (_conversationsController == nil) {
+        _conversationsController = [[QTRConversationsController alloc] initWithWindowNibName:@"QTRConversationsController"];
+    }
+    return _conversationsController;
+}
+
 #pragma mark - Actions
 
 - (IBAction)clickRefresh:(id)sender {
@@ -530,6 +539,8 @@ void refreshComputerModel() {
 
 - (IBAction)clickPreferences:(id)sender {
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    [self.conversationsController showWindow:nil];
+    return;
     [[self.computerNameTextField cell] setPlaceholderString:_localUser.name];
     if (_shouldAutoAccept) {
         [self.automaticallyAcceptCheckBox setState:NSOnState];
@@ -540,14 +551,16 @@ void refreshComputerModel() {
 }
 
 - (IBAction)clickSendMessage:(id)sender {
-    long clickedRow = [self.devicesTableView clickedRow];
-    if ([_connectedServers count] > clickedRow) {
-        QTRUser *theUser = _connectedServers[clickedRow];
-        [_client sendText:@"Test" toUser:theUser];
-    } else {
-        QTRUser *theUser = _connectedClients[clickedRow - [_connectedServers count]];
-        [_server sendText:@"Test" toUser:theUser];
-    }
+    [self.conversationsController showWindow:nil];
+//    
+//    long clickedRow = [self.devicesTableView clickedRow];
+//    if ([_connectedServers count] > clickedRow) {
+//        QTRUser *theUser = _connectedServers[clickedRow];
+//        [_client sendText:@"Test" toUser:theUser];
+//    } else {
+//        QTRUser *theUser = _connectedClients[clickedRow - [_connectedServers count]];
+//        [_server sendText:@"Test" toUser:theUser];
+//    }
 }
 
 #pragma mark - Notification handlers
