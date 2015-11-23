@@ -287,25 +287,27 @@ void refreshComputerModel() {
     }
 }
 
-- (NSURL *)validateDraggedFileURLOnRow:(NSInteger)row info:(id <NSDraggingInfo>)info {
-
-    NSURL *validatedURL = nil;
+- (NSArray *)validateDraggedFileURLOnRow:(NSInteger)row info:(id <NSDraggingInfo>)info {
 
     NSPasteboard *thePasteboard = [info draggingPasteboard];
     NSArray *supportedURLs = @[(NSString *)kUTTypeItem];
 
     NSArray *draggedURLs = [thePasteboard readObjectsForClasses:@[[NSURL class]] options:@{NSPasteboardURLReadingFileURLsOnlyKey : @(YES), NSPasteboardURLReadingContentsConformToTypesKey : supportedURLs}];
 
-    if ([draggedURLs count] == 1) {
-        BOOL isDirectory = NO;
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[(NSURL *)[draggedURLs firstObject] path] isDirectory:&isDirectory]) {
-            if (!isDirectory) {
-                validatedURL = [draggedURLs firstObject];
+    NSMutableArray *validatedURLs = nil;
+    if ([draggedURLs count] >= 1) {
+        validatedURLs = [[NSMutableArray alloc] initWithCapacity:[draggedURLs count]];
+        for (NSURL *url in draggedURLs) {
+            BOOL isDirectory = NO;
+            if ([[NSFileManager defaultManager] fileExistsAtPath:[url path] isDirectory:&isDirectory]) {
+                if (!isDirectory) {
+                    [validatedURLs addObject:url];
+                }
             }
         }
     }
 
-    return validatedURL;
+    return validatedURLs;
 }
 
 - (void)stopServices {
@@ -583,13 +585,15 @@ void refreshComputerModel() {
 
     BOOL acceptDrop = NO;
 
-    NSURL *fileURL = [self validateDraggedFileURLOnRow:row info:info];
+    NSArray *fileURLs = [self validateDraggedFileURLOnRow:row info:info];
 
-    if (fileURL != nil) {
+    if (fileURLs.count > 0) {
 
         acceptDrop = YES;
         _clickedRow = row;
-        [self sendFileAtURL:fileURL];
+        for (NSURL *url in fileURLs) {
+            [self sendFileAtURL:url];
+        }
 
     }
 
