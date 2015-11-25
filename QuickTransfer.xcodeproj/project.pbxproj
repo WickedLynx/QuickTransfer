@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07EE54691C047B550092C913 /* QTRHomeCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07EE54681C047B550092C913 /* QTRHomeCollectionViewCell.m */; };
 		590C41AF18D2C6320073F160 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 590C41AE18D2C6320073F160 /* MobileCoreServices.framework */; };
 		590C41B118D2E3A80073F160 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 590C41B018D2E3A80073F160 /* AssetsLibrary.framework */; };
 		FA12BB0318BF06000030911F /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
@@ -127,6 +128,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07EE54671C047B550092C913 /* QTRHomeCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRHomeCollectionViewCell.h; sourceTree = "<group>"; };
+		07EE54681C047B550092C913 /* QTRHomeCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRHomeCollectionViewCell.m; sourceTree = "<group>"; };
 		590C41AE18D2C6320073F160 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/MobileCoreServices.framework; sourceTree = DEVELOPER_DIR; };
 		590C41B018D2E3A80073F160 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/AssetsLibrary.framework; sourceTree = DEVELOPER_DIR; };
 		FA12BB0118BF06000030911F /* QTRTransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfer.h; sourceTree = "<group>"; };
@@ -375,6 +378,8 @@
 				FA283F3918B5BD9F003D4FB6 /* QTRConnectedDevicesView.m */,
 				FAAC781A18EE884C0006B698 /* QTRTransfersTableCell.h */,
 				FAAC781B18EE884C0006B698 /* QTRTransfersTableCell.m */,
+				07EE54671C047B550092C913 /* QTRHomeCollectionViewCell.h */,
+				07EE54681C047B550092C913 /* QTRHomeCollectionViewCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -843,6 +848,7 @@
 				FA283F2718B49582003D4FB6 /* QTRConstants.m in Sources */,
 				FA283F1F18B49551003D4FB6 /* DTBonjourDataChunk.m in Sources */,
 				FA283F2018B49551003D4FB6 /* DTBonjourDataConnection.m in Sources */,
+				07EE54691C047B550092C913 /* QTRHomeCollectionViewCell.m in Sources */,
 				FA283F2C18B49BA8003D4FB6 /* QTRFile.m in Sources */,
 				FADEB05B18F5577E002F1C00 /* QTRRootViewController.m in Sources */,
 				FA283F2118B49551003D4FB6 /* DTBonjourServer.m in Sources */,
@@ -1002,7 +1008,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Vercingetorix Technologies (ZS2J82S2TD)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1015,9 +1021,9 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "QuickTransfer-iOS/QuickTransfer-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "F8163F22-2453-450B-8012-485F96B86425";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1030,8 +1036,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Vercingetorix Technologies (ZS2J82S2TD)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vercingetorix Technologies (ZS2J82S2TD)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
@@ -1039,9 +1045,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuickTransfer-iOS/QuickTransfer-iOS-Prefix.pch";
 				INFOPLIST_FILE = "QuickTransfer-iOS/QuickTransfer-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "F8163F22-2453-450B-8012-485F96B86425";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

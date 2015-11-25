@@ -12,4 +12,9 @@
 
 @property (weak, nonatomic) UITableView *devicesTableView;
 
+@property (weak, nonatomic) UISearchBar *searchBar;
+
+@property (weak, nonatomic) UICollectionView *devicesCollectionView;
+@property (weak, nonatomic) UIButton *sendButton;
+
 @end

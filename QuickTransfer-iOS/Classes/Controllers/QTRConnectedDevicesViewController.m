@@ -12,6 +12,8 @@
 #import "QTRConnectedDevicesViewController.h"
 #import "QTRConnectedDevicesView.h"
 
+#import "QTRHomeCollectionViewCell.h"
+
 #import "QTRBonjourClient.h"
 #import "QTRBonjourServer.h"
 #import "QTRUser.h"
@@ -21,7 +23,7 @@
 #import "QTRBeaconHelper.h"
 #import "QTRHelper.h"
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate> {
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout> {
 
     __weak QTRConnectedDevicesView *_devicesView;
 
@@ -47,7 +49,9 @@
     __weak id <QTRBonjourTransferDelegate> _transfersController;
 
     NSURL *_importedFileURL;
+    
 }
+
 
 - (void)touchShare:(UIBarButtonItem *)barButton;
 - (void)touchRefresh:(UIBarButtonItem *)barButton;
@@ -62,6 +66,9 @@
 - (void)applicationDidEnterBackground:(NSNotification *)notification;
 
 @end
+
+static NSString *cellIdentifier = @"cellIdentifier";
+
 
 @implementation QTRConnectedDevicesViewController
 
@@ -103,7 +110,7 @@
 
 - (void)loadView {
     QTRConnectedDevicesView *view = [[QTRConnectedDevicesView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    [view setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
+    //[view setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
     [self setView:view];
 }
 
@@ -122,17 +129,29 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    self.view.frame = [[UIScreen mainScreen] bounds];
+    
+    [self.view setBackgroundColor:[UIColor whiteColor]];
+    [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor whiteColor]];
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    
     [self setTitle:@"Devices"];
-
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.56f green:0.80f blue:0.62f alpha:1.00f]];
+    
+    [[_devicesView devicesCollectionView] registerClass:[QTRHomeCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
 
-    [[_devicesView devicesTableView] setDataSource:self];
-    [[_devicesView devicesTableView] setDelegate:self];
+    [[_devicesView devicesCollectionView] setDataSource:self];
+    [[_devicesView devicesCollectionView] setDelegate:self];
 
-    [[_devicesView devicesTableView] reloadData];
-
+    [[_devicesView devicesCollectionView] reloadData];
+    
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStylePlain target:self action:@selector(touchRefresh:)];
     [self.navigationItem setLeftBarButtonItem:barButton];
+    
+    
+    NSLog(@"In QTRConnectedDevicesViewController   Width: %f  \n Height:%f", self.view.frame.size.width , self.view.frame.size.height);
+    
 }
 
 #pragma mark - Public methods
@@ -181,7 +200,7 @@
 
     [_connectedServers removeAllObjects];
 
-    [[_devicesView devicesTableView] reloadData];
+    [[_devicesView devicesCollectionView] reloadData];
 
     [_beaconAdvertiser stopAdvertisingBeaconRegion];
     [_beaconRanger stopRangingBeacons];
@@ -372,14 +391,35 @@
     }
 }
 
-#pragma mark - UITableViewDataSource methods
+#pragma mark - UICollectionViewDataSource methods
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+-(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
+    
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_connectedServers count] + [_connectedClients count];
+-(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+
+//    return [_connectedServers count] + [_connectedClients count];
+    return 50;
+    
+}
+
+-(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    QTRHomeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
+    
+//    [cell.connectedDeviceName setText:[theUser name]];
+
+    cell.connectedDeviceName.text = @"Demo device Connected";
+    
+    cell.connectedDeviceImage.backgroundColor = [UIColor blueColor];
+    
+    
+    return cell;
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -398,31 +438,15 @@
     return cell;
 }
 
-#pragma mark - UITableViewDelegate methods
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    BOOL isServer = NO;
-    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:&isServer];
-
-    if (_importedFileURL == nil) {
-
-        _selectedUser = theUser;
-        [self touchShare:nil];
-
-    } else {
-
-        if (isServer) {
-            [_client sendFileAtURL:_importedFileURL toUser:theUser];
-        } else {
-            [_server sendFileAtURL:_importedFileURL toUser:theUser];
-        }
-
-        _importedFileURL = nil;
-    }
-
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CGSizeMake(100, 100);
 }
+
+
+#pragma mark - UICollectionViewDelegate methods
+
 
 #pragma mark - QTRBonjourServerDelegate methods
 
@@ -431,7 +455,7 @@
 
         [_connectedClients addObject:user];
         [self updateTitle];
-        [[_devicesView devicesTableView] reloadData];
+        [[_devicesView devicesCollectionView] reloadData];
 
     }
 }
@@ -439,7 +463,7 @@
 - (void)server:(QTRBonjourServer *)server didDisconnectUser:(QTRUser *)user {
     [_connectedClients removeObject:user];
     [self updateTitle];
-    [[_devicesView devicesTableView] reloadData];
+    [[_devicesView devicesCollectionView] reloadData];
 }
 
 - (void)server:(QTRBonjourServer *)server didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
@@ -475,7 +499,7 @@
 
         [_connectedServers addObject:user];
         [self updateTitle];
-        [[_devicesView devicesTableView] reloadData];
+        [[_devicesView devicesCollectionView] reloadData];
 
     }
 }
@@ -483,7 +507,7 @@
 - (void)client:(QTRBonjourClient *)client didDisconnectFromServerForUser:(QTRUser *)user {
     [_connectedServers removeObject:user];
     [self updateTitle];
-    [[_devicesView devicesTableView] reloadData];
+    [[_devicesView devicesCollectionView] reloadData];
 }
 
 - (void)client:(QTRBonjourClient *)client didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {

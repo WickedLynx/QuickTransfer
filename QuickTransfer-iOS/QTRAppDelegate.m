@@ -15,6 +15,9 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+    
+    NSLog(@"In AppDelegate   Width: %f  \n Height:%f", self.window.frame.size.width , self.window.frame.size.height);
+
 
     QTRRootViewController *rootViewController = [QTRRootViewController new];
 
