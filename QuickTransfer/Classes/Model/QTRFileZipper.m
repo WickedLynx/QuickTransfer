@@ -38,8 +38,8 @@
                 fileName = [NSString stringWithFormat:@"%ld-%@", (long)[[NSDate date] timeIntervalSince1970], fileName];
                 tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:fileName];
             }
-            [fileManager moveItemAtPath:newURL.path toPath:tmpPath error:&fileManagerError];
             copiedFile = [NSURL fileURLWithPath:tmpPath];
+            [fileManager moveItemAtPath:newURL.path toPath:tmpPath error:&fileManagerError];
         }
         if (completion != nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
