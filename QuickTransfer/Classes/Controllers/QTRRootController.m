@@ -31,7 +31,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 NSString *const QTRDefaultsAutomaticallyAcceptFilesKey = @"automaticallyAcceptFiles";
 NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 
-@interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRBonjourClientDelegate, QTRBonjourServerDelegate, QTRStatusItemViewDelegate> {
+@interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRBonjourClientDelegate, QTRBonjourServerDelegate, QTRStatusItemViewDelegate, QTRTransfersControllerDelegate> {
     NSStatusItem *_statusItem;
     QTRBonjourServer *_server;
     QTRBonjourClient *_client;
@@ -732,6 +732,13 @@ void refreshComputerModel() {
 
 - (void)client:(QTRBonjourClient *)client didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user {
     [self showTransfers];
+}
+
+#pragma mark - QTRTransfersControllerDelegate methods
+
+- (BOOL)transfersController:(QTRTransfersController *)controller needsResumeTransfer:(QTRTransfer *)transfer {
+    
+    return NO;
 }
 
 #pragma mark - QTRStatusItemViewDelegate methods

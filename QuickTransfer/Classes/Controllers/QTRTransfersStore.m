@@ -32,13 +32,14 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
         _dataChunksToTransfers = [NSMapTable strongToStrongObjectsMapTable];
 
-        _fileIdentifierToTransfers = [NSMutableDictionary new];
-
         NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:_archivedTransfersFilePath];
         if (array != nil) {
             _allTransfers = [array mutableCopy];
+            NSArray *fileIdentifiers = [_allTransfers valueForKey:@"fileIdentifier"];
+            _fileIdentifierToTransfers = [NSMutableDictionary dictionaryWithObjects:_allTransfers forKeys:fileIdentifiers];
         } else {
             _allTransfers = [NSMutableArray new];
+            _fileIdentifierToTransfers = [NSMutableDictionary new];
         }
     }
 
@@ -116,6 +117,20 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
         if ([self.delegate respondsToSelector:@selector(transfersStore:didAddTransfersAtIndices:)]) {
             [self.delegate transfersStore:self didAddTransfersAtIndices:[NSIndexSet indexSetWithIndex:0]];
+        }
+    }
+}
+
+- (void)resumeTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk {
+    if (file != nil) {
+        QTRTransfer *transfer = _fileIdentifierToTransfers[file.identifier];
+        if (transfer != nil) {
+            [transfer setState:QTRTransferStateInProgress];
+            [self archiveTransfers];
+            NSInteger index = [_allTransfers indexOfObject:transfer];
+            if ([self.delegate respondsToSelector:@selector(transfersStore:didUpdateTransfersAtIndices:)]) {
+                [self.delegate transfersStore:self didUpdateTransfersAtIndices:[NSIndexSet indexSetWithIndex:index]];
+            }
         }
     }
 }
@@ -256,6 +271,12 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         }
 
     }
+}
+
+- (void)updateSentBytes:(long long)sentBytes forFile:(QTRFile *)file {
+    QTRTransfer *theTransfer = _fileIdentifierToTransfers[file.identifier];
+    [theTransfer setSentBytes:sentBytes];
+    [self archiveTransfers];
 }
 
 

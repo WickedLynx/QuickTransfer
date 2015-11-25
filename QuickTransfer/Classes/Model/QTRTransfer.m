@@ -17,6 +17,8 @@ NSString *const QTRTransferTotalPartsKey = @"QTRTransferTotalParts";
 NSString *const QTRTransferTransferedChunksKey = @"QTRTransferTransferedChunks";
 NSString *const QTRTransferCurrentChunkProgressKey = @"QTRTransferCurrentChunkProgress";
 NSString *const QTRTransferStateKey = @"QTRTransferState";
+NSString *const QTRTransferSentBytesKey = @"QTRTransferSentBytes";
+NSString *const QTRTransferFileIdentifierKey = @"QTRTransferFileIdentifier";
 
 @implementation QTRTransfer
 
@@ -45,6 +47,8 @@ NSString *const QTRTransferStateKey = @"QTRTransferState";
         _transferedChunks = [aDecoder decodeIntegerForKey:QTRTransferTransferedChunksKey];
         _currentChunkProgress = [aDecoder decodeFloatForKey:QTRTransferCurrentChunkProgressKey];
         _state = [aDecoder decodeIntegerForKey:QTRTransferStateKey];
+        _sentBytes = [aDecoder decodeIntegerForKey:QTRTransferSentBytesKey];
+        _fileIdentifier = [aDecoder decodeObjectForKey:QTRTransferFileIdentifierKey];
     }
 
     return self;
@@ -61,6 +65,8 @@ NSString *const QTRTransferStateKey = @"QTRTransferState";
     [aCoder encodeInteger:self.transferedChunks forKey:QTRTransferTransferedChunksKey];
     [aCoder encodeFloat:self.currentChunkProgress forKey:QTRTransferCurrentChunkProgressKey];
     [aCoder encodeInteger:self.state forKey:QTRTransferStateKey];
+    [aCoder encodeInteger:self.sentBytes forKey:QTRTransferSentBytesKey];
+    [aCoder encodeObject:_fileIdentifier forKey:QTRTransferFileIdentifierKey];
 }
 
 #pragma mark - QLPreviewItem methods

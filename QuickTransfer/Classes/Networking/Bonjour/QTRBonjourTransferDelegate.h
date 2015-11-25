@@ -59,10 +59,23 @@
 - (void)addTransferFromUser:(QTRUser *)user file:(QTRFile *)file;
 
 /*!
+ Resume a transfer
+ */
+- (void)resumeTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk;
+
+/*!
  Update the transfer of an incoming file
  
  @param file The file being received
  */
 - (void)updateTransferForFile:(QTRFile *)file;
+
+/*!
+ Update the sent bytes of the multi-part transfer
+ 
+ @param sentBytes The total bytes sent
+ @param file The file to update
+ */
+- (void)updateSentBytes:(long long)sentBytes forFile:(QTRFile *)file;
 
 @end

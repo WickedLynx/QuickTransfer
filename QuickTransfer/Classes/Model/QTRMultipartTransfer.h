@@ -39,7 +39,18 @@ FOUNDATION_EXPORT long long const QTRMultipartTransferMaximumPartSize;
  @param dataReadCompletion The block to call when the part is read from disk.
                             The block is not called on the main thread.
  */
-- (void)readNextPartForTransmission:(void (^)(QTRFile *file, BOOL isLastPart))dataReadCompletion;
+- (void)readNextPartForTransmission:(void (^)(QTRFile *file, BOOL isLastPart, long long offsetInFile))dataReadCompletion;
+
+/*!
+ Check if the transfer can be resumed
+ This method checks if the file exists at the path, and if the offset is correct
+ */
+- (BOOL)canResumeFromOffset:(long long)offset;
+
+/*!
+ Resumes the file transfer. Calling `-readNextPartForTransmission:` will read from the offset
+ */
+- (void)resumeFromOffset:(long long)offset;
 
 /*!
  The name of the file of the transfer

@@ -52,14 +52,14 @@ long long const QTRMultipartTransferMaximumPartSize = 10 * 1024 * 1024;   // 10 
     return self;
 }
 
-- (void)readNextPartForTransmission:(void (^)(QTRFile *file, BOOL isLastPart))dataReadCompletion {
+- (void)readNextPartForTransmission:(void (^)(QTRFile *file, BOOL isLastPart, long long offsetInFile))dataReadCompletion {
     __weak typeof(self) wSelf = self;
 
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         if (wSelf != nil) {
 
             typeof(self) sSelf = wSelf;
-
+            long long currentOffset = [sSelf->_fileHandle offsetInFile];
             long long targetPosition = [sSelf->_fileHandle offsetInFile] + QTRMultipartTransferMaximumPartSize;
 
             NSData *fileData = [sSelf->_fileHandle readDataOfLength:QTRMultipartTransferMaximumPartSize];
@@ -77,9 +77,11 @@ long long const QTRMultipartTransferMaximumPartSize = 10 * 1024 * 1024;   // 10 
 
             ++sSelf->_currentPart;
 
-            dataReadCompletion(file, isLastPart);
+            dataReadCompletion(file, isLastPart, currentOffset);
         }
     });
 }
+
+
 
 @end
