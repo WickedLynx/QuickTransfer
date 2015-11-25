@@ -56,8 +56,5 @@
     }
 }
 
-+ (void)unzipDirectoryAtURL:(NSURL *)directoryURL completion:(void (^)(NSURL *, NSError *))completion {
-
-}
 
 @end
