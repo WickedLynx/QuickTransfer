@@ -10,6 +10,11 @@
 
 @implementation QTRFileZipper
 
++ (NSURL *)temporaryFileURLForFile:(NSURL *)file {
+
+    return nil;
+}
+
 + (void)zipDirectoryAtURL:(NSURL *)directoryURL completion:(void (^)(NSURL *, NSError *))completion {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     BOOL isDirectory = NO;
@@ -24,9 +29,16 @@
     NSError *zipError = nil;
     NSFileCoordinator *fileCoordinater = [[NSFileCoordinator alloc] init];
     [fileCoordinater coordinateReadingItemAtURL:directoryURL options:NSFileCoordinatorReadingForUploading error:&zipError byAccessor:^(NSURL * _Nonnull newURL) {
+        NSURL *copiedFile = nil;
+        NSError *fileManagerError = nil;
+        if ([fileManager fileExistsAtPath:[newURL path]]) {
+            NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:newURL.path.lastPathComponent];
+            [fileManager moveItemAtPath:newURL.path toPath:tmpPath error:&fileManagerError];
+            copiedFile = [NSURL fileURLWithPath:tmpPath];
+        }
         if (completion != nil) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completion(newURL, nil);
+                completion(copiedFile, fileManagerError);
             });
         }
     }];
