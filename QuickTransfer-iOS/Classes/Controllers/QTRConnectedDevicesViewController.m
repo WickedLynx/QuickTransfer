@@ -146,8 +146,13 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     [[_devicesView devicesCollectionView] reloadData];
     
-    UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStylePlain target:self action:@selector(touchRefresh:)];
-    [self.navigationItem setLeftBarButtonItem:barButton];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Setting" style:UIBarButtonItemStylePlain target:self action:@selector(settingBarButton:)];
+    [self.navigationItem setLeftBarButtonItem:leftBarButton];
+    
+    
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Logs" style:UIBarButtonItemStylePlain target:self action:@selector(logsBarButton:)];
+    
+    [self.navigationItem setRightBarButtonItem:rightBarButton];
     
     
     NSLog(@"In QTRConnectedDevicesViewController   Width: %f  \n Height:%f", self.view.frame.size.width , self.view.frame.size.height);
@@ -164,6 +169,15 @@ static NSString *cellIdentifier = @"cellIdentifier";
 }
 
 #pragma mark - Actions
+
+- (void)settingBarButton:(UIBarButtonItem *)barButton {
+    NSLog(@"Settings");
+}
+
+- (void)logsBarButton:(UIBarButtonItem *)barButton {
+    NSLog(@"Logs");
+}
+
 
 - (void)touchRefresh:(UIBarButtonItem *)barButton {
     [self refresh];
@@ -446,6 +460,15 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 
 #pragma mark - UICollectionViewDelegate methods
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"Item %i Selected",indexPath.row);
+    
+    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+
+
+
+}
 
 
 #pragma mark - QTRBonjourServerDelegate methods

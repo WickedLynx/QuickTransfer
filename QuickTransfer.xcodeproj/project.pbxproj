@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07CB1B5C1C0612E100E3C02D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 07CB1B5B1C0612E100E3C02D /* Default-568h@2x.png */; };
 		07EE54691C047B550092C913 /* QTRHomeCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07EE54681C047B550092C913 /* QTRHomeCollectionViewCell.m */; };
 		590C41AF18D2C6320073F160 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 590C41AE18D2C6320073F160 /* MobileCoreServices.framework */; };
 		590C41B118D2E3A80073F160 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 590C41B018D2E3A80073F160 /* AssetsLibrary.framework */; };
@@ -42,14 +43,14 @@
 		FA3ACDB618C0577A00889FBC /* QTRTransfersTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3ACDB518C0577A00889FBC /* QTRTransfersTableCellView.m */; };
 		FA40A09218FBFB2200FFE344 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA40A09118FBFB2200FFE344 /* QuickLook.framework */; };
 		FA40A09418FBFBE800FFE344 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA40A09318FBFBE800FFE344 /* Quartz.framework */; };
-		FA5911E91C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; settings = {ASSET_TAGS = (); }; };
-		FA5911EA1C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; settings = {ASSET_TAGS = (); }; };
-		FA5911EB1C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; settings = {ASSET_TAGS = (); }; };
-		FA5911EC1C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; settings = {ASSET_TAGS = (); }; };
-		FA5911F01C057F0F0057928C /* QTRDraggedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */; settings = {ASSET_TAGS = (); }; };
-		FA5911F11C057F0F0057928C /* QTRDraggedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */; settings = {ASSET_TAGS = (); }; };
-		FA5911F21C057F0F0057928C /* QTRDraggedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */; settings = {ASSET_TAGS = (); }; };
-		FA5911F31C057F0F0057928C /* QTRDraggedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */; settings = {ASSET_TAGS = (); }; };
+		FA5911E91C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
+		FA5911EA1C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
+		FA5911EB1C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
+		FA5911EC1C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
+		FA5911F01C057F0F0057928C /* QTRDraggedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */; };
+		FA5911F11C057F0F0057928C /* QTRDraggedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */; };
+		FA5911F21C057F0F0057928C /* QTRDraggedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */; };
+		FA5911F31C057F0F0057928C /* QTRDraggedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */; };
 		FA5911F71C0583520057928C /* QTRRootController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9002018B3458B0098DA76 /* QTRRootController.m */; };
 		FA5911F81C0583520057928C /* QTRMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9003018B3534A0098DA76 /* QTRMessage.m */; };
 		FA5911F91C0583520057928C /* QTRTransfersStore.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05E18F56202002F1C00 /* QTRTransfersStore.m */; };
@@ -57,8 +58,8 @@
 		FA5911FB1C0583520057928C /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
 		FA5911FC1C0583520057928C /* QTRMultipartWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */; };
 		FA5911FD1C0583520057928C /* QTRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD9FFEA18B33CA70098DA76 /* QTRAppDelegate.m */; };
-		FA5911FE1C0583520057928C /* QTRDraggedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */; settings = {ASSET_TAGS = (); }; };
-		FA5911FF1C0583520057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; settings = {ASSET_TAGS = (); }; };
+		FA5911FE1C0583520057928C /* QTRDraggedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */; };
+		FA5911FF1C0583520057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
 		FA5912001C0583520057928C /* QTRHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05618F53177002F1C00 /* QTRHelper.m */; };
 		FA5912011C0583520057928C /* QTRFile.m in Sources */ = {isa = PBXBuildFile; fileRef = FA283F2918B49BA8003D4FB6 /* QTRFile.m */; };
 		FA5912021C0583520057928C /* QTRMultipartTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */; };
@@ -143,6 +144,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07CB1B5B1C0612E100E3C02D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "QuickTransfer-iOS/Default-568h@2x.png"; sourceTree = "<group>"; };
 		07EE54671C047B550092C913 /* QTRHomeCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRHomeCollectionViewCell.h; sourceTree = "<group>"; };
 		07EE54681C047B550092C913 /* QTRHomeCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRHomeCollectionViewCell.m; sourceTree = "<group>"; };
 		590C41AE18D2C6320073F160 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.0.sdk/System/Library/Frameworks/MobileCoreServices.framework; sourceTree = DEVELOPER_DIR; };
@@ -315,6 +317,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07CB1B5D1C0612EF00E3C02D /* SplashScreen */ = {
+			isa = PBXGroup;
+			children = (
+				07CB1B5B1C0612E100E3C02D /* Default-568h@2x.png */,
+			);
+			name = SplashScreen;
+			sourceTree = "<group>";
+		};
 		FA283EF918B494E5003D4FB6 /* QuickTransfer-iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -549,6 +559,7 @@
 				FAD9FFFB18B33CA80098DA76 /* QuickTransferTests */,
 				FA283EF918B494E5003D4FB6 /* QuickTransfer-iOS */,
 				FA283F1118B494E5003D4FB6 /* QuickTransfer-iOSTests */,
+				07CB1B5D1C0612EF00E3C02D /* SplashScreen */,
 				FAD9FFD618B33CA70098DA76 /* Frameworks */,
 				FAD9FFD518B33CA70098DA76 /* Products */,
 				FAEB335718CDB55C00EA5993 /* QuickTransfer copy-Info.plist */,
@@ -786,6 +797,7 @@
 			files = (
 				FA283EFE18B494E5003D4FB6 /* InfoPlist.strings in Resources */,
 				FA283F0618B494E5003D4FB6 /* Images.xcassets in Resources */,
+				07CB1B5C1C0612E100E3C02D /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
