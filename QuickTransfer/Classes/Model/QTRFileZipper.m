@@ -33,6 +33,11 @@
         NSError *fileManagerError = nil;
         if ([fileManager fileExistsAtPath:[newURL path]]) {
             NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:newURL.path.lastPathComponent];
+            NSString *fileName = [tmpPath lastPathComponent];
+            while ([fileManager fileExistsAtPath:tmpPath]) {
+                fileName = [NSString stringWithFormat:@"%ld-%@", (long)[[NSDate date] timeIntervalSince1970], fileName];
+                tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:fileName];
+            }
             [fileManager moveItemAtPath:newURL.path toPath:tmpPath error:&fileManagerError];
             copiedFile = [NSURL fileURLWithPath:tmpPath];
         }
