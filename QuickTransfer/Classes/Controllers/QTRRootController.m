@@ -17,6 +17,8 @@
 #import "QTRBeaconHelper.h"
 #import "QTRTransfersStore.h"
 #import "QTRHelper.h"
+#import "QTRFileZipper.h"
+#import "QTRDraggedItem.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -254,8 +256,35 @@ void refreshComputerModel() {
         [_server sendFileAtURL:url toUser:theUser];
 
     }
+}
 
+- (void)sendDirectoryAtURL:(NSURL *)url {
+    QTRUser *user = nil;
+    BOOL userIsServer = NO;
+    if ([_connectedServers count] > _clickedRow) {
+        userIsServer = YES;
+        user = _connectedServers[_clickedRow];
+    } else if ([_connectedClients count] > _clickedRow) {
+        user = _connectedClients[_clickedRow];
+    }
 
+    __weak typeof(self) wself = self;
+    void (^zipCompletion)(NSURL *, NSError *) = ^(NSURL *zipURL, NSError *zipError) {
+        if (wself != nil) {
+            typeof(self) sself = wself;
+            if (zipError == nil) {
+                if (user != nil) {
+                    if (userIsServer) {
+                        [sself->_server sendFileAtURL:zipURL toUser:user];
+                    } else {
+                        [sself->_client sendFileAtURL:zipURL toUser:user];
+                    }
+                }
+            }
+        }
+    };
+
+    [QTRFileZipper zipDirectoryAtURL:url completion:zipCompletion];
 }
 
 - (void)showOpenPanelForSelectedUser {
@@ -297,12 +326,10 @@ void refreshComputerModel() {
     NSMutableArray *validatedURLs = nil;
     if ([draggedURLs count] >= 1) {
         validatedURLs = [[NSMutableArray alloc] initWithCapacity:[draggedURLs count]];
+        BOOL isDirectory = NO;
         for (NSURL *url in draggedURLs) {
-            BOOL isDirectory = NO;
             if ([[NSFileManager defaultManager] fileExistsAtPath:[url path] isDirectory:&isDirectory]) {
-                if (!isDirectory) {
-                    [validatedURLs addObject:url];
-                }
+                [validatedURLs addObject:[[QTRDraggedItem alloc] initWithFileURL:url isDirectory:isDirectory]];
             }
         }
     }
@@ -585,16 +612,19 @@ void refreshComputerModel() {
 
     BOOL acceptDrop = NO;
 
-    NSArray *fileURLs = [self validateDraggedFileURLOnRow:row info:info];
+    NSArray *files = [self validateDraggedFileURLOnRow:row info:info];
 
-    if (fileURLs.count > 0) {
+    if (files.count > 0) {
 
         acceptDrop = YES;
         _clickedRow = row;
-        for (NSURL *url in fileURLs) {
-            [self sendFileAtURL:url];
+        for (QTRDraggedItem *file in files) {
+            if ([file isDirectory]) {
+                [self sendDirectoryAtURL:file.fileURL];
+            } else {
+                [self sendFileAtURL:file.fileURL];
+            }
         }
-
     }
 
     return acceptDrop;
