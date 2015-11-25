@@ -275,9 +275,9 @@ void refreshComputerModel() {
             if (zipError == nil) {
                 if (user != nil) {
                     if (userIsServer) {
-                        [sself->_server sendFileAtURL:zipURL toUser:user];
-                    } else {
                         [sself->_client sendFileAtURL:zipURL toUser:user];
+                    } else {
+                        [sself->_server sendFileAtURL:zipURL toUser:user];
                     }
                 }
             }
