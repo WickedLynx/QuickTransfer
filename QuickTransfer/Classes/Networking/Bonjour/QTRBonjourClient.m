@@ -15,6 +15,7 @@
 #import "DTBonjourDataChunk.h"
 #import "QTRMultipartTransfer.h"
 #import "QTRMultipartWriter.h"
+#import "QTRTransfer.h"
 
 @interface QTRBonjourClient () <DTBonjourDataConnectionDelegate, NSNetServiceBrowserDelegate, NSNetServiceDelegate> {
     dispatch_queue_t _fileWritingQueue;
@@ -30,6 +31,7 @@
 @property (strong) NSMapTable *dataChunksToMultipartTransfers;
 @property (strong) NSMutableDictionary *receivedFileParts;
 @property (strong) NSMutableArray *pendingTransfers;
+@property (strong) NSMutableArray *transfersToRetry;
 
 @end
 
@@ -49,6 +51,7 @@
         _receivedFileParts = [NSMutableDictionary new];
         _pendingTransfers = [NSMutableArray new];
         _fileWritingQueue = dispatch_queue_create("com.lbs.fileWritingQueue", DISPATCH_QUEUE_SERIAL);
+        _transfersToRetry = [NSMutableArray new];
     }
 
     return self;
@@ -132,6 +135,25 @@
     [message setType:messageType];
 
     [[self connectionForUser:user] sendObject:message error:nil dataChunk:nil];
+}
+
+- (BOOL)resumeTransfer:(QTRTransfer *)transfer {
+    BOOL canResume = NO;
+    DTBonjourDataConnection *connection = [self connectionForUser:transfer.user];
+    if (connection != nil) {
+        QTRMultipartTransfer *multiPartTransfer = [[QTRMultipartTransfer alloc] initWithFileURL:transfer.fileURL user:transfer.user fileIdentifier:transfer.fileIdentifier];
+        if ([multiPartTransfer canResumeFromOffset:transfer.sentBytes partIndex:(int)transfer.transferedChunks]) {
+            canResume = YES;
+            [_transfersToRetry addObject:transfer];
+            QTRFile *file = [[QTRFile alloc] initWithName:transfer.fileURL.lastPathComponent type:@"" partIndex:transfer.transferedChunks totalParts:transfer.totalParts totalSize:transfer.fileSize];
+            [file setIdentifier:transfer.fileIdentifier];
+            QTRMessage *message = [QTRMessage messageWithUser:transfer.user file:file];
+            [message setType:QTRMessageTypeRequestResumeTransfer];
+            [connection sendObject:message error:nil dataChunk:nil];
+
+        }
+    }
+    return canResume;
 }
 
 #pragma mark - Private methods
@@ -327,7 +349,6 @@
                             break;
                         }
 
-
                         case QTRMessageTypeRejectFileTransfer: {
                             QTRFile *pendingFile = nil;
                             for (QTRFile *aFile in sSelf.pendingTransfers) {
@@ -353,6 +374,27 @@
                             [sSelf sendFileWithIdentifier:theMessage.file.identifier toUser:user];
 
                             break;
+                        }
+
+                        case QTRMessageTypeRequestResumeTransfer: {
+                            QTRMessage *message = [QTRMessage messageWithUser:user file:theMessage.file];
+                            if ([sSelf.delegate client:sSelf shouldResumeTransferForFile:theMessage.file fromUser:theMessage.user]) {
+                                [message setType:QTRMessageTypeAcceptResumeTransfer];
+                            } else {
+                                [message setType:QTRMessageTypeRejectResumeTransfer];
+                            }
+                            [[sSelf connectionForUser:user] sendObject:message error:nil dataChunk:nil];
+                            break;
+                        }
+
+                        case QTRMessageTypeRejectResumeTransfer: {
+                            if ([sSelf.delegate respondsToSelector:@selector(client:remoteUser:didRejectResumeTransferForFile:)]) {
+                                [sSelf.delegate client:sSelf remoteUser:theMessage.user didRejectResumeTransferForFile:theMessage.file];
+                            }
+                        }
+
+                        case QTRMessageTypeAcceptResumeTransfer: {
+
                         }
 
                         case QTRMessageTypeFileTransfer: {

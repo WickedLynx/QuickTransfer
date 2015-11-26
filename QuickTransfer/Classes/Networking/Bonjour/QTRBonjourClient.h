@@ -11,6 +11,8 @@
 #import "QTRBonjourClientDelegate.h"
 #import "QTRBonjourTransferDelegate.h"
 
+@class QTRTransfer;
+
 /*!
  The Bonjour client is responsible for browsing and connecting to Bonjour servers and exchanging files with them
  */
@@ -49,6 +51,8 @@
  @param shouldAccept A boolen indicating if the file should be accepted
  */
 - (void)acceptFile:(QTRFile *)file accept:(BOOL)shouldAccept fromUser:(QTRUser *)user;
+
+- (BOOL)resumeTransfer:(QTRTransfer *)transfer;
 
 /*!
  The delegate of the receiver to  whom connection and file related events are sent

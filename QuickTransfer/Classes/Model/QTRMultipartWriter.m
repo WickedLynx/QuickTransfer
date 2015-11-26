@@ -47,6 +47,8 @@
     });
 }
 
+
+
 - (void)closeFile {
     [_fileHandle closeFile];
 }

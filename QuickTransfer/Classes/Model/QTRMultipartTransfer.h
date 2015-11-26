@@ -45,12 +45,7 @@ FOUNDATION_EXPORT long long const QTRMultipartTransferMaximumPartSize;
  Check if the transfer can be resumed
  This method checks if the file exists at the path, and if the offset is correct
  */
-- (BOOL)canResumeFromOffset:(long long)offset;
-
-/*!
- Resumes the file transfer. Calling `-readNextPartForTransmission:` will read from the offset
- */
-- (void)resumeFromOffset:(long long)offset;
+- (BOOL)canResumeFromOffset:(long long)offset partIndex:(int)lastPartIndex;
 
 /*!
  The name of the file of the transfer

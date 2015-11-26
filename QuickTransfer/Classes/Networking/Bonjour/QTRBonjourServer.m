@@ -175,7 +175,7 @@
 
                 QTRMultipartTransfer *transfer = [[QTRMultipartTransfer alloc] initWithFileURL:fileURL user:user fileIdentifier:theFile.identifier];
 
-                [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart) {
+                [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart, long long offset) {
                     if (wSelf != nil) {
 
                         typeof(self) sSelf = wSelf;
@@ -353,7 +353,7 @@
     QTRMultipartTransfer *transfer = [self.dataChunksToMultipartTransfers objectForKey:chunk];
     if (transfer != nil) {
         __weak typeof(self) wSelf = self;
-        [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart) {
+        [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart, long long offset) {
             if (wSelf != nil) {
                 typeof(self) sSelf = wSelf;
 

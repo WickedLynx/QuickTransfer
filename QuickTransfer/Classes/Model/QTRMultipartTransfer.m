@@ -82,6 +82,26 @@ long long const QTRMultipartTransferMaximumPartSize = 10 * 1024 * 1024;   // 10 
     });
 }
 
+- (BOOL)canResumeFromOffset:(long long)offset partIndex:(int)lastPartIndex {
+    BOOL canResume = NO;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:_fileURL.path isDirectory:NULL]) {
+        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:_fileURL.path error:nil];
+        NSNumber *fileSize = fileAttributes[NSFileSize];
+        if (offset < fileSize.longLongValue) {
+            canResume = YES;
+            [self resumeFromOffset:offset lastTransferedPart:lastPartIndex];
+        }
+    }
+    return canResume;
+}
+
+- (void)resumeFromOffset:(long long)offset lastTransferedPart:(int)lastPartIndex {
+    _currentPart = ++lastPartIndex;
+    [_fileHandle seekToFileOffset:offset];
+
+}
+
 
 
 @end
