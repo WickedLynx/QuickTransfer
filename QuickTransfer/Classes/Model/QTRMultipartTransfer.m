@@ -73,7 +73,7 @@ long long const QTRMultipartTransferMaximumPartSize = 10 * 1024 * 1024;   // 10 
         NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingFromURL:_fileURL error:nil];
         _fileHandle = fileHandle;
         [_fileHandle seekToFileOffset:file.offset];
-        _currentPart = (int)(file.partIndex + 1);
+        _currentPart = (int)(file.partIndex);
     }
 
     return self;
