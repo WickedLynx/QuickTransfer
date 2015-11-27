@@ -16,6 +16,7 @@ NSString *const QTRFileTotalPartsKey = @"totalParts";
 NSString *const QTRFileTotalSizeKey = @"totalSize";
 NSString *const QTRFileIdentifierKey = @"identifier";
 NSString *const QTRFileOffsetKey = @"offset";
+NSString *const QTRFileURLKey = @"url";
 
 @implementation QTRFile
 
@@ -81,6 +82,7 @@ NSString *const QTRFileOffsetKey = @"offset";
         NSNumber *offsetAsNumber = [aDecoder decodeObjectForKey:QTRFileOffsetKey];
         _offset = [offsetAsNumber longLongValue];
         _identifier = [aDecoder decodeObjectForKey:QTRFileIdentifierKey];
+        _url = [aDecoder decodeObjectForKey:QTRFileURLKey];
     }
 
     return self;
@@ -96,6 +98,7 @@ NSString *const QTRFileOffsetKey = @"offset";
     [aCoder encodeObject:sizeAsNumber forKey:QTRFileTotalSizeKey];
     [aCoder encodeObject:_identifier forKey:QTRFileIdentifierKey];
     [aCoder encodeObject:@(_offset) forKey:QTRFileOffsetKey];
+    [aCoder encodeObject:_url forKey:QTRFileURLKey];
 }
 
 @end
