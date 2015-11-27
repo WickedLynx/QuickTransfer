@@ -135,13 +135,17 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
 - (void)resumeTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk {
     if (file != nil) {
-        QTRTransfer *transfer = _fileIdentifierToTransfers[file.identifier];
+        QTRTransfer *transfer = [self transferForFileID:file.identifier];
         if (transfer != nil) {
+            _fileIdentifierToTransfers[file.identifier] = transfer;
             [transfer setState:QTRTransferStateInProgress];
             [self archiveTransfers];
             NSInteger index = [_allTransfers indexOfObject:transfer];
             if ([self.delegate respondsToSelector:@selector(transfersStore:didUpdateTransfersAtIndices:)]) {
                 [self.delegate transfersStore:self didUpdateTransfersAtIndices:[NSIndexSet indexSetWithIndex:index]];
+            }
+            if (chunk != nil) {
+                [_dataChunksToTransfers setObject:transfer forKey:chunk];
             }
         }
     }
@@ -266,6 +270,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 - (void)updateTransferForFile:(QTRFile *)file {
 
     QTRTransfer *theTransfer = _fileIdentifierToTransfers[file.identifier];
+    theTransfer.state = QTRTransferStateInProgress;
     if (theTransfer != nil && ![theTransfer isKindOfClass:[NSNull class]]) {
         [theTransfer setTransferedChunks:(file.partIndex + 1)];
 

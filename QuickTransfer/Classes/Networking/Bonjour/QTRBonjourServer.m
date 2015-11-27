@@ -302,6 +302,9 @@
                                     if ([sSelf.transferDelegate respondsToSelector:@selector(saveURLForResumedFile:)]) {
                                         QTRMultipartWriter *writer = [[QTRMultipartWriter alloc] initWithResumedTransferForFile:theMessage.file sender:theMessage.user saveURL:[sSelf.transferDelegate saveURLForResumedFile:theMessage.file]];
                                         sSelf.receivedFileParts[theMessage.file.identifier] = writer;
+                                        if ([sSelf.transferDelegate respondsToSelector:@selector(resumeTransferForUser:file:chunk:)]) {
+                                            [sSelf.transferDelegate resumeTransferForUser:user file:theMessage.file chunk:nil];
+                                        }
                                     }
                                 } else {
                                     [message setType:QTRMessageTypeRejectResumeTransfer];
@@ -326,7 +329,9 @@
                                         DTBonjourDataChunk *chunk = nil;
                                         [[sSelf connectionForUser:user] sendObject:message error:nil dataChunk:&chunk];
                                         [sSelf.dataChunksToMultipartTransfers setObject:transfer forKey:chunk];
-                                        // TODO: Tell the transfer delegate that the transfer is resumed
+                                        if ([sSelf.transferDelegate respondsToSelector:@selector(resumeTransferForUser:file:chunk:)]) {
+                                            [sSelf.transferDelegate resumeTransferForUser:user file:file chunk:chunk];
+                                        }
                                     });
                                     
                                 }];
