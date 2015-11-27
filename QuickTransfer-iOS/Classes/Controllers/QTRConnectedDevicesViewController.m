@@ -13,6 +13,7 @@
 #import "QTRConnectedDevicesView.h"
 
 #import "QTRHomeCollectionViewCell.h"
+#import "QTRShowGalleryViewController.h"
 
 #import "QTRBonjourClient.h"
 #import "QTRBonjourServer.h"
@@ -49,6 +50,9 @@
     __weak id <QTRBonjourTransferDelegate> _transfersController;
 
     NSURL *_importedFileURL;
+    
+    UIImage *image;
+    NSURL *path;
     
 }
 
@@ -131,33 +135,42 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     self.view.frame = [[UIScreen mainScreen] bounds];
     
-    [self.view setBackgroundColor:[UIColor whiteColor]];
-    [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor whiteColor]];
+    self.imagePicker = [[UIImagePickerController alloc] init];
+    self.imagePicker.allowsEditing = YES;
+    self.imagePicker.delegate = self;
+    self.imagePicker.allowsEditing = YES;
+    self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    
+    [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
+    [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     [self setTitle:@"Devices"];
-    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.56f green:0.80f blue:0.62f alpha:1.00f]];
+    
+    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
     
     [[_devicesView devicesCollectionView] registerClass:[QTRHomeCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
 
     [[_devicesView devicesCollectionView] setDataSource:self];
     [[_devicesView devicesCollectionView] setDelegate:self];
+    [_devicesView devicesCollectionView].allowsMultipleSelection = YES;
 
     [[_devicesView devicesCollectionView] reloadData];
     
-    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Setting" style:UIBarButtonItemStylePlain target:self action:@selector(settingBarButton:)];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"settingIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(settingBarButton:)];
     [self.navigationItem setLeftBarButtonItem:leftBarButton];
     
     
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Logs" style:UIBarButtonItemStylePlain target:self action:@selector(logsBarButton:)];
     
+    [rightBarButton setTintCo lor:[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f]];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
-    
-    NSLog(@"In QTRConnectedDevicesViewController   Width: %f  \n Height:%f", self.view.frame.size.width , self.view.frame.size.height);
-    
-}
+    [[_devicesView sendButton] addTarget:self action:@selector(nextButtonClicked) forControlEvents:UIControlEventTouchUpInside];
+
+    [self.navigationController.navigationBar setTitleTextAttributes:
+     @{NSForegroundColorAttributeName:[UIColor whiteColor]}];}
 
 #pragma mark - Public methods
 
@@ -171,17 +184,77 @@ static NSString *cellIdentifier = @"cellIdentifier";
 #pragma mark - Actions
 
 - (void)settingBarButton:(UIBarButtonItem *)barButton {
-    NSLog(@"Settings");
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
 
 - (void)logsBarButton:(UIBarButtonItem *)barButton {
     NSLog(@"Logs");
+    
 }
 
 
 - (void)touchRefresh:(UIBarButtonItem *)barButton {
     [self refresh];
 }
+
+-(void)nextButtonClicked{
+
+    NSLog(@"Next Button Clicked");
+    
+    QTRShowGalleryViewController * vc = [[QTRShowGalleryViewController alloc] init];
+    
+    [self.navigationController pushViewController:vc animated:YES];
+        
+    
+//    NSLog(@"picker.mediaTypes: %@ ",self.imagePicker);
+//    
+//    //    NSURL* localUrl = (NSURL *)[picker valueForKey:UIImagePickerControllerReferenceURL];
+//    //
+//    //    self.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:localUrl]];
+//    //
+//    //UIImage* image=(UIImage*)[localUrl objectForKey:@"UIImagePickerControllerOriginalImage"];
+//    
+//    [self presentViewController:self.imagePicker animated:NO completion:^{
+//    
+//        NSLog(@"Hello");
+//        NSLog(@"image:%@  path:%@",image.description, path.description);
+//    
+//    
+//    }];
+    
+    NSLog(@"Exit");
+    
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    //You can retrieve the actual UIImage
+    image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    //Or you can get the image url from AssetsLibrary
+    path = [info valueForKey:UIImagePickerControllerReferenceURL];
+    
+    NSLog(@"image:%@  path:%@",image.description, path.description);
+    
+    [picker dismissViewControllerAnimated:YES completion:^{
+    }];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+
+
+ NSLog(@"image:%@  path:%@",image.description, path.description);
+}
+
+//-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+//
+//    NSLog(@"Downloading..");
+//    
+//    UIImage *selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+//    [self.photos addObject:selectedImage];
+//
+//
+//}
+
 
 - (void)touchShare:(UIBarButtonItem *)barButton {
     if (_selectedUser != nil) {
@@ -429,28 +502,36 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     cell.connectedDeviceName.text = @"Demo device Connected";
     
-    cell.connectedDeviceImage.backgroundColor = [UIColor blueColor];
+       cell.connectedDeviceImage.backgroundColor = [UIColor blueColor];
+    
+    cell.selectedBackgroundView.backgroundColor = [UIColor greenColor];
+    
+    
+ 
     
     
     return cell;
     
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *ConnectedDevicesTableCellIdentifier = @"ConnectedDevicesTableCellIdentifier";
-
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ConnectedDevicesTableCellIdentifier];
-
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ConnectedDevicesTableCellIdentifier];
-    }
-
-    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
-
-    [cell.textLabel setText:[theUser name]];
-
-    return cell;
-}
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+//    static NSString *ConnectedDevicesTableCellIdentifier = @"ConnectedDevicesTableCellIdentifier";
+//
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ConnectedDevicesTableCellIdentifier];
+//
+//    if (cell == nil) {
+//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ConnectedDevicesTableCellIdentifier];
+//    }
+//
+//    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
+//
+//    [cell.textLabel setText:[theUser name]];
+//    
+//
+//  
+//
+//    return cell;
+//}
 
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -461,13 +542,19 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 #pragma mark - UICollectionViewDelegate methods
 
--(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"Item %i Selected",indexPath.row);
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
+    cell.connectedDeviceName.textColor = [UIColor whiteColor];
     
-    [collectionView deselectItemAtIndexPath:indexPath animated:YES];
+}
 
-
-
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
+    cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
+    
 }
 
 
@@ -567,42 +654,42 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 #pragma mark - UIImagePickerControllerDelegate methods
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-
-    NSURL *referenceURL = info[UIImagePickerControllerReferenceURL];
-    
-    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
-        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-        
-        uint8_t *imageBytes = malloc((long)[assetRepresentation size]);
-        [assetRepresentation getBytes:imageBytes fromOffset:0 length:(long)[assetRepresentation size] error:nil];
-        
-        NSData *imageData = [NSData dataWithBytes:imageBytes length:(long)[assetRepresentation size]];
-        [imageData writeToURL:localURL atomically:YES];
-        
-        free(imageBytes);
-        
-        
-        if ([_connectedClients containsObject:_selectedUser]) {
-            [_server sendFileAtURL:localURL toUser:_selectedUser];
-        } else if ([_connectedServers containsObject:_selectedUser]) {
-            [_client sendFileAtURL:localURL toUser:_selectedUser];
-        } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-            [alert show];
-        }
-        
-        _selectedUser = nil;
-        
-        
-    } failureBlock:^(NSError *error) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-        [alertView show];
-    }];
-    
-    [self dismissViewControllerAnimated:YES completion:NULL];
-}
+//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+//
+//    NSURL *referenceURL = info[UIImagePickerControllerReferenceURL];
+//    
+//    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
+//        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
+//        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
+//        
+//        uint8_t *imageBytes = malloc((long)[assetRepresentation size]);
+//        [assetRepresentation getBytes:imageBytes fromOffset:0 length:(long)[assetRepresentation size] error:nil];
+//        
+//        NSData *imageData = [NSData dataWithBytes:imageBytes length:(long)[assetRepresentation size]];
+//        [imageData writeToURL:localURL atomically:YES];
+//        
+//        free(imageBytes);
+//        
+//        
+//        if ([_connectedClients containsObject:_selectedUser]) {
+//            [_server sendFileAtURL:localURL toUser:_selectedUser];
+//        } else if ([_connectedServers containsObject:_selectedUser]) {
+//            [_client sendFileAtURL:localURL toUser:_selectedUser];
+//        } else {
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+//            [alert show];
+//        }
+//        
+//        _selectedUser = nil;
+//        
+//        
+//    } failureBlock:^(NSError *error) {
+//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+//        [alertView show];
+//    }];
+//    
+//    [self dismissViewControllerAnimated:YES completion:NULL];
+//}
 
 #pragma mark - QTRBeaconRangerDelegate methods
 

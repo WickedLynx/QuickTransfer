@@ -14,6 +14,7 @@
 #import "QTRTransfersViewController.h"
 #import "QTRTransfersStore.h"
 #import "QTRConnectedDevicesView.h"
+#import "QTRShowGalleryViewController.h"
 
 
 CGFloat const QTRRootViewControllerXOffset = 50.0f;
@@ -42,6 +43,7 @@ CGFloat const QTRRootViewControllerXOffset = 50.0f;
 
     [self addChildViewController:devicesNavigationController];
     [self.view addSubview:devicesNavigationController.view];
+    
     
     NSLog(@"In QTRRootViewController   Width: %f  \n Height:%f", self.view.frame.size.width , self.view.frame.size.height);
 

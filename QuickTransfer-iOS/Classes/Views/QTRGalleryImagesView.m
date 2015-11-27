@@ -1,19 +1,19 @@
 //
-//  QTRConnectedDevicesView.m
+//  QTRGalleryImagesView.m
 //  QuickTransfer
 //
-//  Created by Harshad on 20/02/14.
-//  Copyright (c) 2014 Laughing Buddha Software. All rights reserved.
+//  Created by Tarun Yadav on 26/11/15.
+//  Copyright © 2015 Laughing Buddha Software. All rights reserved.
 //
 
-#import "QTRConnectedDevicesView.h"
+#import "QTRGalleryImagesView.h"
 
-@implementation QTRConnectedDevicesView
+@implementation QTRGalleryImagesView
 
 - (id)initWithFrame:(CGRect)frame {
-
+    
     self = [super initWithFrame:frame];
-
+    
     if (self != nil) {
         
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
@@ -32,13 +32,13 @@
         sendingProgressView = [[UIProgressView alloc] init];
         sendingProgressView.progressTintColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
         [sendingProgressView setTranslatesAutoresizingMaskIntoConstraints:NO];
-
+        
         [[sendingProgressView layer]setFrame:CGRectZero];
         sendingProgressView.trackTintColor = [UIColor purpleColor];
         [sendingProgressView setProgress: 75 animated:YES];
         [self addSubview:sendingProgressView];
         _sendingProgressView = sendingProgressView;
-
+        
         
         UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
         [searchBar setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -69,11 +69,11 @@
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[aCollectionView]-5-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[searchBar]|" options:0 metrics:0 views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-66-[sendingProgressView]-0-[searchBar]-10-[aCollectionView]-5-[button]-5-|" options:0 metrics:0 views:views]];
-            
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-65-[sendingProgressView]-0-[searchBar]-10-[aCollectionView]-5-[button]-5-|" options:0 metrics:0 views:views]];
+        
         
     }
-
+    
     return self;
 }
 

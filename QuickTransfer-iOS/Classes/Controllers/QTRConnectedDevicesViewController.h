@@ -9,8 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "QTRBonjourTransferDelegate.h"
 
-@interface QTRConnectedDevicesViewController : UIViewController
+@interface QTRConnectedDevicesViewController : UIViewController < UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
+
+@property (nonatomic, strong) NSIndexPath *selectedItemIndexPath;
+@property (nonatomic, strong) UIImagePickerController *imagePicker;
+@property (nonatomic, strong) NSMutableArray *photos;
 /*!
  Initialises the receiver.
  

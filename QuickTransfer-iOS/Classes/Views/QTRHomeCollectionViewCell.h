@@ -12,6 +12,8 @@
 
 @property(nonatomic,retain) UIImageView *connectedDeviceImage;
 @property(nonatomic,retain) UILabel *connectedDeviceName;
+
+
 //@property(nonatomic,retain) UILabel *locationLabel;
 //@property(nonatomic,retain) ;
 //@property(nonatomic,retain) ;
