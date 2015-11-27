@@ -147,7 +147,7 @@
         file.identifier = transfer.fileIdentifier;
         if ([QTRMultipartTransfer canResumeReadingFile:file]) {
             canResume = YES;
-            QTRMessage *message = [QTRMessage messageWithUser:transfer.user file:file];
+            QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
             [message setType:QTRMessageTypeRequestResumeTransfer];
             [connection sendObject:message error:nil dataChunk:nil];
 
