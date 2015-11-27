@@ -100,7 +100,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 - (QTRTransfer *)transferForFileID:(NSString *)fileIdentifier {
     QTRTransfer *transfer = nil;
     for (QTRTransfer *aTransfer in _allTransfers) {
-        if (aTransfer.fileIdentifier == fileIdentifier) {
+        if ([aTransfer.fileIdentifier isEqualToString:fileIdentifier]) {
             transfer = aTransfer;
             break;
         }
