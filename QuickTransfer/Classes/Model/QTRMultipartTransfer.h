@@ -30,6 +30,11 @@ FOUNDATION_EXPORT long long const QTRMultipartTransferMaximumPartSize;
 - (instancetype)initWithFileURL:(NSURL *)fileURL user:(QTRUser *)user fileIdentifier:(NSString *)fileIdentifier;
 
 /*!
+ Initialize for a partial transfer
+ */
+- (instancetype)initWithPartiallyTransferredFile:(QTRFile *)file user:(QTRUser *)user;
+
+/*!
  Reads the next file part for the multipart transfer.
  
  This method is asynchronous and returns immediately. 
@@ -45,7 +50,7 @@ FOUNDATION_EXPORT long long const QTRMultipartTransferMaximumPartSize;
  Check if the transfer can be resumed
  This method checks if the file exists at the path, and if the offset is correct
  */
-- (BOOL)canResumeFromOffset:(long long)offset partIndex:(int)lastPartIndex;
++ (BOOL)canResumeReadingFile:(QTRFile *)file;
 
 /*!
  The name of the file of the transfer

@@ -32,6 +32,19 @@
     return self;
 }
 
+- (instancetype)initWithResumedTransferForFile:(QTRFile *)file sender:(QTRUser *)user saveURL:(NSURL *)url {
+    self = [super init];
+    if (self != nil) {
+        _saveURL = [url copy];
+        _user = user;
+
+        _fileHandle = [NSFileHandle fileHandleForWritingToURL:url error:nil];
+        [_fileHandle seekToEndOfFile];
+    }
+
+    return self;
+}
+
 - (void)writeFilePart:(QTRFile *)filePart queue:(dispatch_queue_t)queue completion:(void (^)())completionBlock {
     dispatch_queue_t writingQueue = queue;
     if (writingQueue == nil) {

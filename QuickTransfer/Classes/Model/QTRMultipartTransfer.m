@@ -52,6 +52,33 @@ long long const QTRMultipartTransferMaximumPartSize = 10 * 1024 * 1024;   // 10 
     return self;
 }
 
+- (instancetype)initWithPartiallyTransferredFile:(QTRFile *)file user:(QTRUser *)user {
+    self = [super init];
+    if (self != nil) {
+        _fileURL = file.url;
+        _fileName = [[_fileURL path] lastPathComponent];
+        _user = user;
+        _fileIdentifier = [file.identifier copy];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[_fileURL path] error:nil];
+        if (![fileAttributes[NSFileSize] isKindOfClass:[NSNull class]]) {
+            _totalBytes = [fileAttributes[NSFileSize] longLongValue];
+            _totalParts = (int)(_totalBytes / QTRMultipartTransferMaximumPartSize);
+            if (_totalBytes % QTRMultipartTransferMaximumPartSize != 0) {
+                ++_totalParts;
+            }
+
+        }
+
+        NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingFromURL:_fileURL error:nil];
+        _fileHandle = fileHandle;
+        [_fileHandle seekToFileOffset:file.offset];
+        _currentPart = (int)(file.partIndex + 1);
+    }
+
+    return self;
+}
+
 - (void)readNextPartForTransmission:(void (^)(QTRFile *file, BOOL isLastPart, long long offsetInFile))dataReadCompletion {
     __weak typeof(self) wSelf = self;
 
@@ -82,25 +109,24 @@ long long const QTRMultipartTransferMaximumPartSize = 10 * 1024 * 1024;   // 10 
     });
 }
 
-- (BOOL)canResumeFromOffset:(long long)offset partIndex:(int)lastPartIndex {
+
++ (BOOL)canResumeReadingFile:(QTRFile *)file {
     BOOL canResume = NO;
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:_fileURL.path isDirectory:NULL]) {
-        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:_fileURL.path error:nil];
+    if ([fileManager fileExistsAtPath:file.url.path isDirectory:NULL]) {
+        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:file.url.path error:nil];
         NSNumber *fileSize = fileAttributes[NSFileSize];
-        if (offset < fileSize.longLongValue) {
+        if (file.offset < fileSize.longLongValue) {
             canResume = YES;
-            [self resumeFromOffset:offset lastTransferedPart:lastPartIndex];
         }
     }
     return canResume;
 }
 
-- (void)resumeFromOffset:(long long)offset lastTransferedPart:(int)lastPartIndex {
-    _currentPart = ++lastPartIndex;
-    [_fileHandle seekToFileOffset:offset];
-
+- (void)dealloc {
+    [_fileHandle closeFile];
 }
+
 
 
 

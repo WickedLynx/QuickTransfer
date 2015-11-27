@@ -11,6 +11,7 @@
 @class QTRUser;
 @class QTRFile;
 @class DTBonjourDataChunk;
+@class QTRTransfer;
 
 /*!
  The Bonjour client/server notifies interested delegates about the the transfer progress and state through this protocol
@@ -77,5 +78,15 @@
  @param file The file to update
  */
 - (void)updateSentBytes:(long long)sentBytes forFile:(QTRFile *)file;
+
+/*!
+ Check if a transfer can be resumed
+ */
+- (BOOL)canResumeTransferForFile:(QTRFile *)file;
+
+/*!
+ Returns the URL of a partially written file
+ */
+- (NSURL *)saveURLForResumedFile:(QTRFile *)file;
 
 @end

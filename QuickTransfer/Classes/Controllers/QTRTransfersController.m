@@ -45,6 +45,7 @@
             }
             if (!canResume) {
                 // TODO: Show alert
+                NSLog(@"Transfers controller: cannot resume");
             }
         }
     }

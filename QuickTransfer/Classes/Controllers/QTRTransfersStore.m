@@ -97,6 +97,17 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     [NSKeyedArchiver archiveRootObject:_allTransfers toFile:_archivedTransfersFilePath];
 }
 
+- (QTRTransfer *)transferForFileID:(NSString *)fileIdentifier {
+    QTRTransfer *transfer = nil;
+    for (QTRTransfer *aTransfer in _allTransfers) {
+        if (aTransfer.fileIdentifier == fileIdentifier) {
+            transfer = aTransfer;
+            break;
+        }
+    }
+    return transfer;
+}
+
 #pragma mark - QTRBonjourTransferDelegate method
 
 - (void)addTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk {
@@ -277,6 +288,27 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     QTRTransfer *theTransfer = _fileIdentifierToTransfers[file.identifier];
     [theTransfer setSentBytes:sentBytes];
     [self archiveTransfers];
+}
+
+- (BOOL)canResumeTransferForFile:(QTRFile *)file {
+    BOOL canResume = NO;
+    QTRTransfer *transferToResume = [self transferForFileID:file.identifier];
+    if (transferToResume.fileURL != nil) {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:transferToResume.fileURL.path isDirectory:nil]) {
+            NSDictionary *attributes = [fileManager attributesOfItemAtPath:transferToResume.fileURL.path error:nil];
+            long long fileSize = [attributes[NSFileSize] longLongValue];
+            if (fileSize == file.offset) {
+                canResume = YES;
+            }
+        }
+    }
+
+    return canResume;
+}
+
+- (NSURL *)saveURLForResumedFile:(QTRFile *)file {
+    return [[self transferForFileID:file.identifier] fileURL];
 }
 
 

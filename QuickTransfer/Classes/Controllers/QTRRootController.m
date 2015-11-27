@@ -116,6 +116,7 @@ void refreshComputerModel() {
 
     QTRTransfersStore *transfersStore = [[QTRTransfersStore alloc] initWithArchiveLocation:archiveFilePath];
     [_transfersController setTransfersStore:transfersStore];
+    [_transfersController setDelegate:self];
 
     [self startServices];
 
@@ -737,8 +738,9 @@ void refreshComputerModel() {
 #pragma mark - QTRTransfersControllerDelegate methods
 
 - (BOOL)transfersController:(QTRTransfersController *)controller needsResumeTransfer:(QTRTransfer *)transfer {
-    
-    return NO;
+    BOOL canResume = [_client resumeTransfer:transfer] || [_server resumeTransfer:transfer];
+    NSLog(@"Resume? %@", (canResume ? @"Yes" : @"NO"));
+    return canResume;
 }
 
 #pragma mark - QTRStatusItemViewDelegate methods

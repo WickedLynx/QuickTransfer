@@ -14,6 +14,7 @@
 
 @class QTRFile;
 @class QTRTransfersController;
+@class QTRTransfer;
 
 /*!
  This class is the server that implements the Bonjour protocol and allows remote clients to connect to it.
@@ -40,6 +41,8 @@
  @param shouldAccept A boolen indicating if the file should be accepted
  */
 - (void)acceptFile:(QTRFile *)file accept:(BOOL)shouldAccept fromUser:(QTRUser *)user;
+
+- (BOOL)resumeTransfer:(QTRTransfer *)transfer;
 
 /*!
  The object which is interested in getting notified of connection and file related events

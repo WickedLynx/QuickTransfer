@@ -141,11 +141,14 @@
     BOOL canResume = NO;
     DTBonjourDataConnection *connection = [self connectionForUser:transfer.user];
     if (connection != nil) {
-        QTRMultipartTransfer *multiPartTransfer = [[QTRMultipartTransfer alloc] initWithFileURL:transfer.fileURL user:transfer.user fileIdentifier:transfer.fileIdentifier];
-        if ([multiPartTransfer canResumeFromOffset:transfer.sentBytes partIndex:(int)transfer.transferedChunks]) {
+        QTRFile *file = [[QTRFile alloc] initWithName:transfer.fileURL.lastPathComponent type:@"" partIndex:transfer.transferedChunks totalParts:transfer.totalParts totalSize:transfer.fileSize];
+        file.url = transfer.fileURL;
+        file.offset = transfer.sentBytes;
+        file.identifier = transfer.fileIdentifier;
+        if ([QTRMultipartTransfer canResumeReadingFile:file]) {
             canResume = YES;
-            [_transfersToRetry addObject:transfer];
             QTRFile *file = [[QTRFile alloc] initWithName:transfer.fileURL.lastPathComponent type:@"" partIndex:transfer.transferedChunks totalParts:transfer.totalParts totalSize:transfer.fileSize];
+            [file setOffset:transfer.sentBytes];
             [file setIdentifier:transfer.fileIdentifier];
             QTRMessage *message = [QTRMessage messageWithUser:transfer.user file:file];
             [message setType:QTRMessageTypeRequestResumeTransfer];
@@ -378,23 +381,45 @@
 
                         case QTRMessageTypeRequestResumeTransfer: {
                             QTRMessage *message = [QTRMessage messageWithUser:user file:theMessage.file];
-                            if ([sSelf.delegate client:sSelf shouldResumeTransferForFile:theMessage.file fromUser:theMessage.user]) {
+                            BOOL canResume = NO;
+                            if ([sSelf.transferDelegate respondsToSelector:@selector(canResumeTransferForFile:)]) {
+                                canResume = [sSelf.transferDelegate canResumeTransferForFile:theMessage.file];
+                            }
+                            if (canResume) {
                                 [message setType:QTRMessageTypeAcceptResumeTransfer];
+                                if ([sSelf.transferDelegate respondsToSelector:@selector(saveURLForResumedFile:)]) {
+                                    QTRMultipartWriter *writer = [[QTRMultipartWriter alloc] initWithResumedTransferForFile:theMessage.file sender:theMessage.user saveURL:[sSelf.transferDelegate saveURLForResumedFile:theMessage.file]];
+                                    sSelf.receivedFileParts[theMessage.file.identifier] = writer;
+                                }
                             } else {
                                 [message setType:QTRMessageTypeRejectResumeTransfer];
                             }
                             [[sSelf connectionForUser:user] sendObject:message error:nil dataChunk:nil];
+
                             break;
                         }
 
                         case QTRMessageTypeRejectResumeTransfer: {
-                            if ([sSelf.delegate respondsToSelector:@selector(client:remoteUser:didRejectResumeTransferForFile:)]) {
-                                [sSelf.delegate client:sSelf remoteUser:theMessage.user didRejectResumeTransferForFile:theMessage.file];
-                            }
+                            NSLog(@"Rejected transfer");
+                            break;
                         }
 
                         case QTRMessageTypeAcceptResumeTransfer: {
+                            QTRMultipartTransfer *transfer = [[QTRMultipartTransfer alloc] initWithPartiallyTransferredFile:theMessage.file user:theMessage.user];
+                            [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart, long long offsetInFile) {
+                                QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
+                                [message setType:QTRMessageTypeFileTransfer];
 
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    DTBonjourDataChunk *chunk = nil;
+                                    [[sSelf connectionForUser:user] sendObject:message error:nil dataChunk:&chunk];
+                                    [sSelf.dataChunksToMultipartTransfers setObject:transfer forKey:chunk];
+                                    // TODO: Tell the transfer delegate that the transfer is resumed
+                                });
+
+                            }];
+                            NSLog(@"Accepted transfer");
+                            break;
                         }
 
                         case QTRMessageTypeFileTransfer: {
@@ -478,7 +503,9 @@
                     [[sSelf connectionForUser:transfer.user] sendObject:message error:nil dataChunk:&dataChunk];
                     [sSelf.transferDelegate replaceChunk:chunk withChunk:dataChunk];
                     [sSelf.dataChunksToMultipartTransfers removeObjectForKey:chunk];
-
+                    if ([sSelf.transferDelegate respondsToSelector:@selector(updateSentBytes:forFile:)]) {
+                        [sSelf.transferDelegate updateSentBytes:offset forFile:file];
+                    }
                     if (!isLastPart) {
                         [sSelf.dataChunksToMultipartTransfers setObject:transfer forKey:dataChunk];
                     }
