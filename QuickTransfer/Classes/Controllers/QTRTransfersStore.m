@@ -118,6 +118,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         [transfer setTimestamp:[NSDate date]];
         [transfer setTotalParts:file.totalParts];
         [transfer setState:QTRTransferStateInProgress];
+        [transfer setFileIdentifier:file.identifier];
         if (file.totalParts > 1) {
             [transfer setFileSize:file.totalSize];
         } else {
@@ -246,6 +247,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     [transfer setTransferedChunks:(file.partIndex + 1)];
     [transfer setFileSize:file.totalSize];
     [transfer setFileURL:file.url];
+    [transfer setFileIdentifier:file.identifier];
     [_allTransfers insertObject:transfer atIndex:0];
     _fileIdentifierToTransfers[file.identifier] = transfer;
 
@@ -285,7 +287,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 }
 
 - (void)updateSentBytes:(long long)sentBytes forFile:(QTRFile *)file {
-    QTRTransfer *theTransfer = _fileIdentifierToTransfers[file.identifier];
+    QTRTransfer *theTransfer = [self transferForFileID:file.identifier];
     [theTransfer setSentBytes:sentBytes];
     [self archiveTransfers];
 }
