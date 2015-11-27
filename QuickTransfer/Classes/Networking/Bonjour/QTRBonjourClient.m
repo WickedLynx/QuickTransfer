@@ -139,18 +139,20 @@
 
 - (BOOL)resumeTransfer:(QTRTransfer *)transfer {
     BOOL canResume = NO;
-    DTBonjourDataConnection *connection = [self connectionForUser:transfer.user];
-    if (connection != nil) {
-        QTRFile *file = [[QTRFile alloc] initWithName:transfer.fileURL.lastPathComponent type:@"" partIndex:transfer.transferedChunks totalParts:transfer.totalParts totalSize:transfer.fileSize];
-        file.url = transfer.fileURL;
-        file.offset = transfer.sentBytes;
-        file.identifier = transfer.fileIdentifier;
-        if ([QTRMultipartTransfer canResumeReadingFile:file]) {
-            canResume = YES;
-            QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
-            [message setType:QTRMessageTypeRequestResumeTransfer];
-            [connection sendObject:message error:nil dataChunk:nil];
-
+    if (transfer.totalParts > 1) {
+        DTBonjourDataConnection *connection = [self connectionForUser:transfer.user];
+        if (connection != nil) {
+            QTRFile *file = [[QTRFile alloc] initWithName:transfer.fileURL.lastPathComponent type:@"" partIndex:transfer.transferedChunks totalParts:transfer.totalParts totalSize:transfer.fileSize];
+            file.url = transfer.fileURL;
+            file.offset = transfer.sentBytes;
+            file.identifier = transfer.fileIdentifier;
+            if ([QTRMultipartTransfer canResumeReadingFile:file]) {
+                canResume = YES;
+                QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
+                [message setType:QTRMessageTypeRequestResumeTransfer];
+                [connection sendObject:message error:nil dataChunk:nil];
+                
+            }
         }
     }
     return canResume;
