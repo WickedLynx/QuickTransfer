@@ -44,8 +44,6 @@
  */
 - (NSURL *)saveURLForFile:(QTRFile *)file;
 
-- (BOOL)client:(QTRBonjourClient *)client shouldResumeTransferForFile:(QTRFile *)file fromUser:(QTRUser *)user;
-
 /*!
  The client notifies its delegate when it detects an incoming file transfer.
  
