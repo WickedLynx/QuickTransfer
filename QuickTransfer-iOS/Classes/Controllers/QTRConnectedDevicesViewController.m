@@ -164,7 +164,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Logs" style:UIBarButtonItemStylePlain target:self action:@selector(logsBarButton:)];
     
-    [rightBarButton setTintCo lor:[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f]];
+    [rightBarButton setTintColor:[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f]];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
     [[_devicesView sendButton] addTarget:self action:@selector(nextButtonClicked) forControlEvents:UIControlEventTouchUpInside];
