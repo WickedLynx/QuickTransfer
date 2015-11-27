@@ -322,7 +322,9 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
 - (void)appWillTerminate:(NSNotification *)notification {
     for (QTRTransfer *transfer in _allTransfers) {
-        [transfer setState:QTRTransferStateFailed];
+        if (transfer.state != QTRTransferStateCompleted) {
+            [transfer setState:QTRTransferStateFailed];
+        }
     }
     [self archiveTransfers];
 }
