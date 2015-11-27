@@ -130,9 +130,6 @@
         file.identifier = transfer.fileIdentifier;
         if ([QTRMultipartTransfer canResumeReadingFile:file]) {
             canResume = YES;
-            QTRFile *file = [[QTRFile alloc] initWithName:transfer.fileURL.lastPathComponent type:@"" partIndex:transfer.transferedChunks totalParts:transfer.totalParts totalSize:transfer.fileSize];
-            [file setOffset:transfer.sentBytes];
-            [file setIdentifier:transfer.fileIdentifier];
             QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
             [message setType:QTRMessageTypeRequestResumeTransfer];
             [connection sendObject:message error:nil dataChunk:nil];
