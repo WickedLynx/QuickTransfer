@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		07D4A2DA1C08131B006F93E6 /* cell_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D4A2D91C08131B006F93E6 /* cell_pressed.png */; };
 		07D4A2E21C0821E0006F93E6 /* settingIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D4A2E11C0821E0006F93E6 /* settingIcon.png */; };
+		07D4A2E81C0848F0006F93E6 /* QTRRightBarButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */; };
+		07D4A2EB1C086AD4006F93E6 /* QTRActionSheetGalleryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2EA1C086AD4006F93E6 /* QTRActionSheetGalleryView.m */; };
+		07D4A2F41C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2F31C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m */; };
 		07E7422E1C0717490084388C /* QTRShowGalleryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E7422D1C0717490084388C /* QTRShowGalleryViewController.m */; };
 		07E742311C07390B0084388C /* QTRGalleryImagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E742301C07390B0084388C /* QTRGalleryImagesView.m */; };
 		07E742341C073BE80084388C /* QTRGalleryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E742331C073BE80084388C /* QTRGalleryCollectionViewCell.m */; };
@@ -152,6 +155,12 @@
 /* Begin PBXFileReference section */
 		07D4A2D91C08131B006F93E6 /* cell_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cell_pressed.png; sourceTree = "<group>"; };
 		07D4A2E11C0821E0006F93E6 /* settingIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settingIcon.png; sourceTree = "<group>"; };
+		07D4A2E61C0848F0006F93E6 /* QTRRightBarButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRRightBarButtonView.h; sourceTree = "<group>"; };
+		07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRRightBarButtonView.m; sourceTree = "<group>"; };
+		07D4A2E91C086AD4006F93E6 /* QTRActionSheetGalleryView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRActionSheetGalleryView.h; sourceTree = "<group>"; };
+		07D4A2EA1C086AD4006F93E6 /* QTRActionSheetGalleryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRActionSheetGalleryView.m; sourceTree = "<group>"; };
+		07D4A2F21C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRAlertControllerCollectionViewCell.h; sourceTree = "<group>"; };
+		07D4A2F31C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRAlertControllerCollectionViewCell.m; sourceTree = "<group>"; };
 		07E7422C1C0717490084388C /* QTRShowGalleryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRShowGalleryViewController.h; sourceTree = "<group>"; };
 		07E7422D1C0717490084388C /* QTRShowGalleryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRShowGalleryViewController.m; sourceTree = "<group>"; };
 		07E7422F1C07390B0084388C /* QTRGalleryImagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRGalleryImagesView.h; sourceTree = "<group>"; };
@@ -434,6 +443,12 @@
 				07EE54681C047B550092C913 /* QTRHomeCollectionViewCell.m */,
 				07E742321C073BE80084388C /* QTRGalleryCollectionViewCell.h */,
 				07E742331C073BE80084388C /* QTRGalleryCollectionViewCell.m */,
+				07D4A2E61C0848F0006F93E6 /* QTRRightBarButtonView.h */,
+				07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */,
+				07D4A2E91C086AD4006F93E6 /* QTRActionSheetGalleryView.h */,
+				07D4A2EA1C086AD4006F93E6 /* QTRActionSheetGalleryView.m */,
+				07D4A2F21C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.h */,
+				07D4A2F31C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -906,7 +921,9 @@
 				07E742341C073BE80084388C /* QTRGalleryCollectionViewCell.m in Sources */,
 				FAD009CB18D840AD0014DCC5 /* QTRBeaconHelper.m in Sources */,
 				FA283F2318B49582003D4FB6 /* QTRBonjourServer.m in Sources */,
+				07D4A2EB1C086AD4006F93E6 /* QTRActionSheetGalleryView.m in Sources */,
 				FA5911EB1C0570610057928C /* QTRFileZipper.m in Sources */,
+				07D4A2F41C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m in Sources */,
 				FA5911F21C057F0F0057928C /* QTRDraggedItem.m in Sources */,
 				07E742311C07390B0084388C /* QTRGalleryImagesView.m in Sources */,
 				FA283F2418B49582003D4FB6 /* QTRBonjourClient.m in Sources */,
@@ -923,6 +940,7 @@
 				FA283F2C18B49BA8003D4FB6 /* QTRFile.m in Sources */,
 				FADEB05B18F5577E002F1C00 /* QTRRootViewController.m in Sources */,
 				FA283F2118B49551003D4FB6 /* DTBonjourServer.m in Sources */,
+				07D4A2E81C0848F0006F93E6 /* QTRRightBarButtonView.m in Sources */,
 				FA283F3D18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m in Sources */,
 				FA283F3A18B5BD9F003D4FB6 /* QTRConnectedDevicesView.m in Sources */,
 				FA283F2218B49551003D4FB6 /* NSScanner+DTBonjour.m in Sources */,
@@ -1102,7 +1120,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "QuickTransfer-iOS/QuickTransfer-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -1125,7 +1143,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuickTransfer-iOS/QuickTransfer-iOS-Prefix.pch";
 				INFOPLIST_FILE = "QuickTransfer-iOS/QuickTransfer-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;

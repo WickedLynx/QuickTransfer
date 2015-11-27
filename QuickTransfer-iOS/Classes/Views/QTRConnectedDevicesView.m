@@ -28,16 +28,16 @@
         _devicesCollectionView = aCollectionView;
         
         
-        UIProgressView *sendingProgressView;
-        sendingProgressView = [[UIProgressView alloc] init];
-        sendingProgressView.progressTintColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
-        [sendingProgressView setTranslatesAutoresizingMaskIntoConstraints:NO];
-
-        [[sendingProgressView layer]setFrame:CGRectZero];
-        sendingProgressView.trackTintColor = [UIColor purpleColor];
-        [sendingProgressView setProgress: 75 animated:YES];
-        [self addSubview:sendingProgressView];
-        _sendingProgressView = sendingProgressView;
+//        UIProgressView *sendingProgressView;
+//        sendingProgressView = [[UIProgressView alloc] init];
+//        sendingProgressView.progressTintColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
+//        [sendingProgressView setTranslatesAutoresizingMaskIntoConstraints:NO];
+//
+//        [[sendingProgressView layer]setFrame:CGRectZero];
+//        sendingProgressView.trackTintColor = [UIColor purpleColor];
+//        [sendingProgressView setProgress: 75 animated:YES];
+//        [self addSubview:sendingProgressView];
+//        _sendingProgressView = sendingProgressView;
 
         
         UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
@@ -62,14 +62,13 @@
         [self addSubview:button];
         _sendButton = button;
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(button,aCollectionView,searchBar,sendingProgressView);
+        NSDictionary *views = NSDictionaryOfVariableBindings(button,aCollectionView,searchBar);
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[button]-7-|" options:0 metrics:0 views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[sendingProgressView]-0-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[aCollectionView]-5-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[searchBar]|" options:0 metrics:0 views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-66-[sendingProgressView]-0-[searchBar]-10-[aCollectionView]-5-[button]-5-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-64-[searchBar]-10-[aCollectionView]-5-[button]-5-|" options:0 metrics:0 views:views]];
             
         
     }

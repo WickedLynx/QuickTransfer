@@ -14,6 +14,8 @@
 
 #import "QTRHomeCollectionViewCell.h"
 #import "QTRShowGalleryViewController.h"
+#import "QTRRightBarButtonView.h"
+#import "QTRActionSheetGalleryView.h"
 
 #import "QTRBonjourClient.h"
 #import "QTRBonjourServer.h"
@@ -24,7 +26,7 @@
 #import "QTRBeaconHelper.h"
 #import "QTRHelper.h"
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout> {
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout > {
 
     __weak QTRConnectedDevicesView *_devicesView;
 
@@ -158,14 +160,25 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     [[_devicesView devicesCollectionView] reloadData];
     
+    
+    QTRRightBarButtonView *abc = [[QTRRightBarButtonView alloc]initWithFrame:CGRectZero];
+    [abc setUserInteractionEnabled:NO];
+    //abc.backgroundColor = [UIColor greenColor];
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button addTarget:self action:@selector(userProfile) forControlEvents:UIControlEventTouchUpInside];
+    button.frame = abc.frame;
+    [abc addSubview:button];
+    
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"settingIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(settingBarButton:)];
     [self.navigationItem setLeftBarButtonItem:leftBarButton];
+
+    UIBarButtonItem *bi = [[UIBarButtonItem alloc] initWithCustomView:abc];
+    [self.navigationItem setRightBarButtonItem:bi];
+
     
     
-    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Logs" style:UIBarButtonItemStylePlain target:self action:@selector(logsBarButton:)];
     
-    [rightBarButton setTintColor:[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f]];
-    [self.navigationItem setRightBarButtonItem:rightBarButton];
     
     [[_devicesView sendButton] addTarget:self action:@selector(nextButtonClicked) forControlEvents:UIControlEventTouchUpInside];
 
@@ -184,7 +197,58 @@ static NSString *cellIdentifier = @"cellIdentifier";
 #pragma mark - Actions
 
 - (void)settingBarButton:(UIBarButtonItem *)barButton {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+//    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Source" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    alertController.modalPresentationStyle = UIModalPresentationPopover;
+    [alertController sizeForChildContentContainer:self withParentContainerSize:CGSizeMake(200, 200)];
+    
+    //CGFloat margin = 8.0F;
+    //QTRActionControllerGalleryDelegate *delegateObject = [QTRActionControllerGalleryDelegate new];
+    
+    QTRActionSheetGalleryView *customView = [[QTRActionSheetGalleryView alloc] init];
+    [customView setUserInteractionEnabled:YES];
+    customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
+    
+    [customView.actionControllerCollectionView registerClass:[QTRHomeCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+    
+    [customView.actionControllerCollectionView setDataSource:customView];
+    [customView.actionControllerCollectionView setDelegate:customView];
+    customView.actionControllerCollectionView.allowsMultipleSelection = YES;
+
+    
+    
+    //customView.backgroundColor = [UIColor greenColor];
+    [alertController.view addSubview:customView];
+    
+    UIAlertAction *takePhotoAction2 = [UIAlertAction actionWithTitle:@"Take a photo333" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {   }];
+
+    UIAlertAction *takePhotoAction1 = [UIAlertAction actionWithTitle:@"Take a photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { }];
+    UIAlertAction *takePhotoAction = [UIAlertAction actionWithTitle:@"Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
+    
+    UIAlertAction *cameraRollAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
+    
+    UIAlertAction *iCloudeAction = [UIAlertAction actionWithTitle:@"iCloude" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {[self pressedbuttonCancel]; }];
+    [takePhotoAction2 setEnabled:NO];
+
+    [alertController addAction:takePhotoAction2];
+    [alertController addAction:takePhotoAction1];
+    [alertController addAction:takePhotoAction];
+    [alertController addAction:cameraRollAction];
+    [alertController addAction:iCloudeAction];
+
+
+
+    
+    [self presentViewController:alertController animated:YES completion:^{}];
+
+
+}
+
+-(void) pressedbuttonCancel {
+
+    NSLog(@"Tersting");
+
 }
 
 - (void)logsBarButton:(UIBarButtonItem *)barButton {
@@ -197,6 +261,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [self refresh];
 }
 
+-(void) userProfile {
+
+    NSLog(@"Custom button");
+}
+
 -(void)nextButtonClicked{
 
     NSLog(@"Next Button Clicked");
@@ -204,23 +273,10 @@ static NSString *cellIdentifier = @"cellIdentifier";
     QTRShowGalleryViewController * vc = [[QTRShowGalleryViewController alloc] init];
     
     [self.navigationController pushViewController:vc animated:YES];
-        
     
-//    NSLog(@"picker.mediaTypes: %@ ",self.imagePicker);
-//    
-//    //    NSURL* localUrl = (NSURL *)[picker valueForKey:UIImagePickerControllerReferenceURL];
-//    //
-//    //    self.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:localUrl]];
-//    //
-//    //UIImage* image=(UIImage*)[localUrl objectForKey:@"UIImagePickerControllerOriginalImage"];
-//    
-//    [self presentViewController:self.imagePicker animated:NO completion:^{
-//    
-//        NSLog(@"Hello");
-//        NSLog(@"image:%@  path:%@",image.description, path.description);
-//    
-//    
-//    }];
+
+    
+    
     
     NSLog(@"Exit");
     
@@ -245,15 +301,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
  NSLog(@"image:%@  path:%@",image.description, path.description);
 }
 
-//-(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-//
-//    NSLog(@"Downloading..");
-//    
-//    UIImage *selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-//    [self.photos addObject:selectedImage];
-//
-//
-//}
+
 
 
 - (void)touchShare:(UIBarButtonItem *)barButton {
@@ -478,6 +526,23 @@ static NSString *cellIdentifier = @"cellIdentifier";
     }
 }
 
+#pragma mark - UIActionSheet methods
+
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (actionSheet.tag == 100) {
+        NSLog(@"The Normal action sheet.");
+    }
+    else if (actionSheet.tag == 200){
+        NSLog(@"The Delete confirmation action sheet.");
+    }
+    else{
+        NSLog(@"The Color selection action sheet.");
+    }
+    
+    NSLog(@"Index = - Title = %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
+}
+
 #pragma mark - UICollectionViewDataSource methods
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -502,7 +567,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     cell.connectedDeviceName.text = @"Demo device Connected";
     
-       cell.connectedDeviceImage.backgroundColor = [UIColor blueColor];
+       cell.connectedDeviceImage.backgroundColor = [UIColor colorWithRed:151.f/255.f green:151.f/255.f blue:151.f/255.f alpha:1.00f];
     
     cell.selectedBackgroundView.backgroundColor = [UIColor greenColor];
     
