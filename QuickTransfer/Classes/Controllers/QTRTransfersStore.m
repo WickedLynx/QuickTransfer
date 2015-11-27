@@ -41,6 +41,8 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
             _allTransfers = [NSMutableArray new];
             _fileIdentifierToTransfers = [NSMutableDictionary new];
         }
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
     }
 
     return self;
@@ -316,6 +318,17 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
 - (NSURL *)saveURLForResumedFile:(QTRFile *)file {
     return [[self transferForFileID:file.identifier] fileURL];
+}
+
+- (void)appWillTerminate:(NSNotification *)notification {
+    for (QTRTransfer *transfer in _allTransfers) {
+        [transfer setState:QTRTransferStateFailed];
+    }
+    [self archiveTransfers];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
