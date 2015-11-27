@@ -295,7 +295,7 @@
                             }
 
                             case QTRMessageTypeRequestResumeTransfer: {
-                                QTRMessage *message = [QTRMessage messageWithUser:user file:theMessage.file];
+                                QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:theMessage.file];
                                 BOOL canResume = NO;
                                 if ([sSelf.transferDelegate respondsToSelector:@selector(canResumeTransferForFile:)]) {
                                     canResume = [sSelf.transferDelegate canResumeTransferForFile:theMessage.file];
