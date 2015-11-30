@@ -16,6 +16,7 @@
     if (self) {
         
         self.frame = CGRectMake(0, 0, 77.5f, 77.5f);
+    
         
     }
     return self;

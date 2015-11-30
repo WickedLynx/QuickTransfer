@@ -26,7 +26,7 @@
 #import "QTRBeaconHelper.h"
 #import "QTRHelper.h"
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout > {
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
 
@@ -48,6 +48,8 @@
 
     QTRBeaconRanger *_beaconRanger;
     QTRBeaconAdvertiser *_beaconAdvertiser;
+    
+    QTRActionSheetGalleryView *customView;
 
     __weak id <QTRBonjourTransferDelegate> _transfersController;
 
@@ -197,57 +199,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 #pragma mark - Actions
 
 - (void)settingBarButton:(UIBarButtonItem *)barButton {
-//    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-    
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Source" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    alertController.modalPresentationStyle = UIModalPresentationPopover;
-    [alertController sizeForChildContentContainer:self withParentContainerSize:CGSizeMake(200, 200)];
-    
-    //CGFloat margin = 8.0F;
-    //QTRActionControllerGalleryDelegate *delegateObject = [QTRActionControllerGalleryDelegate new];
-    
-    QTRActionSheetGalleryView *customView = [[QTRActionSheetGalleryView alloc] init];
-    [customView setUserInteractionEnabled:YES];
-    customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
-    
-    [customView.actionControllerCollectionView registerClass:[QTRHomeCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
-    
-    [customView.actionControllerCollectionView setDataSource:customView];
-    [customView.actionControllerCollectionView setDelegate:customView];
-    customView.actionControllerCollectionView.allowsMultipleSelection = YES;
-
-    
-    
-    //customView.backgroundColor = [UIColor greenColor];
-    [alertController.view addSubview:customView];
-    
-    UIAlertAction *takePhotoAction2 = [UIAlertAction actionWithTitle:@"Take a photo333" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {   }];
-
-    UIAlertAction *takePhotoAction1 = [UIAlertAction actionWithTitle:@"Take a photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { }];
-    UIAlertAction *takePhotoAction = [UIAlertAction actionWithTitle:@"Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
-    
-    UIAlertAction *cameraRollAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
-    
-    UIAlertAction *iCloudeAction = [UIAlertAction actionWithTitle:@"iCloude" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {[self pressedbuttonCancel]; }];
-    [takePhotoAction2 setEnabled:NO];
-
-    [alertController addAction:takePhotoAction2];
-    [alertController addAction:takePhotoAction1];
-    [alertController addAction:takePhotoAction];
-    [alertController addAction:cameraRollAction];
-    [alertController addAction:iCloudeAction];
-
-
-
-    
-    [self presentViewController:alertController animated:YES completion:^{}];
-
-
-}
-
--(void) pressedbuttonCancel {
-
-    NSLog(@"Tersting");
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 
 }
 
@@ -270,10 +222,53 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     NSLog(@"Next Button Clicked");
     
-    QTRShowGalleryViewController * vc = [[QTRShowGalleryViewController alloc] init];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Source" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    alertController.modalPresentationStyle = UIModalPresentationPopover;
+    [alertController sizeForChildContentContainer:self withParentContainerSize:CGSizeMake(200, 200)];
     
-    [self.navigationController pushViewController:vc animated:YES];
+    //CGFloat margin = 8.0F;
+    //QTRActionControllerGalleryDelegate *delegateObject = [QTRActionControllerGalleryDelegate new];
     
+    customView = [[QTRActionSheetGalleryView alloc] init];
+    [customView setUserInteractionEnabled:YES];
+    customView.delegate = self;
+    customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
+    
+    [customView.actionControllerCollectionView registerClass:[QTRHomeCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+    
+    [customView.actionControllerCollectionView setDataSource:customView];
+    [customView.actionControllerCollectionView setDelegate:customView];
+    customView.actionControllerCollectionView.allowsMultipleSelection = YES;
+    
+    
+    //customView.backgroundColor = [UIColor greenColor];
+    [alertController.view addSubview:customView];
+    
+    UIAlertAction *takePhotoAction2 = [UIAlertAction actionWithTitle:@"Show Gallery" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {   }];
+    
+    UIAlertAction *takePhotoAction1 = [UIAlertAction actionWithTitle:@"Take a photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [self takePhoto]; }];
+    
+    UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    
+        QTRShowGalleryViewController * vc = [[QTRShowGalleryViewController alloc] init];
+        
+        [self.navigationController pushViewController:vc animated:YES];
+        
+
+    }];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
+    
+    UIAlertAction *iCloudeAction = [UIAlertAction actionWithTitle:@"iCloud" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
+    [takePhotoAction2 setEnabled:NO];
+    
+    [alertController addAction:takePhotoAction2];
+    [alertController addAction:takePhotoAction1];
+    [alertController addAction:cameraAction];
+    [alertController addAction:cancelAction];
+    [alertController addAction:iCloudeAction];
+    
+    [self presentViewController:alertController animated:YES completion:^{}];
 
     
     
@@ -778,5 +773,29 @@ static NSString *cellIdentifier = @"cellIdentifier";
     }
 }
 
+#pragma mark - ActionSheetGallaryDelegate methods
+
+- (void) QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)QTRActionSheetGalleryView didCellSelected:(BOOL)selected withCollectionCell:(QTRAlertControllerCollectionViewCell *)alertControllerCollectionViewCell {
+    if (selected) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+
+-(void)takePhoto {
+    
+    // Set source to the camera
+    self.imagePicker.sourceType =  UIImagePickerControllerSourceTypeCamera;
+    
+    // Delegate is self
+    self.imagePicker.delegate = self;
+    
+    // Allow editing of image ?
+    self.imagePicker.allowsEditing = NO;
+    
+    // Show image picker
+    [self presentViewController:self.imagePicker animated:YES completion:nil];
+
+}
 
 @end

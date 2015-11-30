@@ -12,6 +12,7 @@
 static NSString *cellIdentifier = @"cellIdentifier";
 static int count = 0;
 
+
 @implementation QTRActionSheetGalleryView
 
 - (id)initWithFrame:(CGRect)aRect
@@ -33,13 +34,22 @@ static int count = 0;
         
         [self addSubview:aCollectionView];
         _actionControllerCollectionView = aCollectionView;
+                
+        customIndicatorView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        customIndicatorView.frame = CGRectZero;
+        [customIndicatorView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        //customIndicatorView.center = aCollectionView.center;
+        [self addSubview: customIndicatorView];
+        _actionCustomIndicatorView = customIndicatorView;
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(aCollectionView);
+        [_actionCustomIndicatorView startAnimating];
+                
+        NSDictionary *views = NSDictionaryOfVariableBindings(aCollectionView, customIndicatorView);
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[aCollectionView]|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[aCollectionView]-0-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[aCollectionView]-0-|" options:0 metrics:0 views:views]];
-
-        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[customIndicatorView]-0-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[customIndicatorView]-0-|" options:0 metrics:0 views:views]];
         
         [self getAllPictures];
         
@@ -121,6 +131,8 @@ static int count = 0;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"Cell %lu Selected",indexPath.row);
+    QTRAlertControllerCollectionViewCell *cell = (QTRAlertControllerCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    [self.delegate QTRActionSheetGalleryView:self didCellSelected:YES withCollectionCell:cell];
 }
 
 
@@ -141,12 +153,17 @@ static int count = 0;
                 
                 [library assetForURL:url
                          resultBlock:^(ALAsset *asset) {
-                             [mutableArray addObject:[UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]]];
                              
+                           //  if (asset != nil) {
+                                 
+                             
+                             [mutableArray addObject:[UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]]];
+                         //    }
                              if ([mutableArray count]==count)
                              {
                                  imageArray=[[NSArray alloc] initWithArray:mutableArray];
                                  [self allPhotosCollected:imageArray];
+                                 [_actionCustomIndicatorView stopAnimating];
                              }
                          }
                         failureBlock:^(NSError *error){ NSLog(@"operation was not successfull!"); } ];

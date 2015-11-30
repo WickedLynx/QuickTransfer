@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "QTRAlertControllerCollectionViewCell.h"
+
+@class QTRActionSheetGalleryView;
+@protocol actionSheetGallaryDelegate <NSObject>
+
+- (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView didCellSelected:(BOOL)selected withCollectionCell:(QTRAlertControllerCollectionViewCell *)alertControllerCollectionViewCell;
+
+@end
 
 @interface QTRActionSheetGalleryView : UIView  <UICollectionViewDelegate,UICollectionViewDataSource>
 {
@@ -15,10 +23,14 @@
     NSArray *imageArray;
     NSMutableArray *mutableArray;
     UICollectionView *aCollectionView;
+    UIActivityIndicatorView *customIndicatorView;
 }
 
 -(void)allPhotosCollected:(NSArray*)imgArray;
 
 @property (weak, nonatomic) UICollectionView *actionControllerCollectionView;
+@property (retain, nonatomic) UIActivityIndicatorView *actionCustomIndicatorView;
+
+@property (nonatomic, weak) id <actionSheetGallaryDelegate> delegate;
 
 @end
