@@ -141,7 +141,6 @@
     return canResume;
 }
 
-
 #pragma mark - Private methods
 
 - (DTBonjourDataConnection *)connectionForUser:(QTRUser *)user {
