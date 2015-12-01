@@ -27,6 +27,11 @@
         [self addSubview:aCollectionView];
         _devicesCollectionView = aCollectionView;
         
+        self.loadDeviceView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        [aCollectionView addSubview:self.loadDeviceView];
+
+
+        
         
 //        UIProgressView *sendingProgressView;
 //        sendingProgressView = [[UIProgressView alloc] init];

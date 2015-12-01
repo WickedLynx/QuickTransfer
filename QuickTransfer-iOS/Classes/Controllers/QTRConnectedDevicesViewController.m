@@ -36,6 +36,7 @@
     QTRBonjourServer *_server;
     NSMutableArray *_connectedServers;
     NSMutableArray *_connectedClients;
+    NSMutableDictionary *_selectedRecivers;
     QTRUser *_localUser;
 
     QTRUser *_selectedUser;
@@ -148,6 +149,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
         NSLog(@"No iCloud access");
     }
     
+    _selectedRecivers = [[NSMutableDictionary alloc]init];
     
     self.imagePicker = [[UIImagePickerController alloc] init];
     self.imagePicker.allowsEditing = YES;
@@ -200,7 +202,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [[_devicesView sendButton] addTarget:self action:@selector(nextButtonClicked) forControlEvents:UIControlEventTouchUpInside];
 
     [self.navigationController.navigationBar setTitleTextAttributes:
-     @{NSForegroundColorAttributeName:[UIColor whiteColor]}];}
+     @{NSForegroundColorAttributeName:[UIColor whiteColor]}];
+    [[_devicesView loadDeviceView] startAnimating];
+    [_devicesView loadDeviceView].frame = self.view.frame;
+
+}
 
 #pragma mark - Public methods
 
@@ -230,6 +236,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)logsBarButton:(UIBarButtonItem *)barButton {
     NSLog(@"Logs");
     
+    NSLog(@"\n_selectedRecivers: %@ ",_selectedRecivers);
+    
     
 }
 
@@ -245,58 +253,66 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 -(void)nextButtonClicked{
 
-    NSLog(@"Next Button Clicked");
+    if ([_selectedRecivers count] > 0) {
+     
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Source" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+            alertController.modalPresentationStyle = UIModalPresentationPopover;
+            [alertController sizeForChildContentContainer:self withParentContainerSize:CGSizeMake(200, 200)];
+            
+            //CGFloat margin = 8.0F;
+            //QTRActionControllerGalleryDelegate *delegateObject = [QTRActionControllerGalleryDelegate new];
+            
+            customView = [[QTRActionSheetGalleryView alloc] init];
+            [customView setUserInteractionEnabled:YES];
+            customView.delegate = self;
+            customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
     
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Source" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    alertController.modalPresentationStyle = UIModalPresentationPopover;
-    [alertController sizeForChildContentContainer:self withParentContainerSize:CGSizeMake(200, 200)];
+            [customView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
     
-    //CGFloat margin = 8.0F;
-    //QTRActionControllerGalleryDelegate *delegateObject = [QTRActionControllerGalleryDelegate new];
-    
-    customView = [[QTRActionSheetGalleryView alloc] init];
-    [customView setUserInteractionEnabled:YES];
-    customView.delegate = self;
-    customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
-    
-    [customView.actionControllerCollectionView registerClass:[QTRHomeCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
-    
-    [customView.actionControllerCollectionView setDataSource:customView];
-    [customView.actionControllerCollectionView setDelegate:customView];
-    customView.actionControllerCollectionView.allowsMultipleSelection = YES;
+            [customView.actionControllerCollectionView setDataSource:customView];
+            [customView.actionControllerCollectionView setDelegate:customView];
+            customView.actionControllerCollectionView.allowsMultipleSelection = YES;
     
     
-    //customView.backgroundColor = [UIColor greenColor];
-    [alertController.view addSubview:customView];
+            //customView.backgroundColor = [UIColor greenColor];
+            [alertController.view addSubview:customView];
     
-    UIAlertAction *takePhotoAction2 = [UIAlertAction actionWithTitle:@"Show Gallery" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {   }];
+            UIAlertAction *takePhotoAction2 = [UIAlertAction actionWithTitle:@"Show Gallery" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {   }];
     
-    UIAlertAction *takePhotoAction1 = [UIAlertAction actionWithTitle:@"Take a photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [self takePhoto]; }];
+            UIAlertAction *takePhotoAction1 = [UIAlertAction actionWithTitle:@"Take a photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [self takePhoto]; }];
     
-    UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
     
-        QTRShowGalleryViewController * vc = [[QTRShowGalleryViewController alloc] init];
+                QTRShowGalleryViewController * vc = [[QTRShowGalleryViewController alloc] init];
         
-        [self.navigationController pushViewController:vc animated:YES];
+                [self.navigationController pushViewController:vc animated:YES];
         
 
-    }];
+            }];
     
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
     
-    UIAlertAction *iCloudeAction = [UIAlertAction actionWithTitle:@"iCloud" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
-    [takePhotoAction2 setEnabled:NO];
+            UIAlertAction *iCloudeAction = [UIAlertAction actionWithTitle:@"iCloud" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
+            [takePhotoAction2 setEnabled:NO];
     
-    [alertController addAction:takePhotoAction2];
-    [alertController addAction:takePhotoAction1];
-    [alertController addAction:cameraAction];
-    [alertController addAction:cancelAction];
-    [alertController addAction:iCloudeAction];
+            [alertController addAction:takePhotoAction2];
+            [alertController addAction:takePhotoAction1];
+            [alertController addAction:cameraAction];
+            [alertController addAction:cancelAction];
+            [alertController addAction:iCloudeAction];
     
-    [self presentViewController:alertController animated:YES completion:^{}];
+            [self presentViewController:alertController animated:YES completion:^{}];
 
-    
-    
+        }
+        else {
+        
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Message" message:@"First Select Atleast One Reciver" preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+            [alertController addAction:ok];
+            
+            [self presentViewController:alertController animated:YES completion:nil];
+        }
     
     NSLog(@"Exit");
     
@@ -525,6 +541,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)updateTitle {
     unsigned long totalUsers = [_connectedClients count] + [_connectedServers count];
     [self setTitle:[NSString stringWithFormat:@"Devices (%lu)", totalUsers]];
+    
+    if (totalUsers > 0) {
+        [[_devicesView loadDeviceView] stopAnimating];
+    } else {
+        [[_devicesView loadDeviceView] startAnimating];
+    }
 }
 
 #pragma mark - Notifications
@@ -546,23 +568,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     }
 }
 
-#pragma mark - UIActionSheet methods
-
-
--(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (actionSheet.tag == 100) {
-        NSLog(@"The Normal action sheet.");
-    }
-    else if (actionSheet.tag == 200){
-        NSLog(@"The Delete confirmation action sheet.");
-    }
-    else{
-        NSLog(@"The Color selection action sheet.");
-    }
-    
-    NSLog(@"Index = - Title = %@", [actionSheet buttonTitleAtIndex:buttonIndex]);
-}
-
 #pragma mark - UICollectionViewDataSource methods
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -579,6 +584,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
+    if ([_selectedRecivers count] > 0) {
+        NSLog(@"Machine found..");
+    }
+    
+    
     QTRHomeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
     QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
@@ -589,46 +599,13 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     
     
-    
+    //[cell setIconImage:@"Demo"];
     //cell.connectedDeviceName.text = @"Demo device Connected";
     //[cell setImage:[UIImage imageNamed:@"loadBtnCloud.png"]];
-    
-  //  UIImageView *cus = [[UIImageView alloc]initWithImage:];
-
-    
-    
-//    cell.connectedDeviceImage.backgroundColor = [UIColor whiteColor];
-    
-    //NSLog(@"User Platform %@",theUser.platform);
-    
-    
- 
-    
-    
     
     return cell;
     
 }
-
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    static NSString *ConnectedDevicesTableCellIdentifier = @"ConnectedDevicesTableCellIdentifier";
-//
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ConnectedDevicesTableCellIdentifier];
-//
-//    if (cell == nil) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ConnectedDevicesTableCellIdentifier];
-//    }
-//
-//    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
-//
-//    [cell.textLabel setText:[theUser name]];
-//    
-//
-//  
-//
-//    return cell;
-//}
-
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -639,13 +616,17 @@ static NSString *cellIdentifier = @"cellIdentifier";
 #pragma mark - UICollectionViewDelegate methods
 //
 //
-//- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
-//{
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
 //    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
 //    cell.connectedDeviceName.textColor = [UIColor whiteColor];
-//    
-//}
-//
+    
+    
+    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
+    [_selectedRecivers removeObjectForKey:theUser.identifier];
+    
+}
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 //    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
@@ -670,8 +651,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
 //        
 //        _importedFileURL = nil;
 //    }
+    
+    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
+    [_selectedRecivers setObject:theUser forKey:theUser.identifier];
 
-    NSLog(@"User Selected..");
+    NSLog(@"User %lu  Selected..",[_selectedRecivers count]);
     
 }
 //

@@ -17,5 +17,7 @@
 
 @property (weak, nonatomic) UICollectionView *devicesCollectionView;
 @property (weak, nonatomic) UIButton *sendButton;
+@property (nonatomic, strong) UIActivityIndicatorView *loadDeviceView;
+
 
 @end

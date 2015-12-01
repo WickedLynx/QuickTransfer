@@ -70,6 +70,7 @@ static int count = 0;
     
     //    return [_connectedServers count] + [_connectedClients count];
     return [imageArray count];
+    //return 3;
     
 }
 
@@ -81,6 +82,9 @@ static int count = 0;
     
     //    [cell.connectedDeviceName setText:[theUser name]];
     
+    
+    //cell.backgroundColor = [UIColor redColor];
+    //NSLog(@"Cell: %@",cell.description);
     
     cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) [imageArray objectAtIndex:indexPath.row] stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
     

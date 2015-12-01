@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0702813E1C0C21DD00125F35 /* QTRRecentLogsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0702813D1C0C21DD00125F35 /* QTRRecentLogsTableViewCell.m */; };
 		070281901C0CA05400125F35 /* iPhoneIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0702818F1C0CA05400125F35 /* iPhoneIcon.xcassets */; };
 		072BE73E1C0D7CD400798AC1 /* iPhoneIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0702818F1C0CA05400125F35 /* iPhoneIcon.xcassets */; };
 		072BE7401C0D803500798AC1 /* macIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE73F1C0D803500798AC1 /* macIcon.xcassets */; };
@@ -167,8 +166,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0702813C1C0C21DD00125F35 /* QTRRecentLogsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRRecentLogsTableViewCell.h; sourceTree = "<group>"; };
-		0702813D1C0C21DD00125F35 /* QTRRecentLogsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRRecentLogsTableViewCell.m; sourceTree = "<group>"; };
 		0702818F1C0CA05400125F35 /* iPhoneIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = iPhoneIcon.xcassets; sourceTree = "<group>"; };
 		072BE73F1C0D803500798AC1 /* macIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = macIcon.xcassets; sourceTree = "<group>"; };
 		072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AndroidIcon.xcassets; sourceTree = "<group>"; };
@@ -363,6 +360,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		072BE7501C0D8DB700798AC1 /* IconImages */ = {
+			isa = PBXGroup;
+			children = (
+				07E742351C074B920084388C /* Media.xcassets */,
+				072BE7471C0D809700798AC1 /* windowsIcon.xcassets */,
+				072BE7451C0D808500798AC1 /* linuxIcon.xcassets */,
+				072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */,
+				072BE73F1C0D803500798AC1 /* macIcon.xcassets */,
+				0702818F1C0CA05400125F35 /* iPhoneIcon.xcassets */,
+				07E742371C0751410084388C /* Launch Screen.storyboard */,
+				07D5DB211C0D69F0005C2EC2 /* Gallery_placeholder.png */,
+				072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */,
+			);
+			name = IconImages;
+			sourceTree = "<group>";
+		};
 		07CB1B5D1C0612EF00E3C02D /* SplashScreen */ = {
 			isa = PBXGroup;
 			children = (
@@ -471,8 +484,6 @@
 				07D4A2EA1C086AD4006F93E6 /* QTRActionSheetGalleryView.m */,
 				07D4A2F21C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.h */,
 				07D4A2F31C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m */,
-				0702813C1C0C21DD00125F35 /* QTRRecentLogsTableViewCell.h */,
-				0702813D1C0C21DD00125F35 /* QTRRecentLogsTableViewCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -614,15 +625,7 @@
 		FAD9FFCB18B33CA70098DA76 = {
 			isa = PBXGroup;
 			children = (
-				072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */,
-				072BE7471C0D809700798AC1 /* windowsIcon.xcassets */,
-				072BE7451C0D808500798AC1 /* linuxIcon.xcassets */,
-				072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */,
-				072BE73F1C0D803500798AC1 /* macIcon.xcassets */,
-				0702818F1C0CA05400125F35 /* iPhoneIcon.xcassets */,
-				07E742371C0751410084388C /* Launch Screen.storyboard */,
-				07E742351C074B920084388C /* Media.xcassets */,
-				07D5DB211C0D69F0005C2EC2 /* Gallery_placeholder.png */,
+				072BE7501C0D8DB700798AC1 /* IconImages */,
 				FAD9001018B33F010098DA76 /* ThirdParty */,
 				FAD9FFDD18B33CA70098DA76 /* QuickTransfer */,
 				FAD9FFFB18B33CA80098DA76 /* QuickTransferTests */,
@@ -974,7 +977,6 @@
 				FA12BB0418BF06000030911F /* QTRTransfer.m in Sources */,
 				FAAC781C18EE884C0006B698 /* QTRTransfersTableCell.m in Sources */,
 				FADEB05818F53177002F1C00 /* QTRHelper.m in Sources */,
-				0702813E1C0C21DD00125F35 /* QTRRecentLogsTableViewCell.m in Sources */,
 				FA6DA6B818C453E30097742B /* QTRMultipartTransfer.m in Sources */,
 				FA283F2618B49582003D4FB6 /* QTRUser.m in Sources */,
 				FA283F2718B49582003D4FB6 /* QTRConstants.m in Sources */,

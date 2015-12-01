@@ -15,7 +15,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         
-        self.frame = CGRectMake(0, 0, 77.5f, 77.5f);
+        self.frame = CGRectMake(0, 0, 97.5f, 97.5f);
     
         
     }

@@ -22,10 +22,22 @@
         
         CAShapeLayer *shapeLayer12 = [CAShapeLayer layer];
         shapeLayer12.path = [path12 CGPath];
-        shapeLayer12.strokeColor = [[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] CGColor];
+        //shapeLayer12.strokeColor = [[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] CGColor];
+        shapeLayer12.strokeColor = [[UIColor whiteColor] CGColor];
         shapeLayer12.lineWidth = 1.0f;
         shapeLayer12.fillColor = [[UIColor clearColor] CGColor];
         [self.layer addSublayer:shapeLayer12];
+        
+        UIBezierPath *path121 = [UIBezierPath bezierPath];
+        [path121 moveToPoint:CGPointMake(12.f, 23.f)];
+        [path121 addLineToPoint:CGPointMake(12.f, 13.f)];
+        
+        CAShapeLayer *shapeLayer121 = [CAShapeLayer layer];
+        shapeLayer121.path = [path121 CGPath];
+        shapeLayer121.strokeColor = [[UIColor greenColor] CGColor];
+        shapeLayer121.lineWidth = 1.0f;
+        shapeLayer121.fillColor = [[UIColor clearColor] CGColor];
+        [self.layer addSublayer:shapeLayer121];
         
         UIBezierPath *path11 = [UIBezierPath bezierPath];
         [path11 moveToPoint:CGPointMake(12.f, 4.f)];
@@ -33,7 +45,7 @@
         
         CAShapeLayer *shapeLayer11 = [CAShapeLayer layer];
         shapeLayer11.path = [path11 CGPath];
-        shapeLayer11.strokeColor = [[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] CGColor];
+        shapeLayer11.strokeColor = [[UIColor whiteColor] CGColor];
         shapeLayer11.lineWidth = 1.0f;
         shapeLayer11.fillColor = [[UIColor clearColor] CGColor];
         [self.layer addSublayer:shapeLayer11];
@@ -45,7 +57,7 @@
         
         CAShapeLayer *shapeLayer13 = [CAShapeLayer layer];
         shapeLayer13.path = [path13 CGPath];
-        shapeLayer13.strokeColor = [[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] CGColor];
+        shapeLayer13.strokeColor = [[UIColor whiteColor] CGColor];
         shapeLayer13.lineWidth = 1.0f;
         shapeLayer13.fillColor = [[UIColor clearColor] CGColor];
         [self.layer addSublayer:shapeLayer13];
@@ -59,10 +71,24 @@
         
         CAShapeLayer *shapeLayer22 = [CAShapeLayer layer];
         shapeLayer22.path = [path22 CGPath];
-        shapeLayer22.strokeColor = [[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] CGColor];
+        shapeLayer22.strokeColor = [[UIColor whiteColor] CGColor];
         shapeLayer22.lineWidth = 1.0f;
         shapeLayer22.fillColor = [[UIColor clearColor] CGColor];
         [self.layer addSublayer:shapeLayer22];
+        
+        
+        UIBezierPath *path221 = [UIBezierPath bezierPath];
+        [path221 moveToPoint:CGPointMake(22.f, 9.f)];
+        [path221 addLineToPoint:CGPointMake(22.f, 19.f)];
+        
+        CAShapeLayer *shapeLayer221 = [CAShapeLayer layer];
+        shapeLayer221.path = [path221 CGPath];
+        shapeLayer221.strokeColor = [[UIColor blueColor] CGColor];
+        shapeLayer221.lineWidth = 1.0f;
+        shapeLayer221.fillColor = [[UIColor clearColor] CGColor];
+        [self.layer addSublayer:shapeLayer221];
+
+        
         
         UIBezierPath *path21 = [UIBezierPath bezierPath];
         [path21 moveToPoint:CGPointMake(22.f, 28.f)];
@@ -70,7 +96,7 @@
         
         CAShapeLayer *shapeLayer21 = [CAShapeLayer layer];
         shapeLayer21.path = [path21 CGPath];
-        shapeLayer21.strokeColor = [[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] CGColor];
+        shapeLayer21.strokeColor = [[UIColor whiteColor] CGColor];
         shapeLayer21.lineWidth = 1.0f;
         shapeLayer21.fillColor = [[UIColor clearColor] CGColor];
         [self.layer addSublayer:shapeLayer21];
@@ -82,7 +108,7 @@
         
         CAShapeLayer *shapeLayer23 = [CAShapeLayer layer];
         shapeLayer23.path = [path23 CGPath];
-        shapeLayer23.strokeColor = [[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] CGColor];
+        shapeLayer23.strokeColor = [[UIColor whiteColor] CGColor];
         shapeLayer23.lineWidth = 1.0f;
         shapeLayer23.fillColor = [[UIColor clearColor] CGColor];
         [self.layer addSublayer:shapeLayer23];
