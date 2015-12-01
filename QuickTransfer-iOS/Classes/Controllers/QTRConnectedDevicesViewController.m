@@ -136,10 +136,14 @@ static NSString *cellIdentifier = @"cellIdentifier";
     _devicesView = (QTRConnectedDevicesView *)view;
 }
 
+//- (UIStatusBarStyle)preferredStatusBarStyle
+//{
+//
+//    return UIStatusBarStyleLightContent;
+//}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    //self.view.frame = [[UIScreen mainScreen] bounds];
     
     NSURL *ubiq = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
     if (ubiq) {
@@ -255,7 +259,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 -(void)nextButtonClicked{
 
-    if ([_selectedRecivers count] > 0) {
+    if (1) {
      
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Source" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
             alertController.modalPresentationStyle = UIModalPresentationPopover;

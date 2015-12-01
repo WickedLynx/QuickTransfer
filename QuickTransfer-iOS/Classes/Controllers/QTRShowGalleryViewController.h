@@ -7,21 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AssetsLibrary/AssetsLibrary.h>
+@import Photos;
+@import PhotosUI;
 
 @interface QTRShowGalleryViewController : UIViewController 
-{
-    ALAssetsLibrary *library;
-    NSArray *imageArray;
-    NSMutableArray *mutableArray;
-}
 
--(void)allPhotosCollected:(NSArray*)imgArray;
-@property(nonatomic,retain) UISegmentedControl *segmentedControl;
-
-@property(nonatomic,retain) UIImageView *imageView;
-@property (weak, nonatomic) UIButton *sendButton;
-
-
+@property (nonatomic, strong) PHCachingImageManager *imageManager;
+@property (nonatomic, strong) PHImageRequestOptions *requestOptions;
 
 @end

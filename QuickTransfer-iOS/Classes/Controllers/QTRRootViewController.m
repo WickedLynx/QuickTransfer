@@ -39,15 +39,13 @@ CGFloat const QTRRootViewControllerXOffset = 50.0f;
     QTRConnectedDevicesViewController *connectedDevicesController = [QTRConnectedDevicesViewController new];
     
     UINavigationController *devicesNavigationController = [[UINavigationController alloc] initWithRootViewController:connectedDevicesController];
+    
     _connectedDevicesNavigationController = devicesNavigationController;
 
     [self addChildViewController:devicesNavigationController];
     [self.view addSubview:devicesNavigationController.view];
     
     
-    NSLog(@"In QTRRootViewController   Width: %f  \n Height:%f", self.view.frame.size.width , self.view.frame.size.height);
-
-
 }
 
 - (BOOL)importFileAtURL:(NSURL *)fileURL {

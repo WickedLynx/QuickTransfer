@@ -50,24 +50,21 @@
         searchBar.layer.borderWidth = 0.0f;
         searchBar.placeholder = @"Search";
         searchBar.barTintColor = [UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f];
+        //searchBar.barTintColor = [UIColor whiteColor];
+        //searchBar.backgroundColor = [UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f];
         //searchBar.backgroundColor = [UIColor redColor];
         [self addSubview:searchBar];
         _searchBar =searchBar;
         
-
-        searchBar.searchBarStyle       = UISearchBarStyleMinimal;
-        searchBar.tintColor            = [UIColor whiteColor];
-        searchBar.barTintColor         = [UIColor whiteColor];
-        
-        [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
-                
-                // add KVO observer.. so we will be informed when user scroll colllectionView
+//
+//        searchBar.searchBarStyle       = UISearchBarStyleMinimal;
+//        searchBar.tintColor            = [UIColor whiteColor];
+//        searchBar.barTintColor         = [UIColor whiteColor];
+//        
+//        [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
+//                
+//                // add KVO observer.. so we will be informed when user scroll colllectionView
     
-            
-
-        
-        
-        
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.frame = CGRectZero;

@@ -14,19 +14,16 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
     
-    self.window.backgroundColor = [UIColor redColor];
-    
-    NSLog(@"In AppDelegate   Width: %f  \n Height:%f", self.window.frame.size.width , self.window.frame.size.height);
-
-
+   
     QTRRootViewController *rootViewController = [QTRRootViewController new];
 
     [self.window setRootViewController:rootViewController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
-
+ 
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
     NSURL *fileURL = launchOptions[UIApplicationLaunchOptionsURLKey];
     if (fileURL != nil) {
         [rootViewController importFileAtURL:fileURL];
