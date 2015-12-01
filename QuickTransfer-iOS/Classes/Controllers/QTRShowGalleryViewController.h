@@ -20,6 +20,8 @@
 @property(nonatomic,retain) UISegmentedControl *segmentedControl;
 
 @property(nonatomic,retain) UIImageView *imageView;
+@property (weak, nonatomic) UIButton *sendButton;
+
 
 
 @end

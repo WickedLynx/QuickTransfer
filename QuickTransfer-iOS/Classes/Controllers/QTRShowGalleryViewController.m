@@ -8,6 +8,7 @@
 
 #import "QTRShowGalleryViewController.h"
 #import "QTRGalleryCollectionViewCell.h"
+#import "QTRRightBarButtonView.h"
 
 @interface QTRShowGalleryViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
 
@@ -28,7 +29,7 @@ int totalImages;
     [super viewDidLoad];
     
     [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
-    //[self setTitle:@"Devices"];
+    [self setTitle:@"Camera Roll"];
     
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
     
@@ -38,32 +39,18 @@ int totalImages;
     [leftBarButton setTintColor:[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f]];
     [self.navigationItem setLeftBarButtonItem:leftBarButton];
     
+    QTRRightBarButtonView *customRightBarButton = [[QTRRightBarButtonView alloc]initWithFrame:CGRectZero];
+    [customRightBarButton setUserInteractionEnabled:NO];
     
-    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Logs" style:UIBarButtonItemStylePlain target:self action:@selector(logsBarButton)];
+    UIButton *barButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [barButton addTarget:self action:@selector(logsBarButton) forControlEvents:UIControlEventTouchUpInside];
+    barButton.frame = customRightBarButton.frame;
+    [customRightBarButton addSubview:barButton];
     
-    [rightBarButton setTintColor:[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f]];
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:customRightBarButton];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
-    self.segmentedControl = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Camera",@"iCloude", nil]];
-    self.segmentedControl.frame = CGRectMake(0, 0, 120, 25);
-    self.segmentedControl.center = self.navigationController.navigationBar.center;
-    [self.segmentedControl setWidth:65.0 forSegmentAtIndex:0];
-    [self.segmentedControl setWidth:65.0 forSegmentAtIndex:1];
-    [self.segmentedControl setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.segmentedControl setSelectedSegmentIndex:0];
-    [self.segmentedControl addTarget:self action:@selector(segmentAction) forControlEvents:UIControlEventValueChanged];
-    
-    self.navigationItem.titleView = self.segmentedControl;
-    
     [self getAllPictures];
-    
-    
-//    self.imageView = [[UIImageView alloc]init];
-//    self.imageView.frame = CGRectMake(50, 50, 200, 200);
-//    
-//    self.imageView.backgroundColor = [UIColor greenColor];
-//    [self.view addSubview:self.imageView];
-    
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     [layout setMinimumInteritemSpacing:2.0f];
@@ -80,15 +67,29 @@ int totalImages;
     [self.view addSubview:galleryCollectionView];
     
     [galleryCollectionView registerClass:[QTRGalleryCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectZero;
+    [[button layer]setCornerRadius:7.0f];
+    [[button layer]setBorderWidth:1.0f];
+    [[button layer]setBorderColor:[UIColor whiteColor].CGColor];
+    [[button layer]setMasksToBounds:TRUE];
+    button.clipsToBounds = YES;
+    [button setTitle:@"Send" forState:UIControlStateNormal];
+    [button setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
+    [button setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.view addSubview:button];
+    _sendButton = button;
 
-    NSDictionary *views = NSDictionaryOfVariableBindings(galleryCollectionView);
+
+    NSDictionary *views = NSDictionaryOfVariableBindings(galleryCollectionView, button);
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-2-[galleryCollectionView]-2-|" options:0 metrics:0 views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[galleryCollectionView]-50-|" options:0 metrics:0 views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[button]-7-|" options:0 metrics:0 views:views]];
+
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[galleryCollectionView]-5-[button]-5-|" options:0 metrics:0 views:views]];
 
     
-    
-
 }
 
 -(void)homeButton {
@@ -99,24 +100,10 @@ int totalImages;
 
 
 -(void)logsBarButton {
+    
+    NSLog(@"Log Button Clicked..");
 
 
-}
-
--(void)segmentAction {
-
-    NSLog(@"SEgment Control");
-//    if (totalImages > 0) {
-//    
-//    totalImages--;
-//    
-//    self.imageView.image = (UIImage *) [imageArray objectAtIndex:totalImages];
-//    }
-//    
-//    else {
-//    
-//        totalImages = (int)[imageArray count];
-//    }
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -128,7 +115,6 @@ int totalImages;
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    //    return [_connectedServers count] + [_connectedClients count];
     return [imageArray count];
     
 }
@@ -139,39 +125,10 @@ int totalImages;
     
     cell.backgroundColor = [UIColor greenColor];
     cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) [imageArray objectAtIndex:indexPath.row] stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
-//    
-//    cell.selectedBackgroundView =  [[UIImageView alloc] initWithImage:[ [UIImage imageNamed:@"cell_pressed.png"] stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
-    
-//    cell.connectedDeviceImage.image = (UIImage *) [imageArray objectAtIndex:indexPath.row];
-//    cell.connectedDeviceImage.backgroundColor = [UIColor yellowColor];
-   
-   
-    
-    //imageView.image = (UIImage *)[imageArray objectAtIndex:indexPath.row];
-    
  
     return cell;
     
 }
-
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    static NSString *ConnectedDevicesTableCellIdentifier = @"ConnectedDevicesTableCellIdentifier";
-//
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ConnectedDevicesTableCellIdentifier];
-//
-//    if (cell == nil) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ConnectedDevicesTableCellIdentifier];
-//    }
-//
-//    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
-//
-//    [cell.textLabel setText:[theUser name]];
-//
-//
-//
-//
-//    return cell;
-//}
 
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -213,21 +170,70 @@ int totalImages;
     library = [[ALAssetsLibrary alloc] init];
     
     void (^assetEnumerator)( ALAsset *, NSUInteger, BOOL *) = ^(ALAsset *result, NSUInteger index, BOOL *stop) {
+        
         if(result != nil) {
             if([[result valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]) {
                 [assetURLDictionaries addObject:[result valueForProperty:ALAssetPropertyURLs]];
                 
                 NSURL *url= (NSURL*) [[result defaultRepresentation]url];
                 
+                NSLog(@"URL:%@", url);
+                
                 [library assetForURL:url
                          resultBlock:^(ALAsset *asset) {
-                             [mutableArray addObject:[UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]]];
+                             
+                             if (asset){
+                                 //////////////////////////////////////////////////////
+                                 // SUCCESS POINT #1 - asset is what we are looking for
+                                 //////////////////////////////////////////////////////
+                                 [mutableArray addObject:[UIImage imageWithCGImage:[[asset defaultRepresentation] fullResolutionImage]]];
+                       
+                             }
+                             
+                             else {
+                             
+                                 [library enumerateGroupsWithTypes:ALAssetsGroupPhotoStream
+                                                        usingBlock:^(ALAssetsGroup *group, BOOL *stop)
+                                  {
+                                      [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                                          if([result.defaultRepresentation.url isEqual:url])
+                                          {
+                                              ///////////////////////////////////////////////////////
+                                              // SUCCESS POINT #2 - result is what we are looking for
+                                              ///////////////////////////////////////////////////////
+                                              
+                                              [mutableArray addObject:[UIImage imageWithCGImage:[[asset defaultRepresentation] fullResolutionImage]]];
+
+                                              
+                                              *stop = YES;
+                                          }
+                                      }];
+                             
+                                  }
+                                  
+                                                      failureBlock:^(NSError *error)
+                                  {
+                                      NSLog(@"Error: Cannot load asset from photo stream - %@", [error localizedDescription]);
+                                      
+                                  }];
+                                      
+                                      
+                             }
+                             
+                             
+                             
+                             //[mutableArray addObject:[UIImage imageWithCGImage:[[asset defaultRepresentation] fullResolutionImage]]];
                              
                              if ([mutableArray count]==count)
                              {
                                  imageArray=[[NSArray alloc] initWithArray:mutableArray];
                                  [self allPhotosCollected:imageArray];
                              }
+                             
+                             
+
+                             
+                             
                          }
                         failureBlock:^(NSError *error){ NSLog(@"operation was not successfull!"); } ];
                 

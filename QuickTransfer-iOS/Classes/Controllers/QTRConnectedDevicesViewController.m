@@ -29,6 +29,8 @@
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
+    
+    UIRefreshControl *refreshControl;
 
     QTRBonjourClient *_client;
     QTRBonjourServer *_server;
@@ -135,9 +137,17 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
     
-    self.view.frame = [[UIScreen mainScreen] bounds];
+    //self.view.frame = [[UIScreen mainScreen] bounds];
+    
+    NSURL *ubiq = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
+    if (ubiq) {
+        NSLog(@"iCloud access at %@", ubiq);
+        // TODO: Load document...
+    } else {
+        NSLog(@"No iCloud access");
+    }
+    
     
     self.imagePicker = [[UIImagePickerController alloc] init];
     self.imagePicker.allowsEditing = YES;
@@ -159,28 +169,33 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [[_devicesView devicesCollectionView] setDataSource:self];
     [[_devicesView devicesCollectionView] setDelegate:self];
     [_devicesView devicesCollectionView].allowsMultipleSelection = YES;
+   
 
     [[_devicesView devicesCollectionView] reloadData];
     
+    refreshControl = [[UIRefreshControl alloc]init];
+    [[_devicesView devicesCollectionView] addSubview:refreshControl];
+    [refreshControl addTarget:self action:@selector(refreshConnectedDevices) forControlEvents:UIControlEventValueChanged];
+
+    [[_devicesView devicesCollectionView] setScrollEnabled:YES];
+    [_devicesView devicesCollectionView].alwaysBounceVertical = YES;
     
-    QTRRightBarButtonView *abc = [[QTRRightBarButtonView alloc]initWithFrame:CGRectZero];
-    [abc setUserInteractionEnabled:NO];
-    //abc.backgroundColor = [UIColor greenColor];
+    QTRRightBarButtonView *customRightBarButton = [[QTRRightBarButtonView alloc]initWithFrame:CGRectZero];
+    [customRightBarButton setUserInteractionEnabled:NO];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button addTarget:self action:@selector(userProfile) forControlEvents:UIControlEventTouchUpInside];
-    button.frame = abc.frame;
-    [abc addSubview:button];
+    [button addTarget:self action:@selector(logsBarButton:) forControlEvents:UIControlEventTouchUpInside];
+    button.frame = customRightBarButton.frame;
+    [customRightBarButton addSubview:button];
+    
+    UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:customRightBarButton];
+    [self.navigationItem setRightBarButtonItem:rightBarButton];
     
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"settingIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(settingBarButton:)];
     [self.navigationItem setLeftBarButtonItem:leftBarButton];
 
-    UIBarButtonItem *bi = [[UIBarButtonItem alloc] initWithCustomView:abc];
-    [self.navigationItem setRightBarButtonItem:bi];
 
-    
-    
-    
+
     
     [[_devicesView sendButton] addTarget:self action:@selector(nextButtonClicked) forControlEvents:UIControlEventTouchUpInside];
 
@@ -198,6 +213,15 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 #pragma mark - Actions
 
+-(void) refreshConnectedDevices {
+    NSLog(@"Reconnecting Devices..");
+    [refreshControl endRefreshing];
+    //[[_devicesView devicesCollectionView] reloadData];
+    
+    [self refresh];
+
+}
+
 - (void)settingBarButton:(UIBarButtonItem *)barButton {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 
@@ -205,6 +229,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)logsBarButton:(UIBarButtonItem *)barButton {
     NSLog(@"Logs");
+    
     
 }
 
@@ -547,8 +572,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
 
-//    return [_connectedServers count] + [_connectedClients count];
-    return 50;
+    return [_connectedServers count] + [_connectedClients count];
+    //return 25;
     
 }
 
@@ -556,18 +581,29 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     QTRHomeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
+    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
+    [cell.connectedDeviceName setText:[theUser name]];
     
-//    [cell.connectedDeviceName setText:[theUser name]];
+    [cell setIconImage:theUser.platform];
+    
 
-    cell.connectedDeviceName.text = @"Demo device Connected";
     
-       cell.connectedDeviceImage.backgroundColor = [UIColor colorWithRed:151.f/255.f green:151.f/255.f blue:151.f/255.f alpha:1.00f];
     
-    cell.selectedBackgroundView.backgroundColor = [UIColor greenColor];
+    
+    //cell.connectedDeviceName.text = @"Demo device Connected";
+    //[cell setImage:[UIImage imageNamed:@"loadBtnCloud.png"]];
+    
+  //  UIImageView *cus = [[UIImageView alloc]initWithImage:];
+
+    
+    
+//    cell.connectedDeviceImage.backgroundColor = [UIColor whiteColor];
+    
+    //NSLog(@"User Platform %@",theUser.platform);
     
     
  
+    
     
     
     return cell;
@@ -601,23 +637,45 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 
 #pragma mark - UICollectionViewDelegate methods
-
-
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
-    cell.connectedDeviceName.textColor = [UIColor whiteColor];
-    
-}
-
+//
+//
+//- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
+//    cell.connectedDeviceName.textColor = [UIColor whiteColor];
+//    
+//}
+//
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
-    cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
+//    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
+//    cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
+    
+//    BOOL isServer = NO;
+//    
+//    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:&isServer];
+//    
+//    if (_importedFileURL == nil) {
+//        
+//        _selectedUser = theUser;
+//        [self touchShare:nil];
+//        
+//    } else {
+//        
+//        if (isServer) {
+//            [_client sendFileAtURL:_importedFileURL toUser:theUser];
+//        } else {
+//            [_server sendFileAtURL:_importedFileURL toUser:theUser];
+//        }
+//        
+//        _importedFileURL = nil;
+//    }
+
+    NSLog(@"User Selected..");
     
 }
-
-
+//
+//
 #pragma mark - QTRBonjourServerDelegate methods
 
 - (void)server:(QTRBonjourServer *)server didConnectToUser:(QTRUser *)user {

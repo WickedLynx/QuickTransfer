@@ -33,45 +33,45 @@
 
 #pragma mark - Initialisation
 
-- (id)init {
-    self = [super init];
-    if (self != nil) {
-
-        NSURL *fileCacheDirectoryURL = [QTRHelper fileCacheDirectory];
-        NSString *transfersArchiveFilePath = [[fileCacheDirectoryURL path] stringByAppendingPathComponent:@"Transfers"];
-        _transfersStore = [[QTRTransfersStore alloc] initWithArchiveLocation:transfersArchiveFilePath];
-        [_transfersStore setDelegate:self];
-
-        _byteCountFormatter = [[NSByteCountFormatter alloc] init];
-        _dateFormatter = [[NSDateFormatter alloc] init];
-
-        [_dateFormatter setDateStyle:NSDateFormatterShortStyle];
-        [_dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-        [_dateFormatter setDoesRelativeDateFormatting:YES];
-
-    }
-
-    return self;
-}
+//- (id)init {
+//    self = [super init];
+//    if (self != nil) {
+//
+//        NSURL *fileCacheDirectoryURL = [QTRHelper fileCacheDirectory];
+//        NSString *transfersArchiveFilePath = [[fileCacheDirectoryURL path] stringByAppendingPathComponent:@"Transfers"];
+//        _transfersStore = [[QTRTransfersStore alloc] initWithArchiveLocation:transfersArchiveFilePath];
+//        [_transfersStore setDelegate:self];
+//
+//        _byteCountFormatter = [[NSByteCountFormatter alloc] init];
+//        _dateFormatter = [[NSDateFormatter alloc] init];
+//
+//        [_dateFormatter setDateStyle:NSDateFormatterShortStyle];
+//        [_dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+//        [_dateFormatter setDoesRelativeDateFormatting:YES];
+//
+//    }
+//
+//    return self;
+//}
 
 #pragma mark - View lifecycle
 
-- (void)loadView {
-    QTRConnectedDevicesView *view = [[QTRConnectedDevicesView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    [view setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
-    [self setView:view];
-}
+//- (void)loadView {
+//    QTRConnectedDevicesView *view = [[QTRConnectedDevicesView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+//    [view setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
+//    [self setView:view];
+//}
 
-- (void)setView:(UIView *)view {
-
-    if (![view isKindOfClass:[QTRConnectedDevicesView class]]) {
-        [NSException raise:NSInternalInconsistencyException format:@"%@ must be associated only with %@", NSStringFromClass([self class]), NSStringFromClass([QTRConnectedDevicesView class])];
-    }
-
-    [super setView:view];
-
-    _transfersView = (QTRConnectedDevicesView *)view;
-}
+//- (void)setView:(UIView *)view {
+//
+//    if (![view isKindOfClass:[QTRConnectedDevicesView class]]) {
+//        [NSException raise:NSInternalInconsistencyException format:@"%@ must be associated only with %@", NSStringFromClass([self class]), NSStringFromClass([QTRConnectedDevicesView class])];
+//    }
+//
+//    [super setView:view];
+//
+//    _transfersView = (QTRConnectedDevicesView *)view;
+//}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -86,15 +86,15 @@
     [[_transfersView devicesTableView] setRowHeight:[tableCell requiredHeightInTableView]];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
-    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.95f green:0.91f blue:0.40f alpha:1.00f]];
-    NSIndexPath *selectedIndexPath = [[_transfersView devicesTableView] indexPathForSelectedRow];
-    if (selectedIndexPath != nil && selectedIndexPath.row < [[_transfersStore transfers] count]) {
-        [[_transfersView devicesTableView] deselectRowAtIndexPath:selectedIndexPath animated:YES];
-    }
-}
+//- (void)viewWillAppear:(BOOL)animated {
+//    [super viewWillAppear:animated];
+//
+//    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.95f green:0.91f blue:0.40f alpha:1.00f]];
+//    NSIndexPath *selectedIndexPath = [[_transfersView devicesTableView] indexPathForSelectedRow];
+//    if (selectedIndexPath != nil && selectedIndexPath.row < [[_transfersStore transfers] count]) {
+//        [[_transfersView devicesTableView] deselectRowAtIndexPath:selectedIndexPath animated:YES];
+//    }
+//}
 
 #pragma mark - Public methods
 
@@ -125,6 +125,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [[_transfersStore transfers] count];
+    
+    //NSLog(@"Transfers.. %lu",[[_transfersStore transfers] count] );
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

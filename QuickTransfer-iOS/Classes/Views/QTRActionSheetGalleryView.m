@@ -154,11 +154,11 @@ static int count = 0;
                 [library assetForURL:url
                          resultBlock:^(ALAsset *asset) {
                              
-                           //  if (asset != nil) {
+                             if (asset != nil) {
                                  
                              
                              [mutableArray addObject:[UIImage imageWithCGImage:[[asset defaultRepresentation] fullScreenImage]]];
-                         //    }
+                             }
                              if ([mutableArray count]==count)
                              {
                                  imageArray=[[NSArray alloc] initWithArray:mutableArray];
