@@ -16,7 +16,6 @@
     if (self) {
         
         
-        
         UIImageView *_connectedDeviceImageLocal = [[UIImageView alloc]init];
         _connectedDeviceImageLocal.frame = CGRectMake(15, 0, 65, 65);
         _connectedDeviceImageLocal.layer.masksToBounds = YES;

@@ -54,6 +54,21 @@
         [self addSubview:searchBar];
         _searchBar =searchBar;
         
+
+        searchBar.searchBarStyle       = UISearchBarStyleMinimal;
+        searchBar.tintColor            = [UIColor whiteColor];
+        searchBar.barTintColor         = [UIColor whiteColor];
+        
+        [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTextColor:[UIColor whiteColor]];
+                
+                // add KVO observer.. so we will be informed when user scroll colllectionView
+    
+            
+
+        
+        
+        
+        
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.frame = CGRectZero;
         [[button layer]setCornerRadius:7.0f];
@@ -80,6 +95,7 @@
 
     return self;
 }
+
 
 
 @end

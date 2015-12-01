@@ -205,6 +205,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
      @{NSForegroundColorAttributeName:[UIColor whiteColor]}];
     [[_devicesView loadDeviceView] startAnimating];
     [_devicesView loadDeviceView].frame = self.view.frame;
+    [_devicesView searchBar].delegate = self;
+    [self refresh];
 
 }
 
@@ -223,7 +225,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     NSLog(@"Reconnecting Devices..");
     [refreshControl endRefreshing];
     //[[_devicesView devicesCollectionView] reloadData];
-    
+    [[_devicesView loadDeviceView] startAnimating];
     [self refresh];
 
 }
@@ -577,27 +579,49 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
 
-    return [_connectedServers count] + [_connectedClients count];
-    //return 25;
+    if (self.isFiltered) {
+        return [self.filteredUserData count];
+    }
+    else {
+        return [_connectedServers count] + [_connectedClients count];
+    }
+        //return 25;
     
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    if ([_selectedRecivers count] > 0) {
-        NSLog(@"Machine found..");
-    }
-    
-    
+   
     QTRHomeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
-    [cell.connectedDeviceName setText:[theUser name]];
+    QTRUser *theUser;
     
-    [cell setIconImage:theUser.platform];
-    
+    if (self.isFiltered) {
+        theUser = [self.filteredUserData objectAtIndex:indexPath.row];
+        [cell.connectedDeviceName setText:[theUser name]];
+        
+        [cell setIconImage:theUser.platform];
 
+    }
+    else {
+        theUser = [self userAtIndexPath:indexPath isServer:NULL];
+        [cell.connectedDeviceName setText:[theUser name]];
     
+        [cell setIconImage:theUser.platform];
+    }
+
+    NSLog(@"Reloaded.. %@",theUser.name);
+    
+    if ([_selectedRecivers count] > 0) {
+        
+        if ([_selectedRecivers objectForKey:theUser.identifier] != NULL) {
+            NSLog(@"Selected %@", theUser.name);
+            cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
+        }
+        
+       //[_selectedRecivers objectForKey:theUser.identifier]);
+        
+    }
     
     //[cell setIconImage:@"Demo"];
     //cell.connectedDeviceName.text = @"Demo device Connected";
@@ -621,8 +645,18 @@ static NSString *cellIdentifier = @"cellIdentifier";
 //    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
 //    cell.connectedDeviceName.textColor = [UIColor whiteColor];
     
+    //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
     
-    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
+    QTRUser *theUser;
+    
+    if (self.isFiltered) {
+        theUser = [self.filteredUserData objectAtIndex:indexPath.row];
+
+    } else {
+        theUser = [self userAtIndexPath:indexPath isServer:NULL];
+
+    }
+    
     [_selectedRecivers removeObjectForKey:theUser.identifier];
     
 }
@@ -652,10 +686,23 @@ static NSString *cellIdentifier = @"cellIdentifier";
 //        _importedFileURL = nil;
 //    }
     
-    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
+    
+    
+    QTRUser *theUser;
+    
+    if (self.isFiltered) {
+        theUser = [self.filteredUserData objectAtIndex:indexPath.row];
+
+    } else {
+        theUser = [self userAtIndexPath:indexPath isServer:NULL];
+    }
+    
+    //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
     [_selectedRecivers setObject:theUser forKey:theUser.identifier];
 
     NSLog(@"User %lu  Selected..",[_selectedRecivers count]);
+    
+
     
 }
 //
@@ -839,5 +886,82 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [self presentViewController:self.imagePicker animated:YES completion:nil];
 
 }
+
+#pragma mark - Search Bar methods
+
+
+-(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)text
+{
+    //NSLog(@"searchBar ... text.length: %d", text.length);
+    
+    if(text.length == 0)
+    {
+        self.isFiltered = FALSE;
+        [searchBar resignFirstResponder];
+    }
+    else
+    {
+        self.isFiltered = true;
+        self.filteredUserData = [[NSMutableArray alloc] init];
+        
+        
+        
+        
+        for (QTRUser *theUser in _connectedServers)
+        {
+            //case insensative search - way cool
+            if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
+            {
+                NSLog(@"Found Server: %@",theUser.name);
+                [self.filteredUserData addObject:theUser];
+            }
+            
+        }
+        
+        for (QTRUser *theUser in _connectedClients)
+        {
+            //case insensative search - way cool
+            if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
+            {
+                [self.filteredUserData addObject:theUser];
+                NSLog(@"Found Client: %@",theUser.name);
+            }
+            
+        }
+        
+        
+    }//end if-else
+    
+    NSLog(@"\n text:%@ ",text);
+//    NSLog(@"Connected Client: %@",_connectedClients);
+//    NSLog(@"Connected Servers: %@",_connectedServers);
+    
+
+    [[_devicesView devicesCollectionView] reloadData];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    //User hit Search button on Keyboard
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+{
+    [searchBar setShowsCancelButton:YES animated:YES];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    searchBar.text=@"";
+    
+    [searchBar setShowsCancelButton:NO animated:YES];
+    [searchBar resignFirstResponder];
+    
+    self.isFiltered = FALSE;
+    [[_devicesView devicesCollectionView] reloadData];
+}
+
+
 
 @end
