@@ -19,6 +19,8 @@
 		072BE74D1C0D8AE700798AC1 /* defaultIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */; };
 		072BE74E1C0D8BB800798AC1 /* defaultIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */; };
 		072BE74F1C0D8BBD00798AC1 /* linuxIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7451C0D808500798AC1 /* linuxIcon.xcassets */; };
+		07B308371C0ECD2800A889BF /* selected_image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B308361C0ECD2800A889BF /* selected_image.xcassets */; };
+		07B308381C0ECD5700A889BF /* selected_image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B308361C0ECD2800A889BF /* selected_image.xcassets */; };
 		07D4A2E21C0821E0006F93E6 /* settingIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D4A2E11C0821E0006F93E6 /* settingIcon.png */; };
 		07D4A2E81C0848F0006F93E6 /* QTRRightBarButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */; };
 		07D4A2EB1C086AD4006F93E6 /* QTRActionSheetGalleryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2EA1C086AD4006F93E6 /* QTRActionSheetGalleryView.m */; };
@@ -172,6 +174,7 @@
 		072BE7451C0D808500798AC1 /* linuxIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = linuxIcon.xcassets; sourceTree = "<group>"; };
 		072BE7471C0D809700798AC1 /* windowsIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = windowsIcon.xcassets; sourceTree = "<group>"; };
 		072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = defaultIcon.xcassets; sourceTree = "<group>"; };
+		07B308361C0ECD2800A889BF /* selected_image.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = selected_image.xcassets; sourceTree = "<group>"; };
 		07D4A2E11C0821E0006F93E6 /* settingIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settingIcon.png; sourceTree = "<group>"; };
 		07D4A2E61C0848F0006F93E6 /* QTRRightBarButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRRightBarButtonView.h; sourceTree = "<group>"; };
 		07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRRightBarButtonView.m; sourceTree = "<group>"; };
@@ -372,6 +375,7 @@
 				07E742371C0751410084388C /* Launch Screen.storyboard */,
 				07D5DB211C0D69F0005C2EC2 /* Gallery_placeholder.png */,
 				072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */,
+				07B308361C0ECD2800A889BF /* selected_image.xcassets */,
 			);
 			name = IconImages;
 			sourceTree = "<group>";
@@ -867,6 +871,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07B308381C0ECD5700A889BF /* selected_image.xcassets in Resources */,
 				072BE74F1C0D8BBD00798AC1 /* linuxIcon.xcassets in Resources */,
 				072BE74E1C0D8BB800798AC1 /* defaultIcon.xcassets in Resources */,
 				072BE74B1C0D816A00798AC1 /* AndroidIcon.xcassets in Resources */,
@@ -911,6 +916,7 @@
 				072BE7401C0D803500798AC1 /* macIcon.xcassets in Resources */,
 				072BE7421C0D804A00798AC1 /* AndroidIcon.xcassets in Resources */,
 				FAD9FFF018B33CA80098DA76 /* Images.xcassets in Resources */,
+				07B308371C0ECD2800A889BF /* selected_image.xcassets in Resources */,
 				07D5DB221C0D69F0005C2EC2 /* Gallery_placeholder.png in Resources */,
 				072BE7461C0D808500798AC1 /* linuxIcon.xcassets in Resources */,
 				FAD9FFE818B33CA70098DA76 /* Credits.rtf in Resources */,

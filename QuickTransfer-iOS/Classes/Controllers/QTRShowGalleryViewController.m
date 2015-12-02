@@ -38,6 +38,8 @@ int totalImages;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.selectedImages = [[NSMutableDictionary alloc]init];
+    
     [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     [self setTitle:@"Camera Roll"];
     
@@ -85,6 +87,7 @@ int totalImages;
     [[button layer]setMasksToBounds:TRUE];
     button.clipsToBounds = YES;
     [button setTitle:@"Send" forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(sendData) forControlEvents:UIControlEventTouchUpInside];
     [button setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     [button setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:button];
@@ -165,13 +168,31 @@ int totalImages;
     }
 }
 
+#pragma mark - Button Action methods
 
 -(void)logsBarButton {
     
     NSLog(@"Show Logs..");
     
+}
+
+-(void)sendData {
+    
+    if ([self.selectedImages count] > 0) {
+        NSLog(@"Total Images: %lu", [self.selectedImages count]);
+
+    } else {
+        
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Message" message:@"First Select Atleast One Image" preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+        [alertController addAction:ok];
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+    }
 
 
+ 
 }
 
 #pragma mark - UICollectionViewDataSource methods
@@ -207,24 +228,43 @@ int totalImages;
 
 #pragma mark - UICollectionViewDelegate methods
 
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    //QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
+    //cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
+    
+    UIImage *im = [images objectAtIndex:indexPath.row];
+    
+    [self.selectedImages setObject:im forKey:[NSString stringWithFormat:@"%@",im.imageAsset]];
+    
+    
+    NSString *temp = [NSString stringWithFormat:@"%@",im.imageAsset];
+    
+    NSLog(@" %@ ",temp);
+    
+    NSLog(@"Cell Selected..");
+    
+}
+
+
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 //    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
 //    cell.connectedDeviceName.textColor = [UIColor whiteColor];
     
+    UIImage *im = [images objectAtIndex:indexPath.row];
+    
+    if ([self.selectedImages count] > 0) {
+        [self.selectedImages removeObjectForKey:[NSString stringWithFormat:@"%@",im.imageAsset]];
+    }
+    
+
+    
     NSLog(@"Cell deselected..");
     
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    //QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
-    //cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
- 
-    NSLog(@"Cell Selected..");
-
-}
 
 
 

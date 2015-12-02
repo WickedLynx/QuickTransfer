@@ -10,6 +10,8 @@
 
 @interface QTRGalleryCollectionViewCell : UICollectionViewCell
 
-@property(nonatomic,retain) UIImageView *connectedDeviceImage;
+@property(nonatomic,retain) UIImageView *retrivedImage;
+@property(nonatomic,retain) UIImageView *selectedImage;
+@property(nonatomic,retain) UIButton *selectedButton;
 
 @end

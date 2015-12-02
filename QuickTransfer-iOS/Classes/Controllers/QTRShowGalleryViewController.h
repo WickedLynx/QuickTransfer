@@ -15,4 +15,6 @@
 @property (nonatomic, strong) PHCachingImageManager *imageManager;
 @property (nonatomic, strong) PHImageRequestOptions *requestOptions;
 
+@property (nonatomic, retain) NSMutableDictionary *selectedImages;
+
 @end

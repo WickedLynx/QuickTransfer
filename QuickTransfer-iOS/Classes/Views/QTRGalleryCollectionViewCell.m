@@ -15,21 +15,51 @@
     self = [super initWithFrame:frame];
     if (self) {
         
+        self.retrivedImage = [[UIImageView alloc]init];
+        self.selectedImage = [[UIImageView alloc]init];
+    
+        self.retrivedImage.frame = CGRectMake(0, 0, 77.5f, 77.5f);
+        self.retrivedImage.layer.masksToBounds = YES;
+        
+        self.selectedImage.frame = self.contentView.frame;
+        self.selectedImage.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
+        
+        self.selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *img = [UIImage imageNamed:@"check"];
+        
+        self.selectedButton.frame = CGRectMake(50, 50, img.size.width, img.size.height);
+        
+        [self.selectedButton setImage:img forState:UIControlStateNormal];
+        [self.selectedButton setImage:img forState:UIControlStateHighlighted];
+        [self.selectedButton setImage:img forState:UIControlStateSelected];
+        
+        self.selectedButton.contentMode = UIViewContentModeScaleToFill;
+        [self.selectedImage addSubview:self.selectedButton];
         
         
-        UIImageView *_connectedDeviceImageLocal = [[UIImageView alloc]init];
-        _connectedDeviceImageLocal.frame = CGRectMake(0, 0, 75.5f, 75.5f);
-        _connectedDeviceImageLocal.layer.masksToBounds = YES;
-        //_connectedDeviceImageLocal.layer.cornerRadius = 30.0f;
+        
+        [self addSubview:self.retrivedImage];
 
-        self.connectedDeviceImage = _connectedDeviceImageLocal;
-        
-        [self addSubview:_connectedDeviceImage];
 
-//
         
     }
     return self;
+}
+
+
+-(void)setSelected:(BOOL)selected {
+    
+    [super setSelected:selected];
+    if (selected) {
+        NSLog(@"Selected..");
+
+        [self.retrivedImage addSubview:self.selectedImage];
+        
+    }else {
+        NSLog(@"Deselected");
+        [self.selectedImage removeFromSuperview];
+
+    }
 }
 
 
