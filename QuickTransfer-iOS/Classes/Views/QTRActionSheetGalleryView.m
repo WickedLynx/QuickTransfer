@@ -96,24 +96,7 @@ static int count = 0;
     
 }
 
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    static NSString *ConnectedDevicesTableCellIdentifier = @"ConnectedDevicesTableCellIdentifier";
-//
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ConnectedDevicesTableCellIdentifier];
-//
-//    if (cell == nil) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ConnectedDevicesTableCellIdentifier];
-//    }
-//
-//    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
-//
-//    [cell.textLabel setText:[theUser name]];
-//
-//
-//
-//
-//    return cell;
-//}
+
 
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -132,6 +115,7 @@ static int count = 0;
 //
 //}
 //
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"Cell %lu Selected",indexPath.row);

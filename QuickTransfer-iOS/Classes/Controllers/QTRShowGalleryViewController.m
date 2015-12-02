@@ -22,7 +22,6 @@
 
 @end
 
-static CGSize AssetGridThumbnailSize;
 
 static NSString * const AllPhotosReuseIdentifier = @"AllPhotosCell";
 static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
@@ -31,7 +30,6 @@ static NSString * const AllPhotosSegue = @"showAllPhotos";
 static NSString * const CollectionSegue = @"showCollection";
 
 static NSString *cellIdentifier = @"cellIdentifier";
-static int count = 0;
 int totalImages;
 
 
@@ -118,6 +116,8 @@ int totalImages;
     self.sectionLocalizedTitles = @[@"", NSLocalizedString(@"Smart Albums", @""), NSLocalizedString(@"Albums", @"")];
     
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+    
+    [self getPhotos];
 }
 
 -(void)homeButton {
@@ -126,10 +126,7 @@ int totalImages;
 
 }
 
-
--(void)logsBarButton {
-    
-    NSLog(@"Log Button Clicked..");
+-(void)getPhotos {
 
     
     self.requestOptions = [[PHImageRequestOptions alloc] init];
@@ -143,26 +140,11 @@ int totalImages;
     // this one is key
     self.requestOptions.synchronous = true;
     
-    NSLog(@"hello _sectionFetchResults: %@",_sectionFetchResults);
-    PHFetchResult *fetchResult = self.sectionFetchResults[0];
-    NSLog(@"hello fetchResult: %@",fetchResult);
-    
-    PHCollection *collection = fetchResult[0];
-    NSLog(@"hello collection: %@",collection);
-    
-    //PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
-    //PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
+   
     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
-    
-    PHAsset *asset = [assetsFetchResult objectAtIndex:0];
-    
-    NSLog(@"Asset Object %@",asset);
-    
-    //assets = [NSMutableArray arrayWithArray:assets];
     PHImageManager *manager = [PHImageManager defaultManager];
     images= [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
     
-    // assets contains PHAsset objects.
     __block UIImage *ima;
     
     for (PHAsset *asset in assetsFetchResult) {
@@ -174,13 +156,19 @@ int totalImages;
                               options:self.requestOptions
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
                             ima = image;
+                            [galleryCollectionView reloadData];
                         }];
-        
-        [images addObject:ima];
-        
-        NSLog(@"Image: %@",ima);
-        [galleryCollectionView reloadData];
+
+        if (ima != nil) {
+            [images addObject:ima];
+        }
     }
+}
+
+
+-(void)logsBarButton {
+    
+    NSLog(@"Show Logs..");
     
 
 
@@ -259,6 +247,7 @@ int totalImages;
                 reloadRequired = YES;
             }
             [self getImages];
+            [galleryCollectionView reloadData];
             
         }];
         
@@ -311,12 +300,13 @@ int totalImages;
                               options:self.requestOptions
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
                             ima = image;
+                            [galleryCollectionView reloadData];
                         }];
         
         [images addObject:ima];
         
         NSLog(@"Image: %@",ima);
-        [galleryCollectionView reloadData];
+        
     }
 
 }
