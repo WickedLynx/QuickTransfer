@@ -200,8 +200,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"settingIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(settingBarButton:)];
     [self.navigationItem setLeftBarButtonItem:leftBarButton];
 
-
-
+    customView = [[QTRActionSheetGalleryView alloc] init];
     
     [[_devicesView sendButton] addTarget:self action:@selector(nextButtonClicked) forControlEvents:UIControlEventTouchUpInside];
 
@@ -267,8 +266,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
             
             //CGFloat margin = 8.0F;
             //QTRActionControllerGalleryDelegate *delegateObject = [QTRActionControllerGalleryDelegate new];
-            
-            customView = [[QTRActionSheetGalleryView alloc] init];
+
             [customView setUserInteractionEnabled:YES];
             customView.delegate = self;
             customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
@@ -288,6 +286,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
             UIAlertAction *takePhotoAction1 = [UIAlertAction actionWithTitle:@"Take a photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [self takePhoto]; }];
     
             UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                
+                [customView removeFromSuperview];
+                [alertController dismissViewControllerAnimated:YES completion:nil];
     
                 QTRShowGalleryViewController * vc = [[QTRShowGalleryViewController alloc] init];
         

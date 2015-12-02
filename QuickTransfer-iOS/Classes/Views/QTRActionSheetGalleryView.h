@@ -10,6 +10,9 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "QTRAlertControllerCollectionViewCell.h"
 
+@import Photos;
+@import PhotosUI;
+
 @class QTRActionSheetGalleryView;
 @protocol actionSheetGallaryDelegate <NSObject>
 
@@ -26,7 +29,8 @@
     UIActivityIndicatorView *customIndicatorView;
 }
 
--(void)allPhotosCollected:(NSArray*)imgArray;
+@property (nonatomic, strong) PHCachingImageManager *imageManager;
+@property (nonatomic, strong) PHImageRequestOptions *requestOptions;
 
 @property (weak, nonatomic) UICollectionView *actionControllerCollectionView;
 @property (retain, nonatomic) UIActivityIndicatorView *actionCustomIndicatorView;

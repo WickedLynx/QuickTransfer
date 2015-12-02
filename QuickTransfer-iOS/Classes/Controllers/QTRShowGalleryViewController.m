@@ -115,7 +115,7 @@ int totalImages;
     self.sectionFetchResults = @[allPhotos, smartAlbums, topLevelUserCollections];
     self.sectionLocalizedTitles = @[@"", NSLocalizedString(@"Smart Albums", @""), NSLocalizedString(@"Albums", @"")];
     
-    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+    //[[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
     
     [self getPhotos];
 }
@@ -156,7 +156,7 @@ int totalImages;
                               options:self.requestOptions
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
                             ima = image;
-                            [galleryCollectionView reloadData];
+                            //[galleryCollectionView reloadData];
                         }];
 
         if (ima != nil) {
@@ -247,7 +247,7 @@ int totalImages;
                 reloadRequired = YES;
             }
             [self getImages];
-            [galleryCollectionView reloadData];
+//            [galleryCollectionView reloadData];
             
         }];
         
@@ -300,7 +300,7 @@ int totalImages;
                               options:self.requestOptions
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
                             ima = image;
-                            [galleryCollectionView reloadData];
+                            //[galleryCollectionView reloadData];
                         }];
         
         [images addObject:ima];
