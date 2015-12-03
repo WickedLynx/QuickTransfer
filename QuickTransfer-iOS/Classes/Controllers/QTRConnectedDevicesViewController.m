@@ -285,9 +285,16 @@ static NSString *cellIdentifier = @"cellIdentifier";
                 [customView removeFromSuperview];
                 [alertController dismissViewControllerAnimated:YES completion:nil];
     
-                QTRShowGalleryViewController * vc = [[QTRShowGalleryViewController alloc] init];
+                QTRShowGalleryViewController *showGallery = [[QTRShowGalleryViewController alloc] init];
+                showGallery.client = _client;
+                showGallery.server = _server;
+                showGallery.connectedClients = _connectedClients;
+                showGallery.connectedServers = _connectedServers;
+                showGallery.localUser = _localUser;
+                showGallery.selectedUser = _selectedUser;
+                showGallery.selectedRecivers = _selectedRecivers;
         
-                [self.navigationController pushViewController:vc animated:YES];
+                [self.navigationController pushViewController:showGallery animated:YES];
         
 
             }];
@@ -663,8 +670,26 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    BOOL isServer = NO;
+
+    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:&isServer];
     
-    QTRUser *theUser;
+    if (_importedFileURL == nil) {
+        
+        _selectedUser = theUser;
+        [self touchShare:nil];
+        
+    } else {
+        
+        if (isServer) {
+            [_client sendFileAtURL:_importedFileURL toUser:theUser];
+        } else {
+            [_server sendFileAtURL:_importedFileURL toUser:theUser];
+        }
+        
+        _importedFileURL = nil;
+    }
+
     
     if (self.isFiltered) {
         theUser = [self.filteredUserData objectAtIndex:indexPath.row];

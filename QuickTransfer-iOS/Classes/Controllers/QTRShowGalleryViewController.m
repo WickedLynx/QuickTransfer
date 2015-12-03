@@ -168,6 +168,7 @@ int totalImages;
                             
                             imageInfoData.finalImage = image;
                             imageInfoData.imageInfo = info;
+                            imageInfoData.imageAsset = (ALAsset *)asset;
                             
                         }];
         
@@ -199,6 +200,18 @@ int totalImages;
     
     if ([self.selectedImages count] > 0) {
         NSLog(@"Total Images: %lu", [self.selectedImages count]);
+        
+        NSArray *tempArray = [self.selectedImages allValues];
+        
+        
+        for (QTRImagesInfoData *t in tempArray) {
+            
+            [self sendDataToSelectedUser:t];
+        }
+        
+        
+        
+        
 
     } else {
         
@@ -290,9 +303,9 @@ int totalImages;
     
     
     UIImage *img = imageData.finalImage;
-    PHAsset *ast = (PHAsset *)imageData.finalImage.imageAsset;
+    //PHAsset *ast = (PHAsset *)imageData.finalImage.imageAsset;
     
-    [self.selectedImages setObject:img forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
+    [self.selectedImages setObject:imageData forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
     
     
     NSString *temp = [NSString stringWithFormat:@"%@",img.imageAsset];
@@ -301,7 +314,10 @@ int totalImages;
     
     NSLog(@"Cell Selected..");
     
-    [self sendDataToSelectedUser:img:ast];
+    
+    
+    
+    //[self sendDataToSelectedUser:imageData];
 
     
 }
@@ -330,9 +346,64 @@ int totalImages;
     NSLog(@"Cell deselected..");
 }
 
--(void)sendDataToSelectedUser:(UIImage *)sendingImage :(PHAsset *)imageAssets{
+-(void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
 
-    NSLog(@"Sending Data: %@",sendingImage.imageAsset);
+    NSLog(@"Sending Data: %@",sendingImage.imageInfo);
+    
+    NSString *urlString = [NSString stringWithFormat:@"%@",[sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"]];
+    
+    NSURL *localURL = [NSURL URLWithString:urlString];
+    
+    
+    //NSURL *referenceURL = info[UIImagePickerControllerReferenceURL];
+    
+//    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
+//        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
+//        
+//        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
+//        
+//        uint8_t *imageBytes = malloc((long)[assetRepresentation size]);
+//        [assetRepresentation getBytes:imageBytes fromOffset:0 length:(long)[assetRepresentation size] error:nil];
+//        
+//        NSData *imageData = [NSData dataWithBytes:imageBytes length:(long)[assetRepresentation size]];
+//        [imageData writeToURL:localURL atomically:YES];
+//        
+//        free(imageBytes);
+    
+    NSLog(@" %@ ",_selectedRecivers);
+    
+    
+    NSArray *t = [_selectedRecivers allValues];
+    NSLog(@"Total Recivers: %@",t);
+    
+   
+    _selectedUser = nil;
+    
+    for (QTRUser *tempUser in t) {
+        
+        _selectedUser = tempUser;
+    
+        if ([_connectedClients containsObject:_selectedUser]) {
+            [_server sendFileAtURL:localURL toUser:_selectedUser];
+            
+        } else if ([_connectedServers containsObject:_selectedUser]) {
+            [_client sendFileAtURL:localURL toUser:_selectedUser];
+            
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+            [alert show];
+        }
+        
+        _selectedUser = nil;
+    }
+    
+    
+//
+//    } failureBlock:^(NSError *error) {
+//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+//        [alertView show];
+//    }];
+//
     
 
     
