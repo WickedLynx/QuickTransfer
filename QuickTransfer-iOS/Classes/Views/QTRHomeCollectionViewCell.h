@@ -16,8 +16,4 @@
 
 -(void)setIconImage:(NSString *)imagePlatform;
 
-
-//@property(nonatomic,retain) UILabel *locationLabel;
-//@property(nonatomic,retain) ;
-//@property(nonatomic,retain) ;
 @end

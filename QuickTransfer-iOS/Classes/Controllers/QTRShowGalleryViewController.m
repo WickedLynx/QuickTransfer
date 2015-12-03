@@ -9,12 +9,18 @@
 #import "QTRShowGalleryViewController.h"
 #import "QTRGalleryCollectionViewCell.h"
 #import "QTRRightBarButtonView.h"
+#import "QTRImagesInfoData.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+
 
 @interface QTRShowGalleryViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,PHPhotoLibraryChangeObserver> {
 
     UICollectionView *galleryCollectionView;
     NSMutableArray *images;
-
+    NSMutableArray *assets;
+    UICollectionViewFlowLayout *layout;
+    
+ALAssetsLibrary *_assetsLibrary;
 }
 
 @property (nonatomic, strong) NSArray *sectionFetchResults;
@@ -58,10 +64,6 @@ int totalImages;
     [leftBarButton setCustomView:leftCustomButton];
     self.navigationItem.leftBarButtonItem=leftBarButton;
     
-   
-//    [leftBarButton setTintColor:[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f]];
-//    [self.navigationItem setLeftBarButtonItem:leftBarButton];
-    
     QTRRightBarButtonView *customRightBarButton = [[QTRRightBarButtonView alloc]initWithFrame:CGRectZero];
     [customRightBarButton setUserInteractionEnabled:NO];
     
@@ -74,9 +76,9 @@ int totalImages;
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
    
-    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    [layout setMinimumInteritemSpacing:2.0f];
-    [layout setMinimumLineSpacing:2.0f];
+    layout = [[UICollectionViewFlowLayout alloc] init];
+    [layout setMinimumInteritemSpacing:0.0f];
+    [layout setMinimumLineSpacing:0.0f];
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     
     galleryCollectionView = [[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:layout];
@@ -106,10 +108,10 @@ int totalImages;
 
     NSDictionary *views = NSDictionaryOfVariableBindings(galleryCollectionView, button);
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-2-[galleryCollectionView]-2-|" options:0 metrics:0 views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[galleryCollectionView]|" options:0 metrics:0 views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[button]-7-|" options:0 metrics:0 views:views]];
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-2-[galleryCollectionView]-5-[button]-5-|" options:0 metrics:0 views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[galleryCollectionView]-5-[button]-5-|" options:0 metrics:0 views:views]];
 
     [self getMedia];
     
@@ -125,11 +127,8 @@ int totalImages;
     
     PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
     
-    // Store the PHFetchResult objects and localized titles for each section.
     self.sectionFetchResults = @[allPhotos, smartAlbums, topLevelUserCollections];
     self.sectionLocalizedTitles = @[@"", NSLocalizedString(@"Smart Albums", @""), NSLocalizedString(@"Albums", @"")];
-    
-    //[[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
     
     [self getPhotos];
 }
@@ -137,44 +136,53 @@ int totalImages;
 -(void)homeButton {
     
     [self.navigationController popToRootViewControllerAnimated:YES];
-
 }
 
 -(void)getPhotos {
 
-    
     self.requestOptions = [[PHImageRequestOptions alloc] init];
     self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
     self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     
     self.requestOptions.synchronous = true;
-    
-    
-    
-    // this one is key
     self.requestOptions.synchronous = true;
     
-   
     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
     PHImageManager *manager = [PHImageManager defaultManager];
-    images= [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
+    images = [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
+    assets = [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
     
-    __block UIImage *ima;
+    //__block UIImage *ima;
+    __block QTRImagesInfoData *imageInfoData;
     
     for (PHAsset *asset in assetsFetchResult) {
         // Do something with the asset
+        
+        imageInfoData = [[QTRImagesInfoData alloc]init];
         
         [manager requestImageForAsset:asset
                            targetSize:PHImageManagerMaximumSize
                           contentMode:PHImageContentModeDefault
                               options:self.requestOptions
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
-                            ima = image;
-                            //[galleryCollectionView reloadData];
+                            
+                            imageInfoData.finalImage = image;
+                            imageInfoData.imageInfo = info;
+                            
                         }];
+        
+        
+//        [manager requestImageDataForAsset:assets options:nil resultHandler:^(NSData *imageData, NSString * dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+//            
+        
+ 
 
-        if (ima != nil) {
-            [images addObject:ima];
+        
+        
+
+        if (imageInfoData != nil) {
+            [images addObject:imageInfoData];
+            //[assets addObject:info];
         }
     }
 }
@@ -212,6 +220,18 @@ int totalImages;
 
 #pragma mark - UICollectionViewDataSource methods
 
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    
+    int noOfItems = (self.view.frame.size.width - 4) / 78;
+    int totalRemSpace = self.view.frame.size.width - (noOfItems * 78);
+    CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
+    [layout setMinimumLineSpacing:gap];
+
+    
+    return UIEdgeInsetsMake(gap, gap, 0.0f, gap);
+}
+
+
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
     
@@ -227,8 +247,11 @@ int totalImages;
     
     QTRGalleryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
+    QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
+    
+    
     cell.backgroundColor = [UIColor greenColor];
-    cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) [images objectAtIndex:indexPath.row] stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
+    cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) imageData.finalImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
  
     return cell;
     
@@ -237,27 +260,49 @@ int totalImages;
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(77.5f, 77.5f);
+    return CGSizeMake(78.0f, 78.0f);
 }
 
 
-#pragma mark - UICollectionViewDelegate methods
+#pragma mark - UICollectionView methods
+
+//- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+//    
+//    int noOfItems = (self.view.frame.size.width - 2) / 78;
+//    
+//    int totalRemSpace = self.view.frame.size.width - (noOfItems * 78);
+//    
+//    CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
+//    
+//    
+//    NSLog(@" noOfItems%d  totalRemSpace:%d  %f");
+//    
+//    return UIEdgeInsetsMake(0.0f, gap, 0.0f, gap);
+//}
+
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     //QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
     //cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
     
-    UIImage *im = [images objectAtIndex:indexPath.row];
-    
-    [self.selectedImages setObject:im forKey:[NSString stringWithFormat:@"%@",im.imageAsset]];
+    QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
     
     
-    NSString *temp = [NSString stringWithFormat:@"%@",im.imageAsset];
+    UIImage *img = imageData.finalImage;
+    PHAsset *ast = (PHAsset *)imageData.finalImage.imageAsset;
+    
+    [self.selectedImages setObject:img forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
+    
+    
+    NSString *temp = [NSString stringWithFormat:@"%@",img.imageAsset];
     
     NSLog(@" %@ ",temp);
     
     NSLog(@"Cell Selected..");
+    
+    [self sendDataToSelectedUser:img:ast];
+
     
 }
 
@@ -268,19 +313,44 @@ int totalImages;
 //    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
 //    cell.connectedDeviceName.textColor = [UIColor whiteColor];
     
-    UIImage *im = [images objectAtIndex:indexPath.row];
+    
+    
+    QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
+    
+    
+    UIImage *img = imageData.finalImage;
+
     
     if ([self.selectedImages count] > 0) {
-        [self.selectedImages removeObjectForKey:[NSString stringWithFormat:@"%@",im.imageAsset]];
+        [self.selectedImages removeObjectForKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
     }
     
 
     
     NSLog(@"Cell deselected..");
-    
 }
 
+-(void)sendDataToSelectedUser:(UIImage *)sendingImage :(PHAsset *)imageAssets{
 
+    NSLog(@"Sending Data: %@",sendingImage.imageAsset);
+    
+
+    
+    
+    
+    
+//        if ([_connectedClients containsObject:_selectedUser]) {
+//            [_server sendFileAtURL:localURL toUser:_selectedUser];
+//        } else if ([_connectedServers containsObject:_selectedUser]) {
+//            [_client sendFileAtURL:localURL toUser:_selectedUser];
+//        } else {
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+//            [alert show];
+//        }
+//        
+//        _selectedUser = nil;
+   
+}
 
 
 

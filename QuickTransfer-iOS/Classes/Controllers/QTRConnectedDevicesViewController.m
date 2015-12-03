@@ -26,7 +26,7 @@
 #import "QTRBeaconHelper.h"
 #import "QTRHelper.h"
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate> {
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
     
@@ -155,12 +155,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     _selectedRecivers = [[NSMutableDictionary alloc]init];
     
-    self.imagePicker = [[UIImagePickerController alloc] init];
-    self.imagePicker.allowsEditing = YES;
-    self.imagePicker.delegate = self;
-    self.imagePicker.allowsEditing = YES;
-    self.imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    
     [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     
@@ -199,8 +193,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"settingIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(settingBarButton:)];
     [self.navigationItem setLeftBarButtonItem:leftBarButton];
-
-    customView = [[QTRActionSheetGalleryView alloc] init];
     
     [[_devicesView sendButton] addTarget:self action:@selector(nextButtonClicked) forControlEvents:UIControlEventTouchUpInside];
 
@@ -270,6 +262,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
             [customView setUserInteractionEnabled:YES];
             customView.delegate = self;
             customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
+        
+        
+            customView = [[QTRActionSheetGalleryView alloc] init];
     
             [customView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
     
@@ -297,7 +292,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
             }];
     
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}];
+            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                NSLog(@"%@", alertController.view.subviews);
+            }];
     
             UIAlertAction *iCloudeAction = [UIAlertAction actionWithTitle:@"iCloud" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
             [takePhotoAction2 setEnabled:NO];
@@ -307,8 +304,10 @@ static NSString *cellIdentifier = @"cellIdentifier";
             [alertController addAction:cameraAction];
             [alertController addAction:cancelAction];
             [alertController addAction:iCloudeAction];
-    
+        
+   
             [self presentViewController:alertController animated:YES completion:^{}];
+        
 
         }
         else {
@@ -350,14 +349,15 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)touchShare:(UIBarButtonItem *)barButton {
     if (_selectedUser != nil) {
 
-        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-
-            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-            [imagePicker setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-            [imagePicker setDelegate:self];
-
-            [self presentViewController:imagePicker animated:YES completion:NULL];
-        }
+        NSLog(@"Sharing Files..");
+//        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
+//
+//            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+//            [imagePicker setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+//            [imagePicker setDelegate:self];
+//
+//            [self presentViewController:imagePicker animated:YES completion:NULL];
+//        }
     }
 }
 
@@ -577,9 +577,18 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 #pragma mark - UICollectionViewDataSource methods
 
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    
+    int noOfItems = (self.view.frame.size.width - 6) / 100;
+    int totalRemSpace = self.view.frame.size.width - (noOfItems * 100);
+    
+    CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
+    
+    return UIEdgeInsetsMake(0.0f, gap, 0.0f, gap);
+}
+
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
-    
 }
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -590,15 +599,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
     else {
         return [_connectedServers count] + [_connectedClients count];
     }
-        //return 25;
     
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-   
+
     QTRHomeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    
     QTRUser *theUser;
     
     if (self.isFiltered) {
@@ -624,13 +630,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
             cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
         }
         
-       //[_selectedRecivers objectForKey:theUser.identifier]);
-        
     }
-    
-    //[cell setIconImage:@"Demo"];
-    //cell.connectedDeviceName.text = @"Demo device Connected";
-    //[cell setImage:[UIImage imageNamed:@"loadBtnCloud.png"]];
+
     
     return cell;
     
@@ -643,15 +644,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 
 #pragma mark - UICollectionViewDelegate methods
-//
-//
+
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-//    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
-//    cell.connectedDeviceName.textColor = [UIColor whiteColor];
-    
-    //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
-    
     QTRUser *theUser;
     
     if (self.isFiltered) {
@@ -668,30 +663,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-//    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
-//    cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
-    
-//    BOOL isServer = NO;
-//    
-//    QTRUser *theUser = [self userAtIndexPath:indexPath isServer:&isServer];
-//    
-//    if (_importedFileURL == nil) {
-//        
-//        _selectedUser = theUser;
-//        [self touchShare:nil];
-//        
-//    } else {
-//        
-//        if (isServer) {
-//            [_client sendFileAtURL:_importedFileURL toUser:theUser];
-//        } else {
-//            [_server sendFileAtURL:_importedFileURL toUser:theUser];
-//        }
-//        
-//        _importedFileURL = nil;
-//    }
-    
-    
     
     QTRUser *theUser;
     
@@ -707,11 +678,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     NSLog(@"User %lu  Selected..",[_selectedRecivers count]);
     
-
-    
 }
-//
-//
+
 #pragma mark - QTRBonjourServerDelegate methods
 
 - (void)server:(QTRBonjourServer *)server didConnectToUser:(QTRUser *)user {
@@ -806,45 +774,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [_alertToFileMapTable removeObjectForKey:alertView];
 }
 
-#pragma mark - UIImagePickerControllerDelegate methods
-
-//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-//
-//    NSURL *referenceURL = info[UIImagePickerControllerReferenceURL];
-//    
-//    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-//        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
-//        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-//        
-//        uint8_t *imageBytes = malloc((long)[assetRepresentation size]);
-//        [assetRepresentation getBytes:imageBytes fromOffset:0 length:(long)[assetRepresentation size] error:nil];
-//        
-//        NSData *imageData = [NSData dataWithBytes:imageBytes length:(long)[assetRepresentation size]];
-//        [imageData writeToURL:localURL atomically:YES];
-//        
-//        free(imageBytes);
-//        
-//        
-//        if ([_connectedClients containsObject:_selectedUser]) {
-//            [_server sendFileAtURL:localURL toUser:_selectedUser];
-//        } else if ([_connectedServers containsObject:_selectedUser]) {
-//            [_client sendFileAtURL:localURL toUser:_selectedUser];
-//        } else {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-//            [alert show];
-//        }
-//        
-//        _selectedUser = nil;
-//        
-//        
-//    } failureBlock:^(NSError *error) {
-//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-//        [alertView show];
-//    }];
-//    
-//    [self dismissViewControllerAnimated:YES completion:NULL];
-//}
-
 #pragma mark - QTRBeaconRangerDelegate methods
 
 - (void)beaconRangerDidEnterRegion:(QTRBeaconRanger *)beaconRanger {
@@ -877,18 +806,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 
 -(void)takePhoto {
+
+    NSLog(@"Finding Camera..");
     
-    // Set source to the camera
-    self.imagePicker.sourceType =  UIImagePickerControllerSourceTypeCamera;
-    
-    // Delegate is self
-    self.imagePicker.delegate = self;
-    
-    // Allow editing of image ?
-    self.imagePicker.allowsEditing = NO;
-    
-    // Show image picker
-    [self presentViewController:self.imagePicker animated:YES completion:nil];
 
 }
 
@@ -897,8 +817,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 -(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)text
 {
-    //NSLog(@"searchBar ... text.length: %d", text.length);
-    
     if(text.length == 0)
     {
         self.isFiltered = FALSE;
@@ -909,45 +827,30 @@ static NSString *cellIdentifier = @"cellIdentifier";
         self.isFiltered = true;
         self.filteredUserData = [[NSMutableArray alloc] init];
         
-        
-        
-        
         for (QTRUser *theUser in _connectedServers)
         {
             //case insensative search - way cool
             if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
             {
-                NSLog(@"Found Server: %@",theUser.name);
                 [self.filteredUserData addObject:theUser];
             }
-            
         }
         
         for (QTRUser *theUser in _connectedClients)
         {
-            //case insensative search - way cool
             if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
             {
                 [self.filteredUserData addObject:theUser];
-                NSLog(@"Found Client: %@",theUser.name);
             }
             
         }
+    }
         
-        
-    }//end if-else
-    
-    NSLog(@"\n text:%@ ",text);
-//    NSLog(@"Connected Client: %@",_connectedClients);
-//    NSLog(@"Connected Servers: %@",_connectedServers);
-    
-
     [[_devicesView devicesCollectionView] reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    //User hit Search button on Keyboard
     [searchBar resignFirstResponder];
 }
 

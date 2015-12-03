@@ -38,8 +38,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
 {
     if ((self = [super initWithFrame:aRect])) {
         
-        self.frame = CGRectMake(0.f, 37.f, 300.f, 65.f);
-        self.backgroundColor = [UIColor purpleColor];
+        self.frame = CGRectMake(1.0f, 37.f, [UIScreen mainScreen].bounds.size.width-( [UIScreen mainScreen].bounds.size.width * 6.666f / 100 ), 55.f);
+        self.backgroundColor = [UIColor whiteColor];
         
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         [layout setMinimumInteritemSpacing:NO];

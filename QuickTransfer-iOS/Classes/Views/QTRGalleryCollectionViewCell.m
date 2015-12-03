@@ -18,7 +18,7 @@
         self.retrivedImage = [[UIImageView alloc]init];
         self.selectedImage = [[UIImageView alloc]init];
     
-        self.retrivedImage.frame = CGRectMake(0, 0, 77.5f, 77.5f);
+        self.retrivedImage.frame = CGRectMake(0, 0, 78.0f, 78.0f);
         self.retrivedImage.layer.masksToBounds = YES;
         
         self.selectedImage.frame = self.contentView.frame;

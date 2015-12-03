@@ -23,6 +23,7 @@
 		07B308381C0ECD5700A889BF /* selected_image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B308361C0ECD2800A889BF /* selected_image.xcassets */; };
 		07B3083C1C0EDC6300A889BF /* Button_back.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B3083B1C0EDC6300A889BF /* Button_back.xcassets */; };
 		07B3083D1C0EDC8E00A889BF /* Button_back.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B3083B1C0EDC6300A889BF /* Button_back.xcassets */; };
+		07BB981D1C100B9500AF7F7C /* QTRImagesInfoData.m in Sources */ = {isa = PBXBuildFile; fileRef = 07BB981C1C100B9500AF7F7C /* QTRImagesInfoData.m */; };
 		07D4A2E21C0821E0006F93E6 /* settingIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D4A2E11C0821E0006F93E6 /* settingIcon.png */; };
 		07D4A2E81C0848F0006F93E6 /* QTRRightBarButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */; };
 		07D4A2EB1C086AD4006F93E6 /* QTRActionSheetGalleryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2EA1C086AD4006F93E6 /* QTRActionSheetGalleryView.m */; };
@@ -32,7 +33,6 @@
 		07E7422E1C0717490084388C /* QTRShowGalleryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E7422D1C0717490084388C /* QTRShowGalleryViewController.m */; };
 		07E742311C07390B0084388C /* QTRGalleryImagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E742301C07390B0084388C /* QTRGalleryImagesView.m */; };
 		07E742341C073BE80084388C /* QTRGalleryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E742331C073BE80084388C /* QTRGalleryCollectionViewCell.m */; };
-		07E742361C074B920084388C /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07E742351C074B920084388C /* Media.xcassets */; };
 		07E742381C0751410084388C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07E742371C0751410084388C /* Launch Screen.storyboard */; };
 		07EE54691C047B550092C913 /* QTRHomeCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07EE54681C047B550092C913 /* QTRHomeCollectionViewCell.m */; };
 		590C41AF18D2C6320073F160 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 590C41AE18D2C6320073F160 /* MobileCoreServices.framework */; };
@@ -178,6 +178,8 @@
 		072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = defaultIcon.xcassets; sourceTree = "<group>"; };
 		07B308361C0ECD2800A889BF /* selected_image.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = selected_image.xcassets; sourceTree = "<group>"; };
 		07B3083B1C0EDC6300A889BF /* Button_back.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Button_back.xcassets; sourceTree = "<group>"; };
+		07BB981B1C100B9500AF7F7C /* QTRImagesInfoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRImagesInfoData.h; sourceTree = "<group>"; };
+		07BB981C1C100B9500AF7F7C /* QTRImagesInfoData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRImagesInfoData.m; sourceTree = "<group>"; };
 		07D4A2E11C0821E0006F93E6 /* settingIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settingIcon.png; sourceTree = "<group>"; };
 		07D4A2E61C0848F0006F93E6 /* QTRRightBarButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRRightBarButtonView.h; sourceTree = "<group>"; };
 		07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRRightBarButtonView.m; sourceTree = "<group>"; };
@@ -192,7 +194,6 @@
 		07E742301C07390B0084388C /* QTRGalleryImagesView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRGalleryImagesView.m; sourceTree = "<group>"; };
 		07E742321C073BE80084388C /* QTRGalleryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRGalleryCollectionViewCell.h; sourceTree = "<group>"; };
 		07E742331C073BE80084388C /* QTRGalleryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRGalleryCollectionViewCell.m; sourceTree = "<group>"; };
-		07E742351C074B920084388C /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		07E742371C0751410084388C /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		07EE54671C047B550092C913 /* QTRHomeCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRHomeCollectionViewCell.h; sourceTree = "<group>"; };
 		07EE54681C047B550092C913 /* QTRHomeCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRHomeCollectionViewCell.m; sourceTree = "<group>"; };
@@ -369,7 +370,6 @@
 		072BE7501C0D8DB700798AC1 /* IconImages */ = {
 			isa = PBXGroup;
 			children = (
-				07E742351C074B920084388C /* Media.xcassets */,
 				072BE7471C0D809700798AC1 /* windowsIcon.xcassets */,
 				072BE7451C0D808500798AC1 /* linuxIcon.xcassets */,
 				072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */,
@@ -455,6 +455,8 @@
 				FADEB05A18F5577E002F1C00 /* QTRRootViewController.m */,
 				07E7422C1C0717490084388C /* QTRShowGalleryViewController.h */,
 				07E7422D1C0717490084388C /* QTRShowGalleryViewController.m */,
+				07BB981B1C100B9500AF7F7C /* QTRImagesInfoData.h */,
+				07BB981C1C100B9500AF7F7C /* QTRImagesInfoData.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -888,7 +890,6 @@
 				07D4A2E21C0821E0006F93E6 /* settingIcon.png in Resources */,
 				FA283F0618B494E5003D4FB6 /* Images.xcassets in Resources */,
 				07E742381C0751410084388C /* Launch Screen.storyboard in Resources */,
-				07E742361C074B920084388C /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -980,6 +981,7 @@
 				FAD009CB18D840AD0014DCC5 /* QTRBeaconHelper.m in Sources */,
 				FA283F2318B49582003D4FB6 /* QTRBonjourServer.m in Sources */,
 				07D4A2EB1C086AD4006F93E6 /* QTRActionSheetGalleryView.m in Sources */,
+				07BB981D1C100B9500AF7F7C /* QTRImagesInfoData.m in Sources */,
 				FA5911EB1C0570610057928C /* QTRFileZipper.m in Sources */,
 				07D4A2F41C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m in Sources */,
 				FA5911F21C057F0F0057928C /* QTRDraggedItem.m in Sources */,

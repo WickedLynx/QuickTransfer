@@ -17,33 +17,23 @@
         
         
         UIImageView *_connectedDeviceImageLocal = [[UIImageView alloc]init];
-        _connectedDeviceImageLocal.frame = CGRectMake(15, 0, 65, 65);
+        _connectedDeviceImageLocal.frame = CGRectMake(15.0f, 0.0f, 70.0f, 70.0f);
         _connectedDeviceImageLocal.layer.masksToBounds = YES;
-        _connectedDeviceImageLocal.layer.cornerRadius = 32.5f;
+        _connectedDeviceImageLocal.layer.cornerRadius = 35.0f;
         [_connectedDeviceImageLocal setBackgroundColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
         
-//        UIImageView *_connectedDeviceImageIconLocal = [[UIImageView alloc]init];
-//        _connectedDeviceImageIconLocal.frame = CGRectMake(30.0f, 7.5f, 30.0f, 45.0f);
-
         
-        UILabel *_connectedDeviceNameLocal = [[UILabel alloc]initWithFrame:CGRectMake(0, 60, 100, 40)];
-        [_connectedDeviceNameLocal setFont:[UIFont systemFontOfSize:12]];
+        UILabel *_connectedDeviceNameLocal = [[UILabel alloc]initWithFrame:CGRectMake(0.0f, 65.0f, 100.0f, 40.0f)];
+        [_connectedDeviceNameLocal setFont:[UIFont systemFontOfSize:12.0f]];
         _connectedDeviceNameLocal.numberOfLines = 0;
         _connectedDeviceNameLocal.textAlignment = NSTextAlignmentCenter;
         _connectedDeviceNameLocal.textColor = [UIColor whiteColor];
         
         [self.contentView addSubview:_connectedDeviceImageLocal];
         [self.contentView addSubview:_connectedDeviceNameLocal];
-        //[self.contentView addSubview:_connectedDeviceImageIconLocal];
-        
-
         
         self.connectedDeviceImage = _connectedDeviceImageLocal;
         self.connectedDeviceName = _connectedDeviceNameLocal;
-        //self.connectedDeviceImageIcon = _connectedDeviceImageIconLocal;
-        
-        
-        
         
     }
     return self;
@@ -90,7 +80,7 @@
     }
     
     
-    iconImageView.center = CGPointMake(32.5f, 32.5f);
+    iconImageView.center = CGPointMake(34.5f, 32.5f);
     
     [self.connectedDeviceImage addSubview:iconImageView];
     

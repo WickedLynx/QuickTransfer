@@ -10,9 +10,6 @@
 
 @interface QTRConnectedDevicesView : UIView
 
-@property (weak, nonatomic) UITableView *devicesTableView;
-
-@property(nonatomic,retain) UIProgressView *sendingProgressView;
 @property (weak, nonatomic) UISearchBar *searchBar;
 
 @property (weak, nonatomic) UICollectionView *devicesCollectionView;

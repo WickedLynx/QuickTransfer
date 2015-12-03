@@ -79,11 +79,11 @@
 
     [self setTitle:@"Transfers"];
 
-    [[_transfersView devicesTableView] setDataSource:self];
-    [[_transfersView devicesTableView] setDelegate:self];
-
-    QTRTransfersTableCell *tableCell = [[QTRTransfersTableCell alloc] init];
-    [[_transfersView devicesTableView] setRowHeight:[tableCell requiredHeightInTableView]];
+//    [[_transfersView devicesTableView] setDataSource:self];
+//    [[_transfersView devicesTableView] setDelegate:self];
+//
+//    QTRTransfersTableCell *tableCell = [[QTRTransfersTableCell alloc] init];
+//    [[_transfersView devicesTableView] setRowHeight:[tableCell requiredHeightInTableView]];
 }
 
 //- (void)viewWillAppear:(BOOL)animated {
@@ -110,9 +110,9 @@
 }
 
 - (void)dealloc {
-
-    [[_transfersView devicesTableView] setDataSource:nil];
-    [[_transfersView devicesTableView] setDelegate:nil];
+//
+//    [[_transfersView devicesTableView] setDataSource:nil];
+//    [[_transfersView devicesTableView] setDelegate:nil];
     [_transfersStore setDelegate:nil];
 }
 
@@ -242,7 +242,7 @@
         [indexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
     }];
 
-    [[_transfersView devicesTableView] insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    //[[_transfersView devicesTableView] insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)transfersStore:(QTRTransfersStore *)transfersStore didDeleteTransfersAtIndices:(NSIndexSet *)deletedIndices {
@@ -251,7 +251,7 @@
         [indexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
     }];
 
-    [[_transfersView devicesTableView] deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    //[[_transfersView devicesTableView] deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)transfersStore:(QTRTransfersStore *)transfersStore didUpdateTransfersAtIndices:(NSIndexSet *)updatedIndices {
@@ -260,14 +260,14 @@
         [indexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
     }];
 
-    [[_transfersView devicesTableView] reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    //[[_transfersView devicesTableView] reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)transfersStore:(QTRTransfersStore *)transfersStore didUpdateProgressOfTransferAtIndex:(NSUInteger)transferIndex {
-    QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:transferIndex];
+    //QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:transferIndex];
 
-    QTRTransfersTableCell *tableCell = (QTRTransfersTableCell *)[[_transfersView devicesTableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:transferIndex inSection:0]];
-    [[tableCell progressView] setProgress:theTransfer.progress animated:YES];
+    //QTRTransfersTableCell *tableCell = (QTRTransfersTableCell *)[[_transfersView devicesTableView] cellForRowAtIndexPath:[NSIndexPath indexPathForRow:transferIndex inSection:0]];
+    //[[tableCell progressView] setProgress:theTransfer.progress animated:YES];
 
 }
 
