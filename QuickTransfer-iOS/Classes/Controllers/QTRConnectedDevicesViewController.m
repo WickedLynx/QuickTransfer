@@ -11,6 +11,7 @@
 
 #import "QTRConnectedDevicesViewController.h"
 #import "QTRConnectedDevicesView.h"
+#import "QTRTransfersViewController.h"
 
 #import "QTRHomeCollectionViewCell.h"
 #import "QTRShowGalleryViewController.h"
@@ -26,6 +27,7 @@
 #import "QTRBeaconHelper.h"
 #import "QTRHelper.h"
 #import "QTRSelectedUserInfo.h"
+#import "QTRRecentLogsViewController.h"
 
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate> {
 
@@ -226,6 +228,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)logsBarButton:(UIBarButtonItem *)barButton {
     NSLog(@"\n_selectedRecivers: %@ ",_userInfo._selectedRecivers);
+    
+//    QTRTransfersViewController *tv = [QTRTransfersViewController new];
+    
+    QTRRecentLogsViewController *recentLogs = [[QTRRecentLogsViewController alloc]init];
+    
+    [self.navigationController pushViewController:recentLogs animated:YES];
     
     
 }

@@ -12,7 +12,8 @@
 
 - (UILabel *)titleLabel;
 - (UILabel *)subtitleLabel;
-- (UILabel *)footerLabel;
+- (UILabel *)fileSizeLabel;
+- (UILabel *)fileStateLabel;
 - (CGFloat)requiredHeightInTableView;
 - (UIProgressView *)progressView;
 

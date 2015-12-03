@@ -20,6 +20,7 @@
 
 
 @interface QTRTransfersViewController () <UITableViewDataSource, UITableViewDelegate, QLPreviewControllerDataSource> {
+    
     __weak QTRConnectedDevicesView *_transfersView;
     NSByteCountFormatter *_byteCountFormatter;
     NSDateFormatter *_dateFormatter;
@@ -33,45 +34,45 @@
 
 #pragma mark - Initialisation
 
-//- (id)init {
-//    self = [super init];
-//    if (self != nil) {
-//
-//        NSURL *fileCacheDirectoryURL = [QTRHelper fileCacheDirectory];
-//        NSString *transfersArchiveFilePath = [[fileCacheDirectoryURL path] stringByAppendingPathComponent:@"Transfers"];
-//        _transfersStore = [[QTRTransfersStore alloc] initWithArchiveLocation:transfersArchiveFilePath];
-//        [_transfersStore setDelegate:self];
-//
-//        _byteCountFormatter = [[NSByteCountFormatter alloc] init];
-//        _dateFormatter = [[NSDateFormatter alloc] init];
-//
-//        [_dateFormatter setDateStyle:NSDateFormatterShortStyle];
-//        [_dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-//        [_dateFormatter setDoesRelativeDateFormatting:YES];
-//
-//    }
-//
-//    return self;
-//}
+- (id)init {
+    self = [super init];
+    if (self != nil) {
+
+        NSURL *fileCacheDirectoryURL = [QTRHelper fileCacheDirectory];
+        NSString *transfersArchiveFilePath = [[fileCacheDirectoryURL path] stringByAppendingPathComponent:@"Transfers"];
+        _transfersStore = [[QTRTransfersStore alloc] initWithArchiveLocation:transfersArchiveFilePath];
+        [_transfersStore setDelegate:self];
+
+        _byteCountFormatter = [[NSByteCountFormatter alloc] init];
+        _dateFormatter = [[NSDateFormatter alloc] init];
+
+        [_dateFormatter setDateStyle:NSDateFormatterShortStyle];
+        [_dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+        [_dateFormatter setDoesRelativeDateFormatting:YES];
+
+    }
+
+    return self;
+}
 
 #pragma mark - View lifecycle
 
-//- (void)loadView {
-//    QTRConnectedDevicesView *view = [[QTRConnectedDevicesView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-//    [view setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
-//    [self setView:view];
-//}
+- (void)loadView {
+    QTRConnectedDevicesView *view = [[QTRConnectedDevicesView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [view setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
+    [self setView:view];
+}
 
-//- (void)setView:(UIView *)view {
-//
-//    if (![view isKindOfClass:[QTRConnectedDevicesView class]]) {
-//        [NSException raise:NSInternalInconsistencyException format:@"%@ must be associated only with %@", NSStringFromClass([self class]), NSStringFromClass([QTRConnectedDevicesView class])];
-//    }
-//
-//    [super setView:view];
-//
-//    _transfersView = (QTRConnectedDevicesView *)view;
-//}
+- (void)setView:(UIView *)view {
+
+    if (![view isKindOfClass:[QTRConnectedDevicesView class]]) {
+        [NSException raise:NSInternalInconsistencyException format:@"%@ must be associated only with %@", NSStringFromClass([self class]), NSStringFromClass([QTRConnectedDevicesView class])];
+    }
+
+    [super setView:view];
+
+    _transfersView = (QTRConnectedDevicesView *)view;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -79,9 +80,9 @@
 
     [self setTitle:@"Transfers"];
 
-//    [[_transfersView devicesTableView] setDataSource:self];
-//    [[_transfersView devicesTableView] setDelegate:self];
-//
+    //[[_transfersView devicesCollectionView] setDataSource:self];
+    //[[_transfersView devicesCollectionView] setDelegate:self];
+
 //    QTRTransfersTableCell *tableCell = [[QTRTransfersTableCell alloc] init];
 //    [[_transfersView devicesTableView] setRowHeight:[tableCell requiredHeightInTableView]];
 }
@@ -149,8 +150,8 @@
     [[cell titleLabel] setText:[theTransfer.fileURL.absoluteString lastPathComponent]];
     [[cell subtitleLabel] setText:theTransfer.user.name];
 
-    NSString *footerLabelText = [NSString stringWithFormat:@"%@, %@", [_dateFormatter stringFromDate:theTransfer.timestamp], [_byteCountFormatter stringFromByteCount:theTransfer.fileSize]];
-    [[cell footerLabel] setText:footerLabelText];
+//    NSString *footerLabelText = [NSString stringWithFormat:@"%@, %@", [_dateFormatter stringFromDate:theTransfer.timestamp], [_byteCountFormatter stringFromByteCount:theTransfer.fileSize]];
+//    [[cell footerLabel] setText:footerLabelText];
 
 
     UIColor *footerLabelColor = nil;
@@ -178,7 +179,7 @@
             break;
     }
 
-    [[cell footerLabel] setTextColor:footerLabelColor];
+    
 
     [cell.imageView setImage:[UIImage imageNamed:@"FileIconPlaceholder.png"]];
 

@@ -12,7 +12,8 @@
 
     __weak UILabel *_titleLabel;
     __weak UILabel *_subtitleLabel;
-    __weak UILabel *_footerLabel;
+    __weak UILabel *_fileSizeLabel;
+    __weak UILabel *_fileStateLabel;
     __weak UIProgressView *_progressView;
 
 }
@@ -36,16 +37,20 @@
                 return aLabel;
             };
 
-            _titleLabel = addLabel(CGRectMake(85.00f, 12.00f, 190.00f, 22.00f), [UIFont boldSystemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
-            _subtitleLabel = addLabel(CGRectMake(85.00f, 33.00f, 190.0f, 18.00f), [UIFont systemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            _titleLabel = addLabel(CGRectMake(40.00f, 10.00f, 150.00f, 20.00f), [UIFont systemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            _subtitleLabel = addLabel(CGRectMake(40.00f, 25.00f, 150.0f, 20.00f), [UIFont systemFontOfSize:10.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
 
-            UIProgressView *aProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-            [aProgressView setFrame:CGRectMake(85.0f, 55.0f, 190.0f, 10.0f)];
-            [self addSubview:aProgressView];
-            _progressView = aProgressView;
+//            UIProgressView *aProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+//            [aProgressView setFrame:CGRectMake(85.0f, 55.0f, 190.0f, 10.0f)];
+//            [self addSubview:aProgressView];
+//            _progressView = aProgressView;
 
-            _footerLabel = addLabel(CGRectMake(85.00f, 60.00f, 190.0f, 18.00f), [UIFont italicSystemFontOfSize:12.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            _fileSizeLabel = addLabel(CGRectMake(190.00f, 10.00f, 100.0f, 20.00f), [UIFont systemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
 
+            _fileStateLabel = addLabel(CGRectMake(190.00f, 25.00f, 100.0f, 20.00f), [UIFont systemFontOfSize:10.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            
+            _fileSizeLabel.textAlignment = NSTextAlignmentRight;
+            _fileStateLabel.textAlignment = NSTextAlignmentRight;
         }
     }
     return self;
@@ -67,20 +72,24 @@
     return _subtitleLabel;
 }
 
-- (UILabel *)footerLabel {
-    return _footerLabel;
+- (UILabel *)fileSizeLabel {
+    return _fileSizeLabel;
 }
 
 - (UIProgressView *)progressView {
     return _progressView;
 }
 
-- (CGFloat)requiredHeightInTableView {
-    CGFloat requiredHeight = 0.0f;
-
-    requiredHeight = _footerLabel.frame.origin.y + (1.5 * _footerLabel.frame.size.height);
-    
-    return requiredHeight;
+- (UILabel *)fileStateLabel {
+    return _fileStateLabel;
 }
+
+//- (CGFloat)requiredHeightInTableView {
+//    CGFloat requiredHeight = 0.0f;
+//
+//    requiredHeight = _footerLabel.frame.origin.y + (1.5 * _footerLabel.frame.size.height);
+//    
+//    return requiredHeight;
+//}
 
 @end
