@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QTRBonjourTransferDelegate.h"
+#import "QTRTransfersStoreDelegate.h"
 
-@interface QTRRecentLogsViewController : UIViewController
+@interface QTRRecentLogsViewController : UIViewController <QTRTransfersStoreDelegate>
+
+- (QTRTransfersStore *)transfersStore;
 
 @end

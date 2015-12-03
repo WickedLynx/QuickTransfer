@@ -23,7 +23,7 @@
  
  @param transfersController An object confirming to QTRBonjourTransferDelegate protocol. The receiver weakly retains this controller.
  */
-//- (instancetype)initWithTransfersStore:(id <QTRBonjourTransferDelegate>)transfersStore;
+- (instancetype)initWithTransfersStore:(id <QTRBonjourTransferDelegate>)transfersStore;
 
 - (void)setImportedFile:(NSURL *)fileURL;
 

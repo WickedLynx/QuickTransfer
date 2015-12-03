@@ -139,6 +139,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
 //    return UIStatusBarStyleLightContent;
 //}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [_userInfo._selectedRecivers removeAllObjects];
+    [[_devicesView devicesCollectionView] reloadData];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -688,7 +694,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
     [_userInfo._selectedRecivers setObject:theUser forKey:theUser.identifier];
 
-    NSLog(@"User %lu  Selected..",[_userInfo._selectedRecivers count]);
     
 }
 
@@ -696,11 +701,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)server:(QTRBonjourServer *)server didConnectToUser:(QTRUser *)user {
     if (![self userConnected:user]) {
-
+        
         [_userInfo._connectedClients addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
-
+        
     }
 }
 
@@ -738,13 +743,13 @@ static NSString *cellIdentifier = @"cellIdentifier";
 }
 
 - (void)client:(QTRBonjourClient *)client didConnectToServerForUser:(QTRUser *)user {
-
+    
     if (![self userConnected:user]) {
-
+        
         [_userInfo._connectedServers addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
-
+        
     }
 }
 
@@ -761,6 +766,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)client:(QTRBonjourClient *)client didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
     [self showAlertForFile:file user:user receiver:client];
 }
+
 
 #pragma mark - UIAlertViewDelegate methods
 

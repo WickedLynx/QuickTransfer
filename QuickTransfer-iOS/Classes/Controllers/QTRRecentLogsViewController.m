@@ -9,9 +9,21 @@
 #import "QTRRecentLogsViewController.h"
 #import "QTRTransfersTableCell.h"
 
-@interface QTRRecentLogsViewController ()<UITableViewDataSource, UITabBarDelegate> {
+#import "QTRTransfer.h"
+#import "QTRHelper.h"
+#import "QTRTransfersStore.h"
+#import "QTRUser.h"
+
+
+
+@interface QTRRecentLogsViewController ()<UITableViewDataSource, UITableViewDelegate, QLPreviewControllerDataSource> {
 
     UITableView *logsTableView;
+    NSByteCountFormatter *_byteCountFormatter;
+    NSDateFormatter *_dateFormatter;
+    QTRTransfersStore *_transfersStore;
+    QTRTransfer *_selectedTransfer;
+
 
 
 }
@@ -21,6 +33,31 @@
 static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdentifier";
 
 @implementation QTRRecentLogsViewController
+
+- (id)init {
+    self = [super init];
+    if (self != nil) {
+        
+        NSURL *fileCacheDirectoryURL = [QTRHelper fileCacheDirectory];
+        NSString *transfersArchiveFilePath = [[fileCacheDirectoryURL path] stringByAppendingPathComponent:@"Transfers"];
+        _transfersStore = [[QTRTransfersStore alloc] initWithArchiveLocation:transfersArchiveFilePath];
+        [_transfersStore setDelegate:self];
+        
+        _byteCountFormatter = [[NSByteCountFormatter alloc] init];
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        
+        [_dateFormatter setDateStyle:NSDateFormatterShortStyle];
+        [_dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+        [_dateFormatter setDoesRelativeDateFormatting:YES];
+        
+    }
+    
+    return self;
+}
+
+- (QTRTransfersStore *)transfersStore {
+    return _transfersStore;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -55,8 +92,7 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
     self.navigationItem.leftBarButtonItem=leftBarButton;
 
     
-    logsTableView = [[UITableView alloc] init];
-    logsTableView.frame = self.view.frame;
+    logsTableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
     logsTableView.delegate = self;
     logsTableView.dataSource = self;
     [logsTableView setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
@@ -90,7 +126,7 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 17;
+    return [[_transfersStore transfers] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -112,18 +148,16 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
         [[cell fileSizeLabel] setText:@"1.28 GB"];
         [[cell fileSizeLabel] setTextColor:[UIColor whiteColor]];
     
-        [[cell fileStateLabel] setText:@"Faield"];
+        [[cell fileStateLabel] setText:@"State"];
     
         
         
-        
-
     
     
-//    QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:[indexPath row]];
-//    [[cell titleLabel] setText:[theTransfer.fileURL.absoluteString lastPathComponent]];
-//    [[cell subtitleLabel] setText:theTransfer.user.name];
-//    
+    QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:[indexPath row]];
+    [[cell titleLabel] setText:[theTransfer.fileURL.absoluteString lastPathComponent]];
+    [[cell subtitleLabel] setText:theTransfer.user.name];
+//
 //    NSString *footerLabelText = [NSString stringWithFormat:@"%@, %@", [_dateFormatter stringFromDate:theTransfer.timestamp], [_byteCountFormatter stringFromByteCount:theTransfer.fileSize]];
 //    [[cell footerLabel] setText:footerLabelText];
     
@@ -221,6 +255,53 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
 }
 
 
+#pragma mark - QTRTransfersStoreDelegate methods
+
+- (void)transfersStore:(QTRTransfersStore *)transfersStore didAddTransfersAtIndices:(NSIndexSet *)addedIndices {
+    
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:[addedIndices count]];
+    [addedIndices enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+    }];
+    
+    [logsTableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)transfersStore:(QTRTransfersStore *)transfersStore didDeleteTransfersAtIndices:(NSIndexSet *)deletedIndices {
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:[deletedIndices count]];
+    [deletedIndices enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+    }];
+    
+    [logsTableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)transfersStore:(QTRTransfersStore *)transfersStore didUpdateTransfersAtIndices:(NSIndexSet *)updatedIndices {
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithCapacity:[updatedIndices count]];
+    [updatedIndices enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+    }];
+    
+    [logsTableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+}
+
+- (void)transfersStore:(QTRTransfersStore *)transfersStore didUpdateProgressOfTransferAtIndex:(NSUInteger)transferIndex {
+    QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:transferIndex];
+    
+    QTRTransfersTableCell *tableCell = (QTRTransfersTableCell *)[logsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:transferIndex inSection:0]];
+    [[tableCell progressView] setProgress:theTransfer.progress animated:YES];
+    
+}
+
+#pragma mark - QLPreviewControllerDatasource methods
+
+- (NSInteger)numberOfPreviewItemsInPreviewController:(QLPreviewController *)controller {
+    return 1;
+}
+
+- (id<QLPreviewItem>)previewController:(QLPreviewController *)controller previewItemAtIndex:(NSInteger)index {
+    return _selectedTransfer;
+}
 
 
 
