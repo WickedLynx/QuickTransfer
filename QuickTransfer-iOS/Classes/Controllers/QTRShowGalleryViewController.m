@@ -20,11 +20,18 @@
     NSMutableArray *assets;
     UICollectionViewFlowLayout *layout;
     
-ALAssetsLibrary *_assetsLibrary;
+    QTRBonjourClient *_client;
+    QTRBonjourServer *_server;
+    NSMutableArray *_connectedServers;
+    NSMutableArray *_connectedClients;
+    NSMutableDictionary *_selectedRecivers;
+    QTRUser *_localUser;
+    QTRUser *_selectedUser;
+    
+
 }
 
-@property (nonatomic, strong) NSArray *sectionFetchResults;
-@property (nonatomic, strong) NSArray *sectionLocalizedTitles;
+
 
 @end
 
@@ -46,6 +53,14 @@ int totalImages;
     
     self.selectedImages = [[NSMutableDictionary alloc]init];
     
+    _client = self.reciversInfo._client;
+    _server = self.reciversInfo._server;
+    _connectedServers = self.reciversInfo._connectedServers;
+    _connectedClients = self.reciversInfo._connectedClients;
+    _selectedRecivers = self.reciversInfo._selectedRecivers;
+    _localUser = self.reciversInfo._localUser;
+    _selectedUser = self.reciversInfo._selectedUser;
+
     [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     [self setTitle:@"Camera Roll"];
     
@@ -113,25 +128,11 @@ int totalImages;
 
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[galleryCollectionView]-5-[button]-5-|" options:0 metrics:0 views:views]];
 
-    [self getMedia];
+    [self getPhotos];
     
 }
 
--(void)getMedia {
-    PHFetchOptions *allPhotosOptions = [[PHFetchOptions alloc] init];
-    allPhotosOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-    
-    PHFetchResult *allPhotos = [PHAsset fetchAssetsWithOptions:allPhotosOptions];
-    
-    PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
-    
-    PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
-    
-    self.sectionFetchResults = @[allPhotos, smartAlbums, topLevelUserCollections];
-    self.sectionLocalizedTitles = @[@"", NSLocalizedString(@"Smart Albums", @""), NSLocalizedString(@"Albums", @"")];
-    
-    [self getPhotos];
-}
+#pragma mark - Button Action methods
 
 -(void)homeButton {
     
@@ -152,12 +153,9 @@ int totalImages;
     images = [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
     assets = [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
     
-    //__block UIImage *ima;
     __block QTRImagesInfoData *imageInfoData;
     
     for (PHAsset *asset in assetsFetchResult) {
-        // Do something with the asset
-        
         imageInfoData = [[QTRImagesInfoData alloc]init];
         
         [manager requestImageForAsset:asset
@@ -172,15 +170,6 @@ int totalImages;
                             
                         }];
         
-        
-//        [manager requestImageDataForAsset:assets options:nil resultHandler:^(NSData *imageData, NSString * dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-//            
-        
- 
-
-        
-        
-
         if (imageInfoData != nil) {
             [images addObject:imageInfoData];
             //[assets addObject:info];
@@ -188,7 +177,7 @@ int totalImages;
     }
 }
 
-#pragma mark - Button Action methods
+
 
 -(void)logsBarButton {
     
@@ -196,23 +185,16 @@ int totalImages;
     
 }
 
+
 -(void)sendData {
     
     if ([self.selectedImages count] > 0) {
-        NSLog(@"Total Images: %lu", [self.selectedImages count]);
-        
-        NSArray *tempArray = [self.selectedImages allValues];
-        
-        
-        for (QTRImagesInfoData *t in tempArray) {
-            
-            [self sendDataToSelectedUser:t];
+        NSArray *totalImages = [self.selectedImages allValues];
+
+        for (QTRImagesInfoData *selectedImage in totalImages) {
+            [self sendDataToSelectedUser:selectedImage];
         }
         
-        
-        
-        
-
     } else {
         
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Message" message:@"First Select Atleast One Image" preferredStyle:UIAlertControllerStyleAlert];
@@ -233,18 +215,6 @@ int totalImages;
 
 #pragma mark - UICollectionViewDataSource methods
 
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    
-    int noOfItems = (self.view.frame.size.width - 4) / 78;
-    int totalRemSpace = self.view.frame.size.width - (noOfItems * 78);
-    CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
-    [layout setMinimumLineSpacing:gap];
-
-    
-    return UIEdgeInsetsMake(gap, gap, 0.0f, gap);
-}
-
-
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
     
@@ -261,9 +231,6 @@ int totalImages;
     QTRGalleryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
     QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
-    
-    
-    cell.backgroundColor = [UIColor greenColor];
     cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) imageData.finalImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
  
     return cell;
@@ -271,39 +238,17 @@ int totalImages;
 }
 
 
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     return CGSizeMake(78.0f, 78.0f);
 }
 
 
-#pragma mark - UICollectionView methods
+#pragma mark - UICollectionView Delegate methods
 
-//- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-//    
-//    int noOfItems = (self.view.frame.size.width - 2) / 78;
-//    
-//    int totalRemSpace = self.view.frame.size.width - (noOfItems * 78);
-//    
-//    CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
-//    
-//    
-//    NSLog(@" noOfItems%d  totalRemSpace:%d  %f");
-//    
-//    return UIEdgeInsetsMake(0.0f, gap, 0.0f, gap);
-//}
-
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    //QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
-    //cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
-    
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+ 
     QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
-    
-    
     UIImage *img = imageData.finalImage;
-    //PHAsset *ast = (PHAsset *)imageData.finalImage.imageAsset;
     
     [self.selectedImages setObject:imageData forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
     
@@ -314,23 +259,12 @@ int totalImages;
     
     NSLog(@"Cell Selected..");
     
-    
-    
-    
-    //[self sendDataToSelectedUser:imageData];
-
-    
 }
 
 
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-//    QTRHomeCollectionViewCell *cell = (QTRHomeCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
-//    cell.connectedDeviceName.textColor = [UIColor whiteColor];
-    
-    
-    
     QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
     
     
@@ -346,42 +280,19 @@ int totalImages;
     NSLog(@"Cell deselected..");
 }
 
--(void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
+#pragma mark - Transfer Selected files to selected user
 
-    NSLog(@"Sending Data: %@",sendingImage.imageInfo);
+-(void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
     
     NSString *urlString = [NSString stringWithFormat:@"%@",[sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"]];
     
     NSURL *localURL = [NSURL URLWithString:urlString];
-    
-    
-    //NSURL *referenceURL = info[UIImagePickerControllerReferenceURL];
-    
-//    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-//        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
-//        
-//        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-//        
-//        uint8_t *imageBytes = malloc((long)[assetRepresentation size]);
-//        [assetRepresentation getBytes:imageBytes fromOffset:0 length:(long)[assetRepresentation size] error:nil];
-//        
-//        NSData *imageData = [NSData dataWithBytes:imageBytes length:(long)[assetRepresentation size]];
-//        [imageData writeToURL:localURL atomically:YES];
-//        
-//        free(imageBytes);
-    
-    NSLog(@" %@ ",_selectedRecivers);
-    
-    
-    NSArray *t = [_selectedRecivers allValues];
-    NSLog(@"Total Recivers: %@",t);
-    
-   
+    NSArray *totalRecivers = [_selectedRecivers allValues];
     _selectedUser = nil;
     
-    for (QTRUser *tempUser in t) {
+    for (QTRUser *currentUser in totalRecivers) {
         
-        _selectedUser = tempUser;
+        _selectedUser = currentUser;
     
         if ([_connectedClients containsObject:_selectedUser]) {
             [_server sendFileAtURL:localURL toUser:_selectedUser];
@@ -397,33 +308,11 @@ int totalImages;
         _selectedUser = nil;
     }
     
-    
-//
-//    } failureBlock:^(NSError *error) {
-//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-//        [alertView show];
-//    }];
-//
-    
-
-    
-    
-    
-    
-//        if ([_connectedClients containsObject:_selectedUser]) {
-//            [_server sendFileAtURL:localURL toUser:_selectedUser];
-//        } else if ([_connectedServers containsObject:_selectedUser]) {
-//            [_client sendFileAtURL:localURL toUser:_selectedUser];
-//        } else {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-//            [alert show];
-//        }
-//        
-//        _selectedUser = nil;
+    [self.navigationController popToRootViewControllerAnimated:YES];
    
 }
 
-
+#pragma mark - PHPhoto Observer
 
 - (void)photoLibraryDidChange:(PHChange *)changeInstance {
     /*
@@ -442,69 +331,12 @@ int totalImages;
                 [updatedSectionFetchResults replaceObjectAtIndex:index withObject:[changeDetails fetchResultAfterChanges]];
                 reloadRequired = YES;
             }
-            [self getImages];
-//            [galleryCollectionView reloadData];
+            [self getPhotos];
+            [galleryCollectionView reloadData];
             
         }];
         
-        NSLog(@"hello : %@",[_sectionFetchResults objectAtIndex:0]);
-        
     });
-}
-
--(void)getImages {
-    
-    self.requestOptions = [[PHImageRequestOptions alloc] init];
-    self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
-    self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-    
-    self.requestOptions.synchronous = true;
-    
-    
-    
-    // this one is key
-    self.requestOptions.synchronous = true;
-    
-    NSLog(@"hello _sectionFetchResults: %@",_sectionFetchResults);
-    PHFetchResult *fetchResult = self.sectionFetchResults[0];
-    NSLog(@"hello fetchResult: %@",fetchResult);
-    
-    PHCollection *collection = fetchResult[0];
-    NSLog(@"hello collection: %@",collection);
-    
-    //PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
-    //PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
-    PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
-    
-    PHAsset *asset = [assetsFetchResult objectAtIndex:0];
-    
-    NSLog(@"Asset Object %@",asset);
-    
-    //assets = [NSMutableArray arrayWithArray:assets];
-    PHImageManager *manager = [PHImageManager defaultManager];
-    images= [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
-    
-    // assets contains PHAsset objects.
-    __block UIImage *ima;
-    
-    for (PHAsset *asset in assetsFetchResult) {
-        // Do something with the asset
-        
-        [manager requestImageForAsset:asset
-                           targetSize:PHImageManagerMaximumSize
-                          contentMode:PHImageContentModeDefault
-                              options:self.requestOptions
-                        resultHandler:^void(UIImage *image, NSDictionary *info) {
-                            ima = image;
-                            //[galleryCollectionView reloadData];
-                        }];
-        
-        [images addObject:ima];
-        
-        NSLog(@"Image: %@",ima);
-        
-    }
-
 }
 
 

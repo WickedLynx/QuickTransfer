@@ -25,21 +25,16 @@
 
 #import "QTRBeaconHelper.h"
 #import "QTRHelper.h"
+#import "QTRSelectedUserInfo.h"
 
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
     
+    QTRSelectedUserInfo *_userInfo;
+    
     UIRefreshControl *refreshControl;
 
-    QTRBonjourClient *_client;
-    QTRBonjourServer *_server;
-    NSMutableArray *_connectedServers;
-    NSMutableArray *_connectedClients;
-    NSMutableDictionary *_selectedRecivers;
-    QTRUser *_localUser;
-
-    QTRUser *_selectedUser;
     NSMapTable *_alertToFileMapTable;
     
     NSURL *_fileCacheDirectory;
@@ -153,7 +148,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
         NSLog(@"No iCloud access");
     }
     
-    _selectedRecivers = [[NSMutableDictionary alloc]init];
+    _userInfo = [[QTRSelectedUserInfo alloc]init];
+    _userInfo._selectedRecivers = [[NSMutableDictionary alloc]init];
     
     [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
@@ -217,9 +213,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 #pragma mark - Actions
 
 -(void) refreshConnectedDevices {
-    NSLog(@"Reconnecting Devices..");
     [refreshControl endRefreshing];
-    //[[_devicesView devicesCollectionView] reloadData];
     [[_devicesView loadDeviceView] startAnimating];
     [self refresh];
 
@@ -231,9 +225,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 }
 
 - (void)logsBarButton:(UIBarButtonItem *)barButton {
-    NSLog(@"Logs");
-    
-    NSLog(@"\n_selectedRecivers: %@ ",_selectedRecivers);
+    NSLog(@"\n_selectedRecivers: %@ ",_userInfo._selectedRecivers);
     
     
 }
@@ -250,14 +242,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 -(void)nextButtonClicked{
 
-    if (1) {
+    if ([_userInfo._selectedRecivers count] > 0) {
      
             UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Source" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
             alertController.modalPresentationStyle = UIModalPresentationPopover;
             [alertController sizeForChildContentContainer:self withParentContainerSize:CGSizeMake(200, 200)];
-            
-            //CGFloat margin = 8.0F;
-            //QTRActionControllerGalleryDelegate *delegateObject = [QTRActionControllerGalleryDelegate new];
 
             [customView setUserInteractionEnabled:YES];
             customView.delegate = self;
@@ -272,8 +261,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
             [customView.actionControllerCollectionView setDelegate:customView];
             customView.actionControllerCollectionView.allowsMultipleSelection = YES;
     
-    
-            //customView.backgroundColor = [UIColor greenColor];
             [alertController.view addSubview:customView];
     
             UIAlertAction *takePhotoAction2 = [UIAlertAction actionWithTitle:@"Show Gallery" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {   }];
@@ -286,14 +273,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
                 [alertController dismissViewControllerAnimated:YES completion:nil];
     
                 QTRShowGalleryViewController *showGallery = [[QTRShowGalleryViewController alloc] init];
-                showGallery.client = _client;
-                showGallery.server = _server;
-                showGallery.connectedClients = _connectedClients;
-                showGallery.connectedServers = _connectedServers;
-                showGallery.localUser = _localUser;
-                showGallery.selectedUser = _selectedUser;
-                showGallery.selectedRecivers = _selectedRecivers;
-        
+                showGallery.reciversInfo = _userInfo;
                 [self.navigationController pushViewController:showGallery animated:YES];
         
 
@@ -327,7 +307,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
             [self presentViewController:alertController animated:YES completion:nil];
         }
     
-    NSLog(@"Exit");
     
 }
 
@@ -354,7 +333,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 
 - (void)touchShare:(UIBarButtonItem *)barButton {
-    if (_selectedUser != nil) {
+    if (_userInfo._selectedUser != nil) {
 
         NSLog(@"Sharing Files..");
 //        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
@@ -371,19 +350,19 @@ static NSString *cellIdentifier = @"cellIdentifier";
 #pragma mark - Private methods
 
 - (void)stopServices {
-    [_server setDelegate:nil];
-    [_server setTransferDelegate:nil];
-    [_server stop];
-    _server = nil;
+    [_userInfo._server setDelegate:nil];
+    [_userInfo._server setTransferDelegate:nil];
+    [_userInfo._server stop];
+    _userInfo._server = nil;
 
-    [_client setDelegate:nil];
-    [_client setTransferDelegate:nil];
-    [_client stop];
-    _client = nil;
+    [_userInfo._client setDelegate:nil];
+    [_userInfo._client setTransferDelegate:nil];
+    [_userInfo._client stop];
+    _userInfo._client = nil;
 
-    [_connectedClients removeAllObjects];
+    [_userInfo._connectedClients removeAllObjects];
 
-    [_connectedServers removeAllObjects];
+    [_userInfo._connectedServers removeAllObjects];
 
     [[_devicesView devicesCollectionView] reloadData];
 
@@ -395,8 +374,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)startServices {
 
-    _connectedServers = [NSMutableArray new];
-    _connectedClients = [NSMutableArray new];
+    _userInfo._connectedServers = [NSMutableArray new];
+    _userInfo._connectedClients = [NSMutableArray new];
     NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordIdentifierKey];
     if ([uuid isKindOfClass:[NSNull class]] || uuid == nil) {
         uuid = [[NSUUID UUID] UUIDString];
@@ -404,20 +383,20 @@ static NSString *cellIdentifier = @"cellIdentifier";
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 
-    _localUser = [[QTRUser alloc] initWithName:[[UIDevice currentDevice] name] identifier:uuid platform:QTRUserPlatformIOS];
+    _userInfo._localUser = [[QTRUser alloc] initWithName:[[UIDevice currentDevice] name] identifier:uuid platform:QTRUserPlatformIOS];
 
-    _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
-    [_server setTransferDelegate:_transfersController];
+    _userInfo._server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
+    [_userInfo._server setTransferDelegate:_transfersController];
 
-    if (![_server start]) {
+    if (![_userInfo._server start]) {
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not start server" message:@"Please check that Wifi is turned on" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
         [alert show];
     }
 
-    _client = [[QTRBonjourClient alloc] initWithDelegate:self];
-    [_client setTransferDelegate:_transfersController];
-    [_client start];
+    _userInfo._client = [[QTRBonjourClient alloc] initWithDelegate:self];
+    [_userInfo._client setTransferDelegate:_transfersController];
+    [_userInfo._client start];
 
     [self refreshBeacons];
 }
@@ -476,7 +455,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 }
 
 - (BOOL)userConnected:(QTRUser *)user {
-    return [_connectedClients containsObject:user] || [_connectedServers containsObject:user] || [_localUser isEqual:user];
+    return [_userInfo._connectedClients containsObject:user] || [_userInfo._connectedServers containsObject:user] || [_userInfo._localUser isEqual:user];
 }
 
 - (NSURL *)fileCacheDirectory {
@@ -504,15 +483,15 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     long row = indexPath.row;
 
-    if ([_connectedServers count] > row) {
-        theUser = _connectedServers[row];
+    if ([_userInfo._connectedServers count] > row) {
+        theUser = _userInfo._connectedServers[row];
         if (isServer != NULL) {
             *isServer = YES;
         }
     } else {
-        row -= [_connectedServers count];
-        if ([_connectedClients count] > row) {
-            theUser = _connectedClients[row];
+        row -= [_userInfo._connectedServers count];
+        if ([_userInfo._connectedClients count] > row) {
+            theUser = _userInfo._connectedClients[row];
             if (isServer != NULL) {
                 *isServer = NO;
             }
@@ -553,7 +532,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 }
 
 - (void)updateTitle {
-    unsigned long totalUsers = [_connectedClients count] + [_connectedServers count];
+    unsigned long totalUsers = [_userInfo._connectedClients count] + [_userInfo._connectedServers count];
     [self setTitle:[NSString stringWithFormat:@"Devices (%lu)", totalUsers]];
     
     if (totalUsers > 0) {
@@ -604,7 +583,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
         return [self.filteredUserData count];
     }
     else {
-        return [_connectedServers count] + [_connectedClients count];
+        return [_userInfo._connectedServers count] + [_userInfo._connectedClients count];
     }
     
 }
@@ -630,9 +609,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     NSLog(@"Reloaded.. %@",theUser.name);
     
-    if ([_selectedRecivers count] > 0) {
+    if ([_userInfo._selectedRecivers count] > 0) {
         
-        if ([_selectedRecivers objectForKey:theUser.identifier] != NULL) {
+        if ([_userInfo._selectedRecivers objectForKey:theUser.identifier] != NULL) {
             NSLog(@"Selected %@", theUser.name);
             cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
         }
@@ -664,7 +643,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     }
     
-    [_selectedRecivers removeObjectForKey:theUser.identifier];
+    [_userInfo._selectedRecivers removeObjectForKey:theUser.identifier];
     
 }
 
@@ -676,15 +655,15 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     if (_importedFileURL == nil) {
         
-        _selectedUser = theUser;
+        _userInfo._selectedUser = theUser;
         [self touchShare:nil];
         
     } else {
         
         if (isServer) {
-            [_client sendFileAtURL:_importedFileURL toUser:theUser];
+            [_userInfo._client sendFileAtURL:_importedFileURL toUser:theUser];
         } else {
-            [_server sendFileAtURL:_importedFileURL toUser:theUser];
+            [_userInfo._server sendFileAtURL:_importedFileURL toUser:theUser];
         }
         
         _importedFileURL = nil;
@@ -699,9 +678,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
     }
     
     //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
-    [_selectedRecivers setObject:theUser forKey:theUser.identifier];
+    [_userInfo._selectedRecivers setObject:theUser forKey:theUser.identifier];
 
-    NSLog(@"User %lu  Selected..",[_selectedRecivers count]);
+    NSLog(@"User %lu  Selected..",[_userInfo._selectedRecivers count]);
     
 }
 
@@ -710,7 +689,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)server:(QTRBonjourServer *)server didConnectToUser:(QTRUser *)user {
     if (![self userConnected:user]) {
 
-        [_connectedClients addObject:user];
+        [_userInfo._connectedClients addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
 
@@ -718,7 +697,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 }
 
 - (void)server:(QTRBonjourServer *)server didDisconnectUser:(QTRUser *)user {
-    [_connectedClients removeObject:user];
+    [_userInfo._connectedClients removeObject:user];
     [self updateTitle];
     [[_devicesView devicesCollectionView] reloadData];
 }
@@ -743,7 +722,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 #pragma mark - QTRBonjourClientDelegate methods
 
 - (QTRUser *)localUser {
-    return _localUser;
+    return _userInfo._localUser;
 }
 
 - (BOOL)client:(QTRBonjourClient *)client shouldConnectToUser:(QTRUser *)user {
@@ -754,7 +733,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     if (![self userConnected:user]) {
 
-        [_connectedServers addObject:user];
+        [_userInfo._connectedServers addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
 
@@ -762,7 +741,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 }
 
 - (void)client:(QTRBonjourClient *)client didDisconnectFromServerForUser:(QTRUser *)user {
-    [_connectedServers removeObject:user];
+    [_userInfo._connectedServers removeObject:user];
     [self updateTitle];
     [[_devicesView devicesCollectionView] reloadData];
 }
@@ -790,10 +769,10 @@ static NSString *cellIdentifier = @"cellIdentifier";
         shouldAccept = YES;
     }
     
-    if (receiver == _client) {
-        [_client acceptFile:theFile accept:shouldAccept fromUser:theUser];
+    if (receiver == _userInfo._client) {
+        [_userInfo._client acceptFile:theFile accept:shouldAccept fromUser:theUser];
     } else {
-        [_server acceptFile:theFile accept:shouldAccept fromUser:theUser];
+        [_userInfo._server acceptFile:theFile accept:shouldAccept fromUser:theUser];
     }
 
     [_alertToFileMapTable removeObjectForKey:alertView];
@@ -852,7 +831,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
         self.isFiltered = true;
         self.filteredUserData = [[NSMutableArray alloc] init];
         
-        for (QTRUser *theUser in _connectedServers)
+        for (QTRUser *theUser in _userInfo._connectedServers)
         {
             //case insensative search - way cool
             if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
@@ -861,7 +840,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
             }
         }
         
-        for (QTRUser *theUser in _connectedClients)
+        for (QTRUser *theUser in _userInfo._connectedClients)
         {
             if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
             {
