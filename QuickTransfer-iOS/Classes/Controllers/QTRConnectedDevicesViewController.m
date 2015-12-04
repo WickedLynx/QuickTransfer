@@ -59,6 +59,7 @@
     NSURL *path;
     UILabel *fetchingDevicesLabel;
     
+    
 }
 
 
@@ -77,6 +78,8 @@
 @end
 
 static NSString *cellIdentifier = @"cellIdentifier";
+int animationFlag;
+
 
 
 @implementation QTRConnectedDevicesViewController
@@ -142,9 +145,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
     [_userInfo._selectedRecivers removeAllObjects];
     [[_devicesView devicesCollectionView] reloadData];
-    [self.view addSubview:fetchingDevicesLabel];
+    [ self changeAnimation];
+    
 }
 
 - (void)viewDidLoad {
@@ -158,11 +163,16 @@ static NSString *cellIdentifier = @"cellIdentifier";
         NSLog(@"No iCloud access");
     }
     
-    
     fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake(50, 230, 220, 40)];
-    [fetchingDevicesLabel setText:@"Fetching Devices"];
+    [fetchingDevicesLabel setText:@""];
     [fetchingDevicesLabel setTextAlignment:NSTextAlignmentCenter];
     [fetchingDevicesLabel setTextColor:[UIColor whiteColor]];
+    [self.view addSubview:fetchingDevicesLabel];
+    
+    [self animatePreviewLabel:fetchingDevicesLabel];
+    [fetchingDevicesLabel setText:@"Fetching Devices"];
+
+
     
     
     
@@ -186,6 +196,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
    
 
     [[_devicesView devicesCollectionView] reloadData];
+    [self changeAnimation];
     
     refreshControl = [[UIRefreshControl alloc]init];
     [[_devicesView devicesCollectionView] addSubview:refreshControl];
@@ -212,7 +223,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     [self.navigationController.navigationBar setTitleTextAttributes:
      @{NSForegroundColorAttributeName:[UIColor whiteColor]}];
-    [[_devicesView loadDeviceView] startAnimating];
+    //[[_devicesView loadDeviceView] startAnimating];
+    [refreshControl beginRefreshing];
     [_devicesView loadDeviceView].frame = self.view.frame;
     [_devicesView searchBar].delegate = self;
     [self refresh];
@@ -231,9 +243,10 @@ static NSString *cellIdentifier = @"cellIdentifier";
 #pragma mark - Actions
 
 -(void) refreshConnectedDevices {
-    [refreshControl endRefreshing];
-    [[_devicesView loadDeviceView] startAnimating];
+    
+    [self animatePreviewLabel:fetchingDevicesLabel];
     [fetchingDevicesLabel setText:@"Fetching Devices"];
+    
     [self refresh];
 
 }
@@ -377,6 +390,26 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 #pragma mark - Private methods
 
+- (void)animatePreviewLabel:(UILabel *)previewMessageLabel {
+    CATransition *animation = [CATransition animation];
+    animation.duration = 3.0;
+    animation.type = kCATransitionReveal;
+    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    [previewMessageLabel.layer addAnimation:animation forKey:@"changeTextTransition"];
+
+}
+
+- (void)changeAnimation {
+    
+    if (animationFlag == 0) {
+        animationFlag = 1;
+    }
+    else {
+        animationFlag = 0;
+    }
+
+}
+
 - (void)stopServices {
     [_userInfo._server setDelegate:nil];
     [_userInfo._server setTransferDelegate:nil];
@@ -393,6 +426,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [_userInfo._connectedServers removeAllObjects];
 
     [[_devicesView devicesCollectionView] reloadData];
+    [self changeAnimation];
 
     [_beaconAdvertiser stopAdvertisingBeaconRegion];
     [_beaconRanger stopRangingBeacons];
@@ -569,11 +603,14 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [self setTitle:[NSString stringWithFormat:@"Devices (%lu)", totalUsers]];
     
     if (totalUsers > 0) {
-        [[_devicesView loadDeviceView] stopAnimating];
+        //[[_devicesView loadDeviceView] stopAnimating];
+        [refreshControl endRefreshing];
+        [self animatePreviewLabel:fetchingDevicesLabel];
         [fetchingDevicesLabel setText:@""];
         
     } else {
-        [[_devicesView loadDeviceView] startAnimating];
+        //[[_devicesView loadDeviceView] startAnimating];
+        [self animatePreviewLabel:fetchingDevicesLabel];
         [fetchingDevicesLabel setText:@"Fetching Devices"];
 
     }
@@ -633,6 +670,37 @@ static NSString *cellIdentifier = @"cellIdentifier";
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
     QTRHomeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    
+    CGRect finalCellFrame = cell.frame;
+    //check the scrolling direction to verify from which side of the screen the cell should come.
+    CGPoint translation = [collectionView.panGestureRecognizer translationInView:collectionView.superview];
+    
+           if (translation.y < 0) {
+            cell.frame = CGRectMake( (self.view.frame.size.width / 2.0f), finalCellFrame.origin.y + 1000, 0, 0);
+        } else {
+            cell.frame = CGRectMake( (self.view.frame.size.width / 2.0f), finalCellFrame.origin.y + 1000, 0, 0);
+        }
+    
+    
+//        
+//    } else {
+//        if (translation.x > 0) {
+//            cell.frame = CGRectMake(finalCellFrame.origin.x - 1000, - 500.0f, 0, 0);
+//        } else {
+//            cell.frame = CGRectMake(finalCellFrame.origin.x - 1000, - 500.0f, 0, 0);
+//        }
+//    }
+    
+//    if (translation.y > 0) {
+//        cell.frame = CGRectMake(finalCellFrame.origin.y - 1000, - 1000.0f, 0, 0);
+//    } else {
+//        cell.frame = CGRectMake(finalCellFrame.origin.y - 1000, - 500.0f, 0, 0);
+//    }
+    
+    [UIView animateWithDuration:2.0f animations:^(void){
+        cell.frame = finalCellFrame;
+    }];
+    
     QTRUser *theUser;
     
     if (self.isFiltered) {
@@ -733,6 +801,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
         [_userInfo._connectedClients addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
+        [self changeAnimation];
         
     }
 }
@@ -741,6 +810,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [_userInfo._connectedClients removeObject:user];
     [self updateTitle];
     [[_devicesView devicesCollectionView] reloadData];
+    [self changeAnimation];
 }
 
 - (void)server:(QTRBonjourServer *)server didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
@@ -777,6 +847,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
         [_userInfo._connectedServers addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
+        [self changeAnimation];
         
     }
 }
@@ -785,6 +856,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [_userInfo._connectedServers removeObject:user];
     [self updateTitle];
     [[_devicesView devicesCollectionView] reloadData];
+    [self changeAnimation];
 }
 
 - (void)client:(QTRBonjourClient *)client didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
@@ -917,6 +989,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     }
         
     [[_devicesView devicesCollectionView] reloadData];
+    [self changeAnimation];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -938,6 +1011,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     self.isFiltered = FALSE;
     [[_devicesView devicesCollectionView] reloadData];
+    [self changeAnimation];
 }
 
 
