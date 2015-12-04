@@ -10,8 +10,10 @@
 #import "QTRBonjourTransferDelegate.h"
 #import "QTRTransfersStoreDelegate.h"
 
-@interface QTRTransfersViewController : UIViewController <QTRTransfersStoreDelegate>
+@interface QTRTransfersViewController : UIViewController <QTRTransfersStoreDelegate, QTRBonjourTransferDelegate>
 
 - (QTRTransfersStore *)transfersStore;
+
+@property(nonatomic, weak) id <QTRBonjourTransferDelegate> _transfersController;
 
 @end

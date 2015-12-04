@@ -29,7 +29,7 @@
 #import "QTRSelectedUserInfo.h"
 #import "QTRRecentLogsViewController.h"
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate> {
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate, UIImagePickerControllerDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
     
@@ -57,6 +57,7 @@
     
     UIImage *image;
     NSURL *path;
+    UILabel *fetchingDevicesLabel;
     
 }
 
@@ -143,6 +144,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [super viewWillAppear:animated];
     [_userInfo._selectedRecivers removeAllObjects];
     [[_devicesView devicesCollectionView] reloadData];
+    [self.view addSubview:fetchingDevicesLabel];
 }
 
 - (void)viewDidLoad {
@@ -155,6 +157,14 @@ static NSString *cellIdentifier = @"cellIdentifier";
     } else {
         NSLog(@"No iCloud access");
     }
+    
+    
+    fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake(50, 230, 220, 40)];
+    [fetchingDevicesLabel setText:@"Fetching Devices"];
+    [fetchingDevicesLabel setTextAlignment:NSTextAlignmentCenter];
+    [fetchingDevicesLabel setTextColor:[UIColor whiteColor]];
+    
+    
     
     _userInfo = [[QTRSelectedUserInfo alloc]init];
     _userInfo._selectedRecivers = [[NSMutableDictionary alloc]init];
@@ -223,6 +233,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 -(void) refreshConnectedDevices {
     [refreshControl endRefreshing];
     [[_devicesView loadDeviceView] startAnimating];
+    [fetchingDevicesLabel setText:@"Fetching Devices"];
     [self refresh];
 
 }
@@ -324,24 +335,27 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
 }
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    //You can retrieve the actual UIImage
-    image = [info valueForKey:UIImagePickerControllerOriginalImage];
-    //Or you can get the image url from AssetsLibrary
-    path = [info valueForKey:UIImagePickerControllerReferenceURL];
-    
-    NSLog(@"image:%@  path:%@",image.description, path.description);
-    
-    [picker dismissViewControllerAnimated:YES completion:^{
-    }];
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-
-
- NSLog(@"image:%@  path:%@",image.description, path.description);
-}
+//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+//{
+//    //You can retrieve the actual UIImage
+//    image = [info valueForKey:UIImagePickerControllerOriginalImage];
+//    //Or you can get the image url from AssetsLibrary
+//    path = [info valueForKey:UIImagePickerControllerReferenceURL];
+//    
+//    NSLog(@"image:%@  path:%@",image.description, path.description);
+//    
+//    [picker dismissViewControllerAnimated:YES completion:^{
+//    }];
+//}
+//
+//- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+//
+//
+// NSLog(@"image:%@  path:%@",image.description, path.description);
+//    
+//    
+//    
+//}
 
 
 
@@ -411,6 +425,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
     _userInfo._client = [[QTRBonjourClient alloc] initWithDelegate:self];
     [_userInfo._client setTransferDelegate:_transfersController];
     [_userInfo._client start];
+    
+    NSLog(@" %lu  %lu ",[_userInfo _connectedServers].count,[_userInfo _connectedClients].count);
+    
+
+    
 
     [self refreshBeacons];
 }
@@ -551,9 +570,18 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     if (totalUsers > 0) {
         [[_devicesView loadDeviceView] stopAnimating];
+        [fetchingDevicesLabel setText:@""];
+        
     } else {
         [[_devicesView loadDeviceView] startAnimating];
+        [fetchingDevicesLabel setText:@"Fetching Devices"];
+
     }
+    
+//    if (([_userInfo _connectedServers].count + [_userInfo _connectedClients].count) < 1) {
+//        
+//    }
+    
 }
 
 #pragma mark - Notifications
@@ -584,7 +612,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
     
-    return UIEdgeInsetsMake(0.0f, gap, 0.0f, gap);
+    return UIEdgeInsetsMake(5.0f, gap, 0.0f, gap);
 }
 
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -827,8 +855,32 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     NSLog(@"Finding Camera..");
     
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    //picker.showsCameraControls = YES;
+
+    [self presentViewController:picker animated:YES completion:nil];
 
 }
+
+#pragma mark UIImagePickerControllerDelegate methods
+
+- (void)imagePickerController:(UIImagePickerController *)thePicker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    [thePicker dismissViewControllerAnimated:YES completion:nil];
+    image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    
+    NSLog(@"Captured Image");
+    
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)thePicker
+{
+    [thePicker dismissViewControllerAnimated:YES completion:nil];
+    //self.imageView.image = nil;
+}
+
 
 #pragma mark - Search Bar methods
 
