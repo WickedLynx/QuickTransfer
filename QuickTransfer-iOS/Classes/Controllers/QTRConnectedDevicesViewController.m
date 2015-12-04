@@ -59,6 +59,10 @@
     NSURL *path;
     UILabel *fetchingDevicesLabel;
     
+    UIDynamicAnimator* _animator;
+    UIGravityBehavior* _gravity;
+    UICollisionBehavior* _collision;
+    
     
 }
 
@@ -682,7 +686,10 @@ int animationFlag;
         }
     
     
-//        
+    
+//
+    
+    
 //    } else {
 //        if (translation.x > 0) {
 //            cell.frame = CGRectMake(finalCellFrame.origin.x - 1000, - 500.0f, 0, 0);
@@ -699,6 +706,7 @@ int animationFlag;
     
     [UIView animateWithDuration:2.0f animations:^(void){
         cell.frame = finalCellFrame;
+
     }];
     
     QTRUser *theUser;
@@ -727,7 +735,18 @@ int animationFlag;
         }
         
     }
+    
 
+//    _animator = [[UIDynamicAnimator alloc] initWithReferenceView:[_devicesView devicesCollectionView ]];
+//    
+//    UIDynamicItemBehavior* itemBehaviour = [[UIDynamicItemBehavior alloc] initWithItems:@[[_devicesView devicesCollectionView ]]];
+//    itemBehaviour.elasticity = 0.2;
+//    
+//    [_animator addBehavior:_gravity];
+//    [_animator addBehavior:itemBehaviour];
+    
+    
+    
     
     return cell;
     
@@ -790,6 +809,29 @@ int animationFlag;
     //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
     [_userInfo._selectedRecivers setObject:theUser forKey:theUser.identifier];
 
+    
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    QTRUser *theUser;
+    
+    if (self.isFiltered) {
+        theUser = [self.filteredUserData objectAtIndex:indexPath.row];
+    }
+    else {
+        theUser = [self userAtIndexPath:indexPath isServer:NULL];
+    }
+    
+    if ([_userInfo._selectedRecivers count] > 0) {
+        if ([_userInfo._selectedRecivers objectForKey:theUser.identifier] != NULL) {
+            
+            
+            dispatch_after(0.1, dispatch_get_main_queue(), ^{
+                [collectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
+            });
+        }
+    }
     
 }
 
