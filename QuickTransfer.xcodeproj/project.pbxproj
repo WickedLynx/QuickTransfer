@@ -19,6 +19,7 @@
 		072BE74D1C0D8AE700798AC1 /* defaultIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */; };
 		072BE74E1C0D8BB800798AC1 /* defaultIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */; };
 		072BE74F1C0D8BBD00798AC1 /* linuxIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7451C0D808500798AC1 /* linuxIcon.xcassets */; };
+		0745DA561C15688500579DCC /* QTRCustomAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0745DA551C15688500579DCC /* QTRCustomAlertView.m */; };
 		07B308371C0ECD2800A889BF /* selected_image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B308361C0ECD2800A889BF /* selected_image.xcassets */; };
 		07B308381C0ECD5700A889BF /* selected_image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B308361C0ECD2800A889BF /* selected_image.xcassets */; };
 		07B3083C1C0EDC6300A889BF /* Button_back.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B3083B1C0EDC6300A889BF /* Button_back.xcassets */; };
@@ -179,6 +180,8 @@
 		072BE7451C0D808500798AC1 /* linuxIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = linuxIcon.xcassets; sourceTree = "<group>"; };
 		072BE7471C0D809700798AC1 /* windowsIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = windowsIcon.xcassets; sourceTree = "<group>"; };
 		072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = defaultIcon.xcassets; sourceTree = "<group>"; };
+		0745DA541C15688500579DCC /* QTRCustomAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRCustomAlertView.h; sourceTree = "<group>"; };
+		0745DA551C15688500579DCC /* QTRCustomAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRCustomAlertView.m; sourceTree = "<group>"; };
 		07B308361C0ECD2800A889BF /* selected_image.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = selected_image.xcassets; sourceTree = "<group>"; };
 		07B3083B1C0EDC6300A889BF /* Button_back.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Button_back.xcassets; sourceTree = "<group>"; };
 		07BB981B1C100B9500AF7F7C /* QTRImagesInfoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QTRImagesInfoData.h; path = Controllers/QTRImagesInfoData.h; sourceTree = "<group>"; };
@@ -515,6 +518,8 @@
 				07D4A2EA1C086AD4006F93E6 /* QTRActionSheetGalleryView.m */,
 				07D4A2F21C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.h */,
 				07D4A2F31C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m */,
+				0745DA541C15688500579DCC /* QTRCustomAlertView.h */,
+				0745DA551C15688500579DCC /* QTRCustomAlertView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1015,6 +1020,7 @@
 				FAAC781C18EE884C0006B698 /* QTRTransfersTableCell.m in Sources */,
 				FADEB05818F53177002F1C00 /* QTRHelper.m in Sources */,
 				FA6DA6B818C453E30097742B /* QTRMultipartTransfer.m in Sources */,
+				0745DA561C15688500579DCC /* QTRCustomAlertView.m in Sources */,
 				FA283F2618B49582003D4FB6 /* QTRUser.m in Sources */,
 				FA283F2718B49582003D4FB6 /* QTRConstants.m in Sources */,
 				FA283F1F18B49551003D4FB6 /* DTBonjourDataChunk.m in Sources */,

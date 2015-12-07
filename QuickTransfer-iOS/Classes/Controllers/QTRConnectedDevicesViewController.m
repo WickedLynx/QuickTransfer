@@ -28,6 +28,8 @@
 #import "QTRHelper.h"
 #import "QTRSelectedUserInfo.h"
 #import "QTRRecentLogsViewController.h"
+#import "QTRCustomAlertView.h"
+
 
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate, UIImagePickerControllerDelegate> {
 
@@ -183,8 +185,23 @@ int animationFlag;
     _userInfo = [[QTRSelectedUserInfo alloc]init];
     _userInfo._selectedRecivers = [[NSMutableDictionary alloc]init];
     
-    [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
+    [self.view setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
+//    CAGradientLayer *gradient1 = [CAGradientLayer layer];
+//    gradient1.frame = self.view.frame;
+//    
+//    gradient1.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f] CGColor], (id)[[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f] CGColor], (id)[[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f] CGColor],nil];
+//    [self.view.layer insertSublayer:gradient1 atIndex:1];
+    
+    
     [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
+    
+    [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor clearColor]];
+    
+//    CAGradientLayer *gradient1 = [CAGradientLayer layer];
+//    gradient1.frame = self.view.frame;
+//    
+//    gradient1.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f] CGColor], (id)[[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f] CGColor], (id)[[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f] CGColor],nil];
+//    [[_devicesView devicesCollectionView].layer insertSublayer:gradient1 atIndex:1];
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
@@ -284,71 +301,90 @@ int animationFlag;
 
 -(void)nextButtonClicked{
 
-    if ([_userInfo._selectedRecivers count] > 0) {
-     
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Source" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-            alertController.modalPresentationStyle = UIModalPresentationPopover;
-            [alertController sizeForChildContentContainer:self withParentContainerSize:CGSizeMake(200, 200)];
-
-            [customView setUserInteractionEnabled:YES];
-            customView.delegate = self;
-            customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
-        
-        
-            customView = [[QTRActionSheetGalleryView alloc] init];
+    NSLog(@"Next Button Clicked..");
     
-            [customView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+//    UIView *popupView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 250, 250)];
+//    [popupView setBackgroundColor:[UIColor lightGrayColor]];
+//    popupView.alpha = 0.05;
     
-            [customView.actionControllerCollectionView setDataSource:customView];
-            [customView.actionControllerCollectionView setDelegate:customView];
-            customView.actionControllerCollectionView.allowsMultipleSelection = YES;
+//    UIView *bgView = [[UIView alloc] initWithFrame:popupView.frame];
+//    UIColor * bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"blue_bg.png"]];
+//    bgView.backgroundColor = bgColor;
+//    bgView.alpha = 0.5;
+//    [popupView addSubview:bgView];
     
-            [alertController.view addSubview:customView];
+//    [self.view addSubview:popupView];
     
-            UIAlertAction *takePhotoAction2 = [UIAlertAction actionWithTitle:@"Show Gallery" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {   }];
+    QTRCustomAlertView *cac = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    [self.view addSubview:cac];
     
-            UIAlertAction *takePhotoAction1 = [UIAlertAction actionWithTitle:@"Take a photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [self takePhoto]; }];
+    //[self.navigationController presentViewController:cac animated:YES completion:nil];
     
-            UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                
-                [customView removeFromSuperview];
-                [alertController dismissViewControllerAnimated:YES completion:nil];
-    
-                QTRShowGalleryViewController *showGallery = [[QTRShowGalleryViewController alloc] init];
-                showGallery.reciversInfo = _userInfo;
-                [self.navigationController pushViewController:showGallery animated:YES];
-        
-
-            }];
-    
-            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                NSLog(@"%@", alertController.view.subviews);
-            }];
-    
-            UIAlertAction *iCloudeAction = [UIAlertAction actionWithTitle:@"iCloud" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
-            [takePhotoAction2 setEnabled:NO];
-    
-            [alertController addAction:takePhotoAction2];
-            [alertController addAction:takePhotoAction1];
-            [alertController addAction:cameraAction];
-            [alertController addAction:cancelAction];
-            [alertController addAction:iCloudeAction];
-        
-   
-            [self presentViewController:alertController animated:YES completion:^{}];
-        
-
-        }
-        else {
-        
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Message" message:@"First Select Atleast One Reciver" preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction* ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-            [alertController addAction:ok];
-            
-            [self presentViewController:alertController animated:YES completion:nil];
-        }
-    
+//    if ([_userInfo._selectedRecivers count] > 0) {
+//     
+//            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Source" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+//            alertController.modalPresentationStyle = UIModalPresentationPopover;
+//            [alertController sizeForChildContentContainer:self withParentContainerSize:CGSizeMake(200, 200)];
+//
+//            [customView setUserInteractionEnabled:YES];
+//            customView.delegate = self;
+//            customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
+//        
+//        
+//            customView = [[QTRActionSheetGalleryView alloc] init];
+//    
+//            [customView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+//    
+//            [customView.actionControllerCollectionView setDataSource:customView];
+//            [customView.actionControllerCollectionView setDelegate:customView];
+//            customView.actionControllerCollectionView.allowsMultipleSelection = YES;
+//    
+//            [alertController.view addSubview:customView];
+//    
+//            UIAlertAction *takePhotoAction2 = [UIAlertAction actionWithTitle:@"Show Gallery" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {   }];
+//    
+//            UIAlertAction *takePhotoAction1 = [UIAlertAction actionWithTitle:@"Take a photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [self takePhoto]; }];
+//    
+//            UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+//                
+//                [customView removeFromSuperview];
+//                [alertController dismissViewControllerAnimated:YES completion:nil];
+//    
+//                QTRShowGalleryViewController *showGallery = [[QTRShowGalleryViewController alloc] init];
+//                showGallery.reciversInfo = _userInfo;
+//                [self.navigationController pushViewController:showGallery animated:YES];
+//        
+//
+//            }];
+//    
+//            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+//                NSLog(@"%@", alertController.view.subviews);
+//            }];
+//    
+//            UIAlertAction *iCloudeAction = [UIAlertAction actionWithTitle:@"iCloud" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
+//            [takePhotoAction2 setEnabled:NO];
+//    
+//            [alertController addAction:takePhotoAction2];
+//            [alertController addAction:takePhotoAction1];
+//            [alertController addAction:cameraAction];
+//            [alertController addAction:cancelAction];
+//            [alertController addAction:iCloudeAction];
+//        
+//   
+//            [self presentViewController:alertController animated:YES completion:^{}];
+//        
+//
+//        }
+//        else {
+//        
+//            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Message" message:@"First Select Atleast One Reciver" preferredStyle:UIAlertControllerStyleAlert];
+//            
+//            UIAlertAction* ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+//            [alertController addAction:ok];
+//            
+//            [self presentViewController:alertController animated:YES completion:nil];
+//        }
+//    
     
 }
 

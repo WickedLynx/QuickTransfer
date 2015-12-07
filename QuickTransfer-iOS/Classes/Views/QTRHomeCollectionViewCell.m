@@ -15,6 +15,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         
+        [self setBackgroundColor:[UIColor clearColor]];
         
         UIImageView *_connectedDeviceImageLocal = [[UIImageView alloc]init];
         _connectedDeviceImageLocal.frame = CGRectMake(15.0f, 0.0f, 70.0f, 70.0f);
