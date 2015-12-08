@@ -113,13 +113,13 @@ static float screenHeight;
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[cancelButton]-7-|" options:0 metrics:0 views:views]];
         
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%f-[galleryUIView(==241)]-5-[cancelButton(==44)]-5-|", (screenHeight - 295.0)] options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:[galleryUIView(==231)]-5-[cancelButton(==44)]-5-|"] options:0 metrics:0 views:views]];
         
 //        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[alertTitleLabel]-10-[takePhotoButton]-0-[cameraRollButton]-0-[iCloudButton]|" options:0 metrics:0 views:views]];
         
        
         
-                [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[alertTitleLabel(==33)]-10-[galleryCollectionView(==66)]-0-[takePhotoButton(==44)]-0-[cameraRollButton(==44)]-0-[iCloudButton(==44)]-0-|" options:0 metrics:0 views:views]];
+                [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[alertTitleLabel(==33)]-0-[galleryCollectionView(==66)]-0-[takePhotoButton(==44)]-0-[cameraRollButton(==44)]-0-[iCloudButton(==44)]-0-|" options:0 metrics:0 views:views]];
 
         
         

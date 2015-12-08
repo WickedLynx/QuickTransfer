@@ -126,7 +126,7 @@ int totalImages;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[galleryCollectionView]|" options:0 metrics:0 views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[button]-7-|" options:0 metrics:0 views:views]];
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[galleryCollectionView]-5-[button]-5-|" options:0 metrics:0 views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[galleryCollectionView]-5-[button(==44)]-5-|" options:0 metrics:0 views:views]];
 
     [self getPhotos];
     
@@ -215,6 +215,29 @@ int totalImages;
 
 #pragma mark - UICollectionViewDataSource methods
 
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    
+    int noOfItems = (self.view.frame.size.width) / 80;
+    float totalRemSpace = self.view.frame.size.width - (noOfItems * 80);
+    
+    if (totalRemSpace == 0.0) {
+        
+        NSLog(@"If width: %f", totalRemSpace);
+        [layout setMinimumLineSpacing:0.0f];
+        return UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
+
+    }
+    else {
+        NSLog(@"Else width: %f", totalRemSpace);
+
+        CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
+        [layout setMinimumLineSpacing:gap];
+
+    
+    return UIEdgeInsetsMake( (gap * 2.0f), gap, (gap * 2.0f), gap);
+
+    }
+}
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
     
@@ -239,7 +262,7 @@ int totalImages;
 
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(78.0f, 78.0f);
+    return CGSizeMake(80.0f, 80.0f);
 }
 
 

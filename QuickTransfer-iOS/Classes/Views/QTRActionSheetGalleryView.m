@@ -38,7 +38,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 {
     if ((self = [super initWithFrame:aRect])) {
         
-        self.frame = CGRectMake(1.0f, 37.f, [UIScreen mainScreen].bounds.size.width-( [UIScreen mainScreen].bounds.size.width * 6.666f / 100 ), 55.f);
+        //self.frame = CGRectMake(0.0f, 0.0f, 320.0f, 66.0f);
         self.backgroundColor = [UIColor whiteColor];
         
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
@@ -119,7 +119,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(65.0f, 65.0f);
+    return CGSizeMake(66.0f, 66.0f);
 }
 
 

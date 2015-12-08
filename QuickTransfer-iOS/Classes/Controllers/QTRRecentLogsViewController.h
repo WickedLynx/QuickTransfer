@@ -10,7 +10,7 @@
 #import "QTRBonjourTransferDelegate.h"
 #import "QTRTransfersStoreDelegate.h"
 
-@interface QTRRecentLogsViewController : UIViewController <QTRTransfersStoreDelegate>
+@interface QTRRecentLogsViewController : UIViewController
 
 - (QTRTransfersStore *)transfersStore;
 

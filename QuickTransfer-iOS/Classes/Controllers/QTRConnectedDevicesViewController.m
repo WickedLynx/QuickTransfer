@@ -35,7 +35,17 @@
 
     __weak QTRConnectedDevicesView *_devicesView;
     
-    QTRSelectedUserInfo *_userInfo;
+    //QTRSelectedUserInfo *_userInfo;
+    
+    QTRBonjourClient *_client;
+    QTRBonjourServer *_server;
+    
+    NSMutableArray *_connectedServers;
+    NSMutableArray *_connectedClients;
+    NSMutableDictionary *_selectedRecivers;
+    
+    QTRUser *_localUser;
+    QTRUser *_selectedUser;
     
     UIRefreshControl *refreshControl;
 
@@ -64,6 +74,8 @@
     UIDynamicAnimator* _animator;
     UIGravityBehavior* _gravity;
     UICollisionBehavior* _collision;
+    
+    QTRCustomAlertView *cac;
     
     
 }
@@ -152,7 +164,7 @@ int animationFlag;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [_userInfo._selectedRecivers removeAllObjects];
+    //[_userInfo._selectedRecivers removeAllObjects];
     [[_devicesView devicesCollectionView] reloadData];
     [ self changeAnimation];
     
@@ -169,7 +181,10 @@ int animationFlag;
         NSLog(@"No iCloud access");
     }
     
-    fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake(50, 230, 220, 40)];
+    //fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 110), 230, 220, 40)];
+    
+    fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 220, 40)];
+    fetchingDevicesLabel.center = self.view.center;
     [fetchingDevicesLabel setText:@""];
     [fetchingDevicesLabel setTextAlignment:NSTextAlignmentCenter];
     [fetchingDevicesLabel setTextColor:[UIColor whiteColor]];
@@ -182,8 +197,8 @@ int animationFlag;
     
     
     
-    _userInfo = [[QTRSelectedUserInfo alloc]init];
-    _userInfo._selectedRecivers = [[NSMutableDictionary alloc]init];
+    //_userInfo = [[QTRSelectedUserInfo alloc]init];
+    _selectedRecivers = [[NSMutableDictionary alloc]init];
     
     [self.view setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
 //    CAGradientLayer *gradient1 = [CAGradientLayer layer];
@@ -278,14 +293,10 @@ int animationFlag;
 }
 
 - (void)logsBarButton:(UIBarButtonItem *)barButton {
-    NSLog(@"\n_selectedRecivers: %@ ",_userInfo._selectedRecivers);
-    
-//    QTRTransfersViewController *tv = [QTRTransfersViewController new];
+    NSLog(@"\n_selectedRecivers: %@ ",_selectedRecivers);
     
     QTRRecentLogsViewController *recentLogs = [[QTRRecentLogsViewController alloc]init];
-    
     [self.navigationController pushViewController:recentLogs animated:YES];
-    
     
 }
 
@@ -315,8 +326,36 @@ int animationFlag;
     
 //    [self.view addSubview:popupView];
     
-    QTRCustomAlertView *cac = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    cac = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:cac];
+    
+    
+    NSLog(@"Width:%f    Height:%f", cac.galleryCollectionView.frame.size.width, cac.galleryCollectionView.frame.size.height);
+    
+                 customView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
+                [customView setUserInteractionEnabled:YES];
+                customView.delegate = self;
+                customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
+    
+    
+    
+    
+                [customView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+    
+                [customView.actionControllerCollectionView setDataSource:customView];
+                [customView.actionControllerCollectionView setDelegate:customView];
+                customView.actionControllerCollectionView.allowsMultipleSelection = YES;
+    
+                [cac.galleryCollectionView addSubview:customView];
+
+    
+    
+    [cac.cancelButton addTarget: self action: @selector(ActionViewCancelButton) forControlEvents: UIControlEventTouchUpInside];
+    [cac.iCloudButton addTarget: self action: @selector(ActioniCloudButton) forControlEvents: UIControlEventTouchUpInside];
+    [cac.cameraRollButton addTarget: self action: @selector(ActionCameraRoll) forControlEvents: UIControlEventTouchUpInside];
+    [cac.takePhotoButton addTarget: self action: @selector(ActionTakePhoto) forControlEvents: UIControlEventTouchUpInside];
+
+    
     
     //[self.navigationController presentViewController:cac animated:YES completion:nil];
     
@@ -410,11 +449,58 @@ int animationFlag;
 //    
 //}
 
+-(void) ActionViewCancelButton {
 
+    NSLog(@"Canceling");
+    [cac removeFromSuperview];
+    
 
+}
+
+-(void) ActioniCloudButton {
+    
+    NSLog(@"i Cloude");
+    [cac removeFromSuperview];
+    
+    
+}
+
+-(void) ActionCameraRoll {
+    
+    NSLog(@"Opening Camera Roll");
+    [cac removeFromSuperview];
+    [customView removeFromSuperview];
+    
+    QTRSelectedUserInfo *usersInfo = [[QTRSelectedUserInfo alloc]init];
+    usersInfo._client = _client;
+    usersInfo._server = _server;
+    usersInfo._connectedServers = _connectedServers;
+    usersInfo._connectedClients = _connectedClients;
+    usersInfo._selectedRecivers = _selectedRecivers;
+    usersInfo._localUser = _localUser;
+    usersInfo._selectedUser = _selectedUser;
+    
+
+    QTRShowGalleryViewController *showGallery = [[QTRShowGalleryViewController alloc] init];
+    
+    
+    
+    showGallery.reciversInfo = usersInfo;
+    [self.navigationController pushViewController:showGallery animated:YES];
+
+    
+    
+}
+-(void) ActionTakePhoto {
+    
+    NSLog(@"Taking Photo");
+    [cac removeFromSuperview];
+    
+    
+}
 
 - (void)touchShare:(UIBarButtonItem *)barButton {
-    if (_userInfo._selectedUser != nil) {
+    if (_selectedUser != nil) {
 
         NSLog(@"Sharing Files..");
 //        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
@@ -451,19 +537,19 @@ int animationFlag;
 }
 
 - (void)stopServices {
-    [_userInfo._server setDelegate:nil];
-    [_userInfo._server setTransferDelegate:nil];
-    [_userInfo._server stop];
-    _userInfo._server = nil;
+    [_server setDelegate:nil];
+    [_server setTransferDelegate:nil];
+    [_server stop];
+    _server = nil;
 
-    [_userInfo._client setDelegate:nil];
-    [_userInfo._client setTransferDelegate:nil];
-    [_userInfo._client stop];
-    _userInfo._client = nil;
+    [_client setDelegate:nil];
+    [_client setTransferDelegate:nil];
+    [_client stop];
+    _client = nil;
 
-    [_userInfo._connectedClients removeAllObjects];
+    [_connectedClients removeAllObjects];
 
-    [_userInfo._connectedServers removeAllObjects];
+    [_connectedServers removeAllObjects];
 
     [[_devicesView devicesCollectionView] reloadData];
     [self changeAnimation];
@@ -476,8 +562,8 @@ int animationFlag;
 
 - (void)startServices {
 
-    _userInfo._connectedServers = [NSMutableArray new];
-    _userInfo._connectedClients = [NSMutableArray new];
+    _connectedServers = [NSMutableArray new];
+    _connectedClients = [NSMutableArray new];
     NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordIdentifierKey];
     if ([uuid isKindOfClass:[NSNull class]] || uuid == nil) {
         uuid = [[NSUUID UUID] UUIDString];
@@ -485,22 +571,22 @@ int animationFlag;
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
 
-    _userInfo._localUser = [[QTRUser alloc] initWithName:[[UIDevice currentDevice] name] identifier:uuid platform:QTRUserPlatformIOS];
+    _localUser = [[QTRUser alloc] initWithName:[[UIDevice currentDevice] name] identifier:uuid platform:QTRUserPlatformIOS];
 
-    _userInfo._server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
-    [_userInfo._server setTransferDelegate:_transfersController];
+    _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
+    [_server setTransferDelegate:_transfersController];
 
-    if (![_userInfo._server start]) {
+    if (![_server start]) {
 
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not start server" message:@"Please check that Wifi is turned on" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
         [alert show];
     }
 
-    _userInfo._client = [[QTRBonjourClient alloc] initWithDelegate:self];
-    [_userInfo._client setTransferDelegate:_transfersController];
-    [_userInfo._client start];
+    _client = [[QTRBonjourClient alloc] initWithDelegate:self];
+    [_client setTransferDelegate:_transfersController];
+    [_client start];
     
-    NSLog(@" %lu  %lu ",[_userInfo _connectedServers].count,[_userInfo _connectedClients].count);
+    NSLog(@" %lu  %lu ",_connectedServers.count,_connectedClients.count);
     
 
     
@@ -562,7 +648,7 @@ int animationFlag;
 }
 
 - (BOOL)userConnected:(QTRUser *)user {
-    return [_userInfo._connectedClients containsObject:user] || [_userInfo._connectedServers containsObject:user] || [_userInfo._localUser isEqual:user];
+    return [_connectedClients containsObject:user] || [_connectedServers containsObject:user] || [_localUser isEqual:user];
 }
 
 - (NSURL *)fileCacheDirectory {
@@ -590,15 +676,15 @@ int animationFlag;
 
     long row = indexPath.row;
 
-    if ([_userInfo._connectedServers count] > row) {
-        theUser = _userInfo._connectedServers[row];
+    if ([_connectedServers count] > row) {
+        theUser = _connectedServers[row];
         if (isServer != NULL) {
             *isServer = YES;
         }
     } else {
-        row -= [_userInfo._connectedServers count];
-        if ([_userInfo._connectedClients count] > row) {
-            theUser = _userInfo._connectedClients[row];
+        row -= [_connectedServers count];
+        if ([_connectedClients count] > row) {
+            theUser = _connectedClients[row];
             if (isServer != NULL) {
                 *isServer = NO;
             }
@@ -639,7 +725,7 @@ int animationFlag;
 }
 
 - (void)updateTitle {
-    unsigned long totalUsers = [_userInfo._connectedClients count] + [_userInfo._connectedServers count];
+    unsigned long totalUsers = [_connectedClients count] + [_connectedServers count];
     [self setTitle:[NSString stringWithFormat:@"Devices (%lu)", totalUsers]];
     
     if (totalUsers > 0) {
@@ -702,7 +788,7 @@ int animationFlag;
         return [self.filteredUserData count];
     }
     else {
-        return [_userInfo._connectedServers count] + [_userInfo._connectedClients count];
+        return [_connectedServers count] + [_connectedClients count];
     }
     
 }
@@ -763,9 +849,9 @@ int animationFlag;
 
     NSLog(@"Reloaded.. %@",theUser.name);
     
-    if ([_userInfo._selectedRecivers count] > 0) {
+    if ([_selectedRecivers count] > 0) {
         
-        if ([_userInfo._selectedRecivers objectForKey:theUser.identifier] != NULL) {
+        if ([_selectedRecivers objectForKey:theUser.identifier] != NULL) {
             NSLog(@"Selected %@", theUser.name);
             cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
         }
@@ -808,7 +894,7 @@ int animationFlag;
 
     }
     
-    [_userInfo._selectedRecivers removeObjectForKey:theUser.identifier];
+    [_selectedRecivers removeObjectForKey:theUser.identifier];
     
 }
 
@@ -820,15 +906,15 @@ int animationFlag;
     
     if (_importedFileURL == nil) {
         
-        _userInfo._selectedUser = theUser;
+        _selectedUser = theUser;
         [self touchShare:nil];
         
     } else {
         
         if (isServer) {
-            [_userInfo._client sendFileAtURL:_importedFileURL toUser:theUser];
+            [_client sendFileAtURL:_importedFileURL toUser:theUser];
         } else {
-            [_userInfo._server sendFileAtURL:_importedFileURL toUser:theUser];
+            [_server sendFileAtURL:_importedFileURL toUser:theUser];
         }
         
         _importedFileURL = nil;
@@ -843,7 +929,7 @@ int animationFlag;
     }
     
     //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
-    [_userInfo._selectedRecivers setObject:theUser forKey:theUser.identifier];
+    [_selectedRecivers setObject:theUser forKey:theUser.identifier];
 
     
 }
@@ -859,8 +945,8 @@ int animationFlag;
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
     }
     
-    if ([_userInfo._selectedRecivers count] > 0) {
-        if ([_userInfo._selectedRecivers objectForKey:theUser.identifier] != NULL) {
+    if ([_selectedRecivers count] > 0) {
+        if ([_selectedRecivers objectForKey:theUser.identifier] != NULL) {
             
             
             dispatch_after(0.1, dispatch_get_main_queue(), ^{
@@ -876,7 +962,7 @@ int animationFlag;
 - (void)server:(QTRBonjourServer *)server didConnectToUser:(QTRUser *)user {
     if (![self userConnected:user]) {
         
-        [_userInfo._connectedClients addObject:user];
+        [_connectedClients addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
         [self changeAnimation];
@@ -885,7 +971,7 @@ int animationFlag;
 }
 
 - (void)server:(QTRBonjourServer *)server didDisconnectUser:(QTRUser *)user {
-    [_userInfo._connectedClients removeObject:user];
+    [_connectedClients removeObject:user];
     [self updateTitle];
     [[_devicesView devicesCollectionView] reloadData];
     [self changeAnimation];
@@ -911,7 +997,7 @@ int animationFlag;
 #pragma mark - QTRBonjourClientDelegate methods
 
 - (QTRUser *)localUser {
-    return _userInfo._localUser;
+    return _localUser;
 }
 
 - (BOOL)client:(QTRBonjourClient *)client shouldConnectToUser:(QTRUser *)user {
@@ -922,7 +1008,7 @@ int animationFlag;
     
     if (![self userConnected:user]) {
         
-        [_userInfo._connectedServers addObject:user];
+        [_connectedServers addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
         [self changeAnimation];
@@ -931,7 +1017,7 @@ int animationFlag;
 }
 
 - (void)client:(QTRBonjourClient *)client didDisconnectFromServerForUser:(QTRUser *)user {
-    [_userInfo._connectedServers removeObject:user];
+    [_connectedServers removeObject:user];
     [self updateTitle];
     [[_devicesView devicesCollectionView] reloadData];
     [self changeAnimation];
@@ -961,10 +1047,10 @@ int animationFlag;
         shouldAccept = YES;
     }
     
-    if (receiver == _userInfo._client) {
-        [_userInfo._client acceptFile:theFile accept:shouldAccept fromUser:theUser];
+    if (receiver == _client) {
+        [_client acceptFile:theFile accept:shouldAccept fromUser:theUser];
     } else {
-        [_userInfo._server acceptFile:theFile accept:shouldAccept fromUser:theUser];
+        [_server acceptFile:theFile accept:shouldAccept fromUser:theUser];
     }
 
     [_alertToFileMapTable removeObjectForKey:alertView];
@@ -1047,7 +1133,7 @@ int animationFlag;
         self.isFiltered = true;
         self.filteredUserData = [[NSMutableArray alloc] init];
         
-        for (QTRUser *theUser in _userInfo._connectedServers)
+        for (QTRUser *theUser in _connectedServers)
         {
             //case insensative search - way cool
             if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
@@ -1056,7 +1142,7 @@ int animationFlag;
             }
         }
         
-        for (QTRUser *theUser in _userInfo._connectedClients)
+        for (QTRUser *theUser in _connectedClients)
         {
             if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
             {

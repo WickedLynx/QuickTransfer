@@ -34,6 +34,8 @@
 		07D4A2F41C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2F31C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m */; };
 		07D5DB221C0D69F0005C2EC2 /* Gallery_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D5DB211C0D69F0005C2EC2 /* Gallery_placeholder.png */; };
 		07D5DB661C0D70CE005C2EC2 /* Gallery_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D5DB211C0D69F0005C2EC2 /* Gallery_placeholder.png */; };
+		07D944971C16A30B000015FE /* QTRTempControllerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D944961C16A30B000015FE /* QTRTempControllerViewController.m */; };
+		07D9449A1C16A3E8000015FE /* QTRTempTransView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D944991C16A3E8000015FE /* QTRTempTransView.m */; };
 		07E7422E1C0717490084388C /* QTRShowGalleryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E7422D1C0717490084388C /* QTRShowGalleryViewController.m */; };
 		07E742311C07390B0084388C /* QTRGalleryImagesView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E742301C07390B0084388C /* QTRGalleryImagesView.m */; };
 		07E742341C073BE80084388C /* QTRGalleryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E742331C073BE80084388C /* QTRGalleryCollectionViewCell.m */; };
@@ -199,6 +201,10 @@
 		07D4A2F21C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRAlertControllerCollectionViewCell.h; sourceTree = "<group>"; };
 		07D4A2F31C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRAlertControllerCollectionViewCell.m; sourceTree = "<group>"; };
 		07D5DB211C0D69F0005C2EC2 /* Gallery_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Gallery_placeholder.png; sourceTree = "<group>"; };
+		07D944951C16A30B000015FE /* QTRTempControllerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTempControllerViewController.h; sourceTree = "<group>"; };
+		07D944961C16A30B000015FE /* QTRTempControllerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTempControllerViewController.m; sourceTree = "<group>"; };
+		07D944981C16A3E8000015FE /* QTRTempTransView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTempTransView.h; sourceTree = "<group>"; };
+		07D944991C16A3E8000015FE /* QTRTempTransView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTempTransView.m; sourceTree = "<group>"; };
 		07E7422C1C0717490084388C /* QTRShowGalleryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRShowGalleryViewController.h; sourceTree = "<group>"; };
 		07E7422D1C0717490084388C /* QTRShowGalleryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRShowGalleryViewController.m; sourceTree = "<group>"; };
 		07E7422F1C07390B0084388C /* QTRGalleryImagesView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRGalleryImagesView.h; sourceTree = "<group>"; };
@@ -481,6 +487,8 @@
 				07E7422D1C0717490084388C /* QTRShowGalleryViewController.m */,
 				07BB98221C10491100AF7F7C /* QTRRecentLogsViewController.h */,
 				07BB98231C10491100AF7F7C /* QTRRecentLogsViewController.m */,
+				07D944951C16A30B000015FE /* QTRTempControllerViewController.h */,
+				07D944961C16A30B000015FE /* QTRTempControllerViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -504,6 +512,8 @@
 			children = (
 				FA283F3818B5BD9F003D4FB6 /* QTRConnectedDevicesView.h */,
 				FA283F3918B5BD9F003D4FB6 /* QTRConnectedDevicesView.m */,
+				07D944981C16A3E8000015FE /* QTRTempTransView.h */,
+				07D944991C16A3E8000015FE /* QTRTempTransView.m */,
 				07E7422F1C07390B0084388C /* QTRGalleryImagesView.h */,
 				07E742301C07390B0084388C /* QTRGalleryImagesView.m */,
 				FAAC781A18EE884C0006B698 /* QTRTransfersTableCell.h */,
@@ -1016,6 +1026,7 @@
 				07E742311C07390B0084388C /* QTRGalleryImagesView.m in Sources */,
 				FA283F2418B49582003D4FB6 /* QTRBonjourClient.m in Sources */,
 				FA283F2518B49582003D4FB6 /* QTRMessage.m in Sources */,
+				07D9449A1C16A3E8000015FE /* QTRTempTransView.m in Sources */,
 				FA12BB0418BF06000030911F /* QTRTransfer.m in Sources */,
 				FAAC781C18EE884C0006B698 /* QTRTransfersTableCell.m in Sources */,
 				FADEB05818F53177002F1C00 /* QTRHelper.m in Sources */,
@@ -1027,6 +1038,7 @@
 				FA283F2018B49551003D4FB6 /* DTBonjourDataConnection.m in Sources */,
 				07EE54691C047B550092C913 /* QTRHomeCollectionViewCell.m in Sources */,
 				FA283F2C18B49BA8003D4FB6 /* QTRFile.m in Sources */,
+				07D944971C16A30B000015FE /* QTRTempControllerViewController.m in Sources */,
 				FADEB05B18F5577E002F1C00 /* QTRRootViewController.m in Sources */,
 				FA283F2118B49551003D4FB6 /* DTBonjourServer.m in Sources */,
 				07D4A2E81C0848F0006F93E6 /* QTRRightBarButtonView.m in Sources */,

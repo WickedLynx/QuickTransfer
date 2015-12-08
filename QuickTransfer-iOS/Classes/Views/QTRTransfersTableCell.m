@@ -84,12 +84,12 @@
     return _fileStateLabel;
 }
 
-//- (CGFloat)requiredHeightInTableView {
-//    CGFloat requiredHeight = 0.0f;
-//
-//    requiredHeight = _footerLabel.frame.origin.y + (1.5 * _footerLabel.frame.size.height);
-//    
-//    return requiredHeight;
-//}
+- (CGFloat)requiredHeightInTableView {
+    CGFloat requiredHeight = 0.0f;
+
+    requiredHeight = 55.0f;
+    
+    return requiredHeight;
+}
 
 @end

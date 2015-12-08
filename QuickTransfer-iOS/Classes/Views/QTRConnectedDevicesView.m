@@ -64,7 +64,7 @@
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[aCollectionView]|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[searchBar]|" options:0 metrics:0 views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-64-[searchBar]-0-[aCollectionView]-5-[button]-5-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-64-[searchBar]-0-[aCollectionView]-5-[button(==44)]-5-|" options:0 metrics:0 views:views]];
             
         
     }
