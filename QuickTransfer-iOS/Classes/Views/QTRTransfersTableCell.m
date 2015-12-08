@@ -38,7 +38,10 @@
             };
 
             _titleLabel = addLabel(CGRectMake(40.00f, 10.00f, 150.00f, 20.00f), [UIFont systemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            [_titleLabel setTextColor:[UIColor whiteColor]];
+            
             _subtitleLabel = addLabel(CGRectMake(40.00f, 25.00f, 150.0f, 20.00f), [UIFont systemFontOfSize:10.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            [_subtitleLabel setTextColor:[UIColor lightGrayColor]];
 
 //            UIProgressView *aProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
 //            [aProgressView setFrame:CGRectMake(85.0f, 55.0f, 190.0f, 10.0f)];
@@ -46,8 +49,10 @@
 //            _progressView = aProgressView;
 
             _fileSizeLabel = addLabel(CGRectMake(190.00f, 10.00f, 100.0f, 20.00f), [UIFont systemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            [_fileSizeLabel setTextColor:[UIColor whiteColor]];
 
             _fileStateLabel = addLabel(CGRectMake(190.00f, 25.00f, 100.0f, 20.00f), [UIFont systemFontOfSize:10.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            [_fileStateLabel setTextColor:[UIColor lightGrayColor]];
             
             _fileSizeLabel.textAlignment = NSTextAlignmentRight;
             _fileStateLabel.textAlignment = NSTextAlignmentRight;

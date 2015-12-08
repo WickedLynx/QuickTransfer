@@ -136,7 +136,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Cell %lu Selected",indexPath.row);
+    NSLog(@"Cell %ld Selected",(long)indexPath.row);
     QTRAlertControllerCollectionViewCell *cell = (QTRAlertControllerCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [self.delegate QTRActionSheetGalleryView:self didCellSelected:YES withCollectionCell:cell];
 }

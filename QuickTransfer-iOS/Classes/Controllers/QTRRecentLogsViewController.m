@@ -102,6 +102,10 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithTitle:@"Clear All" style:UIBarButtonItemStylePlain target:self action:@selector(rightBarButtonAction)];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
+    [[_devicesView devicesTableView] setSeparatorColor:[UIColor colorWithRed:66.f/255.f green:66.f/255.f blue:66.f/255.f alpha:1.00f]];
+    [[_devicesView devicesTableView] setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
+    [[_devicesView devicesTableView] setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
+    
     
 }
 
@@ -123,9 +127,54 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
 
 - (void)rightBarButtonAction {
     
-    
-    NSLog(@"Its right");
+        NSLog(@"Clear Transfers");
+        
+        //[[NSFileManager defaultManager] removeItemAtPath:[theTransfer.fileURL path] error:nil];
+        
+        [_transfersStore removeAllTransfers];
+        
+        [[_devicesView devicesTableView] reloadData];
 }
+#pragma mark - Convert Bytes to string
+- (NSString *)readableValueWithBytes:(id)bytes{
+    
+    NSString *readable;
+    
+    if (([bytes longLongValue] < 1024)){
+        
+        readable = [NSString stringWithFormat:@"1 KB"];
+    }
+    
+    if (([bytes longLongValue]/1024)>=1){
+        
+        readable = [NSString stringWithFormat:@"%lld KB", ([bytes longLongValue]/1024)];
+    }
+    
+    if (([bytes longLongValue]/1024/1024)>=1){
+        
+        readable = [NSString stringWithFormat:@"%lld MB", ([bytes longLongValue]/1024/1024)];
+    }
+    
+    if (([bytes longLongValue]/1024/1024/1024)>=1){
+        
+        readable = [NSString stringWithFormat:@"%lld GB", ([bytes longLongValue]/1024/1024/1024)];
+        
+    }
+    
+    if (([bytes longLongValue]/1024/1024/1024/1024)>=1){
+        
+        readable = [NSString stringWithFormat:@"%lld TB", ([bytes longLongValue]/1024/1024/1024/1024)];
+    }
+    
+    if (([bytes longLongValue]/1024/1024/1024/1024/1024)>=1){
+        
+        readable = [NSString stringWithFormat:@"%lld PB", ([bytes longLongValue]/1024/1024/1024/1024/1024)];
+    }
+    
+    
+    return readable;
+}
+
 
 #pragma mark - Cleanup
 
@@ -168,10 +217,20 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
 //        [[cell progressView] setProgressTintColor:[UIColor colorWithRed:0.36f green:0.81f blue:1.00f alpha:1.00f]];
         
     }
+    
+    [cell setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
+
     QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:[indexPath row]];
     [[cell titleLabel] setText:[theTransfer.fileURL.absoluteString lastPathComponent]];
     [[cell subtitleLabel] setText:theTransfer.user.name];
-    [[cell fileSizeLabel] setText:[NSString stringWithFormat:@"%lld",theTransfer.fileSize]];
+    
+   
+    NSNumber *recentFileSize = [NSNumber numberWithLongLong:theTransfer.fileSize];
+
+    
+    NSString *fileSizeString;
+    fileSizeString = [self readableValueWithBytes:recentFileSize];
+    [[cell fileSizeLabel] setText:fileSizeString];
     
     
     //    NSString *footerLabelText = [NSString stringWithFormat:@"%@, %@", [_dateFormatter stringFromDate:theTransfer.timestamp], [_byteCountFormatter stringFromByteCount:theTransfer.fileSize]];
