@@ -23,6 +23,11 @@
         _connectedDeviceImageLocal.layer.cornerRadius = 35.0f;
         [_connectedDeviceImageLocal setBackgroundColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
         
+        UIImageView *connectedDeviceImageIcon = [[UIImageView alloc]init];
+        connectedDeviceImageIcon.frame = CGRectMake(25.0f, 10.0f, 50.0f, 50.0f);
+        [connectedDeviceImageIcon setContentMode:UIViewContentModeScaleAspectFit];
+    
+
         
         UILabel *_connectedDeviceNameLocal = [[UILabel alloc]initWithFrame:CGRectMake(10.0f, 65.0f, 80.0f, 40.0f)];
         [_connectedDeviceNameLocal setFont:[UIFont systemFontOfSize:12.0f]];
@@ -32,9 +37,11 @@
         
         [self.contentView addSubview:_connectedDeviceImageLocal];
         [self.contentView addSubview:_connectedDeviceNameLocal];
+        [self.contentView addSubview:connectedDeviceImageIcon];
         
         self.connectedDeviceImage = _connectedDeviceImageLocal;
         self.connectedDeviceName = _connectedDeviceNameLocal;
+        self.connectedDeviceImageIcon = connectedDeviceImageIcon;
         
     }
     return self;
@@ -52,53 +59,7 @@
 
 -(void)setIconImage:(NSString *)imagePlatform {
     
-    
-//    NSLog(@"PlatForm Out: %@",imagePlatform);
-//    
-    UIImageView *iconImageView;
-    
- 
-    
-    
-    
-    if ([imagePlatform isEqualToString:@"Android"]) {
-        iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"android_phone"]];
-
-        
-    }
-    
-    if ([imagePlatform isEqualToString:@"iOS"]) {
-        iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"apple_phone"]];
-
-        
-    }
-    
-    if ([imagePlatform isEqualToString:@"Linux"]) {
-        iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"linux_desktop"]];
-
-        
-    }
-    
-    if ([imagePlatform isEqualToString:@"Mac"]) {
-        iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"apple_laptop"]];
-
-        
-    }
-    
-    if ([imagePlatform isEqualToString:@"Windows"]) {
-        iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"windows_desktop"]];
-
-        
-    }
-    
-    
-    
-    
-    
-    iconImageView.center = CGPointMake(34.5f, 32.5f);
-    
-    [self.connectedDeviceImage addSubview:iconImageView];
-    
+    _connectedDeviceImageIcon.image = [UIImage imageNamed:imagePlatform];
     
     
 }

@@ -836,17 +836,17 @@ int animationFlag;
     
     if (self.isFiltered) {
         theUser = [self.filteredUserData objectAtIndex:indexPath.row];
-        [cell.connectedDeviceName setText:[theUser name]];
-        
-        [cell setIconImage:theUser.platform];
-
-    }
+        }
     else {
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
-        [cell.connectedDeviceName setText:[theUser name]];
+        }
     
-        [cell setIconImage:theUser.platform];
-    }
+    [cell.connectedDeviceName setText:[theUser name]];
+    
+    [cell setIconImage:theUser.platform];
+    
+    [cell setIconImage:theUser.platform];
+
 
     NSLog(@"Reloaded.. %@",theUser.name);
     NSLog(@"user: %@   Platform %@", theUser.name, theUser.platform);
@@ -859,6 +859,8 @@ int animationFlag;
         }
         
     }
+    
+    [cell setIconImage:theUser.platform];
     
 
 //    _animator = [[UIDynamicAnimator alloc] initWithReferenceView:[_devicesView devicesCollectionView ]];
@@ -929,6 +931,9 @@ int animationFlag;
     } else {
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
     }
+    
+    
+    
     
     //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
     [_selectedRecivers setObject:theUser forKey:theUser.identifier];
