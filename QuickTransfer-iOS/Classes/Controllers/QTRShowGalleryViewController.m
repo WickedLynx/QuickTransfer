@@ -10,6 +10,8 @@
 #import "QTRGalleryCollectionViewCell.h"
 #import "QTRRightBarButtonView.h"
 #import "QTRImagesInfoData.h"
+#import "QTRRecentLogsViewController.h"
+
 #import <AssetsLibrary/AssetsLibrary.h>
 
 
@@ -146,7 +148,6 @@ int totalImages;
     self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     
     self.requestOptions.synchronous = true;
-    self.requestOptions.synchronous = true;
     
     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
     PHImageManager *manager = [PHImageManager defaultManager];
@@ -187,6 +188,9 @@ int totalImages;
 -(void)logsBarButton {
     
     NSLog(@"Show Logs..");
+    QTRRecentLogsViewController *recentLogs = [[QTRRecentLogsViewController alloc]init];
+    [self.navigationController pushViewController:recentLogs animated:YES];
+
     
 }
 
@@ -336,7 +340,7 @@ int totalImages;
         _selectedUser = nil;
     }
     
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    //[self.navigationController popToRootViewControllerAnimated:YES];
    
 }
 

@@ -263,7 +263,6 @@ int animationFlag;
     [refreshControl beginRefreshing];
     [_devicesView loadDeviceView].frame = self.view.frame;
     [_devicesView searchBar].delegate = self;
-    [self refresh];
 
 }
 
@@ -301,9 +300,9 @@ int animationFlag;
 }
 
 
-- (void)touchRefresh:(UIBarButtonItem *)barButton {
-    [self refresh];
-}
+//- (void)touchRefresh:(UIBarButtonItem *)barButton {
+//    [self refresh];
+//}
 
 -(void) userProfile {
 
@@ -833,6 +832,8 @@ int animationFlag;
     
     QTRUser *theUser;
     
+    
+    
     if (self.isFiltered) {
         theUser = [self.filteredUserData objectAtIndex:indexPath.row];
         [cell.connectedDeviceName setText:[theUser name]];
@@ -848,6 +849,7 @@ int animationFlag;
     }
 
     NSLog(@"Reloaded.. %@",theUser.name);
+    NSLog(@"user: %@   Platform %@", theUser.name, theUser.platform);
     
     if ([_selectedRecivers count] > 0) {
         

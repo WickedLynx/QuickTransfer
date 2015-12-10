@@ -52,33 +52,47 @@
 
 -(void)setIconImage:(NSString *)imagePlatform {
     
-    NSString *iconImageName;
+    
+//    NSLog(@"PlatForm Out: %@",imagePlatform);
+//    
     UIImageView *iconImageView;
     
+ 
+    
+    
+    
     if ([imagePlatform isEqualToString:@"Android"]) {
-        iconImageName = @"android_tab";
+        iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"android_phone"]];
+
         
-    } else if ([imagePlatform isEqualToString:@"iOS"]) {
-        iconImageName = @"apple_iphone";
-        
-    } else if ([imagePlatform isEqualToString:@"Linux"]) {
-        iconImageName = @"apple_desktop";
-        
-    } else if ([imagePlatform isEqualToString:@"Mac"]) {
-        iconImageName = @"apple_laptop";
-        
-    } else if ([imagePlatform isEqualToString:@"Windows"]) {
-        iconImageName = @"windows_desktop";
-        
-    }else {
-        iconImageName = @"apple_phone";
     }
     
-    iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:iconImageName]];
-    
-    if (!iconImageView.image) {
+    if ([imagePlatform isEqualToString:@"iOS"]) {
         iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"apple_phone"]];
+
+        
     }
+    
+    if ([imagePlatform isEqualToString:@"Linux"]) {
+        iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"linux_desktop"]];
+
+        
+    }
+    
+    if ([imagePlatform isEqualToString:@"Mac"]) {
+        iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"apple_laptop"]];
+
+        
+    }
+    
+    if ([imagePlatform isEqualToString:@"Windows"]) {
+        iconImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"windows_desktop"]];
+
+        
+    }
+    
+    
+    
     
     
     iconImageView.center = CGPointMake(34.5f, 32.5f);

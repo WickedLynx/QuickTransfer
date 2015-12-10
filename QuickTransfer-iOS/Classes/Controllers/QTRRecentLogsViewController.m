@@ -225,12 +225,12 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
     [[cell subtitleLabel] setText:theTransfer.user.name];
     
    
-    NSNumber *recentFileSize = [NSNumber numberWithLongLong:theTransfer.fileSize];
-
-    
-    NSString *fileSizeString;
-    fileSizeString = [self readableValueWithBytes:recentFileSize];
-    [[cell fileSizeLabel] setText:fileSizeString];
+//    NSNumber *recentFileSize = [NSNumber numberWithLongLong:theTransfer.fileSize];
+//
+//    
+//    NSString *fileSizeString;
+//    fileSizeString = [self readableValueWithBytes:recentFileSize];
+    [[cell fileSizeLabel] setText:[NSString stringWithFormat:@"%@",[_byteCountFormatter stringFromByteCount:theTransfer.fileSize]]];
     
     
     //    NSString *footerLabelText = [NSString stringWithFormat:@"%@, %@", [_dateFormatter stringFromDate:theTransfer.timestamp], [_byteCountFormatter stringFromByteCount:theTransfer.fileSize]];
@@ -241,7 +241,7 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
     
     switch (theTransfer.state) {
         case QTRTransferStateCompleted:
-            [[cell fileStateLabel] setText:@"Completed"];
+            [[cell fileStateLabel] setText:[NSString stringWithFormat:@"%@",[_dateFormatter stringFromDate:theTransfer.timestamp]]];
             break;
             
         case QTRTransferStateInProgress:
