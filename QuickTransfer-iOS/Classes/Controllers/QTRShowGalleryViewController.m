@@ -150,12 +150,17 @@ int totalImages;
     
     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
     PHImageManager *manager = [PHImageManager defaultManager];
-    images = [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
-    assets = [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
+    images = [NSMutableArray arrayWithCapacity:10];
+    assets = [NSMutableArray arrayWithCapacity:10];
     
     __block QTRImagesInfoData *imageInfoData;
+    __block int i;
     
-    for (PHAsset *asset in assetsFetchResult) {
+    //for (PHAsset *asset in assetsFetchResult) {
+        
+        for(i = 0; i < 10 ; i++) {
+            
+            PHAsset *asset = [assetsFetchResult objectAtIndex:i];
         imageInfoData = [[QTRImagesInfoData alloc]init];
         
         [manager requestImageForAsset:asset

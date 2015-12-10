@@ -175,10 +175,13 @@ static NSString *cellIdentifier = @"cellIdentifier";
     images= [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
     
     __block UIImage *ima;
+    __block int i;
     
-    for (PHAsset *asset in assetsFetchResult) {
+    //for (PHAsset *asset in assetsFetchResult) {
         // Do something with the asset
+    for(i = 0; i < 10 ; i++) {
         
+        PHAsset *asset = [assetsFetchResult objectAtIndex:i];
         [manager requestImageForAsset:asset
                            targetSize:PHImageManagerMaximumSize
                           contentMode:PHImageContentModeDefault
