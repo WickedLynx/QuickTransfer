@@ -231,7 +231,7 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
 //    NSString *fileSizeString;
 //    fileSizeString = [self readableValueWithBytes:recentFileSize];
     [[cell fileSizeLabel] setText:[NSString stringWithFormat:@"%@",[_byteCountFormatter stringFromByteCount:theTransfer.fileSize]]];
-    
+    [[cell transferStateIconView] setImage:[UIImage imageNamed:@"restart"]];
     
     //    NSString *footerLabelText = [NSString stringWithFormat:@"%@, %@", [_dateFormatter stringFromDate:theTransfer.timestamp], [_byteCountFormatter stringFromByteCount:theTransfer.fileSize]];
     //    [[cell footerLabel] setText:footerLabelText];

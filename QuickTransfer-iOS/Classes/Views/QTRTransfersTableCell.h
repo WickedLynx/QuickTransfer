@@ -10,11 +10,14 @@
 
 @interface QTRTransfersTableCell : UITableViewCell
 
+@property (nonatomic, retain) UIImageView *transferStateIconView;
+
 - (UILabel *)titleLabel;
 - (UILabel *)subtitleLabel;
 - (UILabel *)fileSizeLabel;
 - (UILabel *)fileStateLabel;
 - (CGFloat)requiredHeightInTableView;
 - (UIProgressView *)progressView;
+
 
 @end

@@ -29,7 +29,7 @@
     
 
         
-        UILabel *_connectedDeviceNameLocal = [[UILabel alloc]initWithFrame:CGRectMake(10.0f, 65.0f, 80.0f, 40.0f)];
+        UILabel *_connectedDeviceNameLocal = [[UILabel alloc]initWithFrame:CGRectMake(5.0f, 65.0f, 90.0f, 40.0f)];
         [_connectedDeviceNameLocal setFont:[UIFont systemFontOfSize:12.0f]];
         _connectedDeviceNameLocal.numberOfLines = 0;
         _connectedDeviceNameLocal.textAlignment = NSTextAlignmentCenter;
