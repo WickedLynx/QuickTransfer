@@ -170,6 +170,16 @@ int animationFlag;
     
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
+    [self animatePreviewLabel:fetchingDevicesLabel];
+    [fetchingDevicesLabel setText:@"Fetching Devices"];
+    [self updateTitle];
+
+
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -190,10 +200,6 @@ int animationFlag;
     [fetchingDevicesLabel setTextColor:[UIColor whiteColor]];
     [self.view addSubview:fetchingDevicesLabel];
     
-    [self animatePreviewLabel:fetchingDevicesLabel];
-    [fetchingDevicesLabel setText:@"Fetching Devices"];
-
-
     
     
     
@@ -235,6 +241,7 @@ int animationFlag;
     [self changeAnimation];
     
     refreshControl = [[UIRefreshControl alloc]init];
+    [refreshControl setHidden:YES];
     [[_devicesView devicesCollectionView] addSubview:refreshControl];
     [refreshControl addTarget:self action:@selector(refreshConnectedDevices) forControlEvents:UIControlEventValueChanged];
 
@@ -259,9 +266,7 @@ int animationFlag;
 
     [self.navigationController.navigationBar setTitleTextAttributes:
      @{NSForegroundColorAttributeName:[UIColor whiteColor]}];
-    //[[_devicesView loadDeviceView] startAnimating];
-    [refreshControl beginRefreshing];
-    [_devicesView loadDeviceView].frame = self.view.frame;
+   
     [_devicesView searchBar].delegate = self;
 
 }
@@ -300,9 +305,9 @@ int animationFlag;
 }
 
 
-//- (void)touchRefresh:(UIBarButtonItem *)barButton {
-//    [self refresh];
-//}
+- (void)touchRefresh:(UIBarButtonItem *)barButton {
+    [self refresh];
+}
 
 -(void) userProfile {
 
@@ -312,18 +317,6 @@ int animationFlag;
 -(void)nextButtonClicked{
 
     NSLog(@"Next Button Clicked..");
-    
-//    UIView *popupView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 250, 250)];
-//    [popupView setBackgroundColor:[UIColor lightGrayColor]];
-//    popupView.alpha = 0.05;
-    
-//    UIView *bgView = [[UIView alloc] initWithFrame:popupView.frame];
-//    UIColor * bgColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"blue_bg.png"]];
-//    bgView.backgroundColor = bgColor;
-//    bgView.alpha = 0.5;
-//    [popupView addSubview:bgView];
-    
-//    [self.view addSubview:popupView];
     
     cac = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     [self.view addSubview:cac];
@@ -353,100 +346,8 @@ int animationFlag;
     [cac.iCloudButton addTarget: self action: @selector(ActioniCloudButton) forControlEvents: UIControlEventTouchUpInside];
     [cac.cameraRollButton addTarget: self action: @selector(ActionCameraRoll) forControlEvents: UIControlEventTouchUpInside];
     [cac.takePhotoButton addTarget: self action: @selector(ActionTakePhoto) forControlEvents: UIControlEventTouchUpInside];
-
-    
-    
-    //[self.navigationController presentViewController:cac animated:YES completion:nil];
-    
-//    if ([_userInfo._selectedRecivers count] > 0) {
-//     
-//            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Select Source" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-//            alertController.modalPresentationStyle = UIModalPresentationPopover;
-//            [alertController sizeForChildContentContainer:self withParentContainerSize:CGSizeMake(200, 200)];
-//
-//            [customView setUserInteractionEnabled:YES];
-//            customView.delegate = self;
-//            customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
-//        
-//        
-//            customView = [[QTRActionSheetGalleryView alloc] init];
-//    
-//            [customView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
-//    
-//            [customView.actionControllerCollectionView setDataSource:customView];
-//            [customView.actionControllerCollectionView setDelegate:customView];
-//            customView.actionControllerCollectionView.allowsMultipleSelection = YES;
-//    
-//            [alertController.view addSubview:customView];
-//    
-//            UIAlertAction *takePhotoAction2 = [UIAlertAction actionWithTitle:@"Show Gallery" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {   }];
-//    
-//            UIAlertAction *takePhotoAction1 = [UIAlertAction actionWithTitle:@"Take a photo" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) { [self takePhoto]; }];
-//    
-//            UIAlertAction *cameraAction = [UIAlertAction actionWithTitle:@"Camera Roll" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-//                
-//                [customView removeFromSuperview];
-//                [alertController dismissViewControllerAnimated:YES completion:nil];
-//    
-//                QTRShowGalleryViewController *showGallery = [[QTRShowGalleryViewController alloc] init];
-//                showGallery.reciversInfo = _userInfo;
-//                [self.navigationController pushViewController:showGallery animated:YES];
-//        
-//
-//            }];
-//    
-//            UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-//                NSLog(@"%@", alertController.view.subviews);
-//            }];
-//    
-//            UIAlertAction *iCloudeAction = [UIAlertAction actionWithTitle:@"iCloud" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {}];
-//            [takePhotoAction2 setEnabled:NO];
-//    
-//            [alertController addAction:takePhotoAction2];
-//            [alertController addAction:takePhotoAction1];
-//            [alertController addAction:cameraAction];
-//            [alertController addAction:cancelAction];
-//            [alertController addAction:iCloudeAction];
-//        
-//   
-//            [self presentViewController:alertController animated:YES completion:^{}];
-//        
-//
-//        }
-//        else {
-//        
-//            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Message" message:@"First Select Atleast One Reciver" preferredStyle:UIAlertControllerStyleAlert];
-//            
-//            UIAlertAction* ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-//            [alertController addAction:ok];
-//            
-//            [self presentViewController:alertController animated:YES completion:nil];
-//        }
-//    
-    
 }
 
-//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-//{
-//    //You can retrieve the actual UIImage
-//    image = [info valueForKey:UIImagePickerControllerOriginalImage];
-//    //Or you can get the image url from AssetsLibrary
-//    path = [info valueForKey:UIImagePickerControllerReferenceURL];
-//    
-//    NSLog(@"image:%@  path:%@",image.description, path.description);
-//    
-//    [picker dismissViewControllerAnimated:YES completion:^{
-//    }];
-//}
-//
-//- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-//
-//
-// NSLog(@"image:%@  path:%@",image.description, path.description);
-//    
-//    
-//    
-//}
 
 -(void) ActionViewCancelButton {
 

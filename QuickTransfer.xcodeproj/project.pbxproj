@@ -20,6 +20,9 @@
 		072BE74E1C0D8BB800798AC1 /* defaultIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */; };
 		072BE74F1C0D8BBD00798AC1 /* linuxIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7451C0D808500798AC1 /* linuxIcon.xcassets */; };
 		0745DA561C15688500579DCC /* QTRCustomAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0745DA551C15688500579DCC /* QTRCustomAlertView.m */; };
+		07A79E0C1C1A8C0A00405F0D /* pauseIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */; };
+		07A79E0D1C1A8C2E00405F0D /* LogsIconRetry.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07BB98251C105F5C00AF7F7C /* LogsIconRetry.xcassets */; };
+		07A79E0E1C1A8C3400405F0D /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07E742371C0751410084388C /* Launch Screen.storyboard */; };
 		07B308371C0ECD2800A889BF /* selected_image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B308361C0ECD2800A889BF /* selected_image.xcassets */; };
 		07B308381C0ECD5700A889BF /* selected_image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B308361C0ECD2800A889BF /* selected_image.xcassets */; };
 		07B3083C1C0EDC6300A889BF /* Button_back.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B3083B1C0EDC6300A889BF /* Button_back.xcassets */; };
@@ -184,6 +187,7 @@
 		072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = defaultIcon.xcassets; sourceTree = "<group>"; };
 		0745DA541C15688500579DCC /* QTRCustomAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRCustomAlertView.h; sourceTree = "<group>"; };
 		0745DA551C15688500579DCC /* QTRCustomAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRCustomAlertView.m; sourceTree = "<group>"; };
+		07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = pauseIcon.xcassets; sourceTree = "<group>"; };
 		07B308361C0ECD2800A889BF /* selected_image.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = selected_image.xcassets; sourceTree = "<group>"; };
 		07B3083B1C0EDC6300A889BF /* Button_back.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Button_back.xcassets; sourceTree = "<group>"; };
 		07BB981B1C100B9500AF7F7C /* QTRImagesInfoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QTRImagesInfoData.h; path = Controllers/QTRImagesInfoData.h; sourceTree = "<group>"; };
@@ -398,6 +402,7 @@
 				07B308361C0ECD2800A889BF /* selected_image.xcassets */,
 				07B3083B1C0EDC6300A889BF /* Button_back.xcassets */,
 				07BB98251C105F5C00AF7F7C /* LogsIconRetry.xcassets */,
+				07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */,
 			);
 			name = IconImages;
 			sourceTree = "<group>";
@@ -953,7 +958,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07A79E0E1C1A8C3400405F0D /* Launch Screen.storyboard in Resources */,
+				07A79E0D1C1A8C2E00405F0D /* LogsIconRetry.xcassets in Resources */,
 				072BE74D1C0D8AE700798AC1 /* defaultIcon.xcassets in Resources */,
+				07A79E0C1C1A8C0A00405F0D /* pauseIcon.xcassets in Resources */,
 				070281901C0CA05400125F35 /* iPhoneIcon.xcassets in Resources */,
 				FAD9FFE218B33CA70098DA76 /* InfoPlist.strings in Resources */,
 				072BE7401C0D803500798AC1 /* macIcon.xcassets in Resources */,

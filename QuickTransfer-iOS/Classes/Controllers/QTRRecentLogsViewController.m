@@ -238,7 +238,7 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
     switch (theTransfer.state) {
         case QTRTransferStateCompleted:
             [[cell fileStateLabel] setText:[NSString stringWithFormat:@"%@",[_dateFormatter stringFromDate:theTransfer.timestamp]]];
-            [[cell transferStateIconView] setImage:[UIImage imageNamed:@"restart"]];
+            [[cell transferStateIconView] setImage:[UIImage imageNamed:@"check"]];
             break;
             
         case QTRTransferStateInProgress:
@@ -248,7 +248,7 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
             
         case QTRTransferStateFailed:
             [[cell fileStateLabel] setText:@"Failed"];
-            [[cell transferStateIconView] setImage:[UIImage imageNamed:@"download"]];
+            [[cell transferStateIconView] setImage:[UIImage imageNamed:@"restart"]];
             break;
             
         default:
