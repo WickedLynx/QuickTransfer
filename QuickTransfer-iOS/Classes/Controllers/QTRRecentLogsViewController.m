@@ -230,26 +230,25 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
 //    
 //    NSString *fileSizeString;
 //    fileSizeString = [self readableValueWithBytes:recentFileSize];
+    
+    
     [[cell fileSizeLabel] setText:[NSString stringWithFormat:@"%@",[_byteCountFormatter stringFromByteCount:theTransfer.fileSize]]];
-    [[cell transferStateIconView] setImage:[UIImage imageNamed:@"restart"]];
     
-    //    NSString *footerLabelText = [NSString stringWithFormat:@"%@, %@", [_dateFormatter stringFromDate:theTransfer.timestamp], [_byteCountFormatter stringFromByteCount:theTransfer.fileSize]];
-    //    [[cell footerLabel] setText:footerLabelText];
-    
-    
-//    UIColor *footerLabelColor = nil;
     
     switch (theTransfer.state) {
         case QTRTransferStateCompleted:
             [[cell fileStateLabel] setText:[NSString stringWithFormat:@"%@",[_dateFormatter stringFromDate:theTransfer.timestamp]]];
+            [[cell transferStateIconView] setImage:[UIImage imageNamed:@"pause"]];
             break;
             
         case QTRTransferStateInProgress:
             [[cell fileStateLabel] setText:@"In Prgress"];
+            [[cell transferStateIconView] setImage:[UIImage imageNamed:@"pause"]];
             break;
             
         case QTRTransferStateFailed:
-            [[cell fileStateLabel] setText:@"Faield"];
+            [[cell fileStateLabel] setText:@"Failed"];
+            [[cell transferStateIconView] setImage:[UIImage imageNamed:@"pause"]];
             break;
             
         default:
