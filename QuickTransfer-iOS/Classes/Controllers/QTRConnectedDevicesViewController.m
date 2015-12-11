@@ -183,7 +183,8 @@ int animationFlag;
         NSLog(@"No iCloud access");
     }
     
-    //fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width - 110), 230, 220, 40)];
+
+    NSLog(@"%f   %f ",self.view.frame.size.width ,self.view.frame.size.height);
     
     fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 220, 40)];
     fetchingDevicesLabel.center = self.view.center;
@@ -737,7 +738,7 @@ int animationFlag;
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(100, 100);
+    return CGSizeMake(100.0f, 120.0f);
 }
 
 
