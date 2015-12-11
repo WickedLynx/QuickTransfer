@@ -6,6 +6,7 @@
 //  Copyright © 2015 Laughing Buddha Software. All rights reserved.
 //
 
+#import <PhotosUI/PhotosUI.h>
 #import <Foundation/Foundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
@@ -15,6 +16,6 @@
 @property (nonatomic, retain) NSDictionary *imageInfo;
 @property (nonatomic, retain) NSString *imageIdentifier;
 @property (nonatomic, retain) NSData *imageBinData;
-@property (nonatomic, retain) ALAsset *imageAsset;
+@property (nonatomic, retain) PHAsset *imageAsset;
 
 @end

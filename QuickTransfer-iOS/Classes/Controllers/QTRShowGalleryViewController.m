@@ -177,7 +177,7 @@ int totalImages;
                             
                             imageInfoData.finalImage = image;
                             imageInfoData.imageInfo = info;
-                            imageInfoData.imageAsset = (ALAsset *)asset;
+                            imageInfoData.imageAsset = asset;
                             
                         }];
         
@@ -315,60 +315,118 @@ int totalImages;
 
     
     NSLog(@"Cell deselected..");
+    
 }
 
 #pragma mark - Transfer Selected files to selected user
 
 - (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
     
-    NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
+    [self newOnesendDataToSelectedUser:sendingImage];
     
-    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-        
-        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
-        
-        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-        
-        uint8_t *imageBytes = malloc((long)[assetRepresentation size]);
-        [assetRepresentation getBytes:imageBytes fromOffset:0 length:(long)[assetRepresentation size] error:nil];
-        
-        NSData *imageData = [NSData dataWithBytes:imageBytes length:(long)[assetRepresentation size]];
-        [imageData writeToURL:localURL atomically:YES];
-        
-        NSLog(@"local: %@",localURL);
-        NSLog(@"Ref Url: %@",referenceURL);
-        
-        free(imageBytes);
-        NSArray *totalRecivers = [_selectedRecivers allValues];
-        _selectedUser = nil;
-        
-            for (QTRUser *currentUser in totalRecivers) {
-        
-                _selectedUser = currentUser;
-        
-                if ([_connectedClients containsObject:_selectedUser]) {
-                    [_server sendFileAtURL:localURL toUser:_selectedUser];
-        
-                } else if ([_connectedServers containsObject:_selectedUser]) {
-                    [_client sendFileAtURL:localURL toUser:_selectedUser];
-        
-                } else {
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-                    [alert show];
-                }
-                
-                _selectedUser = nil;
-            }
-        
-        
-    } failureBlock:^(NSError *error) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-        [alertView show];
-    }];
+    
+//    NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
+//    
+//    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
+//        
+//        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
+//        
+//        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
+//        
+//        uint8_t *imageBytes = malloc((long)[assetRepresentation size]);
+//        [assetRepresentation getBytes:imageBytes fromOffset:0 length:(long)[assetRepresentation size] error:nil];
+//        
+//        NSData *imageData = [NSData dataWithBytes:imageBytes length:(long)[assetRepresentation size]];
+//        
+//        
+//        [imageData writeToURL:localURL atomically:YES];
+//        
+//        NSLog(@"local: %@",localURL);
+//        NSLog(@"Ref Url: %@",referenceURL);
+//        
+//        free(imageBytes);
+//        NSArray *totalRecivers = [_selectedRecivers allValues];
+//        _selectedUser = nil;
+//        
+//            for (QTRUser *currentUser in totalRecivers) {
+//        
+//                _selectedUser = currentUser;
+//        
+//                if ([_connectedClients containsObject:_selectedUser]) {
+//                    [_server sendFileAtURL:localURL toUser:_selectedUser];
+//        
+//                } else if ([_connectedServers containsObject:_selectedUser]) {
+//                    [_client sendFileAtURL:localURL toUser:_selectedUser];
+//        
+//                } else {
+//                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+//                    [alert show];
+//                }
+//                
+//                _selectedUser = nil;
+//            }
+//        
+//        
+//    } failureBlock:^(NSError *error) {
+//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+//        [alertView show];
+//    }];
 
 
     
 }
+
+
+- (void)newOnesendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
+
+    self.requestOptions = [[PHImageRequestOptions alloc] init];
+    self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
+    self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    
+    self.requestOptions.synchronous = true;
+    
+     NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
+    
+   
+    
+
+    [[PHImageManager defaultManager] requestImageDataForAsset:sendingImage.imageAsset
+                                                      options:self.requestOptions
+                                                resultHandler:
+     ^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+         
+          NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
+         
+         [imageData writeToURL:localURL atomically:YES];
+         
+         NSArray *totalRecivers = [_selectedRecivers allValues];
+         _selectedUser = nil;
+         
+         for (QTRUser *currentUser in totalRecivers) {
+             
+             _selectedUser = currentUser;
+             
+             if ([_connectedClients containsObject:_selectedUser]) {
+                 [_server sendFileAtURL:localURL toUser:_selectedUser];
+                 
+             } else if ([_connectedServers containsObject:_selectedUser]) {
+                 [_client sendFileAtURL:localURL toUser:_selectedUser];
+                 
+             } else {
+                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+                 [alert show];
+             }
+             
+             _selectedUser = nil;
+         }
+
+         
+     }];
+
+
+}
+
+
 
 - (NSURL *)uniqueURLForFileWithName:(NSString *)fileName {
     NSFileManager *fileManager = [NSFileManager defaultManager];
