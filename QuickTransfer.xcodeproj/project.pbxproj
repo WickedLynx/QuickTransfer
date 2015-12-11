@@ -19,6 +19,7 @@
 		072BE74D1C0D8AE700798AC1 /* defaultIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */; };
 		072BE74E1C0D8BB800798AC1 /* defaultIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */; };
 		072BE74F1C0D8BBD00798AC1 /* linuxIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7451C0D808500798AC1 /* linuxIcon.xcassets */; };
+		0731C36B1C1B0A43003EFC61 /* IPhonesIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E121C1B046000405F0D /* IPhonesIcon.xcassets */; };
 		0745DA561C15688500579DCC /* QTRCustomAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0745DA551C15688500579DCC /* QTRCustomAlertView.m */; };
 		07A79E0C1C1A8C0A00405F0D /* pauseIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */; };
 		07A79E0D1C1A8C2E00405F0D /* LogsIconRetry.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07BB98251C105F5C00AF7F7C /* LogsIconRetry.xcassets */; };
@@ -397,6 +398,7 @@
 		072BE7501C0D8DB700798AC1 /* IconImages */ = {
 			isa = PBXGroup;
 			children = (
+				07A79E121C1B046000405F0D /* IPhonesIcon.xcassets */,
 				072BE7471C0D809700798AC1 /* windowsIcon.xcassets */,
 				072BE7451C0D808500798AC1 /* linuxIcon.xcassets */,
 				072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */,
@@ -684,7 +686,6 @@
 		FAD9FFCB18B33CA70098DA76 = {
 			isa = PBXGroup;
 			children = (
-				07A79E121C1B046000405F0D /* IPhonesIcon.xcassets */,
 				072BE7501C0D8DB700798AC1 /* IconImages */,
 				FAD9001018B33F010098DA76 /* ThirdParty */,
 				FAD9FFDD18B33CA70098DA76 /* QuickTransfer */,
@@ -927,6 +928,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0731C36B1C1B0A43003EFC61 /* IPhonesIcon.xcassets in Resources */,
 				07B3083D1C0EDC8E00A889BF /* Button_back.xcassets in Resources */,
 				07B308381C0ECD5700A889BF /* selected_image.xcassets in Resources */,
 				072BE74F1C0D8BBD00798AC1 /* linuxIcon.xcassets in Resources */,
