@@ -30,6 +30,11 @@ FOUNDATION_EXPORT long long const QTRMultipartTransferMaximumPartSize;
 - (instancetype)initWithFileURL:(NSURL *)fileURL user:(QTRUser *)user fileIdentifier:(NSString *)fileIdentifier;
 
 /*!
+ Initialize for a partial transfer
+ */
+- (instancetype)initWithPartiallyTransferredFile:(QTRFile *)file user:(QTRUser *)user;
+
+/*!
  Reads the next file part for the multipart transfer.
  
  This method is asynchronous and returns immediately. 
@@ -39,7 +44,13 @@ FOUNDATION_EXPORT long long const QTRMultipartTransferMaximumPartSize;
  @param dataReadCompletion The block to call when the part is read from disk.
                             The block is not called on the main thread.
  */
-- (void)readNextPartForTransmission:(void (^)(QTRFile *file, BOOL isLastPart))dataReadCompletion;
+- (void)readNextPartForTransmission:(void (^)(QTRFile *file, BOOL isLastPart, long long offsetInFile))dataReadCompletion;
+
+/*!
+ Check if the transfer can be resumed
+ This method checks if the file exists at the path, and if the offset is correct
+ */
++ (BOOL)canResumeReadingFile:(QTRFile *)file;
 
 /*!
  The name of the file of the transfer

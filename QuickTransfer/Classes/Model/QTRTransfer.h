@@ -59,6 +59,11 @@ typedef NS_ENUM(NSInteger, QTRTransferState) {
 @property (copy) NSURL *fileURL;
 
 /*!
+ * The identifier of the file
+ */
+@property (copy) NSString *fileIdentifier;
+
+/*!
  The total file size of the transfer in bytes
  */
 @property (nonatomic) long long fileSize;
@@ -82,6 +87,11 @@ typedef NS_ENUM(NSInteger, QTRTransferState) {
  The progress of the file part that is currently being sent
  */
 @property (nonatomic) float currentChunkProgress;
+
+/*!
+ * The number of bytes that were successfully sent
+ */
+@property (nonatomic) long long sentBytes;
 
 /*!
  The state of the transfer

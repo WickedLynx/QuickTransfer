@@ -36,6 +36,17 @@
         QTRTransfer *theTransfer = [[self.transfersStore transfers] objectAtIndex:clickedRow];
         if (theTransfer.progress == 1.0f) {
             [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[theTransfer.fileURL]];
+        } else if (theTransfer.state == QTRTransferStateFailed) {
+            BOOL canResume = NO;
+            if ([self.delegate respondsToSelector:@selector(transfersController:needsResumeTransfer:)]) {
+                if ([self.delegate transfersController:self needsResumeTransfer:theTransfer]) {
+                    canResume = YES;
+                }
+            }
+            if (!canResume) {
+                // TODO: Show alert
+                NSLog(@"Transfers controller: cannot resume");
+            }
         }
     }
 }

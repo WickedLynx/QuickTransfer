@@ -57,7 +57,22 @@ typedef NS_ENUM(NSInteger, QTRMessageType) {
      The message must contain a File object with its data. The file can be a single
      part or a multipart transfer.
      */
-    QTRMessageTypeFileTransfer
+    QTRMessageTypeFileTransfer,
+
+    /*!
+     The sender is asking the receiver if a file transfer should/can be resumed
+     */
+    QTRMessageTypeRequestResumeTransfer,
+
+    /*!
+     The sender confirmed that the file transer can be resumed
+     */
+    QTRMessageTypeAcceptResumeTransfer,
+
+    /*!
+     The sender rejected the request to resume the file transfer
+     */
+    QTRMessageTypeRejectResumeTransfer
 
 };
 

@@ -78,4 +78,8 @@
  */
 - (void)client:(QTRBonjourClient *)client didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user;
 
+- (void)client:(QTRBonjourClient *)client remoteUser:(QTRUser *)user didRejectResumeTransferForFile:(QTRFile *)file;
+
+- (void)client:(QTRBonjourClient *)client remoteUser:(QTRUser *)user didAcceptResumeTransferForFile:(QTRFile *)file;
+
 @end

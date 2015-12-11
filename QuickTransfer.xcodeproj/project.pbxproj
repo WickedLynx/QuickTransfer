@@ -49,6 +49,9 @@
 		FA12BB0318BF06000030911F /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
 		FA12BB0418BF06000030911F /* QTRTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0218BF06000030911F /* QTRTransfer.m */; };
 		FA12BB0718BF29320030911F /* QTRTransfersController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA12BB0618BF29320030911F /* QTRTransfersController.m */; };
+		FA2057331C0C1FE000598626 /* QTRNotificationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2057321C0C1FE000598626 /* QTRNotificationsController.m */; settings = {ASSET_TAGS = (); }; };
+		FA2057341C0C1FE000598626 /* QTRNotificationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2057321C0C1FE000598626 /* QTRNotificationsController.m */; settings = {ASSET_TAGS = (); }; };
+		FA2057351C0C1FE000598626 /* QTRNotificationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2057321C0C1FE000598626 /* QTRNotificationsController.m */; settings = {ASSET_TAGS = (); }; };
 		FA283EF418B494E5003D4FB6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF318B494E5003D4FB6 /* Foundation.framework */; };
 		FA283EF618B494E5003D4FB6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */; };
 		FA283EF818B494E5003D4FB6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF718B494E5003D4FB6 /* UIKit.framework */; };
@@ -225,6 +228,8 @@
 		FA12BB0518BF29320030911F /* QTRTransfersController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersController.h; sourceTree = "<group>"; };
 		FA12BB0618BF29320030911F /* QTRTransfersController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersController.m; sourceTree = "<group>"; };
 		FA12BB0818BF3D190030911F /* QTRBonjourTransferDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRBonjourTransferDelegate.h; sourceTree = "<group>"; };
+		FA2057311C0C1FE000598626 /* QTRNotificationsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRNotificationsController.h; sourceTree = "<group>"; };
+		FA2057321C0C1FE000598626 /* QTRNotificationsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRNotificationsController.m; sourceTree = "<group>"; };
 		FA283EF218B494E5003D4FB6 /* QuickTransfer-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickTransfer-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA283EF318B494E5003D4FB6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -570,6 +575,8 @@
 				FADEB05D18F56202002F1C00 /* QTRTransfersStore.h */,
 				FADEB05E18F56202002F1C00 /* QTRTransfersStore.m */,
 				FADEB06018F562DA002F1C00 /* QTRTransfersStoreDelegate.h */,
+				FA2057311C0C1FE000598626 /* QTRNotificationsController.h */,
+				FA2057321C0C1FE000598626 /* QTRNotificationsController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1085,6 +1092,7 @@
 				FA5911FD1C0583520057928C /* QTRAppDelegate.m in Sources */,
 				FA5911FE1C0583520057928C /* QTRDraggedItem.m in Sources */,
 				FA5911FF1C0583520057928C /* QTRFileZipper.m in Sources */,
+				FA2057351C0C1FE000598626 /* QTRNotificationsController.m in Sources */,
 				FA5912001C0583520057928C /* QTRHelper.m in Sources */,
 				FA5912011C0583520057928C /* QTRFile.m in Sources */,
 				FA5912021C0583520057928C /* QTRMultipartTransfer.m in Sources */,
@@ -1116,6 +1124,7 @@
 				FAD9FFEB18B33CA70098DA76 /* QTRAppDelegate.m in Sources */,
 				FA5911F01C057F0F0057928C /* QTRDraggedItem.m in Sources */,
 				FA5911E91C0570610057928C /* QTRFileZipper.m in Sources */,
+				FA2057331C0C1FE000598626 /* QTRNotificationsController.m in Sources */,
 				FADEB05718F53177002F1C00 /* QTRHelper.m in Sources */,
 				FA283F2A18B49BA8003D4FB6 /* QTRFile.m in Sources */,
 				FA6DA6B718C453E30097742B /* QTRMultipartTransfer.m in Sources */,
@@ -1138,6 +1147,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA2057341C0C1FE000598626 /* QTRNotificationsController.m in Sources */,
 				FAD9000218B33CA80098DA76 /* QuickTransferTests.m in Sources */,
 				FA5911F11C057F0F0057928C /* QTRDraggedItem.m in Sources */,
 				FA5911EA1C0570610057928C /* QTRFileZipper.m in Sources */,
@@ -1319,7 +1329,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
 				INFOPLIST_FILE = "QuickTransfer copy2-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
@@ -1334,7 +1344,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
 				INFOPLIST_FILE = "QuickTransfer copy2-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
@@ -1417,7 +1427,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
 				INFOPLIST_FILE = "QuickTransfer/QuickTransfer-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
@@ -1432,7 +1442,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
 				INFOPLIST_FILE = "QuickTransfer/QuickTransfer-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;

@@ -72,6 +72,11 @@
 @property (nonatomic) long long totalSize;
 
 /*!
+ The offset of the current part
+*/
+@property (nonatomic) long long offset;
+
+/*!
  The unique identifier of the file
  */
 @property (copy) NSString *identifier;

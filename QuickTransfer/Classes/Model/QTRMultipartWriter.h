@@ -24,6 +24,8 @@
  */
 - (instancetype)initWithFilePart:(QTRFile *)filePart sender:(QTRUser *)user saveURL:(NSURL *)url;
 
+- (instancetype)initWithResumedTransferForFile:(QTRFile *)file sender:(QTRUser *)user saveURL:(NSURL *)url;
+
 
 /*!
  Appends data passed in filePart to the file at saveURL of the receiver.

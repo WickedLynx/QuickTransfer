@@ -21,12 +21,4 @@
  */
 + (void)zipDirectoryAtURL:(NSURL *)directoryURL completion:(void (^)(NSURL *zippedURL, NSError *error))completion;
 
-/*!
- Unzips a file to a particular location
- 
- @param directoryURL The URL where the directory should be un-zipped
- @param completion The completion handler to be called after the zip operation is done. The handler is called on the main thread with the location of the unarchived directory (if successful) or a error (if the operation fails). Can be `nil`.
- */
-+ (void)unzipDirectoryAtURL:(NSURL *)directoryURL completion:(void (^)(NSURL *directoryURL, NSError *error))completion;
-
 @end

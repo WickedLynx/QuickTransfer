@@ -12,6 +12,8 @@
 
 #import "QTRTransfersStore.h"
 
+@protocol QTRTransfersControllerDelegate;
+
 /*!
  This class drives the transfers view which displays the progress of transfers
  */
@@ -28,5 +30,23 @@
  The transfers store of the receiver
  */
 @property (strong, nonatomic) QTRTransfersStore *transfersStore;
+
+
+/*!
+ The delegate of the receiver
+ */
+@property (weak, nonatomic) id <QTRTransfersControllerDelegate> delegate;
+
+@end
+
+
+@protocol QTRTransfersControllerDelegate <NSObject>
+
+@optional
+
+/*!
+ * The TransfersController calls this method when the user wishes to resume a transfer
+ */
+- (BOOL)transfersController:(QTRTransfersController *)controller needsResumeTransfer:(QTRTransfer *)transfer;
 
 @end

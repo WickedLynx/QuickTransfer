@@ -32,14 +32,17 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
         _dataChunksToTransfers = [NSMapTable strongToStrongObjectsMapTable];
 
-        _fileIdentifierToTransfers = [NSMutableDictionary new];
-
         NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:_archivedTransfersFilePath];
         if (array != nil) {
             _allTransfers = [array mutableCopy];
+            NSArray *fileIdentifiers = [_allTransfers valueForKey:@"fileIdentifier"];
+            _fileIdentifierToTransfers = [NSMutableDictionary dictionaryWithObjects:_allTransfers forKeys:fileIdentifiers];
         } else {
             _allTransfers = [NSMutableArray new];
+            _fileIdentifierToTransfers = [NSMutableDictionary new];
         }
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
     }
 
     return self;
@@ -96,6 +99,17 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     [NSKeyedArchiver archiveRootObject:_allTransfers toFile:_archivedTransfersFilePath];
 }
 
+- (QTRTransfer *)transferForFileID:(NSString *)fileIdentifier {
+    QTRTransfer *transfer = nil;
+    for (QTRTransfer *aTransfer in _allTransfers) {
+        if ([aTransfer.fileIdentifier isEqualToString:fileIdentifier]) {
+            transfer = aTransfer;
+            break;
+        }
+    }
+    return transfer;
+}
+
 #pragma mark - QTRBonjourTransferDelegate method
 
 - (void)addTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk {
@@ -106,6 +120,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         [transfer setTimestamp:[NSDate date]];
         [transfer setTotalParts:file.totalParts];
         [transfer setState:QTRTransferStateInProgress];
+        [transfer setFileIdentifier:file.identifier];
         if (file.totalParts > 1) {
             [transfer setFileSize:file.totalSize];
         } else {
@@ -116,6 +131,24 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
         if ([self.delegate respondsToSelector:@selector(transfersStore:didAddTransfersAtIndices:)]) {
             [self.delegate transfersStore:self didAddTransfersAtIndices:[NSIndexSet indexSetWithIndex:0]];
+        }
+    }
+}
+
+- (void)resumeTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk {
+    if (file != nil) {
+        QTRTransfer *transfer = [self transferForFileID:file.identifier];
+        if (transfer != nil) {
+            _fileIdentifierToTransfers[file.identifier] = transfer;
+            [transfer setState:QTRTransferStateInProgress];
+            [self archiveTransfers];
+            NSInteger index = [_allTransfers indexOfObject:transfer];
+            if ([self.delegate respondsToSelector:@selector(transfersStore:didUpdateTransfersAtIndices:)]) {
+                [self.delegate transfersStore:self didUpdateTransfersAtIndices:[NSIndexSet indexSetWithIndex:index]];
+            }
+            if (chunk != nil) {
+                [_dataChunksToTransfers setObject:transfer forKey:chunk];
+            }
         }
     }
 }
@@ -220,6 +253,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     [transfer setTransferedChunks:(file.partIndex + 1)];
     [transfer setFileSize:file.totalSize];
     [transfer setFileURL:file.url];
+    [transfer setFileIdentifier:file.identifier];
     [_allTransfers insertObject:transfer atIndex:0];
     _fileIdentifierToTransfers[file.identifier] = transfer;
 
@@ -238,6 +272,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 - (void)updateTransferForFile:(QTRFile *)file {
 
     QTRTransfer *theTransfer = _fileIdentifierToTransfers[file.identifier];
+    theTransfer.state = QTRTransferStateInProgress;
     if (theTransfer != nil && ![theTransfer isKindOfClass:[NSNull class]]) {
         [theTransfer setTransferedChunks:(file.partIndex + 1)];
 
@@ -256,6 +291,46 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         }
 
     }
+}
+
+- (void)updateSentBytes:(long long)sentBytes forFile:(QTRFile *)file {
+    QTRTransfer *theTransfer = [self transferForFileID:file.identifier];
+    [theTransfer setSentBytes:sentBytes];
+    [self archiveTransfers];
+}
+
+- (BOOL)canResumeTransferForFile:(QTRFile *)file {
+    BOOL canResume = NO;
+    QTRTransfer *transferToResume = [self transferForFileID:file.identifier];
+    if (transferToResume.fileURL != nil) {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:transferToResume.fileURL.path isDirectory:nil]) {
+            NSDictionary *attributes = [fileManager attributesOfItemAtPath:transferToResume.fileURL.path error:nil];
+            long long fileSize = [attributes[NSFileSize] longLongValue];
+            if (fileSize == file.offset) {
+                canResume = YES;
+            }
+        }
+    }
+
+    return canResume;
+}
+
+- (NSURL *)saveURLForResumedFile:(QTRFile *)file {
+    return [[self transferForFileID:file.identifier] fileURL];
+}
+
+- (void)appWillTerminate:(NSNotification *)notification {
+    for (QTRTransfer *transfer in _allTransfers) {
+        if (transfer.state != QTRTransferStateCompleted) {
+            [transfer setState:QTRTransferStateFailed];
+        }
+    }
+    [self archiveTransfers];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

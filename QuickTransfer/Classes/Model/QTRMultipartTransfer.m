@@ -52,14 +52,41 @@ long long const QTRMultipartTransferMaximumPartSize = 10 * 1024 * 1024;   // 10 
     return self;
 }
 
-- (void)readNextPartForTransmission:(void (^)(QTRFile *file, BOOL isLastPart))dataReadCompletion {
+- (instancetype)initWithPartiallyTransferredFile:(QTRFile *)file user:(QTRUser *)user {
+    self = [super init];
+    if (self != nil) {
+        _fileURL = file.url;
+        _fileName = [[_fileURL path] lastPathComponent];
+        _user = user;
+        _fileIdentifier = [file.identifier copy];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[_fileURL path] error:nil];
+        if (![fileAttributes[NSFileSize] isKindOfClass:[NSNull class]]) {
+            _totalBytes = [fileAttributes[NSFileSize] longLongValue];
+            _totalParts = (int)(_totalBytes / QTRMultipartTransferMaximumPartSize);
+            if (_totalBytes % QTRMultipartTransferMaximumPartSize != 0) {
+                ++_totalParts;
+            }
+
+        }
+
+        NSFileHandle *fileHandle = [NSFileHandle fileHandleForReadingFromURL:_fileURL error:nil];
+        _fileHandle = fileHandle;
+        [_fileHandle seekToFileOffset:file.offset];
+        _currentPart = (int)(file.partIndex);
+    }
+
+    return self;
+}
+
+- (void)readNextPartForTransmission:(void (^)(QTRFile *file, BOOL isLastPart, long long offsetInFile))dataReadCompletion {
     __weak typeof(self) wSelf = self;
 
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         if (wSelf != nil) {
 
             typeof(self) sSelf = wSelf;
-
+            long long currentOffset = [sSelf->_fileHandle offsetInFile];
             long long targetPosition = [sSelf->_fileHandle offsetInFile] + QTRMultipartTransferMaximumPartSize;
 
             NSData *fileData = [sSelf->_fileHandle readDataOfLength:QTRMultipartTransferMaximumPartSize];
@@ -77,9 +104,30 @@ long long const QTRMultipartTransferMaximumPartSize = 10 * 1024 * 1024;   // 10 
 
             ++sSelf->_currentPart;
 
-            dataReadCompletion(file, isLastPart);
+            dataReadCompletion(file, isLastPart, currentOffset);
         }
     });
 }
+
+
++ (BOOL)canResumeReadingFile:(QTRFile *)file {
+    BOOL canResume = NO;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:file.url.path isDirectory:NULL]) {
+        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:file.url.path error:nil];
+        NSNumber *fileSize = fileAttributes[NSFileSize];
+        if (file.offset < fileSize.longLongValue) {
+            canResume = YES;
+        }
+    }
+    return canResume;
+}
+
+- (void)dealloc {
+    [_fileHandle closeFile];
+}
+
+
+
 
 @end
