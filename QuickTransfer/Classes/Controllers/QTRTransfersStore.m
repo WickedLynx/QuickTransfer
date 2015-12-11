@@ -43,6 +43,10 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         }
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+#if TARGET_OS_IPHONE
+#else
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
+#endif
     }
 
     return self;

@@ -35,8 +35,6 @@
 
     __weak QTRConnectedDevicesView *_devicesView;
     
-    //QTRSelectedUserInfo *_userInfo;
-    
     QTRBonjourClient *_client;
     QTRBonjourServer *_server;
     
@@ -154,12 +152,6 @@ int animationFlag;
 
     _devicesView = (QTRConnectedDevicesView *)view;
 }
-
-//- (UIStatusBarStyle)preferredStatusBarStyle
-//{
-//
-//    return UIStatusBarStyleLightContent;
-//}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -640,11 +632,6 @@ int animationFlag;
         [fetchingDevicesLabel setText:@"Fetching Devices"];
 
     }
-    
-//    if (([_userInfo _connectedServers].count + [_userInfo _connectedClients].count) < 1) {
-//        
-//    }
-    
 }
 
 #pragma mark - Notifications
@@ -707,25 +694,6 @@ int animationFlag;
             cell.frame = CGRectMake( (self.view.frame.size.width / 2.0f), finalCellFrame.origin.y + 1000, 0, 0);
         }
     
-    
-    
-//
-    
-    
-//    } else {
-//        if (translation.x > 0) {
-//            cell.frame = CGRectMake(finalCellFrame.origin.x - 1000, - 500.0f, 0, 0);
-//        } else {
-//            cell.frame = CGRectMake(finalCellFrame.origin.x - 1000, - 500.0f, 0, 0);
-//        }
-//    }
-    
-//    if (translation.y > 0) {
-//        cell.frame = CGRectMake(finalCellFrame.origin.y - 1000, - 1000.0f, 0, 0);
-//    } else {
-//        cell.frame = CGRectMake(finalCellFrame.origin.y - 1000, - 500.0f, 0, 0);
-//    }
-    
     [UIView animateWithDuration:2.0f animations:^(void){
         cell.frame = finalCellFrame;
 
@@ -762,19 +730,7 @@ int animationFlag;
     }
     
     [cell setIconImage:theUser.platform];
-    
 
-//    _animator = [[UIDynamicAnimator alloc] initWithReferenceView:[_devicesView devicesCollectionView ]];
-//    
-//    UIDynamicItemBehavior* itemBehaviour = [[UIDynamicItemBehavior alloc] initWithItems:@[[_devicesView devicesCollectionView ]]];
-//    itemBehaviour.elasticity = 0.2;
-//    
-//    [_animator addBehavior:_gravity];
-//    [_animator addBehavior:itemBehaviour];
-    
-    
-    
-    
     return cell;
     
 }

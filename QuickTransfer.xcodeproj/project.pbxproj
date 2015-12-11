@@ -22,7 +22,6 @@
 		0745DA561C15688500579DCC /* QTRCustomAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0745DA551C15688500579DCC /* QTRCustomAlertView.m */; };
 		07A79E0C1C1A8C0A00405F0D /* pauseIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */; };
 		07A79E0D1C1A8C2E00405F0D /* LogsIconRetry.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07BB98251C105F5C00AF7F7C /* LogsIconRetry.xcassets */; };
-		07A79E0E1C1A8C3400405F0D /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07E742371C0751410084388C /* Launch Screen.storyboard */; };
 		07B308371C0ECD2800A889BF /* selected_image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B308361C0ECD2800A889BF /* selected_image.xcassets */; };
 		07B308381C0ECD5700A889BF /* selected_image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B308361C0ECD2800A889BF /* selected_image.xcassets */; };
 		07B3083C1C0EDC6300A889BF /* Button_back.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B3083B1C0EDC6300A889BF /* Button_back.xcassets */; };
@@ -965,7 +964,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07A79E0E1C1A8C3400405F0D /* Launch Screen.storyboard in Resources */,
 				07A79E0D1C1A8C2E00405F0D /* LogsIconRetry.xcassets in Resources */,
 				072BE74D1C0D8AE700798AC1 /* defaultIcon.xcassets in Resources */,
 				07A79E0C1C1A8C0A00405F0D /* pauseIcon.xcassets in Resources */,
