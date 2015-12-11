@@ -11,6 +11,7 @@
 #import "QTRRightBarButtonView.h"
 #import "QTRImagesInfoData.h"
 #import "QTRRecentLogsViewController.h"
+#import "QTRHelper.h"
 
 #import <AssetsLibrary/AssetsLibrary.h>
 
@@ -29,6 +30,8 @@
     NSMutableDictionary *_selectedRecivers;
     QTRUser *_localUser;
     QTRUser *_selectedUser;
+    
+    ALAssetsLibrary *_assetsLibrary;
     
 
 }
@@ -62,6 +65,8 @@ int totalImages;
     _selectedRecivers = self.reciversInfo._selectedRecivers;
     _localUser = self.reciversInfo._localUser;
     _selectedUser = self.reciversInfo._selectedUser;
+    _assetsLibrary = [[ALAssetsLibrary alloc] init];
+    
 
     [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     [self setTitle:@"Camera Roll"];
@@ -314,35 +319,112 @@ int totalImages;
 
 #pragma mark - Transfer Selected files to selected user
 
--(void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
+- (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
     
-    NSString *urlString = [NSString stringWithFormat:@"%@",[sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"]];
+    NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
     
-    NSURL *localURL = [NSURL URLWithString:urlString];
-    NSArray *totalRecivers = [_selectedRecivers allValues];
-    _selectedUser = nil;
-    
-    for (QTRUser *currentUser in totalRecivers) {
+    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
         
-        _selectedUser = currentUser;
-    
-        if ([_connectedClients containsObject:_selectedUser]) {
-            [_server sendFileAtURL:localURL toUser:_selectedUser];
-            
-        } else if ([_connectedServers containsObject:_selectedUser]) {
-            [_client sendFileAtURL:localURL toUser:_selectedUser];
-            
-        } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-            [alert show];
-        }
+        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
         
+        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
+        
+        uint8_t *imageBytes = malloc((long)[assetRepresentation size]);
+        [assetRepresentation getBytes:imageBytes fromOffset:0 length:(long)[assetRepresentation size] error:nil];
+        
+        NSData *imageData = [NSData dataWithBytes:imageBytes length:(long)[assetRepresentation size]];
+        [imageData writeToURL:localURL atomically:YES];
+        
+        NSLog(@"local: %@",localURL);
+        NSLog(@"Ref Url: %@",referenceURL);
+        
+        free(imageBytes);
+        NSArray *totalRecivers = [_selectedRecivers allValues];
         _selectedUser = nil;
+        
+            for (QTRUser *currentUser in totalRecivers) {
+        
+                _selectedUser = currentUser;
+        
+                if ([_connectedClients containsObject:_selectedUser]) {
+                    [_server sendFileAtURL:localURL toUser:_selectedUser];
+        
+                } else if ([_connectedServers containsObject:_selectedUser]) {
+                    [_client sendFileAtURL:localURL toUser:_selectedUser];
+        
+                } else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+                    [alert show];
+                }
+                
+                _selectedUser = nil;
+            }
+        
+        
+    } failureBlock:^(NSError *error) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+        [alertView show];
+    }];
+
+
+    
+}
+
+- (NSURL *)uniqueURLForFileWithName:(NSString *)fileName {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSURL *cachesURL = [QTRHelper fileCacheDirectory];
+    
+    NSString *filePath = [[cachesURL path] stringByAppendingPathComponent:fileName];
+    
+    if ([fileManager fileExistsAtPath:filePath]) {
+        NSString *name = [[filePath lastPathComponent] stringByDeletingPathExtension];
+        NSString *extension = [filePath pathExtension];
+        NSString *nameWithExtension = [name stringByAppendingPathExtension:extension];
+        NSString *tempName = name;
+        int fileCount = 0;
+        while ([fileManager fileExistsAtPath:filePath]) {
+            ++fileCount;
+            tempName = [name stringByAppendingFormat:@"%d", fileCount];
+            nameWithExtension = [tempName stringByAppendingPathExtension:extension];
+            filePath = [[cachesURL path] stringByAppendingPathComponent:nameWithExtension];
+        }
     }
     
-    //[self.navigationController popToRootViewControllerAnimated:YES];
-   
+    
+    return [NSURL fileURLWithPath:filePath];
 }
+
+
+//- (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
+//    
+//    NSString *urlString = [NSString stringWithFormat:@"%@",[sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"]];
+//    
+//    NSURL *localURL = [NSURL URLWithString:urlString];
+//    NSArray *totalRecivers = [_selectedRecivers allValues];
+//    _selectedUser = nil;
+//    
+//    for (QTRUser *currentUser in totalRecivers) {
+//        
+//        _selectedUser = currentUser;
+//    
+//        if ([_connectedClients containsObject:_selectedUser]) {
+//            [_server sendFileAtURL:localURL toUser:_selectedUser];
+//            
+//        } else if ([_connectedServers containsObject:_selectedUser]) {
+//            [_client sendFileAtURL:localURL toUser:_selectedUser];
+//            
+//        } else {
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+//            [alert show];
+//        }
+//        
+//        _selectedUser = nil;
+//    }
+//    
+//    //[self.navigationController popToRootViewControllerAnimated:YES];
+//   
+//}
 
 #pragma mark - PHPhoto Observer
 

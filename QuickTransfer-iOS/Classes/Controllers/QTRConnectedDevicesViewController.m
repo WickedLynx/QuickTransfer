@@ -334,14 +334,14 @@ int animationFlag;
 
     
     
-    [cac.cancelButton addTarget: self action: @selector(ActionViewCancelButton) forControlEvents: UIControlEventTouchUpInside];
-    [cac.iCloudButton addTarget: self action: @selector(ActioniCloudButton) forControlEvents: UIControlEventTouchUpInside];
-    [cac.cameraRollButton addTarget: self action: @selector(ActionCameraRoll) forControlEvents: UIControlEventTouchUpInside];
-    [cac.takePhotoButton addTarget: self action: @selector(ActionTakePhoto) forControlEvents: UIControlEventTouchUpInside];
+    [cac.cancelButton addTarget: self action: @selector(actionViewCancelButton) forControlEvents: UIControlEventTouchUpInside];
+    [cac.iCloudButton addTarget: self action: @selector(actioniCloudButton) forControlEvents: UIControlEventTouchUpInside];
+    [cac.cameraRollButton addTarget: self action: @selector(actionCameraRoll) forControlEvents: UIControlEventTouchUpInside];
+    [cac.takePhotoButton addTarget: self action: @selector(actionTakePhoto) forControlEvents: UIControlEventTouchUpInside];
 }
 
 
--(void) ActionViewCancelButton {
+-(void) actionViewCancelButton {
 
     NSLog(@"Canceling");
     [cac removeFromSuperview];
@@ -349,7 +349,7 @@ int animationFlag;
 
 }
 
--(void) ActioniCloudButton {
+-(void) actioniCloudButton {
     
     NSLog(@"i Cloude");
     [cac removeFromSuperview];
@@ -357,7 +357,7 @@ int animationFlag;
     
 }
 
--(void) ActionCameraRoll {
+-(void) actionCameraRoll {
     
     NSLog(@"Opening Camera Roll");
     [cac removeFromSuperview];
@@ -383,7 +383,7 @@ int animationFlag;
     
     
 }
--(void) ActionTakePhoto {
+-(void) actionTakePhoto {
     
     NSLog(@"Taking Photo");
     [cac removeFromSuperview];
