@@ -49,14 +49,11 @@
         
         NSDictionary *views = NSDictionaryOfVariableBindings(_connectedDeviceImageLocal,_connectedDeviceNameLocal);
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_connectedDeviceImageLocal(==80)]" options:0 metrics:0 views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_connectedDeviceNameLocal(==90)]" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[_connectedDeviceImageLocal(==80)]-10-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[_connectedDeviceNameLocal(==90)]-5-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_connectedDeviceImageLocal(==80)]" options:0 metrics:0 views:views]];
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[_connectedDeviceNameLocal]" options:0 metrics:0 views:views]];
-        
-        
-        
         
     }
     return self;
@@ -75,7 +72,7 @@
 -(void)setIconImage:(NSString *)imagePlatform {
     
 //    _connectedDeviceImageIcon.image = [UIImage imageNamed:@"iphoneicon"];
-    [_connectedDeviceImage setImage:[UIImage imageNamed:@"iphoneicon"]];
+    [_connectedDeviceImage setImage:[UIImage imageNamed:imagePlatform]];
     NSLog(@"lol");
 }
     

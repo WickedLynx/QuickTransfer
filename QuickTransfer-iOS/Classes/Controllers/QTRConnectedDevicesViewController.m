@@ -389,6 +389,16 @@ int animationFlag;
     NSLog(@"Taking Photo");
     [cac removeFromSuperview];
     
+    NSLog(@"Opening Camera..");
+    
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.allowsEditing = YES;
+    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    
+    [self presentViewController:picker animated:YES completion:NULL];
+
+    
     
 }
 
@@ -662,6 +672,7 @@ int animationFlag;
     int totalRemSpace = self.view.frame.size.width - (noOfItems * 100);
     
     CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
+    
     
     return UIEdgeInsetsMake(5.0f, gap, 0.0f, gap);
 }
@@ -952,37 +963,6 @@ int animationFlag;
 }
 
 
--(void)takePhoto {
-
-    NSLog(@"Finding Camera..");
-    
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    picker.delegate = self;
-    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    //picker.showsCameraControls = YES;
-
-    [self presentViewController:picker animated:YES completion:nil];
-
-}
-
-#pragma mark UIImagePickerControllerDelegate methods
-
-- (void)imagePickerController:(UIImagePickerController *)thePicker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    [thePicker dismissViewControllerAnimated:YES completion:nil];
-    image = [info objectForKey:UIImagePickerControllerOriginalImage];
-    
-    NSLog(@"Captured Image");
-    
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)thePicker
-{
-    [thePicker dismissViewControllerAnimated:YES completion:nil];
-    //self.imageView.image = nil;
-}
-
-
 #pragma mark - Search Bar methods
 
 
@@ -1043,6 +1023,45 @@ int animationFlag;
     [self changeAnimation];
 }
 
+#pragma mark - Image Picker Controller delegate methods
 
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    NSURL *referenceURL = info[UIImagePickerControllerReferenceURL];
+    
+    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
+        
+        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
+        UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
+        NSData *imageData = UIImageJPEGRepresentation(chosenImage, 1.0);
+        [imageData writeToURL:localURL atomically:YES];
+    
+        
+        if ([_connectedClients containsObject:_selectedUser]) {
+            [_server sendFileAtURL:localURL toUser:_selectedUser];
+        } else if ([_connectedServers containsObject:_selectedUser]) {
+            [_client sendFileAtURL:localURL toUser:_selectedUser];
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+            [alert show];
+        }
+        
+        _selectedUser = nil;
+        
+        
+    } failureBlock:^(NSError *error) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+        [alertView show];
+    }];
+    
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+    
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    
+    [picker dismissViewControllerAnimated:YES completion:NULL];
+    
+}
 
 @end

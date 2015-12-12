@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		070281901C0CA05400125F35 /* iPhoneIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0702818F1C0CA05400125F35 /* iPhoneIcon.xcassets */; };
-		072BE73E1C0D7CD400798AC1 /* iPhoneIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0702818F1C0CA05400125F35 /* iPhoneIcon.xcassets */; };
 		072BE7401C0D803500798AC1 /* macIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE73F1C0D803500798AC1 /* macIcon.xcassets */; };
 		072BE7421C0D804A00798AC1 /* AndroidIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */; };
 		072BE7461C0D808500798AC1 /* linuxIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7451C0D808500798AC1 /* linuxIcon.xcassets */; };
@@ -183,7 +181,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0702818F1C0CA05400125F35 /* iPhoneIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = iPhoneIcon.xcassets; sourceTree = "<group>"; };
 		072BE73F1C0D803500798AC1 /* macIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = macIcon.xcassets; sourceTree = "<group>"; };
 		072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AndroidIcon.xcassets; sourceTree = "<group>"; };
 		072BE7451C0D808500798AC1 /* linuxIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = linuxIcon.xcassets; sourceTree = "<group>"; };
@@ -403,7 +400,6 @@
 				072BE7451C0D808500798AC1 /* linuxIcon.xcassets */,
 				072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */,
 				072BE73F1C0D803500798AC1 /* macIcon.xcassets */,
-				0702818F1C0CA05400125F35 /* iPhoneIcon.xcassets */,
 				07E742371C0751410084388C /* LaunchScreen.storyboard */,
 				07D5DB211C0D69F0005C2EC2 /* Gallery_placeholder.png */,
 				072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */,
@@ -936,7 +932,6 @@
 				072BE74B1C0D816A00798AC1 /* AndroidIcon.xcassets in Resources */,
 				072BE74A1C0D816500798AC1 /* macIcon.xcassets in Resources */,
 				072BE7491C0D815F00798AC1 /* windowsIcon.xcassets in Resources */,
-				072BE73E1C0D7CD400798AC1 /* iPhoneIcon.xcassets in Resources */,
 				07D5DB661C0D70CE005C2EC2 /* Gallery_placeholder.png in Resources */,
 				FA283EFE18B494E5003D4FB6 /* InfoPlist.strings in Resources */,
 				07BB98261C105F5C00AF7F7C /* LogsIconRetry.xcassets in Resources */,
@@ -972,7 +967,6 @@
 				07A79E0D1C1A8C2E00405F0D /* LogsIconRetry.xcassets in Resources */,
 				072BE74D1C0D8AE700798AC1 /* defaultIcon.xcassets in Resources */,
 				07A79E0C1C1A8C0A00405F0D /* pauseIcon.xcassets in Resources */,
-				070281901C0CA05400125F35 /* iPhoneIcon.xcassets in Resources */,
 				FAD9FFE218B33CA70098DA76 /* InfoPlist.strings in Resources */,
 				072BE7401C0D803500798AC1 /* macIcon.xcassets in Resources */,
 				072BE7421C0D804A00798AC1 /* AndroidIcon.xcassets in Resources */,
