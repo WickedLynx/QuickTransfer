@@ -51,12 +51,10 @@
     
     [super setSelected:selected];
     if (selected) {
-        NSLog(@"Selected..");
 
         [self.retrivedImage addSubview:self.selectedImage];
         
     }else {
-        NSLog(@"Deselected");
         [self.selectedImage removeFromSuperview];
 
     }

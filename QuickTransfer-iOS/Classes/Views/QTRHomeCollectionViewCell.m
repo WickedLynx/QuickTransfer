@@ -24,15 +24,8 @@
         _connectedDeviceImageLocal.layer.cornerRadius = 40.0f;
         [_connectedDeviceImageLocal setBackgroundColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
         
-//        UIImageView *connectedDeviceImageIcon = [[UIImageView alloc]init];
-//        connectedDeviceImageIcon.frame = CGRectMake(25.0f, 10.0f, 50.0f, 50.0f);
-//        [connectedDeviceImageIcon setContentMode:UIViewContentModeScaleAspectFit];
-    
-
-        
         UILabel *_connectedDeviceNameLocal = [[UILabel alloc]initWithFrame:CGRectZero];
         [_connectedDeviceNameLocal setTranslatesAutoresizingMaskIntoConstraints:NO];
-//        [_connectedDeviceNameLocal setFont:[UIFont systemFontOfSize:13.0f]];
         [_connectedDeviceNameLocal setFont:[UIFont fontWithName:@"SanFranciscoText-Light" size:13]];
         _connectedDeviceNameLocal.numberOfLines = 2;
         _connectedDeviceNameLocal.textAlignment = NSTextAlignmentCenter;
@@ -40,12 +33,10 @@
         
         [self.contentView addSubview:_connectedDeviceImageLocal];
         [self.contentView addSubview:_connectedDeviceNameLocal];
-        //[self.contentView addSubview:connectedDeviceImageIcon];
         
         self.connectedDeviceImage = _connectedDeviceImageLocal;
         self.connectedDeviceName = _connectedDeviceNameLocal;
-       // self.connectedDeviceImageIcon = connectedDeviceImageIcon;
-        
+       
         
         NSDictionary *views = NSDictionaryOfVariableBindings(_connectedDeviceImageLocal,_connectedDeviceNameLocal);
         
@@ -69,11 +60,8 @@
     }
 }
 
--(void)setIconImage:(NSString *)imagePlatform {
-    
-//    _connectedDeviceImageIcon.image = [UIImage imageNamed:@"iphoneicon"];
+-(void)setIconImage:(NSString *)imagePlatform {    
     [_connectedDeviceImage setImage:[UIImage imageNamed:imagePlatform]];
-    NSLog(@"lol");
 }
     
 @end

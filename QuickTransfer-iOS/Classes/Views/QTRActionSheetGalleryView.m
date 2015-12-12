@@ -152,7 +152,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
     
-    // Store the PHFetchResult objects and localized titles for each section.
     self.sectionFetchResults = @[allPhotos, smartAlbums, topLevelUserCollections];
     self.sectionLocalizedTitles = @[@"", NSLocalizedString(@"Smart Albums", @""), NSLocalizedString(@"Albums", @"")];
     
@@ -177,8 +176,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     __block UIImage *ima;
     __block int i;
     
-    //for (PHAsset *asset in assetsFetchResult) {
-        // Do something with the asset
     for(i = 0; i < 10 ; i++) {
         
         PHAsset *asset = [assetsFetchResult objectAtIndex:i];

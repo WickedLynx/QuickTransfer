@@ -66,8 +66,8 @@
         
         
         UIBezierPath *path22 = [UIBezierPath bezierPath];
-        [path22 moveToPoint:CGPointMake(22.f, 28.f)];
-        [path22 addLineToPoint:CGPointMake(22.f, 9.f)];
+        [path22 moveToPoint:CGPointMake(23.f, 28.f)];
+        [path22 addLineToPoint:CGPointMake(23.f, 9.f)];
         
         CAShapeLayer *shapeLayer22 = [CAShapeLayer layer];
         shapeLayer22.path = [path22 CGPath];
@@ -78,8 +78,8 @@
         
         
         UIBezierPath *path221 = [UIBezierPath bezierPath];
-        [path221 moveToPoint:CGPointMake(22.f, 9.f)];
-        [path221 addLineToPoint:CGPointMake(22.f, 19.f)];
+        [path221 moveToPoint:CGPointMake(23.f, 9.f)];
+        [path221 addLineToPoint:CGPointMake(23.f, 19.f)];
         
         CAShapeLayer *shapeLayer221 = [CAShapeLayer layer];
         shapeLayer221.path = [path221 CGPath];
@@ -91,8 +91,8 @@
         
         
         UIBezierPath *path21 = [UIBezierPath bezierPath];
-        [path21 moveToPoint:CGPointMake(22.f, 28.f)];
-        [path21 addLineToPoint:CGPointMake(15.f, 21.f)];
+        [path21 moveToPoint:CGPointMake(23.f, 28.f)];
+        [path21 addLineToPoint:CGPointMake(16.f, 21.f)];
         
         CAShapeLayer *shapeLayer21 = [CAShapeLayer layer];
         shapeLayer21.path = [path21 CGPath];
@@ -103,8 +103,8 @@
         
         
         UIBezierPath *path23 = [UIBezierPath bezierPath];
-        [path23 moveToPoint:CGPointMake(22.f, 28.f)];
-        [path23 addLineToPoint:CGPointMake(29.f, 21.f)];
+        [path23 moveToPoint:CGPointMake(23.f, 28.f)];
+        [path23 addLineToPoint:CGPointMake(30.f, 21.f)];
         
         CAShapeLayer *shapeLayer23 = [CAShapeLayer layer];
         shapeLayer23.path = [path23 CGPath];

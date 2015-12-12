@@ -17,7 +17,6 @@
 - (UILabel *)fileSizeLabel;
 - (UILabel *)fileStateLabel;
 - (CGFloat)requiredHeightInTableView;
-- (UIProgressView *)progressView;
 
 
 @end

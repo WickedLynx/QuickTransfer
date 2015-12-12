@@ -94,8 +94,6 @@
 @end
 
 static NSString *cellIdentifier = @"cellIdentifier";
-int animationFlag;
-
 
 
 @implementation QTRConnectedDevicesViewController
@@ -156,9 +154,8 @@ int animationFlag;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    //[_userInfo._selectedRecivers removeAllObjects];
+    //[_selectedRecivers removeAllObjects];
     [[_devicesView devicesCollectionView] reloadData];
-    [ self changeAnimation];
     
 }
 
@@ -193,30 +190,11 @@ int animationFlag;
     [fetchingDevicesLabel setTextColor:[UIColor whiteColor]];
     [self.view addSubview:fetchingDevicesLabel];
     
-    
-    
-    
-    //_userInfo = [[QTRSelectedUserInfo alloc]init];
     _selectedRecivers = [[NSMutableDictionary alloc]init];
     
     [self.view setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
-//    CAGradientLayer *gradient1 = [CAGradientLayer layer];
-//    gradient1.frame = self.view.frame;
-//    
-//    gradient1.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f] CGColor], (id)[[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f] CGColor], (id)[[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f] CGColor],nil];
-//    [self.view.layer insertSublayer:gradient1 atIndex:1];
-    
-    
     [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
-    
     [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor clearColor]];
-    
-//    CAGradientLayer *gradient1 = [CAGradientLayer layer];
-//    gradient1.frame = self.view.frame;
-//    
-//    gradient1.colors = [NSArray arrayWithObjects:(id)[[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f] CGColor], (id)[[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f] CGColor], (id)[[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f] CGColor],nil];
-//    [[_devicesView devicesCollectionView].layer insertSublayer:gradient1 atIndex:1];
-    
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     [self setTitle:@"Devices"];
@@ -231,7 +209,6 @@ int animationFlag;
    
 
     [[_devicesView devicesCollectionView] reloadData];
-    [self changeAnimation];
     
     refreshControl = [[UIRefreshControl alloc]init];
     [refreshControl setHidden:YES];
@@ -290,8 +267,6 @@ int animationFlag;
 }
 
 - (void)logsBarButton:(UIBarButtonItem *)barButton {
-    NSLog(@"\n_selectedRecivers: %@ ",_selectedRecivers);
-    
     QTRRecentLogsViewController *recentLogs = [[QTRRecentLogsViewController alloc]init];
     [self.navigationController pushViewController:recentLogs animated:YES];
     
@@ -309,58 +284,53 @@ int animationFlag;
 
 -(void)nextButtonClicked{
 
-    NSLog(@"Next Button Clicked..");
+    if ([_selectedRecivers count] > 0) {
     
-    cac = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    [self.view addSubview:cac];
-    
-    
-    NSLog(@"Width:%f    Height:%f", cac.galleryCollectionView.frame.size.width, cac.galleryCollectionView.frame.size.height);
-    
-                 customView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
-                [customView setUserInteractionEnabled:YES];
-                customView.delegate = self;
-                customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
+        cac = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        [self.view addSubview:cac];
     
     
+        customView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
+        [customView setUserInteractionEnabled:YES];
+        customView.delegate = self;
+        customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
     
+        [customView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
     
-                [customView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
-    
-                [customView.actionControllerCollectionView setDataSource:customView];
-                [customView.actionControllerCollectionView setDelegate:customView];
-                customView.actionControllerCollectionView.allowsMultipleSelection = YES;
-    
-                [cac.galleryCollectionView addSubview:customView];
+        [customView.actionControllerCollectionView setDataSource:customView];
+        [customView.actionControllerCollectionView setDelegate:customView];
+        customView.actionControllerCollectionView.allowsMultipleSelection = YES;
+        [cac.galleryCollectionView addSubview:customView];
 
+        [cac.cancelButton addTarget: self action: @selector(actionViewCancelButton) forControlEvents: UIControlEventTouchUpInside];
+        [cac.iCloudButton addTarget: self action: @selector(actioniCloudButton) forControlEvents: UIControlEventTouchUpInside];
+        [cac.cameraRollButton addTarget: self action: @selector(actionCameraRoll) forControlEvents: UIControlEventTouchUpInside];
+        [cac.takePhotoButton addTarget: self action: @selector(actionTakePhoto) forControlEvents: UIControlEventTouchUpInside];
+
+    }
     
+    else {
     
-    [cac.cancelButton addTarget: self action: @selector(actionViewCancelButton) forControlEvents: UIControlEventTouchUpInside];
-    [cac.iCloudButton addTarget: self action: @selector(actioniCloudButton) forControlEvents: UIControlEventTouchUpInside];
-    [cac.cameraRollButton addTarget: self action: @selector(actionCameraRoll) forControlEvents: UIControlEventTouchUpInside];
-    [cac.takePhotoButton addTarget: self action: @selector(actionTakePhoto) forControlEvents: UIControlEventTouchUpInside];
+        UIAlertView *alertNextButton = [[UIAlertView alloc]initWithTitle:@"Warnig" message:@"First Select Atlest One Device" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        [alertNextButton show];
+        
+    }
+    
 }
 
 
 -(void) actionViewCancelButton {
-
-    NSLog(@"Canceling");
     [cac removeFromSuperview];
-    
 
 }
 
 -(void) actioniCloudButton {
-    
-    NSLog(@"i Cloude");
     [cac removeFromSuperview];
-    
-    
+
 }
 
 -(void) actionCameraRoll {
     
-    NSLog(@"Opening Camera Roll");
     [cac removeFromSuperview];
     [customView removeFromSuperview];
     
@@ -372,24 +342,14 @@ int animationFlag;
     usersInfo._selectedRecivers = _selectedRecivers;
     usersInfo._localUser = _localUser;
     usersInfo._selectedUser = _selectedUser;
-    
 
     QTRShowGalleryViewController *showGallery = [[QTRShowGalleryViewController alloc] init];
-    
-    
-    
     showGallery.reciversInfo = usersInfo;
     [self.navigationController pushViewController:showGallery animated:YES];
 
-    
-    
 }
 -(void) actionTakePhoto {
-    
-    NSLog(@"Taking Photo");
     [cac removeFromSuperview];
-    
-    NSLog(@"Opening Camera..");
     
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
@@ -397,23 +357,11 @@ int animationFlag;
     picker.sourceType = UIImagePickerControllerSourceTypeCamera;
     
     [self presentViewController:picker animated:YES completion:NULL];
-
-    
-    
 }
 
 - (void)touchShare:(UIBarButtonItem *)barButton {
     if (_selectedUser != nil) {
-
-        NSLog(@"Sharing Files..");
-//        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-//
-//            UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
-//            [imagePicker setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-//            [imagePicker setDelegate:self];
-//
-//            [self presentViewController:imagePicker animated:YES completion:NULL];
-//        }
+        
     }
 }
 
@@ -428,16 +376,6 @@ int animationFlag;
 
 }
 
-- (void)changeAnimation {
-    
-    if (animationFlag == 0) {
-        animationFlag = 1;
-    }
-    else {
-        animationFlag = 0;
-    }
-
-}
 
 - (void)stopServices {
     [_server setDelegate:nil];
@@ -451,11 +389,9 @@ int animationFlag;
     _client = nil;
 
     [_connectedClients removeAllObjects];
-
     [_connectedServers removeAllObjects];
 
     [[_devicesView devicesCollectionView] reloadData];
-    [self changeAnimation];
 
     [_beaconAdvertiser stopAdvertisingBeaconRegion];
     [_beaconRanger stopRangingBeacons];
@@ -489,11 +425,6 @@ int animationFlag;
     [_client setTransferDelegate:_transfersController];
     [_client start];
     
-    NSLog(@" %lu  %lu ",_connectedServers.count,_connectedClients.count);
-    
-
-    
-
     [self refreshBeacons];
 }
 
@@ -668,7 +599,7 @@ int animationFlag;
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     
-    int noOfItems = (self.view.frame.size.width - 6) / 100;
+    int noOfItems = (self.view.frame.size.width - 20) / 100;
     int totalRemSpace = self.view.frame.size.width - (noOfItems * 100);
     
     CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
@@ -723,14 +654,7 @@ int animationFlag;
         }
     
     [cell.connectedDeviceName setText:[theUser name]];
-    
     [cell setIconImage:theUser.platform];
-    
-    [cell setIconImage:theUser.platform];
-
-
-    NSLog(@"Reloaded.. %@",theUser.name);
-    NSLog(@"user: %@   Platform %@", theUser.name, theUser.platform);
     
     if ([_selectedRecivers count] > 0) {
         
@@ -738,11 +662,9 @@ int animationFlag;
             NSLog(@"Selected %@", theUser.name);
             cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
         }
-        
     }
     
     [cell setIconImage:theUser.platform];
-
     return cell;
     
 }
@@ -801,13 +723,7 @@ int animationFlag;
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
     }
     
-    
-    
-    
-    //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
     [_selectedRecivers setObject:theUser forKey:theUser.identifier];
-
-    
 }
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -841,7 +757,6 @@ int animationFlag;
         [_connectedClients addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
-        [self changeAnimation];
         
     }
 }
@@ -850,7 +765,6 @@ int animationFlag;
     [_connectedClients removeObject:user];
     [self updateTitle];
     [[_devicesView devicesCollectionView] reloadData];
-    [self changeAnimation];
 }
 
 - (void)server:(QTRBonjourServer *)server didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
@@ -887,7 +801,6 @@ int animationFlag;
         [_connectedServers addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
-        [self changeAnimation];
         
     }
 }
@@ -896,7 +809,6 @@ int animationFlag;
     [_connectedServers removeObject:user];
     [self updateTitle];
     [[_devicesView devicesCollectionView] reloadData];
-    [self changeAnimation];
 }
 
 - (void)client:(QTRBonjourClient *)client didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
@@ -936,7 +848,6 @@ int animationFlag;
 
 - (void)beaconRangerDidEnterRegion:(QTRBeaconRanger *)beaconRanger {
     if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
-        NSLog(@"Did enter region");
         if (_backgroundTaskIdentifier == UIBackgroundTaskInvalid) {
 
             _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
@@ -998,7 +909,6 @@ int animationFlag;
     }
         
     [[_devicesView devicesCollectionView] reloadData];
-    [self changeAnimation];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -1020,7 +930,6 @@ int animationFlag;
     
     self.isFiltered = FALSE;
     [[_devicesView devicesCollectionView] reloadData];
-    [self changeAnimation];
 }
 
 #pragma mark - Image Picker Controller delegate methods
@@ -1035,18 +944,45 @@ int animationFlag;
         UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(chosenImage, 1.0);
         [imageData writeToURL:localURL atomically:YES];
+        
+        
+        NSArray *totalRecivers = [_selectedRecivers allValues];
+        _selectedUser = nil;
+        
+        for (QTRUser *currentUser in totalRecivers) {
+            
+            _selectedUser = currentUser;
+            
+            if ([_connectedClients containsObject:_selectedUser]) {
+                [_server sendFileAtURL:localURL toUser:_selectedUser];
+                
+            } else if ([_connectedServers containsObject:_selectedUser]) {
+                [_client sendFileAtURL:localURL toUser:_selectedUser];
+                
+            } else {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+                [alert show];
+            }
+            
+            _selectedUser = nil;
+        }
+
+        
     
         
-        if ([_connectedClients containsObject:_selectedUser]) {
-            [_server sendFileAtURL:localURL toUser:_selectedUser];
-        } else if ([_connectedServers containsObject:_selectedUser]) {
-            [_client sendFileAtURL:localURL toUser:_selectedUser];
-        } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-            [alert show];
-        }
+//        if ([_connectedClients containsObject:_selectedUser]) {
+//            [_server sendFileAtURL:localURL toUser:_selectedUser];
+//        } else if ([_connectedServers containsObject:_selectedUser]) {
+//            [_client sendFileAtURL:localURL toUser:_selectedUser];
+//        } else {
+//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+//            [alert show];
+//        }
+//        
+//        _selectedUser = nil;
         
-        _selectedUser = nil;
+        
+        
         
         
     } failureBlock:^(NSError *error) {

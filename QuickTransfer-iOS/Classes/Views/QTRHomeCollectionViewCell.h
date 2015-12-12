@@ -11,9 +11,7 @@
 @interface QTRHomeCollectionViewCell : UICollectionViewCell
 
 @property(nonatomic, retain) UIImageView *connectedDeviceImage;
-//@property(nonatomic, retain) UIImageView *connectedDeviceImageIcon;
 @property(nonatomic, retain) UILabel *connectedDeviceName;
-//@property(nonatomic, retain) UIImageView *iconImageView;
 
 -(void)setIconImage:(NSString *)imagePlatform;
 

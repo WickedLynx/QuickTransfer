@@ -183,7 +183,6 @@ int totalImages;
         
         if (imageInfoData != nil) {
             [images addObject:imageInfoData];
-            //[assets addObject:info];
         }
     }
 }
@@ -192,10 +191,8 @@ int totalImages;
 
 -(void)logsBarButton {
     
-    NSLog(@"Show Logs..");
     QTRRecentLogsViewController *recentLogs = [[QTRRecentLogsViewController alloc]init];
     [self.navigationController pushViewController:recentLogs animated:YES];
-
     
 }
 
@@ -236,14 +233,11 @@ int totalImages;
     
     if (totalRemSpace == 0.0) {
         
-        NSLog(@"If width: %f", totalRemSpace);
         [layout setMinimumLineSpacing:0.0f];
         return UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
 
     }
     else {
-        NSLog(@"Else width: %f", totalRemSpace);
-
         CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
         [layout setMinimumLineSpacing:gap];
 
@@ -289,13 +283,6 @@ int totalImages;
     
     [self.selectedImages setObject:imageData forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
     
-    
-    NSString *temp = [NSString stringWithFormat:@"%@",img.imageAsset];
-    
-    NSLog(@" %@ ",temp);
-    
-    NSLog(@"Cell Selected..");
-    
 }
 
 
@@ -303,18 +290,11 @@ int totalImages;
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
-    
-    
     UIImage *img = imageData.finalImage;
-
     
     if ([self.selectedImages count] > 0) {
         [self.selectedImages removeObjectForKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
     }
-    
-
-    
-    NSLog(@"Cell deselected..");
     
 }
 
@@ -322,80 +302,25 @@ int totalImages;
 
 - (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
     
-    [self newOnesendDataToSelectedUser:sendingImage];
+    //[self newOnesendDataToSelectedUser:sendingImage];
     
-    
-//    NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
-//    
-//    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-//        
-//        NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
-//        
-//        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-//        
-//        uint8_t *imageBytes = malloc((long)[assetRepresentation size]);
-//        [assetRepresentation getBytes:imageBytes fromOffset:0 length:(long)[assetRepresentation size] error:nil];
-//        
-//        NSData *imageData = [NSData dataWithBytes:imageBytes length:(long)[assetRepresentation size]];
-//        
-//        
-//        [imageData writeToURL:localURL atomically:YES];
-//        
-//        NSLog(@"local: %@",localURL);
-//        NSLog(@"Ref Url: %@",referenceURL);
-//        
-//        free(imageBytes);
-//        NSArray *totalRecivers = [_selectedRecivers allValues];
-//        _selectedUser = nil;
-//        
-//            for (QTRUser *currentUser in totalRecivers) {
-//        
-//                _selectedUser = currentUser;
-//        
-//                if ([_connectedClients containsObject:_selectedUser]) {
-//                    [_server sendFileAtURL:localURL toUser:_selectedUser];
-//        
-//                } else if ([_connectedServers containsObject:_selectedUser]) {
-//                    [_client sendFileAtURL:localURL toUser:_selectedUser];
-//        
-//                } else {
-//                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-//                    [alert show];
-//                }
-//                
-//                _selectedUser = nil;
-//            }
-//        
-//        
-//    } failureBlock:^(NSError *error) {
-//        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-//        [alertView show];
-//    }];
-
-
-    
-}
-
-
-- (void)newOnesendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
-
     self.requestOptions = [[PHImageRequestOptions alloc] init];
     self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
     self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     
     self.requestOptions.synchronous = true;
     
-     NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
+    NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
     
-   
     
-
+    
+    
     [[PHImageManager defaultManager] requestImageDataForAsset:sendingImage.imageAsset
                                                       options:self.requestOptions
                                                 resultHandler:
      ^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
          
-          NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
+         NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
          
          [imageData writeToURL:localURL atomically:YES];
          
@@ -419,11 +344,10 @@ int totalImages;
              
              _selectedUser = nil;
          }
-
+         
          
      }];
-
-
+    
 }
 
 
@@ -453,36 +377,6 @@ int totalImages;
     return [NSURL fileURLWithPath:filePath];
 }
 
-
-//- (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
-//    
-//    NSString *urlString = [NSString stringWithFormat:@"%@",[sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"]];
-//    
-//    NSURL *localURL = [NSURL URLWithString:urlString];
-//    NSArray *totalRecivers = [_selectedRecivers allValues];
-//    _selectedUser = nil;
-//    
-//    for (QTRUser *currentUser in totalRecivers) {
-//        
-//        _selectedUser = currentUser;
-//    
-//        if ([_connectedClients containsObject:_selectedUser]) {
-//            [_server sendFileAtURL:localURL toUser:_selectedUser];
-//            
-//        } else if ([_connectedServers containsObject:_selectedUser]) {
-//            [_client sendFileAtURL:localURL toUser:_selectedUser];
-//            
-//        } else {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-//            [alert show];
-//        }
-//        
-//        _selectedUser = nil;
-//    }
-//    
-//    //[self.navigationController popToRootViewControllerAnimated:YES];
-//   
-//}
 
 #pragma mark - PHPhoto Observer
 

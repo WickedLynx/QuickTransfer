@@ -45,12 +45,10 @@ static float screenHeight;
         
         UIButton *iCloudButton = [UIButton buttonWithType:UIButtonTypeCustom];
         iCloudButton.frame = CGRectZero;
-        //[[iCloudButton layer]setCornerRadius:7.0f];
         [[iCloudButton layer]setBorderWidth:0.5f];
         [[iCloudButton layer]setBorderColor:[UIColor grayColor].CGColor];
         [[iCloudButton layer]setMasksToBounds:TRUE];
         [iCloudButton setBackgroundColor:[UIColor whiteColor]];
-        //iCloudButton.clipsToBounds = YES;
         [iCloudButton setTitle:@"iCloud" forState:UIControlStateNormal];
         [iCloudButton setTitleColor:[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] forState:UIControlStateNormal];
         [iCloudButton setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -59,12 +57,10 @@ static float screenHeight;
 
         UIButton *takePhotoButton = [UIButton buttonWithType:UIButtonTypeCustom];
         takePhotoButton.frame = CGRectZero;
-        //[[takePhotoButton layer]setCornerRadius:7.0f];
         [[takePhotoButton layer]setBorderWidth:0.5f];
         [[takePhotoButton layer]setBorderColor:[UIColor grayColor].CGColor];
         [[takePhotoButton layer]setMasksToBounds:TRUE];
         [takePhotoButton setBackgroundColor:[UIColor whiteColor]];
-        //takePhotoButton.clipsToBounds = YES;
         [takePhotoButton setTitle:@"Take a Photo" forState:UIControlStateNormal];
         [takePhotoButton setTitleColor:[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] forState:UIControlStateNormal];
         [takePhotoButton setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -74,12 +70,10 @@ static float screenHeight;
 
         UIButton *cameraRollButton = [UIButton buttonWithType:UIButtonTypeCustom];
         cameraRollButton.frame = CGRectZero;
-        //[[cameraRollButton layer]setCornerRadius:7.0f];
         [[cameraRollButton layer]setBorderWidth:0.5f];
         [[cameraRollButton layer]setBorderColor:[UIColor grayColor].CGColor];
         [[cameraRollButton layer]setMasksToBounds:TRUE];
         [cameraRollButton setBackgroundColor:[UIColor whiteColor]];
-        //cameraRollButton.clipsToBounds = YES;
         [cameraRollButton setTitle:@"Camera Roll" forState:UIControlStateNormal];
         [cameraRollButton setTitleColor:[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] forState:UIControlStateNormal];
         [cameraRollButton setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -90,7 +84,6 @@ static float screenHeight;
         UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
         cancelButton.frame = CGRectZero;
         [[cancelButton layer]setCornerRadius:7.0f];
-        //[[cancelButton layer]setBorderWidth:1.0f];
         [[cancelButton layer]setBorderColor:[UIColor grayColor].CGColor];
         [[cancelButton layer]setMasksToBounds:TRUE];
         [cancelButton setBackgroundColor:[UIColor whiteColor]];
@@ -114,19 +107,9 @@ static float screenHeight;
         
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:[galleryUIView(==231)]-5-[cancelButton(==44)]-5-|"] options:0 metrics:0 views:views]];
-        
-//        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[alertTitleLabel]-10-[takePhotoButton]-0-[cameraRollButton]-0-[iCloudButton]|" options:0 metrics:0 views:views]];
-        
-       
-        
-                [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[alertTitleLabel(==33)]-0-[galleryCollectionView(==66)]-0-[takePhotoButton(==44)]-0-[cameraRollButton(==44)]-0-[iCloudButton(==44)]-0-|" options:0 metrics:0 views:views]];
+ 
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[alertTitleLabel(==33)]-0-[galleryCollectionView(==66)]-0-[takePhotoButton(==44)]-0-[cameraRollButton(==44)]-0-[iCloudButton(==44)]-0-|" options:0 metrics:0 views:views]];
 
-        
-        
-        
-        //NSLog(@" height: %f", screenHeight); // = 368.0
-        
-        
     }
     return self;
 }

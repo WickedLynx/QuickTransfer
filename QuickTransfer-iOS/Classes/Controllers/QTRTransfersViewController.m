@@ -151,47 +151,12 @@
         cell = [[QTRTransfersTableCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:QTRTransfersTableCellIdentifier];
         
         [cell setSelectionStyle:UITableViewCellSelectionStyleDefault];
-        [cell setAccessoryType:UITableViewCellAccessoryDetailButton];
-        
-        [[cell progressView] setTrackTintColor:[UIColor colorWithWhite:0.92f alpha:1.0f]];
-        [[cell progressView] setProgressTintColor:[UIColor colorWithRed:0.36f green:0.81f blue:1.00f alpha:1.00f]];
         
     }
+    
     QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:[indexPath row]];
     [[cell titleLabel] setText:[theTransfer.fileURL.absoluteString lastPathComponent]];
     [[cell subtitleLabel] setText:theTransfer.user.name];
-    
-//    NSString *footerLabelText = [NSString stringWithFormat:@"%@, %@", [_dateFormatter stringFromDate:theTransfer.timestamp], [_byteCountFormatter stringFromByteCount:theTransfer.fileSize]];
-//    [[cell footerLabel] setText:footerLabelText];
-    
-    
-    UIColor *footerLabelColor = nil;
-    
-    switch (theTransfer.state) {
-        case QTRTransferStateCompleted:
-            footerLabelColor = [UIColor colorWithRed:0.44f green:0.74f blue:0.64f alpha:1.00f];
-            [[cell progressView] setHidden:YES];
-            
-            break;
-            
-        case QTRTransferStateInProgress:
-            footerLabelColor = [UIColor colorWithRed:0.41f green:0.77f blue:0.94f alpha:1.00f];
-            [[cell progressView] setProgress:theTransfer.progress];
-            
-            break;
-            
-        case QTRTransferStateFailed:
-            footerLabelColor = [UIColor colorWithRed:0.96f green:0.58f blue:0.56f alpha:1.00f];;
-            [[cell progressView] setHidden:YES];
-            
-            break;
-            
-        default:
-            break;
-    }
-    
-//    [[cell footerLabel] setTextColor:footerLabelColor];
-    
     [cell.imageView setImage:[UIImage imageNamed:@"FileIconPlaceholder.png"]];
     
     return cell;
@@ -207,9 +172,7 @@
         QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:indexPath.row];
         
         [[NSFileManager defaultManager] removeItemAtPath:[theTransfer.fileURL path] error:nil];
-        
         [_transfersStore deleteTransfer:theTransfer];
-        
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
@@ -279,13 +242,8 @@
 }
 
 - (void)transfersStore:(QTRTransfersStore *)transfersStore didUpdateProgressOfTransferAtIndex:(NSUInteger)transferIndex {
-    QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:transferIndex];
-    
-    QTRTransfersTableCell *tableCell = (QTRTransfersTableCell *)[logsTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:transferIndex inSection:0]];
-    [[tableCell progressView] setProgress:theTransfer.progress animated:YES];
-  
-    NSLog(@"Transfers: %@",theTransfer);
-}
+    //Update the progress of transfer
+  }
 
 #pragma mark - QLPreviewControllerDatasource methods
 

@@ -56,11 +56,6 @@
             _fileSizeLabel.textAlignment = NSTextAlignmentRight;
             _fileStateLabel.textAlignment = NSTextAlignmentRight;
             
-            //            UIProgressView *aProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-            //            [aProgressView setFrame:CGRectMake(85.0f, 55.0f, 190.0f, 10.0f)];
-            //            [self addSubview:aProgressView];
-            //            _progressView = aProgressView;
-            
             UIImageView *localIconImageView = [[UIImageView alloc]init];
             [localIconImageView setTranslatesAutoresizingMaskIntoConstraints:NO];
             [self addSubview:localIconImageView];

@@ -36,11 +36,7 @@
         searchBar.layer.borderWidth = 0.0f;
         searchBar.placeholder = @"Search";
         [searchBar setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
-        //searchBar.setBackgroundColor = [UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f];
         [searchBar setBarTintColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
-        //searchBar.barTintColor = [UIColor whiteColor];
-        //searchBar.backgroundColor = [UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f];
-        //searchBar.backgroundColor = [UIColor redColor];
         [self addSubview:searchBar];
         _searchBar =searchBar;
         
@@ -53,7 +49,6 @@
         [[button layer]setMasksToBounds:TRUE];
         button.clipsToBounds = YES;
         [button setTitle:@"Next" forState:UIControlStateNormal];
-        //[button setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
         [button setTranslatesAutoresizingMaskIntoConstraints:NO];
         [self addSubview:button];
         _sendButton = button;
