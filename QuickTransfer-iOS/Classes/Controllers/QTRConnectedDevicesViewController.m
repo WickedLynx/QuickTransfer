@@ -867,11 +867,82 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 #pragma mark - ActionSheetGallaryDelegate methods
 
-- (void) QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)QTRActionSheetGalleryView didCellSelected:(BOOL)selected withCollectionCell:(QTRAlertControllerCollectionViewCell *)alertControllerCollectionViewCell {
-    if (selected) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
+//- (void) QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)QTRActionSheetGalleryView didCellSelected:(BOOL)selected withCollectionCell:(QTRAlertControllerCollectionViewCell *)alertControllerCollectionViewCell {
+//    if (selected) {
+//        
+//        
+//        
+//        
+//        [cac removeFromSuperview];
+//        
+//        
+//        //[self dismissViewControllerAnimated:YES completion:nil];
+//    }
+//}
+
+
+- (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView didCellSelected:(BOOL)selected withCollectionCell:(QTRAlertControllerCollectionViewCell *)alertControllerCollectionViewCell selectedImage:(QTRImagesInfoData *)sendingImage {
+    
+    [cac removeFromSuperview];
+
+    NSLog(@"Delegation %@",alertControllerCollectionViewCell);
+    
+    
+    NSLog(@"Sending Image Data:%@", sendingImage.description);
+
+    [self sendDataToSelectedUser:sendingImage];
+
 }
+
+#pragma mark - Sending Data
+
+
+
+- (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
+    
+    self.requestOptions = [[PHImageRequestOptions alloc] init];
+    self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
+    self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    
+    self.requestOptions.synchronous = true;
+    NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
+    
+    
+    [[PHImageManager defaultManager] requestImageDataForAsset:sendingImage.imageAsset
+                                                      options:self.requestOptions
+                                                resultHandler:
+     ^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+         
+         NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
+         
+         [imageData writeToURL:localURL atomically:YES];
+         
+         NSArray *totalRecivers = [_selectedRecivers allValues];
+         _selectedUser = nil;
+         
+         for (QTRUser *currentUser in totalRecivers) {
+             
+             _selectedUser = currentUser;
+             
+             if ([_connectedClients containsObject:_selectedUser]) {
+                 [_server sendFileAtURL:localURL toUser:_selectedUser];
+                 
+             } else if ([_connectedServers containsObject:_selectedUser]) {
+                 [_client sendFileAtURL:localURL toUser:_selectedUser];
+                 
+             } else {
+                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+                 [alert show];
+             }
+             
+             _selectedUser = nil;
+         }
+         
+         
+     }];
+    
+}
+
 
 
 #pragma mark - Search Bar methods

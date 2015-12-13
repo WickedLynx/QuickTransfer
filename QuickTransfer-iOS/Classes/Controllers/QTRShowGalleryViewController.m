@@ -156,8 +156,8 @@ int totalImages;
     
     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
     PHImageManager *manager = [PHImageManager defaultManager];
-    images = [NSMutableArray arrayWithCapacity:10];
-    assets = [NSMutableArray arrayWithCapacity:10];
+    images = [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
+    assets = [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
     
     __block QTRImagesInfoData *imageInfoData;
     //__block int i;
@@ -306,19 +306,14 @@ int totalImages;
 
 - (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
     
-    //[self newOnesendDataToSelectedUser:sendingImage];
-    
     self.requestOptions = [[PHImageRequestOptions alloc] init];
     self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
     self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     
     self.requestOptions.synchronous = true;
-    
     NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
     
-    
-    
-    
+
     [[PHImageManager defaultManager] requestImageDataForAsset:sendingImage.imageAsset
                                                       options:self.requestOptions
                                                 resultHandler:

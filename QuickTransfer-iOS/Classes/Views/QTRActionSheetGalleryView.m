@@ -12,6 +12,7 @@
 @interface QTRActionSheetGalleryView()<PHPhotoLibraryChangeObserver> {
 
     NSMutableArray *images;
+    NSMutableArray *assets;
 
 
 }
@@ -104,7 +105,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
     //cell.backgroundColor = [UIColor redColor];
     //NSLog(@"Cell: %@",cell.description);
     
-    cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) [images objectAtIndex:indexPath.row] stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
+    QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
+    cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) imageData.finalImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
+    
+    
+//    
+//    cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) [images objectAtIndex:indexPath.row] stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
     
     
     
@@ -137,8 +143,16 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"Cell %ld Selected",(long)indexPath.row);
+    
     QTRAlertControllerCollectionViewCell *cell = (QTRAlertControllerCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    [self.delegate QTRActionSheetGalleryView:self didCellSelected:YES withCollectionCell:cell];
+    
+    QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
+
+    
+    //[self.delegate QTRActionSheetGalleryView:self didCellSelected:YES withCollectionCell:cell];
+    [self.delegate QTRActionSheetGalleryView:self didCellSelected:YES withCollectionCell:cell selectedImage:imageData];
+   
+    
 }
 
 
@@ -171,10 +185,13 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
     PHImageManager *manager = [PHImageManager defaultManager];
-    images= [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
     
-    __block UIImage *ima;
+    images= [NSMutableArray arrayWithCapacity:10];
+    assets = [NSMutableArray arrayWithCapacity:10];
+    //__block UIImage *ima;
     __block int i;
+    __block QTRImagesInfoData *imageInfoData;
+
     
     for(i = 0; i < 10 ; i++) {
         
@@ -184,16 +201,19 @@ static NSString *cellIdentifier = @"cellIdentifier";
                           contentMode:PHImageContentModeDefault
                               options:self.requestOptions
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
-                            ima = image;
-                            if (ima != nil) {
-                                [images addObject:ima];
+                            imageInfoData = [[QTRImagesInfoData alloc]init];
+                            imageInfoData.finalImage = image;
+                            imageInfoData.imageInfo = info;
+                            imageInfoData.imageAsset = asset;
+                            
+                            if (imageInfoData != nil) {
+                                [images addObject:imageInfoData];
                                 [aCollectionView reloadData];
                             }
                         }];
         
         
     }
-    [aCollectionView reloadData];
     [_actionCustomIndicatorView stopAnimating];
 
     
