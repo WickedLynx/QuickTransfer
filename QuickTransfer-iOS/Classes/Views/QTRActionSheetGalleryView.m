@@ -167,7 +167,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
     self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     
-    self.requestOptions.synchronous = true;
+    self.requestOptions.synchronous = false;
     
     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
     PHImageManager *manager = [PHImageManager defaultManager];
@@ -180,18 +180,18 @@ static NSString *cellIdentifier = @"cellIdentifier";
         
         PHAsset *asset = [assetsFetchResult objectAtIndex:i];
         [manager requestImageForAsset:asset
-                           targetSize:PHImageManagerMaximumSize
+                           targetSize:CGSizeMake(160, 160)
                           contentMode:PHImageContentModeDefault
                               options:self.requestOptions
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
                             ima = image;
-                            
-
+                            if (ima != nil) {
+                                [images addObject:ima];
+                                [aCollectionView reloadData];
+                            }
                         }];
         
-        if (ima != nil) {
-            [images addObject:ima];
-        }
+        
     }
     [aCollectionView reloadData];
     [_actionCustomIndicatorView stopAnimating];

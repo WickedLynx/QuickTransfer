@@ -152,7 +152,7 @@ int totalImages;
     self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
     self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     
-    self.requestOptions.synchronous = true;
+    self.requestOptions.synchronous = false;
     
     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
     PHImageManager *manager = [PHImageManager defaultManager];
@@ -160,31 +160,35 @@ int totalImages;
     assets = [NSMutableArray arrayWithCapacity:10];
     
     __block QTRImagesInfoData *imageInfoData;
-    __block int i;
+    //__block int i;
     
-    //for (PHAsset *asset in assetsFetchResult) {
+    for (PHAsset *asset in assetsFetchResult) {
         
-        for(i = 0; i < 10 ; i++) {
+        //for(i = 0; i < 10 ; i++) {
             
-            PHAsset *asset = [assetsFetchResult objectAtIndex:i];
-        imageInfoData = [[QTRImagesInfoData alloc]init];
+            //PHAsset *asset = [assetsFetchResult objectAtIndex:i];
+        
         
         [manager requestImageForAsset:asset
-                           targetSize:PHImageManagerMaximumSize
+                           targetSize:CGSizeMake(160, 160)
                           contentMode:PHImageContentModeDefault
                               options:self.requestOptions
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
                             
+                            imageInfoData = [[QTRImagesInfoData alloc]init];
                             imageInfoData.finalImage = image;
                             imageInfoData.imageInfo = info;
                             imageInfoData.imageAsset = asset;
                             
+                            if (imageInfoData != nil) {
+                                [images addObject:imageInfoData];
+                                [galleryCollectionView reloadData];
+                            }
+
+                            
                         }];
         
-        if (imageInfoData != nil) {
-            [images addObject:imageInfoData];
-        }
-    }
+            }
 }
 
 
