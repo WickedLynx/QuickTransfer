@@ -59,23 +59,6 @@
 
 #pragma mark - View lifecycle
 
-//- (void)loadView {
-//    QTRConnectedDevicesView *view = [[QTRConnectedDevicesView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-//    [view setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
-//    [self setView:view];
-//}
-
-//- (void)setView:(UIView *)view {
-//    
-//    if (![view isKindOfClass:[QTRConnectedDevicesView class]]) {
-//        [NSException raise:NSInternalInconsistencyException format:@"%@ must be associated only with %@", NSStringFromClass([self class]), NSStringFromClass([QTRConnectedDevicesView class])];
-//    }
-//    
-//    [super setView:view];
-//    
-//    _transfersView = (QTRConnectedDevicesView *)view;
-//}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -89,25 +72,14 @@
     [logsTableView setSeparatorColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
     [logsTableView setShowsVerticalScrollIndicator:NO];
     
-    
-    
     [self.view addSubview:logsTableView];
-//    
-//    [[_transfersView devicesTableView] setDataSource:self];
-//    [[_transfersView devicesTableView] setDelegate:self];
-//    
-//    QTRTransfersTableCell *tableCell = [[QTRTransfersTableCell alloc] init];
-//    [[_transfersView devicesTableView] setRowHeight:[tableCell requiredHeightInTableView]];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-//    [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.95f green:0.91f blue:0.40f alpha:1.00f]];
-//    NSIndexPath *selectedIndexPath = [[_transfersView devicesTableView] indexPathForSelectedRow];
-//    if (selectedIndexPath != nil && selectedIndexPath.row < [[_transfersStore transfers] count]) {
-//        [[_transfersView devicesTableView] deselectRowAtIndexPath:selectedIndexPath animated:YES];
-//    }
+
 }
 
 #pragma mark - Public methods
@@ -125,8 +97,6 @@
 
 - (void)dealloc {
     
-//    [[_transfersView devicesTableView] setDataSource:nil];
-//    [[_transfersView devicesTableView] setDelegate:nil];
     [_transfersStore setDelegate:nil];
 }
 

@@ -136,7 +136,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)loadView {
     QTRConnectedDevicesView *view = [[QTRConnectedDevicesView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    //[view setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
     [self setView:view];
 }
 
@@ -154,7 +153,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    //[_selectedRecivers removeAllObjects];
     [[_devicesView devicesCollectionView] reloadData];
     
 }
@@ -628,7 +626,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     QTRHomeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
     CGRect finalCellFrame = cell.frame;
-    //check the scrolling direction to verify from which side of the screen the cell should come.
     CGPoint translation = [collectionView.panGestureRecognizer translationInView:collectionView.superview];
     
            if (translation.y < 0) {
@@ -867,20 +864,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 #pragma mark - ActionSheetGallaryDelegate methods
 
-//- (void) QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)QTRActionSheetGalleryView didCellSelected:(BOOL)selected withCollectionCell:(QTRAlertControllerCollectionViewCell *)alertControllerCollectionViewCell {
-//    if (selected) {
-//        
-//        
-//        
-//        
-//        [cac removeFromSuperview];
-//        
-//        
-//        //[self dismissViewControllerAnimated:YES completion:nil];
-//    }
-//}
-
-
 - (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView didCellSelected:(BOOL)selected withCollectionCell:(QTRAlertControllerCollectionViewCell *)alertControllerCollectionViewCell selectedImage:(QTRImagesInfoData *)sendingImage {
     
     [cac removeFromSuperview];
@@ -1038,23 +1021,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
             _selectedUser = nil;
         }
 
-        
-    
-        
-//        if ([_connectedClients containsObject:_selectedUser]) {
-//            [_server sendFileAtURL:localURL toUser:_selectedUser];
-//        } else if ([_connectedServers containsObject:_selectedUser]) {
-//            [_client sendFileAtURL:localURL toUser:_selectedUser];
-//        } else {
-//            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"%@ is not connected anymore", _selectedUser.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-//            [alert show];
-//        }
-//        
-//        _selectedUser = nil;
-        
-        
-        
-        
         
     } failureBlock:^(NSError *error) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];

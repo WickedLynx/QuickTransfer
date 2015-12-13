@@ -58,7 +58,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
         customIndicatorView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         customIndicatorView.frame = CGRectZero;
         [customIndicatorView setTranslatesAutoresizingMaskIntoConstraints:NO];
-        //customIndicatorView.center = aCollectionView.center;
         [self addSubview: customIndicatorView];
         _actionCustomIndicatorView = customIndicatorView;
         
@@ -87,9 +86,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    //    return [_connectedServers count] + [_connectedClients count];
     return [images count];
-    //return 3;
     
 }
 
@@ -97,30 +94,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     QTRAlertControllerCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    //QTRUser *theUser = [self userAtIndexPath:indexPath isServer:NULL];
-    
-    //    [cell.connectedDeviceName setText:[theUser name]];
-    
-    
-    //cell.backgroundColor = [UIColor redColor];
-    //NSLog(@"Cell: %@",cell.description);
-    
     QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
     cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) imageData.finalImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
-    
-    
-//    
-//    cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) [images objectAtIndex:indexPath.row] stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
-    
-    
-    
-    
     
     return cell;
     
 }
-
-
 
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -131,25 +110,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 #pragma mark - UICollectionViewDelegate methods
 
-
-//- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    QTRAlertControllerCollectionViewCell *cell = (QTRAlertControllerCollectionViewCell *)[[_devicesView devicesCollectionView] cellForItemAtIndexPath:indexPath];
-//    cell.connectedDeviceName.textColor = [UIColor whiteColor];
-//
-//}
-//
-
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Cell %ld Selected",(long)indexPath.row);
-    
     QTRAlertControllerCollectionViewCell *cell = (QTRAlertControllerCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     
     QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
-
-    
-    //[self.delegate QTRActionSheetGalleryView:self didCellSelected:YES withCollectionCell:cell];
     [self.delegate QTRActionSheetGalleryView:self didCellSelected:YES withCollectionCell:cell selectedImage:imageData];
    
     

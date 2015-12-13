@@ -22,7 +22,6 @@
         
         CAShapeLayer *shapeLayer12 = [CAShapeLayer layer];
         shapeLayer12.path = [path12 CGPath];
-        //shapeLayer12.strokeColor = [[UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f] CGColor];
         shapeLayer12.strokeColor = [[UIColor whiteColor] CGColor];
         shapeLayer12.lineWidth = 1.0f;
         shapeLayer12.fillColor = [[UIColor clearColor] CGColor];
