@@ -344,7 +344,7 @@ int totalImages;
              _selectedUser = nil;
          }
          
-         
+         [self.navigationController popToRootViewControllerAnimated:YES];
      }];
     
 }

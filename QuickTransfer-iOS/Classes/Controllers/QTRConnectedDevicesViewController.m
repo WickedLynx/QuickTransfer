@@ -74,6 +74,7 @@
     UICollisionBehavior* _collision;
     
     QTRCustomAlertView *cac;
+    NSTimer *_timer;
     
     
 }
@@ -170,6 +171,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self startTimer];
+    
     NSURL *ubiq = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
     if (ubiq) {
         NSLog(@"iCloud access at %@", ubiq);
@@ -177,9 +180,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     } else {
         NSLog(@"No iCloud access");
     }
-    
-
-    NSLog(@"%f   %f ",self.view.frame.size.width ,self.view.frame.size.height);
     
     fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 220, 40)];
     fetchingDevicesLabel.center = self.view.center;
@@ -579,13 +579,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [self setTitle:[NSString stringWithFormat:@"Devices (%lu)", totalUsers]];
     
     if (totalUsers > 0) {
-        //[[_devicesView loadDeviceView] stopAnimating];
         [refreshControl endRefreshing];
         [self animatePreviewLabel:fetchingDevicesLabel];
         [fetchingDevicesLabel setText:@""];
         
     } else {
-        //[[_devicesView loadDeviceView] startAnimating];
         [self animatePreviewLabel:fetchingDevicesLabel];
         [fetchingDevicesLabel setText:@"Fetching Devices"];
 
@@ -1054,6 +1052,29 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     [picker dismissViewControllerAnimated:YES completion:NULL];
     
+}
+
+#pragma mark: NSTimer Controller
+
+- (void)startTimer {
+    if (!_timer) {
+        _timer = [NSTimer scheduledTimerWithTimeInterval:0.5f
+                                                  target:self
+                                                selector:@selector(_timerFired:)
+                                                userInfo:nil
+                                                 repeats:YES];
+    }
+}
+
+- (void)stopTimer {
+    if ([_timer isValid]) {
+        [_timer invalidate];
+    }
+    _timer = nil;
+}
+
+- (void)_timerFired:(NSTimer *)timer {
+    NSLog(@"ping");
 }
 
 @end
