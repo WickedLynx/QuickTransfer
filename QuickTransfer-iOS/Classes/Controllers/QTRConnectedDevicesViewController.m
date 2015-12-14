@@ -771,6 +771,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
         
         [_connectedClients addObject:user];
         [self updateTitle];
+
         [[_devicesView devicesCollectionView] reloadData];
         
     }
