@@ -20,6 +20,7 @@
 #import "QTRFileZipper.h"
 #import "QTRDraggedItem.h"
 #import "QTRNotificationsController.h"
+#import "QTRBonjourManager.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -32,19 +33,13 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 NSString *const QTRDefaultsAutomaticallyAcceptFilesKey = @"automaticallyAcceptFiles";
 NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 
-@interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRBonjourClientDelegate, QTRBonjourServerDelegate, QTRStatusItemViewDelegate, QTRTransfersControllerDelegate> {
+@interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRStatusItemViewDelegate, QTRTransfersControllerDelegate, QTRBonjourManagerDelegate> {
+    QTRBonjourManager *_bonjourManager;
     NSStatusItem *_statusItem;
-    QTRBonjourServer *_server;
-    QTRBonjourClient *_client;
-    NSMutableArray *_connectedServers;
-    NSMutableArray *_connectedClients;
-    QTRUser *_localUser;
     QTRUser *_selectedUser;
     NSString *_downloadsDirectory;
     long _clickedRow;
-    BOOL _canRefresh;
     BOOL _shouldAutoAccept;
-    QTRBeaconAdvertiser *_beaconAdvertiser;
     QTRNotificationsController *_notificationsController;
 }
 
@@ -75,6 +70,8 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 
 @implementation QTRRootController
 
+@synthesize computerName = _computerName;
+
 void refreshComputerModel() {
     size_t len = 0;
     sysctlbyname("hw.model", NULL, &len, NULL, 0);
@@ -99,11 +96,6 @@ void refreshComputerModel() {
     [self.statusItemView.button setAction:@selector(showMenu:)];
     [self.statusItemView setDelegate:self];
 
-    _connectedServers = [NSMutableArray new];
-    _connectedClients = [NSMutableArray new];
-
-    _canRefresh = YES;
-
     NSURL *appSupportDirectoryURL = [QTRHelper applicationSupportDirectoryURL];
     NSString *archiveFilePath = [[appSupportDirectoryURL path] stringByAppendingPathComponent:@"Transfers"];
 
@@ -111,19 +103,12 @@ void refreshComputerModel() {
     [_transfersController setTransfersStore:transfersStore];
     [_transfersController setDelegate:self];
 
-    [self startServices];
-
     [self refreshMenu];
 
     [self.devicesTableView registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
 
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemWillSleep:) name:NSWorkspaceWillSleepNotification object:nil];
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemDidWakeUpFromSleep:) name:NSWorkspaceDidWakeNotification object:nil];
-
-    if ([QTRBeaconHelper isBLEAvailable]) {
-        _beaconAdvertiser = [[QTRBeaconAdvertiser alloc] init];
-    }
-
 }
 
 #pragma mark - Private methods
@@ -134,32 +119,6 @@ void refreshComputerModel() {
     }
 
     return _downloadsDirectory;
-}
-
-- (BOOL)userConnected:(QTRUser *)user {
-    return [_connectedClients containsObject:user] || [_connectedServers containsObject:user] || [_localUser isEqual:user];
-}
-
-- (QTRUser *)userAtRow:(long)row isServer:(BOOL *)isServer {
-
-    QTRUser *theUser = nil;
-    if ([_connectedServers count] > row) {
-        theUser = _connectedServers[row];
-        if (isServer != NULL) {
-            *isServer = YES;
-        }
-    } else {
-        row -= [_connectedServers count];
-        if ([_connectedClients count] > row) {
-            theUser = _connectedClients[row];
-            if (isServer != NULL) {
-                *isServer = NO;
-            }
-        }
-    }
-
-    return theUser;
-
 }
 
 - (void)deleteSavedFileAtURL:(NSURL *)url {
@@ -190,17 +149,10 @@ void refreshComputerModel() {
             shouldAccept = YES;
         }
 
-
-        if ([receiver isEqual:_client]) {
-            [_client acceptFile:file accept:shouldAccept fromUser:fileInfo[@"user"]];
-        } else if ([receiver isEqual:_server]) {
-            [_server acceptFile:file accept:shouldAccept fromUser:fileInfo[@"user"]];
-        }
-        
+        [_bonjourManager accept:shouldAccept file:file fromUser:fileInfo[@"user"] context:receiver];
     }
     
 }
-
 
 - (void)preferencesAlertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
@@ -213,14 +165,14 @@ void refreshComputerModel() {
 
         [[NSUserDefaults standardUserDefaults] synchronize];
 
-        [self clickRefresh:nil];
+        [_bonjourManager refresh:nil];
     }
 
     [self.preferencesWindow close];
 }
 
 - (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user {
-    [file.data writeToURL:[self saveURLForFile:file] atomically:YES];
+    [file.data writeToURL:[self bonjourManager:nil saveURLForFile:file] atomically:YES];
 
     NSString *fileName = file.name;
     [_notificationsController showFileSavedNotificationForFileNamed:fileName fromUser:user];
@@ -232,46 +184,28 @@ void refreshComputerModel() {
 }
 
 - (void)sendFileAtURL:(NSURL *)url {
-    if ([_connectedServers count] > _clickedRow) {
-
-        QTRUser *theUser = _connectedServers[_clickedRow];
-        [_client sendFileAtURL:url toUser:theUser];
-
-    } else {
-
-        QTRUser *theUser = _connectedClients[_clickedRow - [_connectedServers count]];
-        [_server sendFileAtURL:url toUser:theUser];
-
-    }
+    [_bonjourManager sendFileAtURL:url toUser:[_bonjourManager userAtIndex:_clickedRow]];
 }
 
 - (void)sendDirectoryAtURL:(NSURL *)url {
-    QTRUser *user = nil;
-    BOOL userIsServer = NO;
-    if ([_connectedServers count] > _clickedRow) {
-        userIsServer = YES;
-        user = _connectedServers[_clickedRow];
-    } else if ([_connectedClients count] > _clickedRow) {
-        user = _connectedClients[_clickedRow];
-    }
+    QTRUser *user = [_bonjourManager userAtIndex:_clickedRow];
 
-    __weak typeof(self) wself = self;
-    void (^zipCompletion)(NSURL *, NSError *) = ^(NSURL *zipURL, NSError *zipError) {
-        if (wself != nil) {
-            typeof(self) sself = wself;
-            if (zipError == nil) {
-                if (user != nil) {
-                    if (userIsServer) {
-                        [sself->_client sendFileAtURL:zipURL toUser:user];
-                    } else {
-                        [sself->_server sendFileAtURL:zipURL toUser:user];
+    if (user != nil) {
+        __weak typeof(self) wself = self;
+        void (^zipCompletion)(NSURL *, NSError *) = ^(NSURL *zipURL, NSError *zipError) {
+            if (wself != nil) {
+                typeof(self) sself = wself;
+                if (zipError == nil) {
+                    if (user != nil) {
+                        [sself->_bonjourManager sendFileAtURL:zipURL toUser:user];
                     }
                 }
             }
-        }
-    };
+        };
 
-    [QTRFileZipper zipDirectoryAtURL:url completion:zipCompletion];
+        [QTRFileZipper zipDirectoryAtURL:url completion:zipCompletion];
+
+    }
 }
 
 - (void)showOpenPanelForSelectedUser {
@@ -324,80 +258,13 @@ void refreshComputerModel() {
     return validatedURLs;
 }
 
-- (void)stopServices {
-
-    [_beaconAdvertiser stopAdvertisingBeaconRegion];
-
-    [_connectedClients removeAllObjects];
-    
-    [_connectedServers removeAllObjects];
-    
-    [self.devicesTableView reloadData];
-
-    [self refreshMenu];
-    
-    [_server setDelegate:nil];
-    [_server setTransferDelegate:nil];
-    [_server stop];
-    _server = nil;
-    
-    [_client setDelegate:nil];
-    [_client setTransferDelegate:nil];
-    [_client stop];
-    _client = nil;
-
-}
-
-- (void)startServices {
-    NSString *userName = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordNameKey];
-    if (userName == nil || [userName isKindOfClass:[NSNull class]] || userName.length == 0) {
-        if (computerModel == NULL) {
-            refreshComputerModel();
-        }
-
-        NSString *computerName = @"Mac";
-        if (computerModel != NULL) {
-            computerName = [NSString stringWithCString:computerModel encoding:NSUTF8StringEncoding];
-        }
-        userName = [NSString stringWithFormat:@"%@'s %@", NSUserName(), computerName];
-
-        [[NSUserDefaults standardUserDefaults] setObject:userName forKey:QTRBonjourTXTRecordNameKey];
-    }
-
-    NSString *uuid = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordIdentifierKey];
-    if ([uuid isKindOfClass:[NSNull class]] || uuid == nil) {
-        uuid = [[NSUUID UUID] UUIDString];
-        [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:QTRBonjourTXTRecordIdentifierKey];
-    }
-
-    _shouldAutoAccept = [[NSUserDefaults standardUserDefaults] boolForKey:QTRDefaultsAutomaticallyAcceptFilesKey];
-
-    _localUser = [[QTRUser alloc] initWithName:userName identifier:uuid platform:QTRUserPlatformMac];
-
-    [[NSUserDefaults standardUserDefaults] synchronize];
-
-    _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
-    [_server setTransferDelegate:self.transfersController.transfersStore];
-
-    if (![_server start]) {
-        NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Please make sure WiFi/Ethernet is enabled and connected"];
-        [alert runModal];
-    }
-
-    _client = [[QTRBonjourClient alloc] initWithDelegate:self];
-    [_client setTransferDelegate:self.transfersController.transfersStore];
-    [_client start];
-
-    [_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
-}
-
 - (void)refreshMenu {
 
-    [self.localComputerNameItem setTitle:_localUser.name];
+    [self.localComputerNameItem setTitle:self.computerName];
 
     [self.sendFileMenu removeAllItems];
 
-    int totalConnectedUsers = (int)([_connectedServers count] + [_connectedClients count]);
+    NSInteger totalConnectedUsers = [[_bonjourManager remoteUsers] count];
 
     if (totalConnectedUsers == 0) {
         [self.sendFileSubMenuItem setEnabled:NO];
@@ -408,7 +275,7 @@ void refreshComputerModel() {
 
         @autoreleasepool {
             for (int userIndex = 0; userIndex != totalConnectedUsers; ++userIndex) {
-                QTRUser *theUser = [self userAtRow:userIndex isServer:NULL];
+                QTRUser *theUser = [_bonjourManager userAtIndex:userIndex];
                 if (theUser != nil) {
                     NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:[self styledDisplayNameForUser:theUser] action:@selector(clickSendMenuItem:) keyEquivalent:@""];
                     [menuItem setTarget:self];
@@ -466,19 +333,7 @@ void refreshComputerModel() {
 
 - (IBAction)clickRefresh:(id)sender {
 
-    if (_canRefresh) {
-
-        _canRefresh = NO;
-
-        [self stopServices];
-
-        double delayInSeconds = 2.0;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self startServices];
-            _canRefresh = YES;
-        });
-    }
+    // TODO: Refresh
 
 }
 
@@ -495,7 +350,7 @@ void refreshComputerModel() {
 }
 
 - (IBAction)clickStopServices:(id)sender {
-    [self stopServices];
+    [_bonjourManager stopServices];
 }
 
 - (IBAction)clickConnectedDevices:(id)sender {
@@ -514,20 +369,7 @@ void refreshComputerModel() {
 }
 
 - (void)showMenu:(id)sender {
-
-    [_beaconAdvertiser stopAdvertisingBeaconRegion];
     [_statusItem popUpStatusItemMenu:_statusItem.menu];
-
-    __weak typeof(self) wSelf = self;
-    double delayInSeconds = 1.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        if (wSelf != nil) {
-            typeof(self) sSelf = wSelf;
-            [sSelf->_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
-        }
-
-    });
 }
 
 - (void)clickTransfers:(id)sender {
@@ -536,7 +378,7 @@ void refreshComputerModel() {
 
 - (IBAction)clickPreferences:(id)sender {
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
-    [[self.computerNameTextField cell] setPlaceholderString:_localUser.name];
+    [[self.computerNameTextField cell] setPlaceholderString:self.computerName];
     if (_shouldAutoAccept) {
         [self.automaticallyAcceptCheckBox setState:NSOnState];
     } else {
@@ -548,7 +390,7 @@ void refreshComputerModel() {
 #pragma mark - Notification handlers
 
 - (void)systemWillSleep:(NSNotification *)notification {
-    [self stopServices];
+    [_bonjourManager stopServices];
 }
 
 - (void)systemDidWakeUpFromSleep:(NSNotification *)notification {
@@ -558,22 +400,12 @@ void refreshComputerModel() {
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
-    return [_connectedServers count] + [_connectedClients count];
+    return [[_bonjourManager remoteUsers] count];
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    BOOL _isServer = NO;
-    QTRUser *theUser = [self userAtRow:rowIndex isServer:&_isServer];
+    QTRUser *theUser = [_bonjourManager userAtIndex:rowIndex];
     NSString *name = [self styledDisplayNameForUser:theUser];
-/*
- // For debugging connections
- 
-    if (_isServer) {
-        name = [name stringByAppendingFormat:@" (server)"];
-    } else {
-        name = [name stringByAppendingFormat:@" (client)"];
-    }
-*/
 
     return  name;
 }
@@ -614,30 +446,39 @@ void refreshComputerModel() {
     return acceptDrop;
 }
 
-#pragma mark - QTRBonjourServerDelegate methods
+#pragma mark - QTRBonjourManagerDelegate methods
 
-- (void)server:(QTRBonjourServer *)server didConnectToUser:(QTRUser *)user {
-    if (![self userConnected:user]) {
-        [_connectedClients addObject:user];
-        [self.devicesTableView reloadData];
+- (void)bonjourManagerDidStartServices:(QTRBonjourManager *)manager {
 
-        [self refreshMenu];
-    }
 }
 
-- (void)server:(QTRBonjourServer *)server didDisconnectUser:(QTRUser *)user {
-    [_connectedClients removeObject:user];
+- (void)bonjourManagerDidStopServices:(QTRBonjourManager *)manager {
     [self.devicesTableView reloadData];
-
     [self refreshMenu];
 }
 
-- (void)server:(QTRBonjourServer *)server didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
-    [self showAlertForFile:file user:user];
+- (NSString *)computerName {
+    if (_computerName == nil) {
+        NSString *userName = [[NSUserDefaults standardUserDefaults] stringForKey:QTRBonjourTXTRecordNameKey];
+        if (userName == nil || [userName isKindOfClass:[NSNull class]] || userName.length == 0) {
+            if (computerModel == NULL) {
+                refreshComputerModel();
+            }
+
+            NSString *computerName = @"Mac";
+            if (computerModel != NULL) {
+                computerName = [NSString stringWithCString:computerModel encoding:NSUTF8StringEncoding];
+            }
+            userName = [NSString stringWithFormat:@"%@'s %@", NSUserName(), computerName];
+
+            [[NSUserDefaults standardUserDefaults] setObject:userName forKey:QTRBonjourTXTRecordNameKey];
+        }
+        _computerName = userName;
+    }
+    return _computerName;
 }
 
-- (NSURL *)saveURLForFile:(QTRFile *)file {
-    
+- (NSURL *)bonjourManager:(QTRBonjourManager *)manager saveURLForFile:(QTRFile *)file {
     NSString *fileName = file.name;
     NSString *savePath = [[self downloadsDirectory] stringByAppendingPathComponent:fileName];
     if ([[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
@@ -648,82 +489,40 @@ void refreshComputerModel() {
     return [NSURL fileURLWithPath:savePath];
 }
 
-- (void)server:(QTRBonjourServer *)server didSaveReceivedFileAtURL:(NSURL *)url fromUser:(QTRUser *)user {
-    [self showAlertForSavedFileAtURL:url user:user];
+- (void)bonjourManager:(QTRBonjourManager *)manager requiresUserConfirmationForFile:(QTRFile *)file fromUser:(QTRUser *)remoteUser context:(id)context {
+    [self showConfirmationAlertForFile:file user:remoteUser receiver:context];
 }
 
-- (void)server:(QTRBonjourServer *)server didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
-    if (_shouldAutoAccept) {
-        [server acceptFile:file accept:YES fromUser:user];
-    } else {
-        [self showConfirmationAlertForFile:file user:user receiver:server];
-    }
-
-}
-
-- (void)user:(QTRUser *)user didRejectFile:(QTRFile *)file {
-    [self showAlertForRejectedFile:file receiver:user];
-}
-
-- (void)server:(QTRBonjourServer *)server didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user {
-    [self showTransfers];
-}
-
-#pragma mark - QTRBonjourClientDelegate methods
-
-- (QTRUser *)localUser {
-    return _localUser;
-}
-
-- (BOOL)client:(QTRBonjourClient *)client shouldConnectToUser:(QTRUser *)user {
-
-    return ![self userConnected:user];
-}
-
-- (void)client:(QTRBonjourClient *)client didConnectToServerForUser:(QTRUser *)user {
-    if (![self userConnected:user]) {
-        [_connectedServers addObject:user];
-        [self.devicesTableView reloadData];
-
-        [self refreshMenu];
-    }
-}
-
-- (void)client:(QTRBonjourClient *)client didDisconnectFromServerForUser:(QTRUser *)user {
-    [_connectedServers removeObject:user];
-
+- (void)bonjourManager:(QTRBonjourManager *)manager didConnectToUser:(QTRUser *)remoteUser {
     [self.devicesTableView reloadData];
-
     [self refreshMenu];
 }
 
-- (void)client:(QTRBonjourClient *)client didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
+- (void)bonjourManager:(QTRBonjourManager *)manager didDisconnectFromUser:(QTRUser *)remoteUser {
+    [self.devicesTableView reloadData];
+    [self refreshMenu];
+}
+
+- (void)bonjourManager:(QTRBonjourManager *)manager didReceiveFile:(QTRFile *)file fromUser:(QTRUser *)user {
     [self showAlertForFile:file user:user];
 }
 
-- (void)client:(QTRBonjourClient *)client didSaveReceivedFileAtURL:(NSURL *)url fromUser:(QTRUser *)user {
+- (void)bonjourManager:(QTRBonjourManager *)manager didSaveReceivedFileToURL:(NSURL *)url fromUser:(QTRUser *)user {
     [self showAlertForSavedFileAtURL:url user:user];
 }
 
-- (void)client:(QTRBonjourClient *)client didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
-    if (_shouldAutoAccept) {
-        [client acceptFile:file accept:YES fromUser:user];
-    } else {
-        [self showConfirmationAlertForFile:file user:user receiver:client];
-    }
-
+- (void)bonjourManager:(QTRBonjourManager *)manager remoteUser:(QTRUser *)remoteUser didRejectFile:(QTRFile *)file {
+    [self showAlertForRejectedFile:file receiver:remoteUser];
 }
 
-- (void)client:(QTRBonjourClient *)client didBeginSendingFile:(QTRFile *)file toUser:(QTRUser *)user {
+- (void)bonjourManager:(QTRBonjourManager *)manager didBeginFileTransfer:(QTRFile *)file toUser:(QTRUser *)remoteUser {
     [self showTransfers];
 }
 
 #pragma mark - QTRTransfersControllerDelegate methods
 
 - (BOOL)transfersController:(QTRTransfersController *)controller needsResumeTransfer:(QTRTransfer *)transfer {
-    BOOL canResume = [_client resumeTransfer:transfer] || [_server resumeTransfer:transfer];
-    NSLog(@"Resume? %@", (canResume ? @"Yes" : @"NO"));
-    return canResume;
+    return [_bonjourManager resumeTransfer:transfer];
 }
 
 #pragma mark - QTRStatusItemViewDelegate methods
