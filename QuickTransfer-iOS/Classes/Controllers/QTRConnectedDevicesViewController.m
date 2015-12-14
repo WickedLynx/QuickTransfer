@@ -29,6 +29,7 @@
 #import "QTRSelectedUserInfo.h"
 #import "QTRRecentLogsViewController.h"
 #import "QTRCustomAlertView.h"
+#import "QTRDeviceNotFound.h"
 
 
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate, UIImagePickerControllerDelegate> {
@@ -60,6 +61,7 @@
     QTRBeaconAdvertiser *_beaconAdvertiser;
     
     QTRActionSheetGalleryView *customView;
+    QTRDeviceNotFound *noDeviceView;
 
     __weak id <QTRBonjourTransferDelegate> _transfersController;
 
@@ -181,6 +183,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
         NSLog(@"No iCloud access");
     }
     
+    noDeviceView = [[QTRDeviceNotFound alloc]initWithFrame:self.view.bounds];
+    [[noDeviceView refreshButton] addTarget:self action:@selector(noDeviceFound) forControlEvents:UIControlEventTouchUpInside];
+    
     fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 220, 40)];
     fetchingDevicesLabel.center = self.view.center;
     [fetchingDevicesLabel setText:@""];
@@ -250,12 +255,19 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 #pragma mark - Actions
 
--(void) refreshConnectedDevices {
-    
+- (void)noDeviceFound {
+    [noDeviceView removeFromSuperview];
+    [self refreshConnectedDevices];
+}
+
+- (void)refreshConnectedDevices {
+    [self stopTimer];
+
     [self animatePreviewLabel:fetchingDevicesLabel];
     [fetchingDevicesLabel setText:@"Fetching Devices"];
     
     [self refresh];
+    [self startTimer];
 
 }
 
@@ -268,16 +280,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
     QTRRecentLogsViewController *recentLogs = [[QTRRecentLogsViewController alloc]init];
     [self.navigationController pushViewController:recentLogs animated:YES];
     
+    
 }
 
 
 - (void)touchRefresh:(UIBarButtonItem *)barButton {
     [self refresh];
-}
-
--(void) userProfile {
-
-    NSLog(@"Custom button");
 }
 
 -(void)nextButtonClicked{
@@ -578,12 +586,15 @@ static NSString *cellIdentifier = @"cellIdentifier";
     unsigned long totalUsers = [_connectedClients count] + [_connectedServers count];
     [self setTitle:[NSString stringWithFormat:@"Devices (%lu)", totalUsers]];
     
+    
+    
     if (totalUsers > 0) {
         [refreshControl endRefreshing];
         [self animatePreviewLabel:fetchingDevicesLabel];
         [fetchingDevicesLabel setText:@""];
         
     } else {
+        [refreshControl beginRefreshing];
         [self animatePreviewLabel:fetchingDevicesLabel];
         [fetchingDevicesLabel setText:@"Fetching Devices"];
 
@@ -672,7 +683,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     if ([_selectedRecivers count] > 0) {
         
         if ([_selectedRecivers objectForKey:theUser.identifier] != NULL) {
-            NSLog(@"Selected %@", theUser.name);
             cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
         }
     }
@@ -884,12 +894,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView didCellSelected:(BOOL)selected withCollectionCell:(QTRAlertControllerCollectionViewCell *)alertControllerCollectionViewCell selectedImage:(QTRImagesInfoData *)sendingImage {
     
     [cac removeFromSuperview];
-
-    NSLog(@"Delegation %@",alertControllerCollectionViewCell);
-    
-    
-    NSLog(@"Sending Image Data:%@", sendingImage.description);
-
     [self sendDataToSelectedUser:sendingImage];
 
 }
@@ -1058,7 +1062,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)startTimer {
     if (!_timer) {
-        _timer = [NSTimer scheduledTimerWithTimeInterval:0.5f
+        _timer = [NSTimer scheduledTimerWithTimeInterval:5.0f
                                                   target:self
                                                 selector:@selector(_timerFired:)
                                                 userInfo:nil
@@ -1074,7 +1078,13 @@ static NSString *cellIdentifier = @"cellIdentifier";
 }
 
 - (void)_timerFired:(NSTimer *)timer {
-    NSLog(@"ping");
+
+    if (([_connectedClients count] + [_connectedServers count]) < 1) {
+        [self stopServices];
+        [fetchingDevicesLabel removeFromSuperview];
+        [self.view addSubview:noDeviceView];
+    }
 }
+
 
 @end
