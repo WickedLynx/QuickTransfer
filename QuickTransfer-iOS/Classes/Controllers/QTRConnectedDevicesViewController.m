@@ -281,8 +281,17 @@ static NSString *cellIdentifier = @"cellIdentifier";
 }
 
 -(void)nextButtonClicked{
+    
+    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
+    
+    if (status != ALAuthorizationStatusAuthorized) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Please give this app permission to access your photo library in your settings app!" delegate:nil cancelButtonTitle:@"Close" otherButtonTitles:nil, nil];
+        [alert show];
+    }
+    
+    
 
-    if ([_selectedRecivers count] > 0) {
+    else if ([_selectedRecivers count] > 0) {
     
         cac = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         [self.view addSubview:cac];
@@ -347,14 +356,23 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 }
 -(void) actionTakePhoto {
-    [cac removeFromSuperview];
     
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    picker.delegate = self;
-    picker.allowsEditing = YES;
-    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    BOOL isCameraAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     
-    [self presentViewController:picker animated:YES completion:NULL];
+    if (!isCameraAvailable) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Your device does't support this feature!" delegate:nil cancelButtonTitle:@"Close" otherButtonTitles:nil, nil];
+        [alert show];
+        
+    } else {
+        [cac removeFromSuperview];
+    
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.delegate = self;
+        picker.allowsEditing = YES;
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+    
+        [self presentViewController:picker animated:YES completion:NULL];
+    }
 }
 
 - (void)touchShare:(UIBarButtonItem *)barButton {
