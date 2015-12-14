@@ -8,8 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "QTRBonjourTransferDelegate.h"
+@import Photos;
+@import PhotosUI;
 
-@interface QTRConnectedDevicesViewController : UIViewController
+@interface QTRConnectedDevicesViewController : UIViewController <UINavigationControllerDelegate, UISearchBarDelegate>
+
+
+@property (nonatomic, strong) NSIndexPath *selectedItemIndexPath;
+@property (nonatomic, strong) NSMutableArray *photos;
+@property (nonatomic, assign) bool isFiltered;
+@property (strong, nonatomic) NSMutableArray* filteredUserData;
+@property (nonatomic, retain) PHImageRequestOptions *requestOptions;
 
 /*!
  Initialises the receiver.

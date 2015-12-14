@@ -12,7 +12,8 @@
 
     __weak UILabel *_titleLabel;
     __weak UILabel *_subtitleLabel;
-    __weak UILabel *_footerLabel;
+    __weak UILabel *_fileSizeLabel;
+    __weak UILabel *_fileStateLabel;
     __weak UIProgressView *_progressView;
 
 }
@@ -36,16 +37,47 @@
                 return aLabel;
             };
 
-            _titleLabel = addLabel(CGRectMake(85.00f, 12.00f, 190.00f, 22.00f), [UIFont boldSystemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
-            _subtitleLabel = addLabel(CGRectMake(85.00f, 33.00f, 190.0f, 18.00f), [UIFont systemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            _titleLabel = addLabel(CGRectZero, [UIFont systemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            [_titleLabel setTextColor:[UIColor whiteColor]];
+            [_titleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+            
+            _subtitleLabel = addLabel(CGRectZero, [UIFont systemFontOfSize:10.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            [_subtitleLabel setTextColor:[UIColor lightGrayColor]];
+            [_subtitleLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
 
-            UIProgressView *aProgressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-            [aProgressView setFrame:CGRectMake(85.0f, 55.0f, 190.0f, 10.0f)];
-            [self addSubview:aProgressView];
-            _progressView = aProgressView;
+            _fileSizeLabel = addLabel(CGRectZero, [UIFont systemFontOfSize:13.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            [_fileSizeLabel setTextColor:[UIColor whiteColor]];
+            [_fileSizeLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
 
-            _footerLabel = addLabel(CGRectMake(85.00f, 60.00f, 190.0f, 18.00f), [UIFont italicSystemFontOfSize:12.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
-
+            _fileStateLabel = addLabel(CGRectZero, [UIFont systemFontOfSize:10.0f], (UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin));
+            [_fileStateLabel setTextColor:[UIColor lightGrayColor]];
+            [_fileStateLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+            
+            _fileSizeLabel.textAlignment = NSTextAlignmentRight;
+            _fileStateLabel.textAlignment = NSTextAlignmentRight;
+            
+            UIImageView *localIconImageView = [[UIImageView alloc]init];
+            [localIconImageView setTranslatesAutoresizingMaskIntoConstraints:NO];
+            [self addSubview:localIconImageView];
+            _transferStateIconView = localIconImageView;
+            
+            
+            
+            NSDictionary *views = NSDictionaryOfVariableBindings(_titleLabel, _subtitleLabel, _fileSizeLabel, _fileStateLabel, _transferStateIconView);
+            
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-43-[_titleLabel(==150)]" options:0 metrics:0 views:views]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-43-[_subtitleLabel(==150)]" options:0 metrics:0 views:views]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_fileSizeLabel(==100)]-30-|" options:0 metrics:0 views:views]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_fileStateLabel(==100)]-30-|" options:0 metrics:0 views:views]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-20-[_transferStateIconView(==11)]" options:0 metrics:0 views:views]];
+            
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[_titleLabel(==20)]-0-[_subtitleLabel]" options:0 metrics:0 views:views]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-10-[_fileSizeLabel(==20)]-0-[_fileStateLabel]" options:0 metrics:0 views:views]];
+            [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-15-[_transferStateIconView(==11)]" options:0 metrics:0 views:views]];
+            
+            
+            
+            
         }
     }
     return self;
@@ -67,18 +99,22 @@
     return _subtitleLabel;
 }
 
-- (UILabel *)footerLabel {
-    return _footerLabel;
+- (UILabel *)fileSizeLabel {
+    return _fileSizeLabel;
 }
 
 - (UIProgressView *)progressView {
     return _progressView;
 }
 
+- (UILabel *)fileStateLabel {
+    return _fileStateLabel;
+}
+
 - (CGFloat)requiredHeightInTableView {
     CGFloat requiredHeight = 0.0f;
 
-    requiredHeight = _footerLabel.frame.origin.y + (1.5 * _footerLabel.frame.size.height);
+    requiredHeight = 55.0f;
     
     return requiredHeight;
 }

@@ -13,7 +13,8 @@
 #import "QTRConnectedDevicesViewController.h"
 #import "QTRTransfersViewController.h"
 #import "QTRTransfersStore.h"
-
+#import "QTRConnectedDevicesView.h"
+#import "QTRShowGalleryViewController.h"
 
 
 CGFloat const QTRRootViewControllerXOffset = 50.0f;
@@ -32,35 +33,19 @@ CGFloat const QTRRootViewControllerXOffset = 50.0f;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
-
+    
+    
     QTRTransfersViewController *transfersController = [QTRTransfersViewController new];
     UINavigationController *transfersNavigationController = [[UINavigationController alloc] initWithRootViewController:transfersController];
     _transfersNavigationController = transfersNavigationController;
-
+    
     QTRConnectedDevicesViewController *connectedDevicesController = [[QTRConnectedDevicesViewController alloc] initWithTransfersStore:[transfersController transfersStore]];
     UINavigationController *devicesNavigationController = [[UINavigationController alloc] initWithRootViewController:connectedDevicesController];
     _connectedDevicesNavigationController = devicesNavigationController;
-
+    
     [self addChildViewController:devicesNavigationController];
     [self.view addSubview:devicesNavigationController.view];
 
-    [self addChildViewController:transfersNavigationController];
-    [self.view addSubview:transfersNavigationController.view];
-
-    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:CGRectOffset(transfersNavigationController.view.bounds, -2.0f, 0.0f)];
-    [transfersNavigationController.view.layer setShadowPath:[shadowPath CGPath]];
-    [transfersNavigationController.view.layer setShadowRadius:2.0f];
-    [transfersNavigationController.view.layer setShadowColor:[[UIColor colorWithWhite:0.3f alpha:1.0f] CGColor]];
-    [transfersNavigationController.view.layer setShadowOpacity:0.7f];
-
-    UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
-    [leftSwipe setDirection:UISwipeGestureRecognizerDirectionLeft];
-    [self.view addGestureRecognizer:leftSwipe];
-
-    UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
-    [rightSwipe setDirection:UISwipeGestureRecognizerDirectionRight];
-    [self.view addGestureRecognizer:rightSwipe];
 }
 
 - (BOOL)importFileAtURL:(NSURL *)fileURL {

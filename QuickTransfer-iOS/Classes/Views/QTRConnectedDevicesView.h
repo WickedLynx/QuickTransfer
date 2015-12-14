@@ -10,6 +10,11 @@
 
 @interface QTRConnectedDevicesView : UIView
 
-@property (weak, nonatomic) UITableView *devicesTableView;
+@property (weak, nonatomic) UISearchBar *searchBar;
+
+@property (weak, nonatomic) UICollectionView *devicesCollectionView;
+@property (weak, nonatomic) UIButton *sendButton;
+@property (nonatomic, strong) UIActivityIndicatorView *loadDeviceView;
+
 
 @end
