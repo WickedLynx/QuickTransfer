@@ -7,14 +7,11 @@
 //
 
 #import "QTRRootController.h"
-#import "QTRBonjourClient.h"
-#import "QTRBonjourServer.h"
 #import "QTRUser.h"
 #import "QTRConstants.h"
 #import "QTRFile.h"
 #import "QTRStatusItemView.h"
 #import "QTRTransfersController.h"
-#import "QTRBeaconHelper.h"
 #import "QTRTransfersStore.h"
 #import "QTRHelper.h"
 #import "QTRFileZipper.h"
@@ -102,6 +99,11 @@ void refreshComputerModel() {
     QTRTransfersStore *transfersStore = [[QTRTransfersStore alloc] initWithArchiveLocation:archiveFilePath];
     [_transfersController setTransfersStore:transfersStore];
     [_transfersController setDelegate:self];
+
+    _bonjourManager = [[QTRBonjourManager alloc] init];
+    [_bonjourManager setDelegate:self];
+    [_bonjourManager setTransfersDelegate:_transfersController.transfersStore];
+    [_bonjourManager startServices];
 
     [self refreshMenu];
 

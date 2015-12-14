@@ -28,17 +28,6 @@
 
 @implementation QTRBonjourManager
 
-#pragma mark - Initialisation
-
-- (instancetype)init {
-    self = [super init];
-    if (self != nil) {
-
-    }
-
-    return self;
-}
-
 #pragma mark - Start/Stop services
 
 - (void)startServices {
@@ -75,6 +64,10 @@
     _client = [[QTRBonjourClient alloc] initWithDelegate:self];
     [_client setTransferDelegate:self.transfersDelegate];
     [_client start];
+
+    if ([self.delegate respondsToSelector:@selector(bonjourManagerDidStartServices:)]) {
+        [self.delegate bonjourManagerDidStartServices:self];
+    }
 }
 
 - (void)stopServices {
@@ -91,6 +84,10 @@
     [_client setTransferDelegate:nil];
     [_client stop];
     _client = nil;
+
+    if ([self.delegate respondsToSelector:@selector(bonjourManagerDidStopServices:)]) {
+        [self.delegate bonjourManagerDidStopServices:self];
+    }
     
 }
 
@@ -125,6 +122,27 @@
     }
 }
 
+
+- (void)sendFileAtURL:(NSURL *)fileURL toUser:(QTRUser *)user {
+    if ([_connectedClients containsObject:user]) {
+        [_server sendFileAtURL:fileURL toUser:user];
+    } else if ([_connectedServers containsObject:user]) {
+        [_client sendFileAtURL:fileURL toUser:user];
+    }
+}
+
+- (QTRUser *)userAtIndex:(NSInteger)index {
+    QTRUser *user = nil;
+    NSArray *users = [self remoteUsers];
+    if (index >= 0 && index < users.count) {
+        user = users[index];
+    }
+    return user;
+}
+
+- (BOOL)resumeTransfer:(QTRTransfer *)transfer {
+    return ([_server resumeTransfer:transfer] || [_client resumeTransfer:transfer]);
+}
 
 
 #pragma mark - Private methods
