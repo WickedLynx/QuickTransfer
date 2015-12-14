@@ -383,7 +383,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)animatePreviewLabel:(UILabel *)previewMessageLabel {
     CATransition *animation = [CATransition animation];
-    animation.duration = 3.0;
+    animation.duration = 1.2;
     animation.type = kCATransitionReveal;
     animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     [previewMessageLabel.layer addAnimation:animation forKey:@"changeTextTransition"];

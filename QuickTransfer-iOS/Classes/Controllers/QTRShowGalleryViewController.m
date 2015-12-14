@@ -21,6 +21,7 @@
     UICollectionView *galleryCollectionView;
     NSMutableArray *images;
     NSMutableArray *assets;
+    NSArray *totalImages;
     UICollectionViewFlowLayout *layout;
     
     QTRBonjourClient *_client;
@@ -204,11 +205,14 @@ int totalImages;
 -(void)sendData {
     
     if ([self.selectedImages count] > 0) {
-        NSArray *totalImages = [self.selectedImages allValues];
+        totalImages = [[NSArray alloc]initWithArray:[self.selectedImages allValues]];
 
         for (QTRImagesInfoData *selectedImage in totalImages) {
             [self sendDataToSelectedUser:selectedImage];
         }
+        
+        [self.selectedImages removeAllObjects];
+        [galleryCollectionView reloadData];
         
     } else {
         
@@ -343,8 +347,7 @@ int totalImages;
              
              _selectedUser = nil;
          }
-         
-         [self.navigationController popToRootViewControllerAnimated:YES];
+    
      }];
     
 }
