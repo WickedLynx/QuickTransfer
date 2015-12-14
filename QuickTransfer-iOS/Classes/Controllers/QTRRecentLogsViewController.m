@@ -128,47 +128,6 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
         [[_devicesView devicesTableView] reloadData];
 }
 
-#pragma mark - Convert Bytes to string
-- (NSString *)readableValueWithBytes:(id)bytes{
-    
-    NSString *readable;
-    
-    if (([bytes longLongValue] < 1024)){
-        
-        readable = [NSString stringWithFormat:@"1 KB"];
-    }
-    
-    if (([bytes longLongValue]/1024)>=1){
-        
-        readable = [NSString stringWithFormat:@"%lld KB", ([bytes longLongValue]/1024)];
-    }
-    
-    if (([bytes longLongValue]/1024/1024)>=1){
-        
-        readable = [NSString stringWithFormat:@"%lld MB", ([bytes longLongValue]/1024/1024)];
-    }
-    
-    if (([bytes longLongValue]/1024/1024/1024)>=1){
-        
-        readable = [NSString stringWithFormat:@"%lld GB", ([bytes longLongValue]/1024/1024/1024)];
-        
-    }
-    
-    if (([bytes longLongValue]/1024/1024/1024/1024)>=1){
-        
-        readable = [NSString stringWithFormat:@"%lld TB", ([bytes longLongValue]/1024/1024/1024/1024)];
-    }
-    
-    if (([bytes longLongValue]/1024/1024/1024/1024/1024)>=1){
-        
-        readable = [NSString stringWithFormat:@"%lld PB", ([bytes longLongValue]/1024/1024/1024/1024/1024)];
-    }
-    
-    
-    return readable;
-}
-
-
 #pragma mark - Cleanup
 
 - (void)didReceiveMemoryWarning {
@@ -223,7 +182,7 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
             
         case QTRTransferStateInProgress:
             [[cell fileStateLabel] setText:@"In Prgress"];
-            [[cell transferStateIconView] setImage:[UIImage imageNamed:@"restart"]];
+            [[cell transferStateIconView] setImage:[UIImage imageNamed:@"check"]];
             break;
             
         case QTRTransferStateFailed:

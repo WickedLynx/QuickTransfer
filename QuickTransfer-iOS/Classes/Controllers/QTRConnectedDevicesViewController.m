@@ -8,22 +8,17 @@
 
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-
 #import "QTRConnectedDevicesViewController.h"
 #import "QTRConnectedDevicesView.h"
-#import "QTRTransfersViewController.h"
-
 #import "QTRHomeCollectionViewCell.h"
 #import "QTRShowGalleryViewController.h"
 #import "QTRRightBarButtonView.h"
 #import "QTRActionSheetGalleryView.h"
-
 #import "QTRBonjourClient.h"
 #import "QTRBonjourServer.h"
 #import "QTRUser.h"
 #import "QTRFile.h"
 #import "QTRConstants.h"
-
 #import "QTRBeaconHelper.h"
 #import "QTRHelper.h"
 #import "QTRSelectedUserInfo.h"
@@ -47,11 +42,9 @@
     QTRUser *_selectedUser;
     
     UIRefreshControl *refreshControl;
-
     NSMapTable *_alertToFileMapTable;
     
     NSURL *_fileCacheDirectory;
-    
     ALAssetsLibrary *_assetsLibrary;
 
     UIBackgroundTaskIdentifier _backgroundTaskIdentifier;
@@ -62,20 +55,13 @@
     
     QTRActionSheetGalleryView *customView;
     QTRDeviceNotFound *noDeviceView;
+    QTRCustomAlertView *cac;
+
 
     __weak id <QTRBonjourTransferDelegate> _transfersController;
 
     NSURL *_importedFileURL;
-    
-    UIImage *image;
-    NSURL *path;
     UILabel *fetchingDevicesLabel;
-    
-    UIDynamicAnimator* _animator;
-    UIGravityBehavior* _gravity;
-    UICollisionBehavior* _collision;
-    
-    QTRCustomAlertView *cac;
     NSTimer *_timer;
     
     
@@ -155,8 +141,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self refreshConnectedDevices];
     
     [[_devicesView devicesCollectionView] reloadData];
+    [refreshControl beginRefreshing];
+
     
 }
 
@@ -241,6 +230,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
      @{NSForegroundColorAttributeName:[UIColor whiteColor]}];
    
     [_devicesView searchBar].delegate = self;
+    [refreshControl beginRefreshing];
 
 }
 
@@ -651,25 +641,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
     QTRHomeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
-    
-    CGRect finalCellFrame = cell.frame;
-    CGPoint translation = [collectionView.panGestureRecognizer translationInView:collectionView.superview];
-    
-           if (translation.y < 0) {
-            cell.frame = CGRectMake( (self.view.frame.size.width / 2.0f), finalCellFrame.origin.y + 1000, 0, 0);
-        } else {
-            cell.frame = CGRectMake( (self.view.frame.size.width / 2.0f), finalCellFrame.origin.y + 1000, 0, 0);
-        }
-    
-    [UIView animateWithDuration:2.0f animations:^(void){
-        cell.frame = finalCellFrame;
-
-    }];
-    
     QTRUser *theUser;
-    
-    
-    
+
     if (self.isFiltered) {
         theUser = [self.filteredUserData objectAtIndex:indexPath.row];
         }
