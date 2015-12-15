@@ -28,6 +28,18 @@
 
 @implementation QTRBonjourManager
 
+#pragma mark - Initialisation
+
+- (instancetype)init {
+    self = [super init];
+    if (self != nil) {
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemWillSleep:) name:NSWorkspaceWillSleepNotification object:nil];
+        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemDidWakeUpFromSleep:) name:NSWorkspaceDidWakeNotification object:nil];
+    }
+
+    return self;
+}
+
 #pragma mark - Start/Stop services
 
 - (NSError *)startServices {
@@ -218,6 +230,14 @@
     }
 }
 
+- (void)systemWillSleep:(NSNotification *)notification {
+    [self stopServices];
+}
+
+- (void)systemDidWakeUpFromSleep:(NSNotification *)notification {
+    [self startServices];
+}
+
 #pragma mark - QTRBonjourClientDelegate methods
 
 - (QTRUser *)localUser {
@@ -269,6 +289,12 @@
     if ([self.delegate respondsToSelector:@selector(bonjourManager:didBeginFileTransfer:toUser:)]) {
         [self.delegate bonjourManager:self didBeginFileTransfer:file toUser:user];
     }
+}
+
+#pragma mark - Cleanup
+
+- (void)dealloc {
+    [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self];
 }
 
 
