@@ -31,9 +31,7 @@
     NSMutableDictionary *_selectedRecivers;
     QTRUser *_localUser;
     QTRUser *_selectedUser;
-    
-    ALAssetsLibrary *_assetsLibrary;
-    
+        
 
 }
 
@@ -66,7 +64,6 @@ int totalImages;
     _selectedRecivers = self.reciversInfo._selectedRecivers;
     _localUser = self.reciversInfo._localUser;
     _selectedUser = self.reciversInfo._selectedUser;
-    _assetsLibrary = [[ALAssetsLibrary alloc] init];
     
 
     [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
@@ -341,9 +338,26 @@ int totalImages;
                  [_client sendFileAtURL:localURL toUser:_selectedUser];
                  
              } else {
-                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-                 [alert show];
-             }
+                 UIAlertController *alertView = [UIAlertController
+                                                 alertControllerWithTitle:@"Error"
+                                                 message:[NSString stringWithFormat:@"Device is not connected anymore"]
+                                                 preferredStyle:UIAlertControllerStyleAlert];
+                 
+                 UIAlertAction* okButton = [UIAlertAction
+                                            actionWithTitle:@"Dismiss"
+                                            style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action)
+                                            {
+                                                [alertView dismissViewControllerAnimated:YES completion:nil];
+                                                
+                                            }];
+                 
+                 [alertView addAction:okButton];
+                 [self presentViewController:alertView animated:YES completion:nil];
+                 
+//                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+//                 [alert show];
+            }
              
              _selectedUser = nil;
          }

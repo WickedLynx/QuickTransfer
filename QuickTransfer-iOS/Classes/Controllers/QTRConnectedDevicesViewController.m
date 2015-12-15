@@ -27,6 +27,7 @@
 #import "QTRDeviceNotFound.h"
 
 
+
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate, UIImagePickerControllerDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
@@ -42,10 +43,8 @@
     QTRUser *_selectedUser;
     
     UIRefreshControl *refreshControl;
-    NSMapTable *_alertToFileMapTable;
-    
+    NSMapTable *_alertToFileMapTable;    
     NSURL *_fileCacheDirectory;
-    ALAssetsLibrary *_assetsLibrary;
 
     UIBackgroundTaskIdentifier _backgroundTaskIdentifier;
     NSDate *_killDate;
@@ -95,7 +94,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
         _transfersController = transfersStore;
 
-        _assetsLibrary = [[ALAssetsLibrary alloc] init];
+        //_assetsLibrary = [[ALAssetsLibrary alloc] init];
 
         _alertToFileMapTable = [NSMapTable weakToStrongObjectsMapTable];
 
@@ -146,7 +145,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [[_devicesView devicesCollectionView] reloadData];
     [refreshControl beginRefreshing];
 
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -155,6 +153,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [self animatePreviewLabel:fetchingDevicesLabel];
     [fetchingDevicesLabel setText:@"Fetching Devices"];
     [self updateTitle];
+    [refreshControl beginRefreshing];
 
 
 }
@@ -163,16 +162,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [super viewDidLoad];
     
     [self startTimer];
-    
-    NSURL *ubiq = [[NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
-    if (ubiq) {
-        NSLog(@"iCloud access at %@", ubiq);
-        // TODO: Load document...
-    } else {
-        NSLog(@"No iCloud access");
-    }
-    
     noDeviceView = [[QTRDeviceNotFound alloc]initWithFrame:self.view.bounds];
+    [noDeviceView setTranslatesAutoresizingMaskIntoConstraints:NO];
     [[noDeviceView refreshButton] addTarget:self action:@selector(noDeviceFound) forControlEvents:UIControlEventTouchUpInside];
     
     fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 220, 40)];
@@ -238,9 +229,24 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)setImportedFile:(NSURL *)fileURL {
     _importedFileURL = [fileURL copy];
+    
+    UIAlertController *alertView = [UIAlertController
+                                    alertControllerWithTitle:@"Select User"
+                                    message:@"Select the user to whom you want to send the file"
+                                    preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* okButton = [UIAlertAction
+                                actionWithTitle:@"Ok"
+                                style:UIAlertActionStyleDefault
+                                handler:^(UIAlertAction * action)
+                                {
+                                    [alertView dismissViewControllerAnimated:YES completion:nil];
+                                    
+                                }];
+    
+    [alertView addAction:okButton];
+    [self presentViewController:alertView animated:YES completion:nil];
 
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Select User" message:@"Select the user to whom you want to send the file" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-    [alertView show];
 }
 
 #pragma mark - Actions
@@ -283,12 +289,24 @@ static NSString *cellIdentifier = @"cellIdentifier";
     ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
     
     if (status != ALAuthorizationStatusAuthorized) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Please give this app permission to access your photo library in your settings app!" delegate:nil cancelButtonTitle:@"Close" otherButtonTitles:nil, nil];
-        [alert show];
+        UIAlertController *alertView = [UIAlertController
+                                        alertControllerWithTitle:@"Attention"
+                                        message:@"Please give this app permission to access your photo library in your settings app!"
+                                        preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* okButton = [UIAlertAction
+                                   actionWithTitle:@"Ok"
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action)
+                                   {
+                                       [alertView dismissViewControllerAnimated:YES completion:nil];
+                                       
+                                   }];
+        
+        [alertView addAction:okButton];
+        [self presentViewController:alertView animated:YES completion:nil];
     }
     
-    
-
     else if ([_selectedRecivers count] > 0) {
     
         cac = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
@@ -315,10 +333,23 @@ static NSString *cellIdentifier = @"cellIdentifier";
     }
     
     else {
-    
-        UIAlertView *alertNextButton = [[UIAlertView alloc]initWithTitle:@"Warnig" message:@"First Select Atlest One Device" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
-        [alertNextButton show];
         
+        UIAlertController *alertNextButton = [UIAlertController
+                                        alertControllerWithTitle:@"Warning"
+                                        message:@"Please Select Atlest One Device"
+                                        preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* okButton = [UIAlertAction
+                                   actionWithTitle:@"Ok"
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action)
+                                   {
+                                       [alertNextButton dismissViewControllerAnimated:YES completion:nil];
+                                       
+                                   }];
+        
+        [alertNextButton addAction:okButton];
+        [self presentViewController:alertNextButton animated:YES completion:nil];
     }
     
 }
@@ -358,8 +389,23 @@ static NSString *cellIdentifier = @"cellIdentifier";
     BOOL isCameraAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     
     if (!isCameraAvailable) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attention" message:@"Your device does't support this feature!" delegate:nil cancelButtonTitle:@"Close" otherButtonTitles:nil, nil];
-        [alert show];
+        
+        UIAlertController *alertView = [UIAlertController
+                                        alertControllerWithTitle:@"Attention"
+                                        message:@"Your device does't support this feature!"
+                                        preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* okButton = [UIAlertAction
+                                   actionWithTitle:@"Ok"
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action)
+                                   {
+                                       [alertView dismissViewControllerAnimated:YES completion:nil];
+                                       
+                                   }];
+        
+        [alertView addAction:okButton];
+        [self presentViewController:alertView animated:YES completion:nil];
         
     } else {
         [cac removeFromSuperview];
@@ -430,9 +476,23 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [_server setTransferDelegate:_transfersController];
 
     if (![_server start]) {
-
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Could not start server" message:@"Please check that Wifi is turned on" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-        [alert show];
+        
+        UIAlertController *alertView = [UIAlertController
+                                        alertControllerWithTitle:@"Could not start server"
+                                        message:@"Please check that Wifi is turned on"
+                                        preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* okButton = [UIAlertAction
+                                   actionWithTitle:@"Dismiss"
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action)
+                                   {
+                                       [alertView dismissViewControllerAnimated:YES completion:nil];
+                                       
+                                   }];
+        
+        [alertView addAction:okButton];
+        [self presentViewController:alertView animated:YES completion:nil];
     }
 
     _client = [[QTRBonjourClient alloc] initWithDelegate:self];
@@ -559,11 +619,70 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user receiver:(id)receiver {
 
     NSString *alertMessage = [NSString stringWithFormat:@"%@ wants to send you a file: %@", user.name, file.name];
+    
+    UIAlertController *alertView = [UIAlertController
+                                    alertControllerWithTitle:@"Accept File?"
+                                    message:alertMessage
+                                    preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* okButton = [UIAlertAction
+                               actionWithTitle:@"Accept"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action)
+                               {
+                                   NSDictionary *context = [_alertToFileMapTable objectForKey:alertView];
+                                   QTRFile *theFile = context[@"file"];
+                                   id receiver = context[@"receiver"];
+                                   QTRUser *theUser = context[@"user"];
+                                   
+                                   BOOL shouldAccept = NO;
+                                   
+                                   shouldAccept = YES;
+                                   
+                                   if (receiver == _client) {
+                                       [_client acceptFile:theFile accept:shouldAccept fromUser:theUser];
+                                   } else {
+                                       [_server acceptFile:theFile accept:shouldAccept fromUser:theUser];
+                                   }
+                                   
+                                   [_alertToFileMapTable removeObjectForKey:alertView];
 
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Accept File?" message:alertMessage delegate:self cancelButtonTitle:@"Accept" otherButtonTitles:@"Reject", nil];
-    [_alertToFileMapTable setObject:@{@"file" : file, @"receiver" : receiver, @"user" : user} forKey:alert];
-    [alert show];
+                                   [alertView dismissViewControllerAnimated:YES completion:nil];
+                                   
+                               }];
+    
+    UIAlertAction* cancelButton = [UIAlertAction
+                               actionWithTitle:@"Reject"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action)
+                               {
+                                   NSDictionary *context = [_alertToFileMapTable objectForKey:alertView];
+                                   QTRFile *theFile = context[@"file"];
+                                   id receiver = context[@"receiver"];
+                                   QTRUser *theUser = context[@"user"];
+                                   
+                                   BOOL shouldAccept = NO;
+                                   
+                                   if (receiver == _client) {
+                                       [_client acceptFile:theFile accept:shouldAccept fromUser:theUser];
+                                   } else {
+                                       [_server acceptFile:theFile accept:shouldAccept fromUser:theUser];
+                                   }
+                                   
+                                   [_alertToFileMapTable removeObjectForKey:alertView];
+                                   
+                                   [alertView dismissViewControllerAnimated:YES completion:nil];
 
+                                   [alertView dismissViewControllerAnimated:YES completion:nil];
+                                   
+                               }];
+    
+    [alertView addAction:okButton];
+    [alertView addAction:cancelButton];
+    
+    [_alertToFileMapTable setObject:@{@"file" : file, @"receiver" : receiver, @"user" : user} forKey:alertView];
+    [self presentViewController:alertView animated:YES completion:nil];
+    
     [self showNotificationIfRequiredWithMessage:alertMessage];
 }
 
@@ -769,8 +888,22 @@ static NSString *cellIdentifier = @"cellIdentifier";
 }
 
 - (void)user:(QTRUser *)user didRejectFile:(QTRFile *)file {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"File Rejected" message:[NSString stringWithFormat:@"%@ rejected file: %@", user.name, file.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-    [alert show];
+    UIAlertController *alertView = [UIAlertController
+                                    alertControllerWithTitle:@"File Rejected"
+                                    message:[NSString stringWithFormat:@"%@ rejected file: %@", user.name, file.name]
+                                    preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* okButton = [UIAlertAction
+                               actionWithTitle:@"Dismiss"
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction * action)
+                               {
+                                   [alertView dismissViewControllerAnimated:YES completion:nil];
+                                   
+                               }];
+    
+    [alertView addAction:okButton];
+    [self presentViewController:alertView animated:YES completion:nil];
 }
 
 - (void)server:(QTRBonjourServer *)server didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
@@ -814,31 +947,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)client:(QTRBonjourClient *)client didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
     [self showAlertForFile:file user:user receiver:client];
-}
-
-
-#pragma mark - UIAlertViewDelegate methods
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    
-    NSDictionary *context = [_alertToFileMapTable objectForKey:alertView];
-    QTRFile *theFile = context[@"file"];
-    id receiver = context[@"receiver"];
-    QTRUser *theUser = context[@"user"];
-    
-    BOOL shouldAccept = NO;
-
-    if (buttonIndex == [alertView cancelButtonIndex]) {
-        shouldAccept = YES;
-    }
-    
-    if (receiver == _client) {
-        [_client acceptFile:theFile accept:shouldAccept fromUser:theUser];
-    } else {
-        [_server acceptFile:theFile accept:shouldAccept fromUser:theUser];
-    }
-
-    [_alertToFileMapTable removeObjectForKey:alertView];
 }
 
 #pragma mark - QTRBeaconRangerDelegate methods
@@ -908,22 +1016,30 @@ static NSString *cellIdentifier = @"cellIdentifier";
                  [_client sendFileAtURL:localURL toUser:_selectedUser];
                  
              } else {
-                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-                 [alert show];
+                 UIAlertController *alertView = [UIAlertController
+                                                 alertControllerWithTitle:@"Error"
+                                                 message:[NSString stringWithFormat:@"Device is not connected anymore"]
+                                                 preferredStyle:UIAlertControllerStyleAlert];
+                 
+                 UIAlertAction* okButton = [UIAlertAction
+                                            actionWithTitle:@"Dismiss"
+                                            style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction * action)
+                                            {
+                                                [alertView dismissViewControllerAnimated:YES completion:nil];
+                                                
+                                            }];
+                 
+                 [alertView addAction:okButton];
+                 [self presentViewController:alertView animated:YES completion:nil];
              }
              
              _selectedUser = nil;
          }
-         
-         
      }];
-    
 }
 
-
-
 #pragma mark - Search Bar methods
-
 
 -(void)searchBar:(UISearchBar*)searchBar textDidChange:(NSString*)text
 {
@@ -952,7 +1068,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
             {
                 [self.filteredUserData addObject:theUser];
             }
-            
         }
     }
         
@@ -986,8 +1101,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     NSURL *referenceURL = info[UIImagePickerControllerReferenceURL];
     
-    [_assetsLibrary assetForURL:referenceURL resultBlock:^(ALAsset *asset) {
-        
         NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
         UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(chosenImage, 1.0);
@@ -1008,18 +1121,27 @@ static NSString *cellIdentifier = @"cellIdentifier";
                 [_client sendFileAtURL:localURL toUser:_selectedUser];
                 
             } else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-                [alert show];
+                UIAlertController *alertView = [UIAlertController
+                                                alertControllerWithTitle:@"Error"
+                                                message:@"Device is not connected anymore"
+                                                preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* okButton = [UIAlertAction
+                                           actionWithTitle:@"Ok"
+                                           style:UIAlertActionStyleDefault
+                                           handler:^(UIAlertAction * action)
+                                           {
+                                               [alertView dismissViewControllerAnimated:YES completion:nil];
+                                               
+                                           }];
+                
+                [alertView addAction:okButton];
+                [self presentViewController:alertView animated:YES completion:nil];
+                
             }
             
             _selectedUser = nil;
         }
-
-        
-    } failureBlock:^(NSError *error) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not load file" delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-        [alertView show];
-    }];
     
     [picker dismissViewControllerAnimated:YES completion:NULL];
     
@@ -1056,6 +1178,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
         [self stopServices];
         [fetchingDevicesLabel removeFromSuperview];
         [self.view addSubview:noDeviceView];
+        
+        NSDictionary *views = NSDictionaryOfVariableBindings(noDeviceView);
+        
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[noDeviceView]-0-|" options:0 metrics:0 views:views]];
+        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[noDeviceView]-0-|" options:0 metrics:0 views:views]];
+        
     }
 }
 
