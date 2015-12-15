@@ -12,7 +12,7 @@
 
 @interface QTRBonjourManager : NSObject
 
-- (void)startServices;
+- (NSError *)startServices;
 - (void)stopServices;
 - (void)refresh:(void (^)(void))completion;
 - (NSArray *)remoteUsers;

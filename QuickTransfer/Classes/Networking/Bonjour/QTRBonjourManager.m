@@ -30,7 +30,7 @@
 
 #pragma mark - Start/Stop services
 
-- (void)startServices {
+- (NSError *)startServices {
     if (_remoteUsers == nil) {
         _remoteUsers = [[NSMutableOrderedSet alloc] init];
     }
@@ -55,10 +55,9 @@
     _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
     [_server setTransferDelegate:self.transfersDelegate];
 
+    NSError *startError = nil;
     if (![_server start]) {
-        // TODO: Notify the delegate that the server failed to start
-//        NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Please make sure WiFi/Ethernet is enabled and connected"];
-//        [alert runModal];
+        startError = [NSError errorWithDomain:@"com.lbs.bonjour-server" code:12 userInfo:@{NSLocalizedDescriptionKey : @"Please check your internet connection."}];
     }
 
     _client = [[QTRBonjourClient alloc] initWithDelegate:self];
@@ -68,6 +67,8 @@
     if ([self.delegate respondsToSelector:@selector(bonjourManagerDidStartServices:)]) {
         [self.delegate bonjourManagerDidStartServices:self];
     }
+
+    return startError;
 }
 
 - (void)stopServices {

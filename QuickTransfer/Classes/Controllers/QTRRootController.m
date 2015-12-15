@@ -103,7 +103,11 @@ void refreshComputerModel() {
     _bonjourManager = [[QTRBonjourManager alloc] init];
     [_bonjourManager setDelegate:self];
     [_bonjourManager setTransfersDelegate:_transfersController.transfersStore];
-    [_bonjourManager startServices];
+    NSError *serverError = [_bonjourManager startServices];
+    if (serverError != nil) {
+        NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@",[serverError localizedDescription] ?: @"Unknown Error occured"];
+        [alert runModal];
+    }
 
     [self refreshMenu];
 
