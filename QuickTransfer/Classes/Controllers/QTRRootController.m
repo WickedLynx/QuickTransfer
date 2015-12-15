@@ -112,9 +112,6 @@ void refreshComputerModel() {
     [self refreshMenu];
 
     [self.devicesTableView registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
-
-    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemWillSleep:) name:NSWorkspaceWillSleepNotification object:nil];
-    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemDidWakeUpFromSleep:) name:NSWorkspaceDidWakeNotification object:nil];
 }
 
 #pragma mark - Private methods
@@ -391,16 +388,6 @@ void refreshComputerModel() {
         [self.automaticallyAcceptCheckBox setState:NSOffState];
     }
     [self.preferencesWindow makeKeyAndOrderFront:self];
-}
-
-#pragma mark - Notification handlers
-
-- (void)systemWillSleep:(NSNotification *)notification {
-    [_bonjourManager stopServices];
-}
-
-- (void)systemDidWakeUpFromSleep:(NSNotification *)notification {
-    [self clickRefresh:nil];
 }
 
 #pragma mark - NSTableViewDataSource

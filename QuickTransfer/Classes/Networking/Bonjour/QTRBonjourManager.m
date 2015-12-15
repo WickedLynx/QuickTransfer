@@ -33,8 +33,11 @@
 - (instancetype)init {
     self = [super init];
     if (self != nil) {
-        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemWillSleep:) name:NSWorkspaceWillSleepNotification object:nil];
-        [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemDidWakeUpFromSleep:) name:NSWorkspaceDidWakeNotification object:nil];
+#if TARGET_OS_IPHONE
+#else
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemWillSleep:) name:NSWorkspaceWillSleepNotification object:nil];
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self selector:@selector(systemDidWakeUpFromSleep:) name:NSWorkspaceDidWakeNotification object:nil];
+#endif
     }
 
     return self;
