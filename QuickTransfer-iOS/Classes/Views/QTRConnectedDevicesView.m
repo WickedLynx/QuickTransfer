@@ -26,10 +26,6 @@
         
         [self addSubview:aCollectionView];
         _devicesCollectionView = aCollectionView;
-        
-        self.loadDeviceView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        [aCollectionView addSubview:self.loadDeviceView];
-
        
         UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
         [searchBar setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -53,14 +49,30 @@
         [self addSubview:button];
         _sendButton = button;
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(button,aCollectionView,searchBar);
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc]init];
+        [refreshControl setHidden:YES];
+        [aCollectionView addSubview:refreshControl];
+        _deviceRefreshControl = refreshControl;
+        
+        UILabel *fetchDevice = [[UILabel alloc]initWithFrame:CGRectZero];
+        [fetchDevice setText:@""];
+        [fetchDevice setTextAlignment:NSTextAlignmentCenter];
+        [fetchDevice setTextColor:[UIColor whiteColor]];
+        [fetchDevice setBackgroundColor:[UIColor clearColor]];
+        [fetchDevice setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [self addSubview:fetchDevice];
+        _fetchingDevicesLabel = fetchDevice;
+        
+        NSDictionary *views = NSDictionaryOfVariableBindings(button, aCollectionView, searchBar, fetchDevice);
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[button]-7-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[aCollectionView]|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[searchBar]|" options:0 metrics:0 views:views]];
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-64-[searchBar]-0-[aCollectionView]-5-[button(==44)]-5-|" options:0 metrics:0 views:views]];
-            
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-50-[fetchDevice]-50-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-200-[fetchDevice(==44)]" options:0 metrics:0 views:views]];
         
     }
 

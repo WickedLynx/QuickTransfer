@@ -41,8 +41,6 @@
         [self addSubview:bottomLabel];
         _bottomMessageLabel = bottomLabel;
         
-        
-        
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.frame = CGRectZero;
         [[button layer]setCornerRadius:7.0f];

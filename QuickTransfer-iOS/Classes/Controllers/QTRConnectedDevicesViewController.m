@@ -42,8 +42,8 @@
     QTRUser *_localUser;
     QTRUser *_selectedUser;
     
-    UIRefreshControl *refreshControl;
-    NSMapTable *_alertToFileMapTable;    
+//    UIRefreshControl *refreshControl;
+    NSMapTable *_alertToFileMapTable;
     NSURL *_fileCacheDirectory;
 
     UIBackgroundTaskIdentifier _backgroundTaskIdentifier;
@@ -60,7 +60,7 @@
     __weak id <QTRBonjourTransferDelegate> _transfersController;
 
     NSURL *_importedFileURL;
-    UILabel *fetchingDevicesLabel;
+    //UILabel *fetchingDevicesLabel;
     NSTimer *_timer;
     
     
@@ -138,22 +138,17 @@ static NSString *cellIdentifier = @"cellIdentifier";
     _devicesView = (QTRConnectedDevicesView *)view;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self refreshConnectedDevices];
-    
-    [[_devicesView devicesCollectionView] reloadData];
-    [refreshControl beginRefreshing];
-
-}
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    [self animatePreviewLabel:fetchingDevicesLabel];
-    [fetchingDevicesLabel setText:@"Fetching Devices"];
+    [self stopTimer];
+    [self animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+    [[_devicesView fetchingDevicesLabel] setText:@"Fetching Devices"];
+    [[_devicesView deviceRefreshControl] beginRefreshing];
+    [self startTimer];
     [self updateTitle];
-    [refreshControl beginRefreshing];
+
 
 
 }
@@ -165,13 +160,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     noDeviceView = [[QTRDeviceNotFound alloc]initWithFrame:self.view.bounds];
     [noDeviceView setTranslatesAutoresizingMaskIntoConstraints:NO];
     [[noDeviceView refreshButton] addTarget:self action:@selector(noDeviceFound) forControlEvents:UIControlEventTouchUpInside];
-    
-    fetchingDevicesLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 220, 40)];
-    fetchingDevicesLabel.center = self.view.center;
-    [fetchingDevicesLabel setText:@""];
-    [fetchingDevicesLabel setTextAlignment:NSTextAlignmentCenter];
-    [fetchingDevicesLabel setTextColor:[UIColor whiteColor]];
-    [self.view addSubview:fetchingDevicesLabel];
     
     _selectedRecivers = [[NSMutableDictionary alloc]init];
     
@@ -193,10 +181,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     [[_devicesView devicesCollectionView] reloadData];
     
-    refreshControl = [[UIRefreshControl alloc]init];
-    [refreshControl setHidden:YES];
-    [[_devicesView devicesCollectionView] addSubview:refreshControl];
-    [refreshControl addTarget:self action:@selector(refreshConnectedDevices) forControlEvents:UIControlEventValueChanged];
+   
+    [[_devicesView deviceRefreshControl] addTarget:self action:@selector(refreshConnectedDevices) forControlEvents:UIControlEventValueChanged];
 
     [[_devicesView devicesCollectionView] setScrollEnabled:YES];
     [_devicesView devicesCollectionView].alwaysBounceVertical = YES;
@@ -221,7 +207,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
      @{NSForegroundColorAttributeName:[UIColor whiteColor]}];
    
     [_devicesView searchBar].delegate = self;
-    [refreshControl beginRefreshing];
+    [[_devicesView deviceRefreshControl] beginRefreshing];
 
 }
 
@@ -259,9 +245,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)refreshConnectedDevices {
     [self stopTimer];
 
-    [self animatePreviewLabel:fetchingDevicesLabel];
-    [fetchingDevicesLabel setText:@"Fetching Devices"];
-    
+    [self animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+    [[_devicesView fetchingDevicesLabel] setText:@"Fetching Devices"];
+    [[_devicesView devicesCollectionView] reloadData];
     [self refresh];
     [self startTimer];
 
@@ -286,9 +272,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 -(void)nextButtonClicked{
     
-    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
     
-    if (status != ALAuthorizationStatusAuthorized) {
+    if (status != PHAuthorizationStatusAuthorized) {
         UIAlertController *alertView = [UIAlertController
                                         alertControllerWithTitle:@"Attention"
                                         message:@"Please give this app permission to access your photo library in your settings app!"
@@ -311,7 +297,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
         cac = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         [self.view addSubview:cac];
-    
     
         customView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
         [customView setUserInteractionEnabled:YES];
@@ -384,12 +369,14 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [self.navigationController pushViewController:showGallery animated:YES];
 
 }
+
 -(void) actionTakePhoto {
     
     BOOL isCameraAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     
     if (!isCameraAvailable) {
         
+        [cac removeFromSuperview];
         UIAlertController *alertView = [UIAlertController
                                         alertControllerWithTitle:@"Attention"
                                         message:@"Your device does't support this feature!"
@@ -409,7 +396,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
         
     } else {
         [cac removeFromSuperview];
-    
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.delegate = self;
         picker.allowsEditing = YES;
@@ -435,7 +421,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [previewMessageLabel.layer addAnimation:animation forKey:@"changeTextTransition"];
 
 }
-
 
 - (void)stopServices {
     [_server setDelegate:nil];
@@ -698,14 +683,14 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     
     if (totalUsers > 0) {
-        [refreshControl endRefreshing];
-        [self animatePreviewLabel:fetchingDevicesLabel];
-        [fetchingDevicesLabel setText:@""];
+        [[_devicesView deviceRefreshControl] endRefreshing];
+        [self animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+        [[_devicesView fetchingDevicesLabel] setText:@""];
         
     } else {
-        [refreshControl beginRefreshing];
-        [self animatePreviewLabel:fetchingDevicesLabel];
-        [fetchingDevicesLabel setText:@"Fetching Devices"];
+        [[_devicesView deviceRefreshControl] beginRefreshing];
+        [self animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+        [[_devicesView fetchingDevicesLabel] setText:@"Fetching Devices"];
 
     }
 }
@@ -1098,9 +1083,9 @@ static NSString *cellIdentifier = @"cellIdentifier";
 #pragma mark - Image Picker Controller delegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    
-    NSURL *referenceURL = info[UIImagePickerControllerReferenceURL];
-    
+        
+        NSURL *referenceURL = info[UIImagePickerControllerReferenceURL];
+        
         NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
         UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(chosenImage, 1.0);
@@ -1143,7 +1128,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
             _selectedUser = nil;
         }
     
-    [picker dismissViewControllerAnimated:YES completion:NULL];
+        [picker dismissViewControllerAnimated:YES completion:NULL];
+    
     
 }
 
@@ -1152,6 +1138,8 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [picker dismissViewControllerAnimated:YES completion:NULL];
     
 }
+
+
 
 #pragma mark: NSTimer Controller
 
@@ -1176,7 +1164,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     if (([_connectedClients count] + [_connectedServers count]) < 1) {
         [self stopServices];
-        [fetchingDevicesLabel removeFromSuperview];
+        [[_devicesView fetchingDevicesLabel] setText:@""];
         [self.view addSubview:noDeviceView];
         
         NSDictionary *views = NSDictionaryOfVariableBindings(noDeviceView);

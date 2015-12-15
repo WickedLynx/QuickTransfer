@@ -161,12 +161,6 @@ int totalImages;
     //__block int i;
     
     for (PHAsset *asset in assetsFetchResult) {
-        
-        //for(i = 0; i < 10 ; i++) {
-            
-            //PHAsset *asset = [assetsFetchResult objectAtIndex:i];
-        
-        
         [manager requestImageForAsset:asset
                            targetSize:CGSizeMake(160, 160)
                           contentMode:PHImageContentModeDefault
@@ -355,8 +349,6 @@ int totalImages;
                  [alertView addAction:okButton];
                  [self presentViewController:alertView animated:YES completion:nil];
                  
-//                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@" is not connected anymore"] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
-//                 [alert show];
             }
              
              _selectedUser = nil;

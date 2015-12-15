@@ -41,9 +41,10 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
             _allTransfers = [NSMutableArray new];
             _fileIdentifierToTransfers = [NSMutableDictionary new];
         }
-
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+        
 #if TARGET_OS_IPHONE
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+
 #else
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
 #endif
