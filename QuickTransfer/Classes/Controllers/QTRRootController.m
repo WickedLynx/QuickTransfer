@@ -53,6 +53,8 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @property (weak) IBOutlet NSTextField *computerNameTextField;
 @property (weak) IBOutlet NSButton *automaticallyAcceptCheckBox;
 @property (weak) IBOutlet NSButton *launchAtLoginCheckBox;
+@property (strong, nonatomic) NSMutableArray *users;
+@property (weak, nonatomic) NSCollectionView *collectionView;
 
 - (IBAction)clickSavePreferences:(id)sender;
 - (IBAction)clickSendFile:(id)sender;
@@ -68,7 +70,7 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @implementation QTRRootController
 
 @synthesize computerName = _computerName;
-
+@synthesize users = _users;
 void refreshComputerModel() {
     size_t len = 0;
     sysctlbyname("hw.model", NULL, &len, NULL, 0);
@@ -81,6 +83,8 @@ void refreshComputerModel() {
 
 - (void)awakeFromNib {
     [super awakeFromNib];
+
+    [self setUsers:[[NSMutableArray alloc] init]];
 
     _notificationsController = [[QTRNotificationsController alloc] init];
 
@@ -115,6 +119,22 @@ void refreshComputerModel() {
 }
 
 #pragma mark - Private methods
+
+- (void)setUsers:(NSMutableArray *)users {
+    _users = users;
+}
+
+- (NSMutableArray *)users {
+    return _users;
+}
+
+- (void)insertObject:(QTRUser *)object inUsersAtIndex:(NSUInteger)index {
+    [_users insertObject:object atIndex:index];
+}
+
+- (void)removeObjectFromUsersAtIndex:(NSUInteger)index {
+    [_users removeObjectAtIndex:index];
+}
 
 - (NSString *)downloadsDirectory {
     if (_downloadsDirectory == nil) {
@@ -267,7 +287,7 @@ void refreshComputerModel() {
 
     [self.sendFileMenu removeAllItems];
 
-    NSInteger totalConnectedUsers = [[_bonjourManager remoteUsers] count];
+    NSInteger totalConnectedUsers = [self.users count];
 
     if (totalConnectedUsers == 0) {
         [self.sendFileSubMenuItem setEnabled:NO];
@@ -393,7 +413,7 @@ void refreshComputerModel() {
 #pragma mark - NSTableViewDataSource
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
-    return [[_bonjourManager remoteUsers] count];
+    return [self.users count];
 }
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
@@ -487,11 +507,17 @@ void refreshComputerModel() {
 }
 
 - (void)bonjourManager:(QTRBonjourManager *)manager didConnectToUser:(QTRUser *)remoteUser {
+    [self.users removeAllObjects];
+    [self.users addObjectsFromArray:[_bonjourManager remoteUsers]];
+    [self.collectionView reloadData];
     [self.devicesTableView reloadData];
     [self refreshMenu];
 }
 
 - (void)bonjourManager:(QTRBonjourManager *)manager didDisconnectFromUser:(QTRUser *)remoteUser {
+    [self.users removeAllObjects];
+    [self.users addObjectsFromArray:[_bonjourManager remoteUsers]];
+    [self.collectionView reloadData];
     [self.devicesTableView reloadData];
     [self refreshMenu];
 }
