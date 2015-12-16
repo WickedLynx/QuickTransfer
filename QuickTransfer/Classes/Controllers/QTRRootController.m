@@ -86,6 +86,14 @@ void refreshComputerModel() {
 
     [self setUsers:[[NSMutableArray alloc] init]];
 
+    [self.mainWindow setBackgroundColor:[NSColor clearColor]];
+
+    if ([self.mainWindow.contentView isKindOfClass:[NSVisualEffectView class]]) {
+        NSVisualEffectView *visualEffectView = self.mainWindow.contentView;
+        [visualEffectView setState:NSVisualEffectStateActive];
+        [visualEffectView setMaterial:NSVisualEffectMaterialDark];
+    }
+
     _notificationsController = [[QTRNotificationsController alloc] init];
 
     _statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];

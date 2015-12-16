@@ -11,7 +11,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="QuickTransfer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="371">
+        <window title="QuickTransfer" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" hasShadow="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="371">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowCollectionBehavior key="collectionBehavior" moveToActiveSpace="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -19,63 +19,50 @@
             <rect key="screenRect" x="0.0" y="0.0" width="1600" height="877"/>
             <value key="minSize" type="size" width="395" height="360"/>
             <value key="maxSize" type="size" width="395" height="360"/>
-            <view key="contentView" id="372">
+            <view key="contentView" id="372" customClass="NSVisualEffectView">
                 <rect key="frame" x="0.0" y="0.0" width="481" height="462"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <visualEffectView blendingMode="behindWindow" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="a2U-vn-FbG">
+                    <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SAY-ov-UUC">
                         <rect key="frame" x="0.0" y="0.0" width="481" height="462"/>
-                        <subviews>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SAY-ov-UUC">
-                                <rect key="frame" x="0.0" y="0.0" width="481" height="462"/>
-                                <clipView key="contentView" id="VRE-s8-wWv">
-                                    <rect key="frame" x="1" y="1" width="479" height="460"/>
+                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="VRE-s8-wWv">
+                            <rect key="frame" x="1" y="1" width="479" height="460"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <collectionView id="SYE-8J-E7I">
+                                    <rect key="frame" x="0.0" y="0.0" width="479" height="460"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <collectionView id="SYE-8J-E7I">
-                                            <rect key="frame" x="0.0" y="0.0" width="479" height="460"/>
-                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            <animations/>
-                                            <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                            <connections>
-                                                <binding destination="S0C-TA-uYw" name="content" keyPath="arrangedObjects" id="23o-iG-Z4b"/>
-                                                <outlet property="itemPrototype" destination="iIu-cP-DLE" id="lNH-dh-A3M"/>
-                                            </connections>
-                                        </collectionView>
-                                    </subviews>
                                     <animations/>
-                                </clipView>
-                                <animations/>
-                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="pV9-8G-5I9">
-                                    <rect key="frame" x="1" y="144" width="233" height="15"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
-                                </scroller>
-                                <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="CP2-eo-T5Y">
-                                    <rect key="frame" x="234" y="1" width="15" height="143"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
-                                </scroller>
-                            </scrollView>
-                        </subviews>
-                        <constraints>
-                            <constraint firstAttribute="bottom" secondItem="SAY-ov-UUC" secondAttribute="bottom" id="CpK-wz-fT7"/>
-                            <constraint firstItem="SAY-ov-UUC" firstAttribute="centerY" secondItem="a2U-vn-FbG" secondAttribute="centerY" id="Gj5-zx-8BX"/>
-                            <constraint firstItem="SAY-ov-UUC" firstAttribute="leading" secondItem="a2U-vn-FbG" secondAttribute="leading" id="O66-HV-3mU"/>
-                            <constraint firstAttribute="trailing" secondItem="SAY-ov-UUC" secondAttribute="trailing" id="lgq-F8-bhZ"/>
-                            <constraint firstItem="SAY-ov-UUC" firstAttribute="centerX" secondItem="a2U-vn-FbG" secondAttribute="centerX" id="pQh-Na-8zn"/>
-                            <constraint firstItem="SAY-ov-UUC" firstAttribute="top" secondItem="a2U-vn-FbG" secondAttribute="top" id="puS-kr-bUb"/>
-                        </constraints>
+                                    <color key="primaryBackgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
+                                    <connections>
+                                        <binding destination="S0C-TA-uYw" name="content" keyPath="arrangedObjects" id="23o-iG-Z4b"/>
+                                        <outlet property="itemPrototype" destination="iIu-cP-DLE" id="lNH-dh-A3M"/>
+                                    </connections>
+                                </collectionView>
+                            </subviews>
+                            <animations/>
+                            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        </clipView>
                         <animations/>
-                    </visualEffectView>
+                        <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="pV9-8G-5I9">
+                            <rect key="frame" x="1" y="144" width="233" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <animations/>
+                        </scroller>
+                        <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="CP2-eo-T5Y">
+                            <rect key="frame" x="234" y="1" width="15" height="143"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <animations/>
+                        </scroller>
+                    </scrollView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="a2U-vn-FbG" firstAttribute="leading" secondItem="372" secondAttribute="leading" id="6zg-Jg-EGZ"/>
-                    <constraint firstAttribute="trailing" secondItem="a2U-vn-FbG" secondAttribute="trailing" id="7X3-Pb-1Wc"/>
-                    <constraint firstAttribute="bottom" secondItem="a2U-vn-FbG" secondAttribute="bottom" id="Cw5-Vl-l0y"/>
-                    <constraint firstItem="a2U-vn-FbG" firstAttribute="top" secondItem="372" secondAttribute="top" id="UWd-Ts-4N5"/>
-                    <constraint firstItem="a2U-vn-FbG" firstAttribute="centerY" secondItem="372" secondAttribute="centerY" id="yjf-mq-XZS"/>
-                    <constraint firstItem="a2U-vn-FbG" firstAttribute="centerX" secondItem="372" secondAttribute="centerX" id="zY8-CB-7dr"/>
+                    <constraint firstAttribute="bottom" secondItem="SAY-ov-UUC" secondAttribute="bottom" id="JD3-Js-3rp"/>
+                    <constraint firstItem="SAY-ov-UUC" firstAttribute="centerY" secondItem="372" secondAttribute="centerY" id="e3c-KN-dox"/>
+                    <constraint firstItem="SAY-ov-UUC" firstAttribute="leading" secondItem="372" secondAttribute="leading" id="jAg-Ok-WBZ"/>
+                    <constraint firstItem="SAY-ov-UUC" firstAttribute="top" secondItem="372" secondAttribute="top" id="mou-EZ-zpx"/>
+                    <constraint firstAttribute="trailing" secondItem="SAY-ov-UUC" secondAttribute="trailing" id="nTk-dc-NX2"/>
+                    <constraint firstItem="SAY-ov-UUC" firstAttribute="centerX" secondItem="372" secondAttribute="centerX" id="vGo-2V-usS"/>
                 </constraints>
                 <animations/>
             </view>
