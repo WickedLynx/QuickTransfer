@@ -203,7 +203,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" selectionHighlightStyle="none" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="50" rowSizeStyle="automatic" viewBased="YES" id="D2W-VY-ffi">
-                                    <rect key="frame" x="0.0" y="0.0" width="276" height="0.0"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="276" height="356"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                     <size key="intercellSpacing" width="3" height="2"/>
@@ -289,7 +289,7 @@
                         </clipView>
                         <animations/>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Vl1-Bz-hR7">
-                            <rect key="frame" x="1" y="119" width="223" height="15"/>
+                            <rect key="frame" x="1" y="-14" width="0.0" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <animations/>
                         </scroller>

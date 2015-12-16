@@ -53,7 +53,7 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @property (weak) IBOutlet NSTextField *computerNameTextField;
 @property (weak) IBOutlet NSButton *automaticallyAcceptCheckBox;
 @property (weak) IBOutlet NSButton *launchAtLoginCheckBox;
-@property (strong, nonatomic) NSMutableArray *users;
+@property (strong, nonatomic) NSArray *users;
 @property (weak, nonatomic) NSCollectionView *collectionView;
 
 - (IBAction)clickSavePreferences:(id)sender;
@@ -119,22 +119,6 @@ void refreshComputerModel() {
 }
 
 #pragma mark - Private methods
-
-- (void)setUsers:(NSMutableArray *)users {
-    _users = users;
-}
-
-- (NSMutableArray *)users {
-    return _users;
-}
-
-- (void)insertObject:(QTRUser *)object inUsersAtIndex:(NSUInteger)index {
-    [_users insertObject:object atIndex:index];
-}
-
-- (void)removeObjectFromUsersAtIndex:(NSUInteger)index {
-    [_users removeObjectAtIndex:index];
-}
 
 - (NSString *)downloadsDirectory {
     if (_downloadsDirectory == nil) {
@@ -507,17 +491,13 @@ void refreshComputerModel() {
 }
 
 - (void)bonjourManager:(QTRBonjourManager *)manager didConnectToUser:(QTRUser *)remoteUser {
-    [self.users removeAllObjects];
-    [self.users addObjectsFromArray:[_bonjourManager remoteUsers]];
-    [self.collectionView reloadData];
+    [self setUsers:[_bonjourManager remoteUsers]];
     [self.devicesTableView reloadData];
     [self refreshMenu];
 }
 
 - (void)bonjourManager:(QTRBonjourManager *)manager didDisconnectFromUser:(QTRUser *)remoteUser {
-    [self.users removeAllObjects];
-    [self.users addObjectsFromArray:[_bonjourManager remoteUsers]];
-    [self.collectionView reloadData];
+    [self setUsers:[_bonjourManager remoteUsers]];
     [self.devicesTableView reloadData];
     [self refreshMenu];
 }
