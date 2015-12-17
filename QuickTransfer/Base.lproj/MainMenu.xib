@@ -34,6 +34,7 @@
                                     <color key="primaryBackgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
                                     <connections>
                                         <binding destination="S0C-TA-uYw" name="content" keyPath="arrangedObjects" id="23o-iG-Z4b"/>
+                                        <outlet property="delegate" destination="iUg-SY-gp7" id="19Q-Je-t8i"/>
                                         <outlet property="itemPrototype" destination="iIu-cP-DLE" id="lNH-dh-A3M"/>
                                     </connections>
                                 </collectionView>
@@ -121,6 +122,7 @@
         <customObject id="iUg-SY-gp7" customClass="QTRRootController">
             <connections>
                 <outlet property="automaticallyAcceptCheckBox" destination="cdd-Ng-Txq" id="Vly-re-Ykr"/>
+                <outlet property="collectionView" destination="SYE-8J-E7I" id="h2F-9S-3sz"/>
                 <outlet property="computerNameTextField" destination="CTf-MW-IbH" id="yFr-3M-ncz"/>
                 <outlet property="launchAtLoginCheckBox" destination="8fM-Tk-Xdf" id="h75-RP-BrD"/>
                 <outlet property="localComputerNameItem" destination="Ep1-ZT-OjJ" id="8JU-aa-RPS"/>
@@ -439,7 +441,7 @@
                         <constraint firstAttribute="height" constant="70" id="b9J-9Z-4cg"/>
                     </constraints>
                     <animations/>
-                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="eW7-pb-JUQ"/>
+                    <imageCell key="cell" alignment="left" imageScaling="proportionallyDown" id="eW7-pb-JUQ"/>
                 </imageView>
                 <textField verticalHuggingPriority="750" tag="102" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8Oo-0T-6IR">
                     <rect key="frame" x="3" y="10" width="94" height="28"/>

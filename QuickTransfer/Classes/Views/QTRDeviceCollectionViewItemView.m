@@ -12,6 +12,7 @@
 
 - (NSImageView *)platformImageView {
     NSImageView *imageView = [self viewWithTag:101];
+    [imageView unregisterDraggedTypes];
     return imageView;
 }
 

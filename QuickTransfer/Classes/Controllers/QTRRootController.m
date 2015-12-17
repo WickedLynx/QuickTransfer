@@ -30,7 +30,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 NSString *const QTRDefaultsAutomaticallyAcceptFilesKey = @"automaticallyAcceptFiles";
 NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 
-@interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRStatusItemViewDelegate, QTRTransfersControllerDelegate, QTRBonjourManagerDelegate> {
+@interface QTRRootController () <QTRStatusItemViewDelegate, QTRTransfersControllerDelegate, QTRBonjourManagerDelegate, NSCollectionViewDelegate> {
     QTRBonjourManager *_bonjourManager;
     NSStatusItem *_statusItem;
     QTRUser *_selectedUser;
@@ -40,7 +40,6 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
     QTRNotificationsController *_notificationsController;
 }
 
-@property (weak) IBOutlet NSTableView *devicesTableView;
 @property (weak) IBOutlet NSMenuItem *localComputerNameItem;
 @property (weak) IBOutlet NSMenuItem *sendFileSubMenuItem;
 @property (weak) IBOutlet NSMenu *statusBarMenu;
@@ -54,7 +53,7 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @property (weak) IBOutlet NSButton *automaticallyAcceptCheckBox;
 @property (weak) IBOutlet NSButton *launchAtLoginCheckBox;
 @property (strong, nonatomic) NSArray *users;
-@property (weak, nonatomic) NSCollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet NSCollectionView *collectionView;
 
 - (IBAction)clickSavePreferences:(id)sender;
 - (IBAction)clickSendFile:(id)sender;
@@ -124,7 +123,7 @@ void refreshComputerModel() {
 
     [self refreshMenu];
 
-    [self.devicesTableView registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
+    [self.collectionView registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
 }
 
 #pragma mark - Private methods
@@ -349,7 +348,7 @@ void refreshComputerModel() {
 
 - (IBAction)clickRefresh:(id)sender {
 
-    // TODO: Refresh
+    [_bonjourManager refresh:nil];
 
 }
 
@@ -360,7 +359,8 @@ void refreshComputerModel() {
 
 - (IBAction)clickSendFile:(id)sender {
 
-    _clickedRow = [self.devicesTableView clickedRow];
+    // TODO: Get the index from the collection view
+//    _clickedRow = [self.devicesTableView clickedRow];
 
     [self showOpenPanelForSelectedUser];
 }
@@ -403,43 +403,27 @@ void refreshComputerModel() {
     [self.preferencesWindow makeKeyAndOrderFront:self];
 }
 
-#pragma mark - NSTableViewDataSource
+#pragma mark - NSCollectionViewDelegate methods
 
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
-    return [self.users count];
-}
+- (NSDragOperation)collectionView:(NSCollectionView *)collectionView validateDrop:(id<NSDraggingInfo>)draggingInfo proposedIndex:(NSInteger *)proposedDropIndex dropOperation:(NSCollectionViewDropOperation *)proposedDropOperation {
 
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    QTRUser *theUser = [_bonjourManager userAtIndex:rowIndex];
-    NSString *name = [self styledDisplayNameForUser:theUser];
-
-    return  name;
-}
-
-- (NSDragOperation)tableView:(NSTableView *)aTableView validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {
     NSDragOperation dragOperation = NSDragOperationNone;
-
-    if (operation == NSTableViewDropOn) {
-        if ([self validateDraggedFileURLOnRow:row info:info] != nil) {
+    if (*proposedDropOperation == NSCollectionViewDropOn) {
+        if ([self validateDraggedFileURLOnRow:*proposedDropIndex info:draggingInfo] != nil) {
             dragOperation = NSDragOperationLink;
         }
-
     }
 
     return dragOperation;
-
 }
 
-- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-
+- (BOOL)collectionView:(NSCollectionView *)collectionView acceptDrop:(id<NSDraggingInfo>)draggingInfo index:(NSInteger)index dropOperation:(NSCollectionViewDropOperation)dropOperation {
     BOOL acceptDrop = NO;
-
-    NSArray *files = [self validateDraggedFileURLOnRow:row info:info];
-
+    NSArray *files = [self validateDraggedFileURLOnRow:index info:draggingInfo];
     if (files.count > 0) {
 
         acceptDrop = YES;
-        _clickedRow = row;
+        _clickedRow = index;
         for (QTRDraggedItem *file in files) {
             if ([file isDirectory]) {
                 [self sendDirectoryAtURL:file.fileURL];
@@ -459,7 +443,7 @@ void refreshComputerModel() {
 }
 
 - (void)bonjourManagerDidStopServices:(QTRBonjourManager *)manager {
-    [self.devicesTableView reloadData];
+    [self setUsers:nil];
     [self refreshMenu];
 }
 
@@ -501,13 +485,11 @@ void refreshComputerModel() {
 
 - (void)bonjourManager:(QTRBonjourManager *)manager didConnectToUser:(QTRUser *)remoteUser {
     [self setUsers:[_bonjourManager remoteUsers]];
-    [self.devicesTableView reloadData];
     [self refreshMenu];
 }
 
 - (void)bonjourManager:(QTRBonjourManager *)manager didDisconnectFromUser:(QTRUser *)remoteUser {
     [self setUsers:[_bonjourManager remoteUsers]];
-    [self.devicesTableView reloadData];
     [self refreshMenu];
 }
 
