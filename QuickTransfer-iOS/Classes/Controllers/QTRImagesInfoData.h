@@ -6,9 +6,11 @@
 //  Copyright © 2015 Laughing Buddha Software. All rights reserved.
 //
 
-#import <PhotosUI/PhotosUI.h>
 #import <Foundation/Foundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+
+@import Photos;
+@import PhotosUI;
 
 @interface QTRImagesInfoData : NSObject
 
