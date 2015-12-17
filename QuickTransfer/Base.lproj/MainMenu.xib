@@ -29,7 +29,7 @@
                             <rect key="frame" x="1" y="1" width="348" height="468"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <collectionView id="SYE-8J-E7I">
+                                <collectionView selectable="YES" allowsMultipleSelection="YES" id="SYE-8J-E7I">
                                     <rect key="frame" x="0.0" y="0.0" width="348" height="468"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <animations/>
@@ -385,11 +385,11 @@
             </connections>
         </collectionViewItem>
         <view id="EUW-bQ-3mM" customClass="QTRDeviceCollectionViewItemView">
-            <rect key="frame" x="0.0" y="0.0" width="143" height="140"/>
+            <rect key="frame" x="0.0" y="0.0" width="143" height="139"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" tag="101" translatesAutoresizingMaskIntoConstraints="NO" id="GXN-f5-98M">
-                    <rect key="frame" x="37" y="50" width="70" height="70"/>
+                    <rect key="frame" x="37" y="49" width="70" height="70"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="70" id="aER-G8-Jgk"/>
                         <constraint firstAttribute="height" constant="70" id="b9J-9Z-4cg"/>
@@ -411,9 +411,9 @@
                 </textField>
             </subviews>
             <constraints>
+                <constraint firstItem="8Oo-0T-6IR" firstAttribute="top" secondItem="GXN-f5-98M" secondAttribute="bottom" constant="10" id="5IK-8W-F8W"/>
                 <constraint firstItem="8Oo-0T-6IR" firstAttribute="leading" secondItem="EUW-bQ-3mM" secondAttribute="leading" constant="15" id="Iec-FY-oKq"/>
                 <constraint firstItem="8Oo-0T-6IR" firstAttribute="centerX" secondItem="EUW-bQ-3mM" secondAttribute="centerX" id="Kyv-zh-8Uv"/>
-                <constraint firstAttribute="bottom" secondItem="8Oo-0T-6IR" secondAttribute="bottom" constant="5" id="iOt-QV-3oT"/>
                 <constraint firstItem="GXN-f5-98M" firstAttribute="centerX" secondItem="EUW-bQ-3mM" secondAttribute="centerX" id="kRI-9x-vPr"/>
                 <constraint firstAttribute="trailing" secondItem="8Oo-0T-6IR" secondAttribute="trailing" constant="15" id="vbK-zo-XGv"/>
                 <constraint firstItem="GXN-f5-98M" firstAttribute="top" secondItem="EUW-bQ-3mM" secondAttribute="top" constant="20" id="vgh-w2-7PY"/>
