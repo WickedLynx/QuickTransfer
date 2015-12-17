@@ -124,6 +124,12 @@
 		FA5912181C0583520057928C /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFE618B33CA70098DA76 /* Credits.rtf */; };
 		FA5912191C0583520057928C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAD9FFEC18B33CA80098DA76 /* MainMenu.xib */; };
 		FA67440918F69D9900A34C24 /* QTRTransfersStore.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05E18F56202002F1C00 /* QTRTransfersStore.m */; };
+		FA6C8CF21C227EF60002520D /* QTRDeviceCollectionViewItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C8CF11C227EF60002520D /* QTRDeviceCollectionViewItemView.m */; settings = {ASSET_TAGS = (); }; };
+		FA6C8CF31C227EF60002520D /* QTRDeviceCollectionViewItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C8CF11C227EF60002520D /* QTRDeviceCollectionViewItemView.m */; settings = {ASSET_TAGS = (); }; };
+		FA6C8CF41C227EF60002520D /* QTRDeviceCollectionViewItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C8CF11C227EF60002520D /* QTRDeviceCollectionViewItemView.m */; settings = {ASSET_TAGS = (); }; };
+		FA6C8CF71C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C8CF61C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m */; settings = {ASSET_TAGS = (); }; };
+		FA6C8CF81C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C8CF61C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m */; settings = {ASSET_TAGS = (); }; };
+		FA6C8CF91C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6C8CF61C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m */; settings = {ASSET_TAGS = (); }; };
 		FA6DA6B718C453E30097742B /* QTRMultipartTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */; };
 		FA6DA6B818C453E30097742B /* QTRMultipartTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */; };
 		FA6DA6BB18C5C2BC0097742B /* QTRMultipartWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6DA6BA18C5C2BC0097742B /* QTRMultipartWriter.m */; };
@@ -161,9 +167,6 @@
 		FADEB05818F53177002F1C00 /* QTRHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05618F53177002F1C00 /* QTRHelper.m */; };
 		FADEB05B18F5577E002F1C00 /* QTRRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05A18F5577E002F1C00 /* QTRRootViewController.m */; };
 		FADEB05F18F56202002F1C00 /* QTRTransfersStore.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05E18F56202002F1C00 /* QTRTransfersStore.m */; };
-		FAE28D591C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE28D581C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib */; settings = {ASSET_TAGS = (); }; };
-		FAE28D5A1C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE28D581C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib */; settings = {ASSET_TAGS = (); }; };
-		FAE28D5B1C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAE28D581C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib */; settings = {ASSET_TAGS = (); }; };
 		FAEB335918CEE4ED00EA5993 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */; };
 		FAEB336E18DADE7A0053620B /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEB336D18DADE7A0053620B /* IOBluetooth.framework */; };
 /* End PBXBuildFile section */
@@ -268,6 +271,10 @@
 		FA5911EF1C057F0F0057928C /* QTRDraggedItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRDraggedItem.m; sourceTree = "<group>"; };
 		FA59121E1C0583520057928C /* QuickTransfer copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickTransfer copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA59121F1C0583520057928C /* QuickTransfer copy2-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "QuickTransfer copy2-Info.plist"; path = "/Users/harshad/Documents/Development/Cocoa/QuickTransfer/QuickTransfer copy2-Info.plist"; sourceTree = "<absolute>"; };
+		FA6C8CF01C227EF60002520D /* QTRDeviceCollectionViewItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRDeviceCollectionViewItemView.h; sourceTree = "<group>"; };
+		FA6C8CF11C227EF60002520D /* QTRDeviceCollectionViewItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRDeviceCollectionViewItemView.m; sourceTree = "<group>"; };
+		FA6C8CF51C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRDeviceDeviceCollectionViewItem.h; sourceTree = "<group>"; };
+		FA6C8CF61C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRDeviceDeviceCollectionViewItem.m; sourceTree = "<group>"; };
 		FA6DA6B518C453E30097742B /* QTRMultipartTransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRMultipartTransfer.h; sourceTree = "<group>"; };
 		FA6DA6B618C453E30097742B /* QTRMultipartTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRMultipartTransfer.m; sourceTree = "<group>"; };
 		FA6DA6B918C5C2BC0097742B /* QTRMultipartWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRMultipartWriter.h; sourceTree = "<group>"; };
@@ -330,7 +337,6 @@
 		FADEB05D18F56202002F1C00 /* QTRTransfersStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersStore.h; sourceTree = "<group>"; };
 		FADEB05E18F56202002F1C00 /* QTRTransfersStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersStore.m; sourceTree = "<group>"; };
 		FADEB06018F562DA002F1C00 /* QTRTransfersStoreDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersStoreDelegate.h; sourceTree = "<group>"; };
-		FAE28D581C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QTRDevicesCollectionViewCell.xib; sourceTree = "<group>"; };
 		FAEB335718CDB55C00EA5993 /* QuickTransfer copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "QuickTransfer copy-Info.plist"; path = "/Users/harshad/Documents/Development/Cocoa/QuickTransfer/QuickTransfer copy-Info.plist"; sourceTree = "<absolute>"; };
 		FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FAEB336D18DADE7A0053620B /* IOBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetooth.framework; path = System/Library/Frameworks/IOBluetooth.framework; sourceTree = SDKROOT; };
@@ -625,7 +631,10 @@
 				FA38B29218BDCFA4003BB8E5 /* QTRStatusItemView.m */,
 				FA3ACDB418C0577A00889FBC /* QTRTransfersTableCellView.h */,
 				FA3ACDB518C0577A00889FBC /* QTRTransfersTableCellView.m */,
-				FAE28D581C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib */,
+				FA6C8CF01C227EF60002520D /* QTRDeviceCollectionViewItemView.h */,
+				FA6C8CF11C227EF60002520D /* QTRDeviceCollectionViewItemView.m */,
+				FA6C8CF51C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.h */,
+				FA6C8CF61C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -965,7 +974,6 @@
 				FA5912171C0583520057928C /* Images.xcassets in Resources */,
 				FA5912181C0583520057928C /* Credits.rtf in Resources */,
 				FA5912191C0583520057928C /* MainMenu.xib in Resources */,
-				FAE28D5B1C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -982,7 +990,6 @@
 				07B3083C1C0EDC6300A889BF /* Button_back.xcassets in Resources */,
 				FAD9FFF018B33CA80098DA76 /* Images.xcassets in Resources */,
 				07B308371C0ECD2800A889BF /* selected_image.xcassets in Resources */,
-				FAE28D591C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib in Resources */,
 				072BE7461C0D808500798AC1 /* linuxIcon.xcassets in Resources */,
 				FAD9FFE818B33CA70098DA76 /* Credits.rtf in Resources */,
 				072BE7481C0D809700798AC1 /* windowsIcon.xcassets in Resources */,
@@ -995,7 +1002,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FAE28D5A1C20040A0041C9ED /* QTRDevicesCollectionViewCell.xib in Resources */,
 				FAD9000018B33CA80098DA76 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1107,6 +1113,7 @@
 				FA5912011C0583520057928C /* QTRFile.m in Sources */,
 				FA5912021C0583520057928C /* QTRMultipartTransfer.m in Sources */,
 				FA5912031C0583520057928C /* QTRBonjourServer.m in Sources */,
+				FA6C8CF91C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m in Sources */,
 				FA5912041C0583520057928C /* QTRTransfersTableCellView.m in Sources */,
 				FA5912051C0583520057928C /* DTBonjourDataConnection.m in Sources */,
 				FA5912061C0583520057928C /* QTRStatusItemView.m in Sources */,
@@ -1115,6 +1122,7 @@
 				FA5912091C0583520057928C /* QTRConstants.m in Sources */,
 				FA59120A1C0583520057928C /* DTBonjourDataChunk.m in Sources */,
 				FA59120B1C0583520057928C /* DTBonjourServer.m in Sources */,
+				FA6C8CF41C227EF60002520D /* QTRDeviceCollectionViewItemView.m in Sources */,
 				FA59120C1C0583520057928C /* main.m in Sources */,
 				FA59120D1C0583520057928C /* QTRUser.m in Sources */,
 				FA59120E1C0583520057928C /* NSScanner+DTBonjour.m in Sources */,
@@ -1140,6 +1148,7 @@
 				FA283F2A18B49BA8003D4FB6 /* QTRFile.m in Sources */,
 				FA6DA6B718C453E30097742B /* QTRMultipartTransfer.m in Sources */,
 				FAD9002818B34DEF0098DA76 /* QTRBonjourServer.m in Sources */,
+				FA6C8CF71C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m in Sources */,
 				FA3ACDB618C0577A00889FBC /* QTRTransfersTableCellView.m in Sources */,
 				FAD9001C18B33F010098DA76 /* DTBonjourDataConnection.m in Sources */,
 				FA38B29318BDCFA4003BB8E5 /* QTRStatusItemView.m in Sources */,
@@ -1148,6 +1157,7 @@
 				FAD9002E18B351DE0098DA76 /* QTRConstants.m in Sources */,
 				FAD9001B18B33F010098DA76 /* DTBonjourDataChunk.m in Sources */,
 				FAD9001D18B33F010098DA76 /* DTBonjourServer.m in Sources */,
+				FA6C8CF21C227EF60002520D /* QTRDeviceCollectionViewItemView.m in Sources */,
 				FAD9FFE418B33CA70098DA76 /* main.m in Sources */,
 				FAD9003418B3630F0098DA76 /* QTRUser.m in Sources */,
 				FAD9001E18B33F010098DA76 /* NSScanner+DTBonjour.m in Sources */,
@@ -1159,7 +1169,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA2057341C0C1FE000598626 /* QTRNotificationsController.m in Sources */,
+				FA6C8CF81C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m in Sources */,
 				FAD9000218B33CA80098DA76 /* QuickTransferTests.m in Sources */,
+				FA6C8CF31C227EF60002520D /* QTRDeviceCollectionViewItemView.m in Sources */,
 				FA34537F1C1E8E9400FC95EF /* QTRBonjourManager.m in Sources */,
 				FA5911F11C057F0F0057928C /* QTRDraggedItem.m in Sources */,
 				FA5911EA1C0570610057928C /* QTRFileZipper.m in Sources */,

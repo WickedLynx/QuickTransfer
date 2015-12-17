@@ -87,6 +87,7 @@ void refreshComputerModel() {
     [self setUsers:[[NSMutableArray alloc] init]];
 
     [self.mainWindow setBackgroundColor:[NSColor clearColor]];
+    [self.mainWindow setMovableByWindowBackground:YES];
 
     if ([self.mainWindow.contentView isKindOfClass:[NSVisualEffectView class]]) {
         NSVisualEffectView *visualEffectView = self.mainWindow.contentView;
