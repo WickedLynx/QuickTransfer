@@ -460,6 +460,22 @@ void refreshComputerModel() {
     }
 }
 
+#pragma mark - Notification Observers
+
+- (void)controlTextDidChange:(NSNotification *)obj {
+    if (obj.object == self.searchField) {
+        if (self.searchField.stringValue.length == 0) {
+            [self setUsers:[_bonjourManager remoteUsers]];
+        } else {
+            NSArray *filteredUsers = [[_bonjourManager remoteUsers] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+                QTRUser *user = (QTRUser *)evaluatedObject;
+                return [user.name.lowercaseString containsString:self.searchField.stringValue.lowercaseString];
+            }]];
+            [self setUsers:filteredUsers];
+        }
+    }
+}
+
 #pragma mark - NSCollectionViewDelegate methods
 
 - (NSDragOperation)collectionView:(NSCollectionView *)collectionView validateDrop:(id<NSDraggingInfo>)draggingInfo proposedIndex:(NSInteger *)proposedDropIndex dropOperation:(NSCollectionViewDropOperation *)proposedDropOperation {
@@ -500,6 +516,7 @@ void refreshComputerModel() {
 }
 
 - (void)bonjourManagerDidStopServices:(QTRBonjourManager *)manager {
+    [self.searchField setStringValue:@""];
     [self setUsers:nil];
     [self refreshMenu];
 }
@@ -541,11 +558,13 @@ void refreshComputerModel() {
 }
 
 - (void)bonjourManager:(QTRBonjourManager *)manager didConnectToUser:(QTRUser *)remoteUser {
+    [self.searchField setStringValue:@""];
     [self setUsers:[_bonjourManager remoteUsers]];
     [self refreshMenu];
 }
 
 - (void)bonjourManager:(QTRBonjourManager *)manager didDisconnectFromUser:(QTRUser *)remoteUser {
+    [self.searchField setStringValue:@""];
     [self setUsers:[_bonjourManager remoteUsers]];
     [self refreshMenu];
 }
@@ -611,12 +630,8 @@ void refreshComputerModel() {
 
 #pragma mark - NSSearchFieldDelegate methods
 
-- (void)searchFieldDidStartSearching:(NSSearchField *)sender {
-
-}
-
 - (void)searchFieldDidEndSearching:(NSSearchField *)sender {
-
+    [self setUsers:[_bonjourManager remoteUsers]];
 }
 
 @end
