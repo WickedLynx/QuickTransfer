@@ -23,7 +23,6 @@
 
 @interface QTRActionSheetGalleryView : UIView  <UICollectionViewDelegate,UICollectionViewDataSource>
 {
-    ALAssetsLibrary *library;
     NSArray *imageArray;
     NSMutableArray *mutableArray;
     UICollectionView *aCollectionView;

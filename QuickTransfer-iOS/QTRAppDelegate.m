@@ -21,9 +21,7 @@
     [self.window setRootViewController:rootViewController];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
- 
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    
+   
     NSURL *fileURL = launchOptions[UIApplicationLaunchOptionsURLKey];
     if (fileURL != nil) {
         [rootViewController importFileAtURL:fileURL];

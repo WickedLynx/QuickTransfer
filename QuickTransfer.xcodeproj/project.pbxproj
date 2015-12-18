@@ -19,6 +19,7 @@
 		072BE74F1C0D8BBD00798AC1 /* linuxIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7451C0D808500798AC1 /* linuxIcon.xcassets */; };
 		0731C36B1C1B0A43003EFC61 /* IPhonesIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E121C1B046000405F0D /* IPhonesIcon.xcassets */; };
 		0745DA561C15688500579DCC /* QTRCustomAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0745DA551C15688500579DCC /* QTRCustomAlertView.m */; };
+		077AA25C1C2058CA0048326F /* AppIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 077AA25A1C2058AE0048326F /* AppIcon.xcassets */; };
 		07A79E0C1C1A8C0A00405F0D /* pauseIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */; };
 		07A79E0D1C1A8C2E00405F0D /* LogsIconRetry.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07BB98251C105F5C00AF7F7C /* LogsIconRetry.xcassets */; };
 		07A79E131C1B046000405F0D /* IPhonesIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E121C1B046000405F0D /* IPhonesIcon.xcassets */; };
@@ -84,6 +85,10 @@
 		FA38499E1C240D630060E41F /* QTRStatusItemButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA38499D1C240D630060E41F /* QTRStatusItemButton.m */; settings = {ASSET_TAGS = (); }; };
 		FA38499F1C240D630060E41F /* QTRStatusItemButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA38499D1C240D630060E41F /* QTRStatusItemButton.m */; settings = {ASSET_TAGS = (); }; };
 		FA3849A01C240D630060E41F /* QTRStatusItemButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA38499D1C240D630060E41F /* QTRStatusItemButton.m */; settings = {ASSET_TAGS = (); }; };
+		FA34537E1C1E8E9400FC95EF /* QTRBonjourManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34537D1C1E8E9400FC95EF /* QTRBonjourManager.m */; };
+		FA34537F1C1E8E9400FC95EF /* QTRBonjourManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34537D1C1E8E9400FC95EF /* QTRBonjourManager.m */; };
+		FA3453811C1E8E9400FC95EF /* QTRBonjourManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34537D1C1E8E9400FC95EF /* QTRBonjourManager.m */; };
+		FA3453821C1E8E9400FC95EF /* QTRBonjourManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA34537D1C1E8E9400FC95EF /* QTRBonjourManager.m */; };
 		FA38B29318BDCFA4003BB8E5 /* QTRStatusItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA38B29218BDCFA4003BB8E5 /* QTRStatusItemView.m */; };
 		FA3ACDB618C0577A00889FBC /* QTRTransfersTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3ACDB518C0577A00889FBC /* QTRTransfersTableCellView.m */; };
 		FA40A09218FBFB2200FFE344 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA40A09118FBFB2200FFE344 /* QuickLook.framework */; };
@@ -205,6 +210,7 @@
 		072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = defaultIcon.xcassets; sourceTree = "<group>"; };
 		0745DA541C15688500579DCC /* QTRCustomAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRCustomAlertView.h; sourceTree = "<group>"; };
 		0745DA551C15688500579DCC /* QTRCustomAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRCustomAlertView.m; sourceTree = "<group>"; };
+		077AA25A1C2058AE0048326F /* AppIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AppIcon.xcassets; sourceTree = "<group>"; };
 		07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = pauseIcon.xcassets; sourceTree = "<group>"; };
 		07A79E121C1B046000405F0D /* IPhonesIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = IPhonesIcon.xcassets; sourceTree = "<group>"; };
 		07B308361C0ECD2800A889BF /* selected_image.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = selected_image.xcassets; sourceTree = "<group>"; };
@@ -434,6 +440,7 @@
 				07B3083B1C0EDC6300A889BF /* Button_back.xcassets */,
 				07BB98251C105F5C00AF7F7C /* LogsIconRetry.xcassets */,
 				07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */,
+				077AA25A1C2058AE0048326F /* AppIcon.xcassets */,
 			);
 			name = IconImages;
 			sourceTree = "<group>";
@@ -967,6 +974,7 @@
 				07B3083D1C0EDC8E00A889BF /* Button_back.xcassets in Resources */,
 				07B308381C0ECD5700A889BF /* selected_image.xcassets in Resources */,
 				072BE74F1C0D8BBD00798AC1 /* linuxIcon.xcassets in Resources */,
+				077AA25C1C2058CA0048326F /* AppIcon.xcassets in Resources */,
 				072BE74E1C0D8BB800798AC1 /* defaultIcon.xcassets in Resources */,
 				072BE74B1C0D816A00798AC1 /* AndroidIcon.xcassets in Resources */,
 				072BE74A1C0D816500798AC1 /* macIcon.xcassets in Resources */,
@@ -1075,7 +1083,6 @@
 				07BB98211C102EC600AF7F7C /* QTRSelectedUserInfo.m in Sources */,
 				FA283F2418B49582003D4FB6 /* QTRBonjourClient.m in Sources */,
 				FA283F2518B49582003D4FB6 /* QTRMessage.m in Sources */,
-				FA3453801C1E8E9400FC95EF /* QTRBonjourManager.m in Sources */,
 				07D9449A1C16A3E8000015FE /* QTRTempTransView.m in Sources */,
 				FA12BB0418BF06000030911F /* QTRTransfer.m in Sources */,
 				FAAC781C18EE884C0006B698 /* QTRTransfersTableCell.m in Sources */,
@@ -1294,7 +1301,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "QuickTransfer-iOS/QuickTransfer-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -1317,7 +1324,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuickTransfer-iOS/QuickTransfer-iOS-Prefix.pch";
 				INFOPLIST_FILE = "QuickTransfer-iOS/QuickTransfer-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;

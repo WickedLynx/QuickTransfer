@@ -14,6 +14,8 @@
 {
     if ((self = [super initWithFrame:aRect])) {
         
+       
+        [self setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
         float screenHeight = (self.frame.size.height / 2.0) - 22.0;
         
         
@@ -38,8 +40,6 @@
         [bottomLabel setBackgroundColor:[UIColor clearColor]];
         [self addSubview:bottomLabel];
         _bottomMessageLabel = bottomLabel;
-        
-        
         
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.frame = CGRectZero;

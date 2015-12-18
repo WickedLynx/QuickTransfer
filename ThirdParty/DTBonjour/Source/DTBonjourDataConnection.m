@@ -310,6 +310,7 @@ typedef enum
 			if ([_delegate respondsToSelector:@selector(connection:didFinishSendingChunk:)])
 			{
 				[_delegate connection:self didFinishSendingChunk:chunk];
+                
 			}
 		}
 	}
