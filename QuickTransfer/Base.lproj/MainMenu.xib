@@ -28,7 +28,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <collectionView selectable="YES" allowsMultipleSelection="YES" id="SYE-8J-E7I">
-                                    <rect key="frame" x="0.0" y="0.0" width="280" height="282"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="282"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <animations/>
                                     <color key="primaryBackgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
@@ -63,26 +63,32 @@
                                     <constraint firstAttribute="height" constant="22" id="xuO-sA-pJe"/>
                                 </constraints>
                                 <animations/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" refusesFirstResponder="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="center" title="Drop files here" id="LRt-gq-LcP">
+                                <textFieldCell key="cell" lineBreakMode="truncatingMiddle" refusesFirstResponder="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="center" title="Drop files here" usesSingleLineMode="YES" id="LRt-gq-LcP">
                                     <font key="font" metaFont="system" size="15"/>
                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
                                 </textFieldCell>
                             </textField>
+                            <imageView horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ucb-KP-8uU">
+                                <rect key="frame" x="103" y="50" width="90" height="90"/>
+                                <animations/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="DropFileIcon" id="eTB-cu-7VB"/>
+                            </imageView>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="height" constant="156" id="8Po-Mf-Ifb"/>
+                            <constraint firstItem="1bW-LO-1RQ" firstAttribute="top" secondItem="Ucb-KP-8uU" secondAttribute="bottom" constant="8" symbolic="YES" id="BBB-nb-SzF"/>
                             <constraint firstItem="1bW-LO-1RQ" firstAttribute="leading" secondItem="mtA-gt-cPY" secondAttribute="leading" constant="20" symbolic="YES" id="Ih0-bS-sas"/>
+                            <constraint firstItem="Ucb-KP-8uU" firstAttribute="centerX" secondItem="1bW-LO-1RQ" secondAttribute="centerX" id="OA4-GL-2Tb"/>
                             <constraint firstAttribute="trailing" secondItem="1bW-LO-1RQ" secondAttribute="trailing" constant="24" id="rIY-mi-7DQ"/>
                             <constraint firstAttribute="bottom" secondItem="1bW-LO-1RQ" secondAttribute="bottom" constant="20" symbolic="YES" id="w1j-u4-Vx9"/>
                         </constraints>
                         <animations/>
+                        <connections>
+                            <outlet property="descriptionField" destination="1bW-LO-1RQ" id="gGg-7v-m0Z"/>
+                            <outlet property="imageView" destination="Ucb-KP-8uU" id="jma-Q0-R5c"/>
+                        </connections>
                     </customView>
-                    <imageView horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ucb-KP-8uU">
-                        <rect key="frame" x="105" y="366" width="90" height="90"/>
-                        <animations/>
-                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="DropFileIcon" id="eTB-cu-7VB"/>
-                    </imageView>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ke0-bR-R0l">
                         <rect key="frame" x="20" y="290" width="260" height="22"/>
                         <animations/>
@@ -92,15 +98,46 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <visualEffectView appearanceType="vibrantDark" blendingMode="behindWindow" state="active" translatesAutoresizingMaskIntoConstraints="NO" id="77e-sp-YKR">
+                        <rect key="frame" x="0.0" y="-40" width="300" height="40"/>
+                        <subviews>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Z8i-gC-AgM">
+                                <rect key="frame" x="14" y="3" width="272" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="260" id="rP8-NR-k5a"/>
+                                </constraints>
+                                <animations/>
+                                <buttonCell key="cell" type="push" title="Send" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="lSH-Nm-5XH">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="clickSend:" target="iUg-SY-gp7" id="oLB-kf-Idl"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Z8i-gC-AgM" firstAttribute="centerY" secondItem="77e-sp-YKR" secondAttribute="centerY" id="4eb-pM-wFp"/>
+                            <constraint firstItem="Z8i-gC-AgM" firstAttribute="leading" secondItem="77e-sp-YKR" secondAttribute="leading" constant="20" symbolic="YES" id="IqQ-Jq-Uvf"/>
+                            <constraint firstAttribute="height" constant="40" id="Oyq-PC-o3F"/>
+                            <constraint firstItem="Z8i-gC-AgM" firstAttribute="top" secondItem="77e-sp-YKR" secondAttribute="top" constant="10" id="cys-S7-s9a"/>
+                            <constraint firstAttribute="trailing" secondItem="Z8i-gC-AgM" secondAttribute="trailing" constant="20" symbolic="YES" id="dex-Wd-6U6"/>
+                        </constraints>
+                        <animations/>
+                    </visualEffectView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Ke0-bR-R0l" firstAttribute="top" secondItem="mtA-gt-cPY" secondAttribute="bottom" constant="2" id="7fx-bf-K8E"/>
+                    <constraint firstItem="77e-sp-YKR" firstAttribute="leading" secondItem="372" secondAttribute="leading" id="ELQ-1p-vwN"/>
                     <constraint firstItem="Ke0-bR-R0l" firstAttribute="centerX" secondItem="372" secondAttribute="centerX" id="HJ1-RK-4j8"/>
                     <constraint firstAttribute="bottom" secondItem="SAY-ov-UUC" secondAttribute="bottom" id="JD3-Js-3rp"/>
                     <constraint firstAttribute="trailing" secondItem="mtA-gt-cPY" secondAttribute="trailing" id="Jy8-wi-XNt"/>
                     <constraint firstItem="mtA-gt-cPY" firstAttribute="top" secondItem="372" secondAttribute="top" id="MNX-Tn-VCK"/>
+                    <constraint firstItem="77e-sp-YKR" firstAttribute="centerX" secondItem="372" secondAttribute="centerX" id="QeX-Xu-XrC"/>
+                    <constraint firstAttribute="trailing" secondItem="77e-sp-YKR" secondAttribute="trailing" id="W7N-gT-SgF"/>
                     <constraint firstItem="Ke0-bR-R0l" firstAttribute="leading" secondItem="372" secondAttribute="leading" constant="20" id="WXE-GB-sUi"/>
                     <constraint firstItem="SAY-ov-UUC" firstAttribute="centerY" secondItem="372" secondAttribute="centerY" constant="94" id="e3c-KN-dox"/>
+                    <constraint firstAttribute="bottom" secondItem="77e-sp-YKR" secondAttribute="bottom" constant="-40" id="isb-m8-Nfq"/>
                     <constraint firstItem="SAY-ov-UUC" firstAttribute="leading" secondItem="372" secondAttribute="leading" id="jAg-Ok-WBZ"/>
                     <constraint firstItem="SAY-ov-UUC" firstAttribute="top" secondItem="372" secondAttribute="top" constant="188" id="mou-EZ-zpx"/>
                     <constraint firstAttribute="trailing" secondItem="SAY-ov-UUC" secondAttribute="trailing" id="nTk-dc-NX2"/>
@@ -124,10 +161,12 @@
                 <outlet property="automaticallyAcceptCheckBox" destination="cdd-Ng-Txq" id="Vly-re-Ykr"/>
                 <outlet property="collectionView" destination="SYE-8J-E7I" id="h2F-9S-3sz"/>
                 <outlet property="computerNameTextField" destination="CTf-MW-IbH" id="yFr-3M-ncz"/>
+                <outlet property="headerView" destination="mtA-gt-cPY" id="G9a-Wq-beN"/>
                 <outlet property="launchAtLoginCheckBox" destination="8fM-Tk-Xdf" id="h75-RP-BrD"/>
                 <outlet property="localComputerNameItem" destination="Ep1-ZT-OjJ" id="8JU-aa-RPS"/>
                 <outlet property="mainWindow" destination="371" id="KfT-wB-8wD"/>
                 <outlet property="preferencesWindow" destination="FlL-sd-hes" id="HVX-xZ-tE4"/>
+                <outlet property="sendButtonContainerBottomConstraint" destination="isb-m8-Nfq" id="3rm-lU-eH3"/>
                 <outlet property="sendFileMenu" destination="Jic-T9-ndy" id="R3f-6o-OCL"/>
                 <outlet property="sendFileSubMenuItem" destination="iqL-Qe-8lK" id="Egl-yW-7JF"/>
                 <outlet property="statusBarMenu" destination="r8O-pE-e8J" id="Cjx-Ct-nGP"/>

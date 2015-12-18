@@ -12,12 +12,30 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-
+    [self.imageView unregisterDraggedTypes];
+    [self.descriptionField unregisterDraggedTypes];
     [self registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
 }
 
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
     return NSDragOperationLink;
+}
+
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
+    BOOL dropAllowed = NO;
+    if ([self.delegate respondsToSelector:@selector(dragView:didPerformDragOperation:)]) {
+        NSString *highlightedText = [self.delegate dragView:self didPerformDragOperation:sender];
+        if (highlightedText != nil) {
+            dropAllowed = YES;
+            [self.descriptionField setStringValue:highlightedText];
+            [self.imageView setImage:[NSImage imageNamed:@"FilesDroppedIcon"]];
+        } else {
+            [self.descriptionField setStringValue:@"Drop files here"];
+            [self.imageView setImage:[NSImage imageNamed:@"Drop File Icon"]];
+        }
+    }
+    return dropAllowed;
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
@@ -29,8 +47,6 @@
     [path setLineDash:&dashPattern count:1 phase:0];
     [path setLineWidth:1];
     [path stroke];
-
-
 }
 
 @end

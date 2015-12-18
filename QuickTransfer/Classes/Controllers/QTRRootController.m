@@ -18,6 +18,7 @@
 #import "QTRDraggedItem.h"
 #import "QTRNotificationsController.h"
 #import "QTRBonjourManager.h"
+#import "QTRDragView.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -30,7 +31,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 NSString *const QTRDefaultsAutomaticallyAcceptFilesKey = @"automaticallyAcceptFiles";
 NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 
-@interface QTRRootController () <QTRStatusItemViewDelegate, QTRTransfersControllerDelegate, QTRBonjourManagerDelegate, NSCollectionViewDelegate> {
+@interface QTRRootController () <QTRStatusItemViewDelegate, QTRTransfersControllerDelegate, QTRBonjourManagerDelegate, NSCollectionViewDelegate, QTRDragViewDelegate> {
     QTRBonjourManager *_bonjourManager;
     NSStatusItem *_statusItem;
     QTRUser *_selectedUser;
@@ -39,7 +40,7 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
     BOOL _shouldAutoAccept;
     QTRNotificationsController *_notificationsController;
 }
-
+@property (weak) IBOutlet QTRDragView *headerView;
 @property (weak) IBOutlet NSMenuItem *localComputerNameItem;
 @property (weak) IBOutlet NSMenuItem *sendFileSubMenuItem;
 @property (weak) IBOutlet NSMenu *statusBarMenu;
@@ -54,6 +55,8 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @property (weak) IBOutlet NSButton *launchAtLoginCheckBox;
 @property (strong, nonatomic) NSArray *users;
 @property (weak, nonatomic) IBOutlet NSCollectionView *collectionView;
+@property (strong) IBOutlet NSLayoutConstraint *sendButtonContainerBottomConstraint;
+@property (strong) NSArray *droppedFiles;
 
 - (IBAction)clickSavePreferences:(id)sender;
 - (IBAction)clickSendFile:(id)sender;
@@ -124,6 +127,8 @@ void refreshComputerModel() {
     [self refreshMenu];
 
     [self.collectionView registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
+
+    [self.headerView setDelegate:self];
 }
 
 #pragma mark - Private methods
@@ -403,6 +408,9 @@ void refreshComputerModel() {
     [self.preferencesWindow makeKeyAndOrderFront:self];
 }
 
+- (IBAction)clickSend:(id)sender {
+
+}
 #pragma mark - NSCollectionViewDelegate methods
 
 - (NSDragOperation)collectionView:(NSCollectionView *)collectionView validateDrop:(id<NSDraggingInfo>)draggingInfo proposedIndex:(NSInteger *)proposedDropIndex dropOperation:(NSCollectionViewDropOperation *)proposedDropOperation {
@@ -519,6 +527,27 @@ void refreshComputerModel() {
 
 - (void)statusItemViewDraggingEntered:(QTRStatusItemView *)view {
     [self showDevicesWindow];
+}
+
+#pragma mark - QTRDragViewDelegate methods
+
+- (NSString *)dragView:(QTRDragView *)dragView didPerformDragOperation:(id<NSDraggingInfo>)draggingInfo {
+    NSString *statusText = nil;
+    NSArray *draggedFiles = [self validateDraggedFileURLOnRow:0 info:draggingInfo];
+    if (draggedFiles.count > 0) {
+        [self setDroppedFiles:draggedFiles];
+        QTRDraggedItem *file = [draggedFiles firstObject];
+        NSString *fileName = [file.fileURL lastPathComponent];
+        if (draggedFiles.count == 2) {
+            statusText = [NSString stringWithFormat:@"%@ and %ld other file", fileName, (draggedFiles.count - 1)];
+        } else if (draggedFiles.count > 2) {
+            statusText = [NSString stringWithFormat:@"%@ and %ld other files", fileName, (draggedFiles.count - 1)];
+        } else {
+            statusText = fileName;
+        }
+    }
+
+    return statusText;
 }
 
 
