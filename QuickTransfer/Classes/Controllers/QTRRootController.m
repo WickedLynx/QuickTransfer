@@ -31,7 +31,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 NSString *const QTRDefaultsAutomaticallyAcceptFilesKey = @"automaticallyAcceptFiles";
 NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 
-@interface QTRRootController () <QTRStatusItemViewDelegate, QTRTransfersControllerDelegate, QTRBonjourManagerDelegate, NSCollectionViewDelegate, QTRDragViewDelegate> {
+@interface QTRRootController () <QTRStatusItemViewDelegate, QTRTransfersControllerDelegate, QTRBonjourManagerDelegate, NSCollectionViewDelegate, QTRDragViewDelegate, NSSearchFieldDelegate> {
     QTRBonjourManager *_bonjourManager;
     NSStatusItem *_statusItem;
     QTRUser *_selectedUser;
@@ -40,6 +40,7 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
     BOOL _shouldAutoAccept;
     QTRNotificationsController *_notificationsController;
 }
+
 @property (weak) IBOutlet QTRDragView *headerView;
 @property (weak) IBOutlet NSMenuItem *localComputerNameItem;
 @property (weak) IBOutlet NSMenuItem *sendFileSubMenuItem;
@@ -57,6 +58,7 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @property (weak, nonatomic) IBOutlet NSCollectionView *collectionView;
 @property (strong) IBOutlet NSLayoutConstraint *sendButtonContainerBottomConstraint;
 @property (strong) NSArray *droppedFiles;
+@property (weak) IBOutlet NSSearchField *searchField;
 
 - (IBAction)clickSavePreferences:(id)sender;
 - (IBAction)clickSendFile:(id)sender;
@@ -607,5 +609,14 @@ void refreshComputerModel() {
     return statusText;
 }
 
+#pragma mark - NSSearchFieldDelegate methods
+
+- (void)searchFieldDidStartSearching:(NSSearchField *)sender {
+
+}
+
+- (void)searchFieldDidEndSearching:(NSSearchField *)sender {
+
+}
 
 @end
