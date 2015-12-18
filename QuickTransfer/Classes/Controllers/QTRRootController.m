@@ -120,6 +120,8 @@ void refreshComputerModel() {
     _bonjourManager = [[QTRBonjourManager alloc] init];
     [_bonjourManager setDelegate:self];
     [_bonjourManager setTransfersDelegate:_transfersController.transfersStore];
+    BOOL autoAccept = [[NSUserDefaults standardUserDefaults] boolForKey:QTRDefaultsAutomaticallyAcceptFilesKey];
+    [_bonjourManager setShouldAutoAcceptFiles:autoAccept];
     NSError *serverError = [_bonjourManager startServices];
     if (serverError != nil) {
         NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@",[serverError localizedDescription] ?: @"Unknown Error occured"];
@@ -190,6 +192,7 @@ void refreshComputerModel() {
         [[NSUserDefaults standardUserDefaults] synchronize];
 
         [_bonjourManager refresh:nil];
+        [_bonjourManager setShouldAutoAcceptFiles:shouldAutoAccept];
     }
 
     [self.preferencesWindow close];
