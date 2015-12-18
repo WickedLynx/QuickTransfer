@@ -107,7 +107,8 @@ void refreshComputerModel() {
     [_statusItem setMenu:self.statusBarMenu];
     [_statusItem setView:self.statusItemView];
     [self.statusItemView.button setTarget:self];
-    [self.statusItemView.button setAction:@selector(showMenu:)];
+    [self.statusItemView.button setAction:@selector(showDevicesWindow)];
+    [self.statusItemView.button setTarget:self forRightClickAction:@selector(showMenu:)];
     [self.statusItemView setDelegate:self];
 
     NSURL *appSupportDirectoryURL = [QTRHelper applicationSupportDirectoryURL];

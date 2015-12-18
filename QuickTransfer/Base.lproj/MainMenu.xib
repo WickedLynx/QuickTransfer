@@ -224,22 +224,12 @@
                 </menuItem>
             </items>
         </menu>
-        <menu title="Cell menu" autoenablesItems="NO" id="hOz-wh-Jpo">
-            <items>
-                <menuItem title="Send File..." id="BbI-xh-Uvv">
-                    <modifierMask key="keyEquivalentModifierMask"/>
-                    <connections>
-                        <action selector="clickSendFile:" target="iUg-SY-gp7" id="neM-jK-mmw"/>
-                    </connections>
-                </menuItem>
-            </items>
-        </menu>
         <customView id="stN-Mv-tLG" customClass="QTRStatusItemView">
-            <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+            <rect key="frame" x="0.0" y="0.0" width="25" height="18"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bGl-As-PNq">
-                    <rect key="frame" x="1" y="1" width="18" height="18"/>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bGl-As-PNq">
+                    <rect key="frame" x="-2" y="0.0" width="29" height="18"/>
                     <animations/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" enabled="NO" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="🚀" id="XXD-OR-kCn">
                         <font key="font" metaFont="system" size="14"/>
@@ -247,19 +237,30 @@
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gHa-NN-myM">
-                    <rect key="frame" x="-2" y="1" width="18" height="18"/>
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="gHa-NN-myM" customClass="QTRStatusItemButton">
+                    <rect key="frame" x="0.0" y="0.0" width="25" height="18"/>
                     <animations/>
-                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" transparent="YES" imageScaling="proportionallyDown" inset="2" id="v62-ZT-B8u">
+                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="overlaps" alignment="center" transparent="YES" imageScaling="proportionallyDown" inset="2" id="v62-ZT-B8u">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>
                 </button>
             </subviews>
+            <constraints>
+                <constraint firstItem="gHa-NN-myM" firstAttribute="centerX" secondItem="stN-Mv-tLG" secondAttribute="centerX" id="8bJ-ju-aPK"/>
+                <constraint firstItem="bGl-As-PNq" firstAttribute="centerY" secondItem="stN-Mv-tLG" secondAttribute="centerY" id="IJO-2W-a2Q"/>
+                <constraint firstItem="gHa-NN-myM" firstAttribute="height" secondItem="stN-Mv-tLG" secondAttribute="height" id="KeO-vc-44e"/>
+                <constraint firstItem="bGl-As-PNq" firstAttribute="centerX" secondItem="stN-Mv-tLG" secondAttribute="centerX" id="gpm-Dy-Smi"/>
+                <constraint firstItem="gHa-NN-myM" firstAttribute="width" secondItem="stN-Mv-tLG" secondAttribute="width" id="j8D-iM-6tk"/>
+                <constraint firstItem="bGl-As-PNq" firstAttribute="width" secondItem="stN-Mv-tLG" secondAttribute="width" id="jpC-B7-IY8"/>
+                <constraint firstItem="gHa-NN-myM" firstAttribute="centerY" secondItem="stN-Mv-tLG" secondAttribute="centerY" id="sif-Sn-fZX"/>
+                <constraint firstItem="bGl-As-PNq" firstAttribute="height" secondItem="stN-Mv-tLG" secondAttribute="height" id="wRT-Wp-ILF"/>
+            </constraints>
             <animations/>
             <connections>
                 <outlet property="button" destination="gHa-NN-myM" id="Wow-JX-4Rw"/>
             </connections>
+            <point key="canvasLocation" x="146.5" y="383"/>
         </customView>
         <window title="Transfers" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="fOD-IS-IEa" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
