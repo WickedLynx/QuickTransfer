@@ -58,7 +58,7 @@
                         <rect key="frame" x="0.0" y="314" width="300" height="156"/>
                         <subviews>
                             <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1bW-LO-1RQ">
-                                <rect key="frame" x="18" y="20" width="260" height="22"/>
+                                <rect key="frame" x="18" y="16" width="260" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="22" id="xuO-sA-pJe"/>
                                 </constraints>
@@ -70,7 +70,7 @@
                                 </textFieldCell>
                             </textField>
                             <imageView horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ucb-KP-8uU">
-                                <rect key="frame" x="103" y="50" width="90" height="90"/>
+                                <rect key="frame" x="103" y="46" width="90" height="90"/>
                                 <animations/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="DropFileIcon" id="eTB-cu-7VB"/>
                             </imageView>
@@ -81,7 +81,7 @@
                             <constraint firstItem="1bW-LO-1RQ" firstAttribute="leading" secondItem="mtA-gt-cPY" secondAttribute="leading" constant="20" symbolic="YES" id="Ih0-bS-sas"/>
                             <constraint firstItem="Ucb-KP-8uU" firstAttribute="centerX" secondItem="1bW-LO-1RQ" secondAttribute="centerX" id="OA4-GL-2Tb"/>
                             <constraint firstAttribute="trailing" secondItem="1bW-LO-1RQ" secondAttribute="trailing" constant="24" id="rIY-mi-7DQ"/>
-                            <constraint firstAttribute="bottom" secondItem="1bW-LO-1RQ" secondAttribute="bottom" constant="20" symbolic="YES" id="w1j-u4-Vx9"/>
+                            <constraint firstAttribute="bottom" secondItem="1bW-LO-1RQ" secondAttribute="bottom" constant="16" id="w1j-u4-Vx9"/>
                         </constraints>
                         <animations/>
                         <connections>
