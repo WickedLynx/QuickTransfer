@@ -129,6 +129,8 @@ void refreshComputerModel() {
     [self.collectionView registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
 
     [self.headerView setDelegate:self];
+
+    [self.collectionView addObserver:self forKeyPath:@"selectionIndexes" options:(NSKeyValueObservingOptionNew) context:NULL];
 }
 
 #pragma mark - Private methods
@@ -409,8 +411,53 @@ void refreshComputerModel() {
 }
 
 - (IBAction)clickSend:(id)sender {
-
+    if (self.droppedFiles.count > 0) {
+        if (self.collectionView.selectionIndexes.count > 0) {
+            NSArray *users = [self.users objectsAtIndexes:self.collectionView.selectionIndexes];
+            for (QTRDraggedItem *item in self.droppedFiles) {
+                if (![item isDirectory]) {
+                    for (QTRUser *user in users) {
+                        [_bonjourManager sendFileAtURL:item.fileURL toUser:user];
+                    }
+                } else {
+                    __weak typeof(self) wself = self;
+                    void (^zipCompletion)(NSURL *, NSError *) = ^(NSURL *zipURL, NSError *zipError) {
+                        if (wself != nil) {
+                            typeof(self) sself = wself;
+                            if (zipError == nil) {
+                                for (QTRUser *user in users) {
+                                    [sself->_bonjourManager sendFileAtURL:zipURL toUser:user];
+                                }
+                            }
+                        }
+                    };
+                    
+                    [QTRFileZipper zipDirectoryAtURL:item.fileURL completion:zipCompletion];
+                }
+            }
+        }
+    }
 }
+
+#pragma mark - KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    if ([object isEqual:self.collectionView]) {
+        NSIndexSet *indexset = change[@"new"];
+        BOOL showSendButton = NO;
+        if (indexset.count > 0) {
+            if (self.droppedFiles.count > 0) {
+                showSendButton = YES;
+            }
+        }
+        if (showSendButton) {
+            self.sendButtonContainerBottomConstraint.constant = 0;
+        } else {
+            self.sendButtonContainerBottomConstraint.constant = -40;
+        }
+    }
+}
+
 #pragma mark - NSCollectionViewDelegate methods
 
 - (NSDragOperation)collectionView:(NSCollectionView *)collectionView validateDrop:(id<NSDraggingInfo>)draggingInfo proposedIndex:(NSInteger *)proposedDropIndex dropOperation:(NSCollectionViewDropOperation *)proposedDropOperation {
@@ -534,6 +581,7 @@ void refreshComputerModel() {
 - (NSString *)dragView:(QTRDragView *)dragView didPerformDragOperation:(id<NSDraggingInfo>)draggingInfo {
     NSString *statusText = nil;
     NSArray *draggedFiles = [self validateDraggedFileURLOnRow:0 info:draggingInfo];
+    BOOL showSendButton = NO;
     if (draggedFiles.count > 0) {
         [self setDroppedFiles:draggedFiles];
         QTRDraggedItem *file = [draggedFiles firstObject];
@@ -545,6 +593,15 @@ void refreshComputerModel() {
         } else {
             statusText = fileName;
         }
+        if (self.collectionView.selectionIndexes.count > 0) {
+            showSendButton = YES;
+        }
+    }
+
+    if (showSendButton) {
+        self.sendButtonContainerBottomConstraint.constant = 0;
+    } else {
+        self.sendButtonContainerBottomConstraint.constant = -40;
     }
 
     return statusText;
