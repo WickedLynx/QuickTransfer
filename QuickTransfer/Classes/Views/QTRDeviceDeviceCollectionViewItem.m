@@ -16,6 +16,16 @@
 
 @implementation QTRDeviceDeviceCollectionViewItem
 
+- (void)setSelected:(BOOL)selected {
+    [super setSelected:selected];
+    QTRDeviceCollectionViewItemView *itemView = (QTRDeviceCollectionViewItemView *)self.view;
+    if (selected) {
+        [[itemView nameField] setTextColor:[NSColor colorWithRed:0.3 green:0.85 blue:0.39 alpha:1]];
+    } else {
+        [[itemView nameField] setTextColor:[NSColor whiteColor]];
+    }
+}
+
 - (void)setRepresentedObject:(id)representedObject {
     [super setRepresentedObject:representedObject];
 

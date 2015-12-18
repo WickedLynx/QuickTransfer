@@ -539,9 +539,9 @@ void refreshComputerModel() {
         QTRDraggedItem *file = [draggedFiles firstObject];
         NSString *fileName = [file.fileURL lastPathComponent];
         if (draggedFiles.count == 2) {
-            statusText = [NSString stringWithFormat:@"%@ and %ld other file", fileName, (draggedFiles.count - 1)];
+            statusText = [NSString stringWithFormat:@"%@ and %ld more file", fileName, (draggedFiles.count - 1)];
         } else if (draggedFiles.count > 2) {
-            statusText = [NSString stringWithFormat:@"%@ and %ld other files", fileName, (draggedFiles.count - 1)];
+            statusText = [NSString stringWithFormat:@"%@ and %ld more files", fileName, (draggedFiles.count - 1)];
         } else {
             statusText = fileName;
         }
