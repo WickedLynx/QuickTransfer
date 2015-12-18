@@ -61,10 +61,8 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @property (weak) IBOutlet NSSearchField *searchField;
 
 - (IBAction)clickSavePreferences:(id)sender;
-- (IBAction)clickSendFile:(id)sender;
 - (IBAction)clickRefresh:(id)sender;
 - (IBAction)clickStopServices:(id)sender;
-- (IBAction)clickConnectedDevices:(id)sender;
 - (IBAction)clickQuit:(id)sender;
 - (IBAction)clickTransfers:(id)sender;
 - (IBAction)clickPreferences:(id)sender;
@@ -370,20 +368,8 @@ void refreshComputerModel() {
     [alert beginSheetModalForWindow:self.preferencesWindow modalDelegate:self didEndSelector:@selector(preferencesAlertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
-- (IBAction)clickSendFile:(id)sender {
-
-    // TODO: Get the index from the collection view
-//    _clickedRow = [self.devicesTableView clickedRow];
-
-    [self showOpenPanelForSelectedUser];
-}
-
 - (IBAction)clickStopServices:(id)sender {
     [_bonjourManager stopServices];
-}
-
-- (IBAction)clickConnectedDevices:(id)sender {
-    [self showDevicesWindow];
 }
 
 - (void)clickSendMenuItem:(NSMenuItem *)menuItem {

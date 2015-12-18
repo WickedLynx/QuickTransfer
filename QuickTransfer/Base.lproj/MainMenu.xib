@@ -192,11 +192,6 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Send To" autoenablesItems="NO" id="Jic-T9-ndy"/>
                 </menuItem>
-                <menuItem title="Connected Devices..." keyEquivalent="D" id="fI6-AO-N7d">
-                    <connections>
-                        <action selector="clickConnectedDevices:" target="iUg-SY-gp7" id="fu5-Qq-Fqp"/>
-                    </connections>
-                </menuItem>
                 <menuItem title="Transfers..." keyEquivalent="T" id="016-PF-ALm">
                     <connections>
                         <action selector="clickTransfers:" target="iUg-SY-gp7" id="lDc-Bv-pJS"/>
