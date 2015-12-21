@@ -16,7 +16,6 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-
     
     [self.window setMovableByWindowBackground:YES];
     NSVisualEffectView *view = (NSVisualEffectView *)self.window.contentView;

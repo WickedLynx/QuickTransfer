@@ -33,9 +33,6 @@
  */
 @property (weak) IBOutlet NSTextField *fileSizeField;
 
-/*!
- Displays the current progress of the file transfer
- */
-@property (weak) NSProgressIndicator *progressIndicator;
+@property (weak) IBOutlet NSButton *leftButton;
 
 @end
