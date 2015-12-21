@@ -12,6 +12,13 @@
 #import "QTRFile.h"
 @implementation QTRTransfersTableCellView
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+
+    [self.leftButton setTarget:self];
+    [self.leftButton setAction:@selector(clickLeftButton)];
+}
+
 - (void)setObjectValue:(id)objectValue {
     if ([objectValue isKindOfClass:[QTRTransfer class]]) {
         QTRTransfer *transfer = (QTRTransfer *)objectValue;
@@ -55,6 +62,12 @@
 
         [self setNeedsDisplay:YES];
 
+    }
+}
+
+- (void)clickLeftButton {
+    if ([self.delegate respondsToSelector:@selector(transfersTableCellViewDidClickPrimaryButton:)]) {
+        [self.delegate transfersTableCellViewDidClickPrimaryButton:self];
     }
 }
 

@@ -13,11 +13,12 @@
 #import "QTRTransfersStore.h"
 
 @protocol QTRTransfersControllerDelegate;
+@protocol QTRTransfersTableCellViewDelegate;
 
 /*!
  This class drives the transfers view which displays the progress of transfers
  */
-@interface QTRTransfersController : NSObject <NSTableViewDataSource, NSTableViewDelegate, QTRTransfersStoreDelegate>
+@interface QTRTransfersController : NSObject <NSTableViewDataSource, NSTableViewDelegate, QTRTransfersStoreDelegate, QTRTransfersTableCellViewDelegate>
 
 
 - (IBAction)clickClearCompleted:(id)sender;

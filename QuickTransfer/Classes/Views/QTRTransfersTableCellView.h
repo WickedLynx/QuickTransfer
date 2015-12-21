@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+@protocol QTRTransfersTableCellViewDelegate;
+
 /*!
  The table cell view which displays a file transfer
  */
@@ -34,5 +36,15 @@
 @property (weak) IBOutlet NSTextField *fileSizeField;
 
 @property (weak) IBOutlet NSButton *leftButton;
+
+@property (weak) IBOutlet id <QTRTransfersTableCellViewDelegate> delegate;
+
+@end
+
+@protocol QTRTransfersTableCellViewDelegate <NSObject>
+
+@optional
+
+- (void)transfersTableCellViewDidClickPrimaryButton:(QTRTransfersTableCellView *)cellView;
 
 @end

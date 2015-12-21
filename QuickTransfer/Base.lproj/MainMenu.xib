@@ -366,6 +366,7 @@
                                                     </constraints>
                                                     <animations/>
                                                     <connections>
+                                                        <outlet property="delegate" destination="Hld-Bi-WE9" id="JUc-Dk-Kga"/>
                                                         <outlet property="fileNameField" destination="deH-Bi-mZQ" id="lOt-f6-ytr"/>
                                                         <outlet property="fileSizeField" destination="i3o-HF-0yM" id="QJv-Pw-vQp"/>
                                                         <outlet property="leftButton" destination="UjP-51-xJy" id="hAY-vL-IK1"/>

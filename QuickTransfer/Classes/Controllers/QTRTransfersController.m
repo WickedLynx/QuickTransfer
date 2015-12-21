@@ -9,6 +9,7 @@
 #import "QTRTransfersController.h"
 #import "QTRTransfer.h"
 #import "QTRTransfersStore.h"
+#import "QTRTransfersTableCellView.h"
 
 @implementation QTRTransfersController
 
@@ -21,8 +22,6 @@
     NSVisualEffectView *view = (NSVisualEffectView *)self.window.contentView;
     [view setState:NSVisualEffectStateActive];
     [view setMaterial:NSVisualEffectMaterialDark];
-    [self.transfersTableView setTarget:self];
-    [self.transfersTableView setDoubleAction:@selector(clickTransfer:)];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
 }
@@ -32,27 +31,6 @@
 - (IBAction)clickClearCompleted:(id)sender {
 
     [self.transfersStore removeCompletedTransfers];
-}
-
-- (void)clickTransfer:(id)sender {
-    NSUInteger clickedRow = [self.transfersTableView clickedRow];
-    if (clickedRow < [[self.transfersStore transfers] count]) {
-        QTRTransfer *theTransfer = [[self.transfersStore transfers] objectAtIndex:clickedRow];
-        if (theTransfer.progress == 1.0f) {
-            [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[theTransfer.fileURL]];
-        } else if (theTransfer.state == QTRTransferStateFailed) {
-            BOOL canResume = NO;
-            if ([self.delegate respondsToSelector:@selector(transfersController:needsResumeTransfer:)]) {
-                if ([self.delegate transfersController:self needsResumeTransfer:theTransfer]) {
-                    canResume = YES;
-                }
-            }
-            if (!canResume) {
-                // TODO: Show alert
-                NSLog(@"Transfers controller: cannot resume");
-            }
-        }
-    }
 }
 
 #pragma mark - Public methods
@@ -91,6 +69,29 @@
 
 - (void)transfersStore:(QTRTransfersStore *)transfersStore didUpdateProgressOfTransferAtIndex:(NSUInteger)transferIndex {
     [self.transfersTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:transferIndex] columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+}
+
+#pragma mark - QTRTransfersTableCellView delgate methods
+
+- (void)transfersTableCellViewDidClickPrimaryButton:(QTRTransfersTableCellView *)cellView {
+    NSUInteger clickedRow = [self.transfersTableView rowForView:cellView];
+    if (clickedRow < [[self.transfersStore transfers] count]) {
+        QTRTransfer *theTransfer = [[self.transfersStore transfers] objectAtIndex:clickedRow];
+        if (theTransfer.progress == 1.0f) {
+            [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[theTransfer.fileURL]];
+        } else if (theTransfer.state == QTRTransferStateFailed) {
+            BOOL canResume = NO;
+            if ([self.delegate respondsToSelector:@selector(transfersController:needsResumeTransfer:)]) {
+                if ([self.delegate transfersController:self needsResumeTransfer:theTransfer]) {
+                    canResume = YES;
+                }
+            }
+            if (!canResume) {
+                // TODO: Show alert
+                NSLog(@"Transfers controller: cannot resume");
+            }
+        }
+    }
 }
 
 #pragma mark - Notification callbacks
