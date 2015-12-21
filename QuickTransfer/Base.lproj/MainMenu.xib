@@ -181,6 +181,7 @@
         <customObject id="Hld-Bi-WE9" customClass="QTRTransfersController">
             <connections>
                 <outlet property="transfersTableView" destination="D2W-VY-ffi" id="SRr-ar-QzJ"/>
+                <outlet property="window" destination="fOD-IS-IEa" id="bPo-KF-a7L"/>
             </connections>
         </customObject>
         <menu id="r8O-pE-e8J">
@@ -257,32 +258,32 @@
             </connections>
             <point key="canvasLocation" x="146.5" y="383"/>
         </customView>
-        <window title="Transfers" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="fOD-IS-IEa" customClass="NSPanel">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
+        <window title="Transfers" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hasShadow="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="fOD-IS-IEa" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowCollectionBehavior key="collectionBehavior" moveToActiveSpace="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="847" y="381" width="276" height="378"/>
+            <rect key="contentRect" x="847" y="381" width="300" height="470"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1600" height="877"/>
-            <view key="contentView" id="UkA-WE-3aU">
-                <rect key="frame" x="0.0" y="0.0" width="276" height="378"/>
+            <view key="contentView" id="UkA-WE-3aU" customClass="NSVisualEffectView">
+                <rect key="frame" x="0.0" y="0.0" width="300" height="470"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9HG-6v-PAF">
-                        <rect key="frame" x="0.0" y="21" width="278" height="358"/>
-                        <clipView key="contentView" ambiguous="YES" copiesOnScroll="NO" id="dNJ-ix-0a0">
-                            <rect key="frame" x="1" y="1" width="276" height="356"/>
+                    <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" scrollerKnobStyle="light" translatesAutoresizingMaskIntoConstraints="NO" id="9HG-6v-PAF">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="470"/>
+                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="dNJ-ix-0a0">
+                            <rect key="frame" x="0.0" y="0.0" width="300" height="470"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" selectionHighlightStyle="none" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="50" rowSizeStyle="automatic" viewBased="YES" id="D2W-VY-ffi">
-                                    <rect key="frame" x="0.0" y="0.0" width="276" height="356"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="470"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                     <size key="intercellSpacing" width="3" height="2"/>
-                                    <color key="backgroundColor" white="0.96966240875912424" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" white="0.96966240875912424" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <tableViewGridLines key="gridStyleMask" horizontal="YES"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn width="273" minWidth="40" maxWidth="1000" id="vTg-sz-eT5">
+                                        <tableColumn width="297" minWidth="40" maxWidth="1000" id="vTg-sz-eT5">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -296,7 +297,7 @@
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
                                                 <tableCellView id="iaD-Ve-ol2" customClass="QTRTransfersTableCellView">
-                                                    <rect key="frame" x="1" y="1" width="273" height="50"/>
+                                                    <rect key="frame" x="1" y="1" width="297" height="50"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                     <subviews>
                                                         <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5Uf-h4-V3H">
@@ -356,35 +357,32 @@
                                 </tableView>
                             </subviews>
                             <animations/>
-                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" white="1" alpha="0.0" colorSpace="deviceWhite"/>
                         </clipView>
                         <animations/>
-                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Vl1-Bz-hR7">
-                            <rect key="frame" x="1" y="-14" width="0.0" height="15"/>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="Vl1-Bz-hR7" customClass="QTRScroller">
+                            <rect key="frame" x="-100" y="-100" width="0.0" height="15"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <animations/>
                         </scroller>
-                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="7bc-gq-IZe">
-                            <rect key="frame" x="224" y="17" width="15" height="102"/>
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="7bc-gq-IZe" customClass="QTRScroller">
+                            <rect key="frame" x="-100" y="-100" width="15" height="102"/>
                             <autoresizingMask key="autoresizingMask"/>
                             <animations/>
                         </scroller>
                     </scrollView>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L8x-b4-Qze">
-                        <rect key="frame" x="77" y="2" width="123" height="17"/>
-                        <animations/>
-                        <buttonCell key="cell" type="inline" title="Clear Completed" bezelStyle="inline" alignment="center" borderStyle="border" inset="2" id="csS-5p-Ybz">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystemBold"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="clickClearCompleted:" target="Hld-Bi-WE9" id="TC7-IK-Lcm"/>
-                        </connections>
-                    </button>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="9HG-6v-PAF" firstAttribute="leading" secondItem="UkA-WE-3aU" secondAttribute="leading" id="IeO-79-cIk"/>
+                    <constraint firstItem="9HG-6v-PAF" firstAttribute="top" secondItem="UkA-WE-3aU" secondAttribute="top" id="ZNN-a1-PGd"/>
+                    <constraint firstItem="9HG-6v-PAF" firstAttribute="centerY" secondItem="UkA-WE-3aU" secondAttribute="centerY" id="ZlT-A8-Dyl"/>
+                    <constraint firstAttribute="trailing" secondItem="9HG-6v-PAF" secondAttribute="trailing" id="pOl-qK-otJ"/>
+                    <constraint firstItem="9HG-6v-PAF" firstAttribute="centerX" secondItem="UkA-WE-3aU" secondAttribute="centerX" id="q4B-Al-GeZ"/>
+                    <constraint firstAttribute="bottom" secondItem="9HG-6v-PAF" secondAttribute="bottom" id="rN5-Vf-HUI"/>
+                </constraints>
                 <animations/>
             </view>
-            <contentBorderThickness minY="22"/>
+            <point key="canvasLocation" x="374" y="313"/>
         </window>
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="FlL-sd-hes">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>

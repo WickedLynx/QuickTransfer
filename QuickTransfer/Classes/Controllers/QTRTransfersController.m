@@ -17,6 +17,11 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
 
+    
+    [self.window setMovableByWindowBackground:YES];
+    NSVisualEffectView *view = (NSVisualEffectView *)self.window.contentView;
+    [view setState:NSVisualEffectStateActive];
+    [view setMaterial:NSVisualEffectMaterialDark];
     [self.transfersTableView setTarget:self];
     [self.transfersTableView setDoubleAction:@selector(clickTransfer:)];
 

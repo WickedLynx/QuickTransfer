@@ -19,7 +19,10 @@
  */
 @interface QTRTransfersController : NSObject <NSTableViewDataSource, NSTableViewDelegate, QTRTransfersStoreDelegate>
 
+
 - (IBAction)clickClearCompleted:(id)sender;
+
+@property (weak) IBOutlet NSWindow *window;
 
 /*!
  The table view which displays the transfers and their progress

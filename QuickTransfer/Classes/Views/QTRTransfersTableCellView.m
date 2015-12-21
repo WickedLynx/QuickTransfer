@@ -28,7 +28,7 @@
     [self addSubview:progressIndicator];
     self.progressIndicator = progressIndicator;
 
-    _backgroundColor = [NSColor whiteColor];
+    _backgroundColor = [NSColor clearColor];
 
 }
 
@@ -44,16 +44,13 @@
 
         switch (transfer.state) {
             case QTRTransferStateInProgress:
-                _backgroundColor = [NSColor whiteColor];
                 [self.progressIndicator setHidden:NO];
                 break;
 
             case QTRTransferStateCompleted:
-                _backgroundColor = [NSColor colorWithCalibratedRed:0.76f green:0.99f blue:0.80f alpha:1.00f];
                 break;
 
             case QTRTransferStateFailed:
-                _backgroundColor = [NSColor colorWithCalibratedRed:1.00f green:0.90f blue:0.89f alpha:1.00f];
                 [self.progressIndicator setHidden:YES];
                 break;
 
