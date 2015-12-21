@@ -10,27 +10,7 @@
 #import "QTRTransfer.h"
 #import "QTRUser.h"
 #import "QTRFile.h"
-@implementation QTRTransfersTableCellView {
-    NSColor *_backgroundColor;
-}
-
-- (void)awakeFromNib {
-    NSProgressIndicator *progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(self.fileNameField.frame.origin.x + 5, self.fileNameField.frame.origin.y + 24, self.bounds.size.width - 10, 6)];
-    [progressIndicator setIndeterminate:NO];
-    [progressIndicator setUsesThreadedAnimation:YES];
-    [progressIndicator setMaxValue:1.0f];
-    [progressIndicator setMinValue:0.0f];
-    [progressIndicator setDoubleValue:0.0f];
-    [progressIndicator setAutoresizingMask:(NSViewWidthSizable | NSViewMaxXMargin)];
-    [progressIndicator setBezeled:NO];
-    [progressIndicator setDisplayedWhenStopped:NO];
-
-    [self addSubview:progressIndicator];
-    self.progressIndicator = progressIndicator;
-
-    _backgroundColor = [NSColor clearColor];
-
-}
+@implementation QTRTransfersTableCellView
 
 - (void)setObjectValue:(id)objectValue {
     if ([objectValue isKindOfClass:[QTRTransfer class]]) {
@@ -44,14 +24,22 @@
 
         switch (transfer.state) {
             case QTRTransferStateInProgress:
-                [self.progressIndicator setHidden:NO];
+                [self.timestampField setObjectValue:[NSString stringWithFormat:@"%d%% completed", (int)(transfer.progress * 100)]];
+                if ([transfer isIncoming]) {
+                    [self.timestampField setTextColor:[NSColor colorWithRed:0.35 green:0.78 blue:0.98 alpha:1]];
+                } else {
+                    [self.timestampField setTextColor:[NSColor colorWithRed:0.3 green:0.85 blue:0.39 alpha:1]];
+                }
                 break;
 
             case QTRTransferStateCompleted:
+                [self.timestampField setObjectValue:transfer.timestamp];
+                [self.timestampField setTextColor:self.recipientNameField.textColor];
                 break;
 
             case QTRTransferStateFailed:
-                [self.progressIndicator setHidden:YES];
+                [self.timestampField setObjectValue:@"Failed"];
+                [self.timestampField setTextColor:[NSColor colorWithRed:1 green:0.23 blue:0.19 alpha:1]];
                 break;
 
             default:
@@ -64,7 +52,7 @@
 }
 
 - (void)drawRect:(NSRect)dirtyRect {
-    [_backgroundColor setFill];
+    [[NSColor clearColor] setFill];
     NSRectFill(dirtyRect);
 }
 

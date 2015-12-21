@@ -259,6 +259,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     [transfer setFileSize:file.totalSize];
     [transfer setFileURL:file.url];
     [transfer setFileIdentifier:file.identifier];
+    [transfer setIsIncoming:YES];
     [_allTransfers insertObject:transfer atIndex:0];
     _fileIdentifierToTransfers[file.identifier] = transfer;
 
