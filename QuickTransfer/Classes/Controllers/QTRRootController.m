@@ -238,28 +238,33 @@ void refreshComputerModel() {
 
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
 
-    [openPanel setAllowsMultipleSelection:NO];
+    [openPanel setAllowsMultipleSelection:YES];
     [openPanel setAllowsOtherFileTypes:NO];
-    [openPanel setAllowsMultipleSelection:NO];
-    [openPanel setCanChooseDirectories:NO];
+    [openPanel setCanChooseDirectories:YES];
+
+    __weak typeof(self) wself = self;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    void (^openPanelCompletionHandler)(NSInteger) = ^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton && openPanel.URLs != nil) {
+            for (NSURL *url in openPanel.URLs) {
+                BOOL directory = NO;
+                if ([fileManager fileExistsAtPath:url.path isDirectory:&directory]) {
+                    if (directory) {
+                        [wself sendDirectoryAtURL:url];
+                    } else {
+                        [wself sendFileAtURL:url];
+                    }
+                }
+
+            }
+        }
+    };
 
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
     if ([[NSApplication sharedApplication] keyWindow] == nil) {
-        [openPanel beginWithCompletionHandler:^(NSInteger result) {
-            if (result == NSFileHandlingPanelOKButton && openPanel.URL != nil) {
-                NSURL *url = openPanel.URL;
-                [self sendFileAtURL:url];
-            }
-        }];
+        [openPanel beginWithCompletionHandler:openPanelCompletionHandler];
     } else {
-        [openPanel beginSheetModalForWindow:self.mainWindow completionHandler:^(NSInteger result) {
-
-            if (result == NSFileHandlingPanelOKButton && openPanel.URL != nil) {
-                NSURL *url = openPanel.URL;
-                [self sendFileAtURL:url];
-            }
-
-        }];
+        [openPanel beginSheetModalForWindow:self.mainWindow completionHandler:openPanelCompletionHandler];
     }
 }
 
