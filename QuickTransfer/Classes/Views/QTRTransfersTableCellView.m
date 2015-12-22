@@ -71,9 +71,4 @@
     }
 }
 
-- (void)drawRect:(NSRect)dirtyRect {
-    [[NSColor clearColor] setFill];
-    NSRectFill(dirtyRect);
-}
-
 @end

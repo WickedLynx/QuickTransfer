@@ -10,6 +10,10 @@
 #import "QTRTransfer.h"
 #import "QTRTransfersStore.h"
 #import "QTRTransfersTableCellView.h"
+#import "QTRTransfersTableRowView.h"
+#import "QTRTransfersTableView.h"
+
+NSString *const QTRTransfersTableRowViewIdentifier = @"QTRTransfersTableRowViewIdentifier";
 
 @implementation QTRTransfersController
 
@@ -22,6 +26,8 @@
     NSVisualEffectView *view = (NSVisualEffectView *)self.window.contentView;
     [view setState:NSVisualEffectStateActive];
     [view setMaterial:NSVisualEffectMaterialDark];
+
+    [self.transfersTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleNone];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
 }
@@ -51,6 +57,28 @@
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
     return [[self.transfersStore transfers] objectAtIndex:rowIndex];
+}
+
+#pragma mark - NSTableViewDelegate methods
+
+- (BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row {
+    QTRTransfer *transfer = [[self.transfersStore transfers] objectAtIndex:row];
+    return transfer.state != QTRTransferStateInProgress;
+}
+
+- (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
+    NSTableRowView *rowView = [tableView makeViewWithIdentifier:QTRTransfersTableRowViewIdentifier owner:self];
+    if (rowView == nil) {
+        rowView = [[QTRTransfersTableRowView alloc] initWithFrame:NSZeroRect];
+        [rowView setIdentifier:QTRTransfersTableRowViewIdentifier];
+    }
+    return rowView;
+}
+
+#pragma mark - QTRTransfersTableViewDelegate methods
+
+- (void)transfersTableViewDidDetectDeleteKeyDown:(QTRTransfersTableView *)tableView {
+    [self.transfersStore deleteTransfersAtIndexes:tableView.selectedRowIndexes];
 }
 
 #pragma mark - QTRTransfersStoreDelegate methods

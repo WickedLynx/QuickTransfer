@@ -49,6 +49,12 @@
 		FA2057331C0C1FE000598626 /* QTRNotificationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2057321C0C1FE000598626 /* QTRNotificationsController.m */; };
 		FA2057341C0C1FE000598626 /* QTRNotificationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2057321C0C1FE000598626 /* QTRNotificationsController.m */; };
 		FA2057351C0C1FE000598626 /* QTRNotificationsController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2057321C0C1FE000598626 /* QTRNotificationsController.m */; };
+		FA239AB31C2944330033EE90 /* QTRTransfersTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA239AB21C2944330033EE90 /* QTRTransfersTableRowView.m */; settings = {ASSET_TAGS = (); }; };
+		FA239AB41C2944330033EE90 /* QTRTransfersTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA239AB21C2944330033EE90 /* QTRTransfersTableRowView.m */; settings = {ASSET_TAGS = (); }; };
+		FA239AB51C2944330033EE90 /* QTRTransfersTableRowView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA239AB21C2944330033EE90 /* QTRTransfersTableRowView.m */; settings = {ASSET_TAGS = (); }; };
+		FA239AB81C294D170033EE90 /* QTRTransfersTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA239AB71C294D170033EE90 /* QTRTransfersTableView.m */; settings = {ASSET_TAGS = (); }; };
+		FA239AB91C294D170033EE90 /* QTRTransfersTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA239AB71C294D170033EE90 /* QTRTransfersTableView.m */; settings = {ASSET_TAGS = (); }; };
+		FA239ABA1C294D170033EE90 /* QTRTransfersTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA239AB71C294D170033EE90 /* QTRTransfersTableView.m */; settings = {ASSET_TAGS = (); }; };
 		FA283EF418B494E5003D4FB6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF318B494E5003D4FB6 /* Foundation.framework */; };
 		FA283EF618B494E5003D4FB6 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */; };
 		FA283EF818B494E5003D4FB6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA283EF718B494E5003D4FB6 /* UIKit.framework */; };
@@ -267,6 +273,10 @@
 		FA12BB0818BF3D190030911F /* QTRBonjourTransferDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRBonjourTransferDelegate.h; sourceTree = "<group>"; };
 		FA2057311C0C1FE000598626 /* QTRNotificationsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRNotificationsController.h; sourceTree = "<group>"; };
 		FA2057321C0C1FE000598626 /* QTRNotificationsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRNotificationsController.m; sourceTree = "<group>"; };
+		FA239AB11C2944330033EE90 /* QTRTransfersTableRowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersTableRowView.h; sourceTree = "<group>"; };
+		FA239AB21C2944330033EE90 /* QTRTransfersTableRowView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersTableRowView.m; sourceTree = "<group>"; };
+		FA239AB61C294D170033EE90 /* QTRTransfersTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersTableView.h; sourceTree = "<group>"; };
+		FA239AB71C294D170033EE90 /* QTRTransfersTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersTableView.m; sourceTree = "<group>"; };
 		FA283EF218B494E5003D4FB6 /* QuickTransfer-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "QuickTransfer-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA283EF318B494E5003D4FB6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FA283EF518B494E5003D4FB6 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -733,6 +743,10 @@
 				FA38499D1C240D630060E41F /* QTRStatusItemButton.m */,
 				FA6F7DF31C27ED2D00B83F16 /* QTRScroller.h */,
 				FA6F7DF41C27ED2D00B83F16 /* QTRScroller.m */,
+				FA239AB11C2944330033EE90 /* QTRTransfersTableRowView.h */,
+				FA239AB21C2944330033EE90 /* QTRTransfersTableRowView.m */,
+				FA239AB61C294D170033EE90 /* QTRTransfersTableView.h */,
+				FA239AB71C294D170033EE90 /* QTRTransfersTableView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1262,11 +1276,13 @@
 				FA5912041C0583520057928C /* QTRTransfersTableCellView.m in Sources */,
 				FA3849A01C240D630060E41F /* QTRStatusItemButton.m in Sources */,
 				FA5912051C0583520057928C /* DTBonjourDataConnection.m in Sources */,
+				FA239ABA1C294D170033EE90 /* QTRTransfersTableView.m in Sources */,
 				FA5912061C0583520057928C /* QTRStatusItemView.m in Sources */,
 				FA5912071C0583520057928C /* QTRTransfersController.m in Sources */,
 				FA5912081C0583520057928C /* QTRBeaconHelper.m in Sources */,
 				FA5912091C0583520057928C /* QTRConstants.m in Sources */,
 				FA59120A1C0583520057928C /* DTBonjourDataChunk.m in Sources */,
+				FA239AB51C2944330033EE90 /* QTRTransfersTableRowView.m in Sources */,
 				FA59120B1C0583520057928C /* DTBonjourServer.m in Sources */,
 				FA6C8CF41C227EF60002520D /* QTRDeviceCollectionViewItemView.m in Sources */,
 				FA59120C1C0583520057928C /* main.m in Sources */,
@@ -1292,6 +1308,7 @@
 				FA5911E91C0570610057928C /* QTRFileZipper.m in Sources */,
 				FA2057331C0C1FE000598626 /* QTRNotificationsController.m in Sources */,
 				FADEB05718F53177002F1C00 /* QTRHelper.m in Sources */,
+				FA239AB81C294D170033EE90 /* QTRTransfersTableView.m in Sources */,
 				FA283F2A18B49BA8003D4FB6 /* QTRFile.m in Sources */,
 				FA6DA6B718C453E30097742B /* QTRMultipartTransfer.m in Sources */,
 				FAD9002818B34DEF0098DA76 /* QTRBonjourServer.m in Sources */,
@@ -1310,6 +1327,7 @@
 				FAD9001D18B33F010098DA76 /* DTBonjourServer.m in Sources */,
 				FA6C8CF21C227EF60002520D /* QTRDeviceCollectionViewItemView.m in Sources */,
 				FAD9FFE418B33CA70098DA76 /* main.m in Sources */,
+				FA239AB31C2944330033EE90 /* QTRTransfersTableRowView.m in Sources */,
 				FAD9003418B3630F0098DA76 /* QTRUser.m in Sources */,
 				FAD9001E18B33F010098DA76 /* NSScanner+DTBonjour.m in Sources */,
 			);
@@ -1321,7 +1339,9 @@
 			files = (
 				FA6C8CFD1C22B3EF0002520D /* QTRDragView.m in Sources */,
 				FA6F7DF61C27ED2D00B83F16 /* QTRScroller.m in Sources */,
+				FA239AB91C294D170033EE90 /* QTRTransfersTableView.m in Sources */,
 				FA2057341C0C1FE000598626 /* QTRNotificationsController.m in Sources */,
+				FA239AB41C2944330033EE90 /* QTRTransfersTableRowView.m in Sources */,
 				FA6C8CF81C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m in Sources */,
 				FAD9000218B33CA80098DA76 /* QuickTransferTests.m in Sources */,
 				FA6C8CF31C227EF60002520D /* QTRDeviceCollectionViewItemView.m in Sources */,
@@ -1742,6 +1762,7 @@
 				FA4128071C2923A800C61BE5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FA59121B1C0583520057928C /* Build configuration list for PBXNativeTarget "QuickTransfer copy" */ = {
 			isa = XCConfigurationList;

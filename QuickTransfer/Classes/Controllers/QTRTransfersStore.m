@@ -100,6 +100,16 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     [self archiveTransfers];
 }
 
+- (void)deleteTransfersAtIndexes:(NSIndexSet *)indexes {
+    if (indexes.count > 0) {
+        [_allTransfers removeObjectsAtIndexes:indexes];
+        [self archiveTransfers];
+        if ([self.delegate respondsToSelector:@selector(transfersStore:didDeleteTransfersAtIndices:)]) {
+            [self.delegate transfersStore:self didDeleteTransfersAtIndices:indexes];
+        }
+    }
+}
+
 - (void)archiveTransfers {
     [NSKeyedArchiver archiveRootObject:_allTransfers toFile:_archivedTransfersFilePath];
 }

@@ -278,7 +278,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="300" height="450"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <tableView autoresizesSubviews="NO" verticalHuggingPriority="750" allowsExpansionToolTips="YES" selectionHighlightStyle="none" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="50" rowSizeStyle="automatic" viewBased="YES" id="D2W-VY-ffi">
+                                <tableView autoresizesSubviews="NO" verticalHuggingPriority="750" allowsExpansionToolTips="YES" selectionHighlightStyle="none" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="50" rowSizeStyle="automatic" viewBased="YES" id="D2W-VY-ffi" customClass="QTRTransfersTableView">
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="0.0"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
@@ -385,6 +385,7 @@
                                     <connections>
                                         <outlet property="dataSource" destination="Hld-Bi-WE9" id="28o-mv-OPq"/>
                                         <outlet property="delegate" destination="Hld-Bi-WE9" id="Aow-Vk-JQS"/>
+                                        <outlet property="editingDelegate" destination="Hld-Bi-WE9" id="YWO-Of-K7q"/>
                                     </connections>
                                 </tableView>
                             </subviews>
