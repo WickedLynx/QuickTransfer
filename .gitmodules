@@ -1,0 +1,3 @@
+[submodule "StartAtLoginController"]
+	path = ThirdParty/StartAtLoginController
+	url = https://github.com/alexzielenski/StartAtLoginController.git
