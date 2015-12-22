@@ -87,8 +87,11 @@
                 }
             }
             if (!canResume) {
-                // TODO: Show alert
-                NSLog(@"Transfers controller: cannot resume");
+                NSAlert *alert = [[NSAlert alloc] init];
+                [alert setMessageText:@"This transfer cannot be resumed. Try re-sending the file."];
+                [alert.window setTitle:@"Cannot resume transfer"];
+                [alert addButtonWithTitle:@"Okay"];
+                [alert beginSheetModalForWindow:self.window completionHandler:nil];
             }
         }
     }
