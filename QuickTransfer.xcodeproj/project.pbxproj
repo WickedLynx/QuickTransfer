@@ -90,10 +90,11 @@
 		FA40A09418FBFBE800FFE344 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA40A09318FBFBE800FFE344 /* Quartz.framework */; };
 		FA4127FC1C2923A700C61BE5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4127FB1C2923A700C61BE5 /* AppDelegate.m */; };
 		FA4127FF1C2923A700C61BE5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4127FE1C2923A700C61BE5 /* main.m */; };
-		FA4128011C2923A700C61BE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA4128001C2923A700C61BE5 /* Assets.xcassets */; };
-		FA4128041C2923A800C61BE5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA4128021C2923A800C61BE5 /* MainMenu.xib */; };
 		FA41280A1C2923DE00C61BE5 /* QuickTransferHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA4127F81C2923A700C61BE5 /* QuickTransferHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FA41280C1C2923F000C61BE5 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA41280B1C2923F000C61BE5 /* ServiceManagement.framework */; };
+		FA4128141C29258600C61BE5 /* StartAtLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4128111C29258600C61BE5 /* StartAtLoginController.m */; settings = {ASSET_TAGS = (); }; };
+		FA4128171C29271400C61BE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA4128151C29271400C61BE5 /* Assets.xcassets */; settings = {ASSET_TAGS = (); }; };
+		FA4128181C29271400C61BE5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA4128161C29271400C61BE5 /* MainMenu.xib */; settings = {ASSET_TAGS = (); }; };
 		FA5911E91C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
 		FA5911EA1C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
 		FA5911EB1C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
@@ -305,10 +306,12 @@
 		FA4127FA1C2923A700C61BE5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		FA4127FB1C2923A700C61BE5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		FA4127FE1C2923A700C61BE5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		FA4128001C2923A700C61BE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		FA4128031C2923A800C61BE5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		FA4128051C2923A800C61BE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA41280B1C2923F000C61BE5 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
+		FA4128101C29258600C61BE5 /* StartAtLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartAtLoginController.h; sourceTree = "<group>"; };
+		FA4128111C29258600C61BE5 /* StartAtLoginController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartAtLoginController.m; sourceTree = "<group>"; };
+		FA4128151C29271400C61BE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FA4128161C29271400C61BE5 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		FA5911E71C0570610057928C /* QTRFileZipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRFileZipper.h; sourceTree = "<group>"; };
 		FA5911E81C0570610057928C /* QTRFileZipper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRFileZipper.m; sourceTree = "<group>"; };
 		FA5911EE1C057F0F0057928C /* QTRDraggedItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRDraggedItem.h; sourceTree = "<group>"; };
@@ -613,10 +616,10 @@
 		FA4127F91C2923A700C61BE5 /* QuickTransferHelper */ = {
 			isa = PBXGroup;
 			children = (
+				FA4128151C29271400C61BE5 /* Assets.xcassets */,
+				FA4128161C29271400C61BE5 /* MainMenu.xib */,
 				FA4127FA1C2923A700C61BE5 /* AppDelegate.h */,
 				FA4127FB1C2923A700C61BE5 /* AppDelegate.m */,
-				FA4128001C2923A700C61BE5 /* Assets.xcassets */,
-				FA4128021C2923A800C61BE5 /* MainMenu.xib */,
 				FA4128051C2923A800C61BE5 /* Info.plist */,
 				FA4127FD1C2923A700C61BE5 /* Supporting Files */,
 			);
@@ -629,6 +632,15 @@
 				FA4127FE1C2923A700C61BE5 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		FA41280D1C29258600C61BE5 /* StartAtLoginController */ = {
+			isa = PBXGroup;
+			children = (
+				FA4128101C29258600C61BE5 /* StartAtLoginController.h */,
+				FA4128111C29258600C61BE5 /* StartAtLoginController.m */,
+			);
+			path = StartAtLoginController;
 			sourceTree = "<group>";
 		};
 		FAD009C718D840910014DCC5 /* Bluetooth */ = {
@@ -728,6 +740,7 @@
 		FAD9001018B33F010098DA76 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				FA41280D1C29258600C61BE5 /* StartAtLoginController */,
 				FAD9001118B33F010098DA76 /* DTBonjour */,
 			);
 			path = ThirdParty;
@@ -1082,8 +1095,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA4128011C2923A700C61BE5 /* Assets.xcassets in Resources */,
-				FA4128041C2923A800C61BE5 /* MainMenu.xib in Resources */,
+				FA4128171C29271400C61BE5 /* Assets.xcassets in Resources */,
+				FA4128181C29271400C61BE5 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1282,6 +1295,7 @@
 				FA283F2A18B49BA8003D4FB6 /* QTRFile.m in Sources */,
 				FA6DA6B718C453E30097742B /* QTRMultipartTransfer.m in Sources */,
 				FAD9002818B34DEF0098DA76 /* QTRBonjourServer.m in Sources */,
+				FA4128141C29258600C61BE5 /* StartAtLoginController.m in Sources */,
 				FA6C8CF71C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m in Sources */,
 				FA6C8CFC1C22B3EF0002520D /* QTRDragView.m in Sources */,
 				FA3849991C23FDD10060E41F /* QTRDevicesWindow.m in Sources */,
@@ -1349,14 +1363,6 @@
 				FA283F1518B494E5003D4FB6 /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		FA4128021C2923A800C61BE5 /* MainMenu.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FA4128031C2923A800C61BE5 /* Base */,
-			);
-			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 		FAD9FFE018B33CA70098DA76 /* InfoPlist.strings */ = {
@@ -1509,7 +1515,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = QuickTransferHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = io.leftshift.QuickTransferHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1530,10 +1536,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INFOPLIST_FILE = QuickTransferHelper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = io.leftshift.QuickTransferHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -1644,6 +1651,7 @@
 				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
 				INFOPLIST_FILE = "QuickTransfer/QuickTransfer-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = io.leftshift.QuickTransfer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
@@ -1659,6 +1667,7 @@
 				GCC_PREFIX_HEADER = "QuickTransfer/QuickTransfer-Prefix.pch";
 				INFOPLIST_FILE = "QuickTransfer/QuickTransfer-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = io.leftshift.QuickTransfer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
