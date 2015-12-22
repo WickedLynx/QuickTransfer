@@ -88,6 +88,12 @@
 		FA3ACDB618C0577A00889FBC /* QTRTransfersTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3ACDB518C0577A00889FBC /* QTRTransfersTableCellView.m */; };
 		FA40A09218FBFB2200FFE344 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA40A09118FBFB2200FFE344 /* QuickLook.framework */; };
 		FA40A09418FBFBE800FFE344 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA40A09318FBFBE800FFE344 /* Quartz.framework */; };
+		FA4127FC1C2923A700C61BE5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4127FB1C2923A700C61BE5 /* AppDelegate.m */; };
+		FA4127FF1C2923A700C61BE5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4127FE1C2923A700C61BE5 /* main.m */; };
+		FA4128011C2923A700C61BE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FA4128001C2923A700C61BE5 /* Assets.xcassets */; };
+		FA4128041C2923A800C61BE5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA4128021C2923A800C61BE5 /* MainMenu.xib */; };
+		FA41280A1C2923DE00C61BE5 /* QuickTransferHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = FA4127F81C2923A700C61BE5 /* QuickTransferHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		FA41280C1C2923F000C61BE5 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA41280B1C2923F000C61BE5 /* ServiceManagement.framework */; };
 		FA5911E91C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
 		FA5911EA1C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
 		FA5911EB1C0570610057928C /* QTRFileZipper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5911E81C0570610057928C /* QTRFileZipper.m */; };
@@ -200,6 +206,19 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		FA4128091C2923B600C61BE5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LoginItems;
+			dstSubfolderSpec = 1;
+			files = (
+				FA41280A1C2923DE00C61BE5 /* QuickTransferHelper.app in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		072BE73F1C0D803500798AC1 /* macIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = macIcon.xcassets; sourceTree = "<group>"; };
 		072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AndroidIcon.xcassets; sourceTree = "<group>"; };
@@ -282,6 +301,14 @@
 		FA3ACDB518C0577A00889FBC /* QTRTransfersTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersTableCellView.m; sourceTree = "<group>"; };
 		FA40A09118FBFB2200FFE344 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		FA40A09318FBFBE800FFE344 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		FA4127F81C2923A700C61BE5 /* QuickTransferHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuickTransferHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA4127FA1C2923A700C61BE5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		FA4127FB1C2923A700C61BE5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		FA4127FE1C2923A700C61BE5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FA4128001C2923A700C61BE5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FA4128031C2923A800C61BE5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		FA4128051C2923A800C61BE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FA41280B1C2923F000C61BE5 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
 		FA5911E71C0570610057928C /* QTRFileZipper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRFileZipper.h; sourceTree = "<group>"; };
 		FA5911E81C0570610057928C /* QTRFileZipper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRFileZipper.m; sourceTree = "<group>"; };
 		FA5911EE1C057F0F0057928C /* QTRDraggedItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRDraggedItem.h; sourceTree = "<group>"; };
@@ -390,6 +417,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA4127F51C2923A700C61BE5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FA59120F1C0583520057928C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -406,6 +440,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA41280C1C2923F000C61BE5 /* ServiceManagement.framework in Frameworks */,
 				FA40A09418FBFBE800FFE344 /* Quartz.framework in Frameworks */,
 				FA40A09218FBFB2200FFE344 /* QuickLook.framework in Frameworks */,
 				FAEB336E18DADE7A0053620B /* IOBluetooth.framework in Frameworks */,
@@ -575,6 +610,27 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		FA4127F91C2923A700C61BE5 /* QuickTransferHelper */ = {
+			isa = PBXGroup;
+			children = (
+				FA4127FA1C2923A700C61BE5 /* AppDelegate.h */,
+				FA4127FB1C2923A700C61BE5 /* AppDelegate.m */,
+				FA4128001C2923A700C61BE5 /* Assets.xcassets */,
+				FA4128021C2923A800C61BE5 /* MainMenu.xib */,
+				FA4128051C2923A800C61BE5 /* Info.plist */,
+				FA4127FD1C2923A700C61BE5 /* Supporting Files */,
+			);
+			path = QuickTransferHelper;
+			sourceTree = "<group>";
+		};
+		FA4127FD1C2923A700C61BE5 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FA4127FE1C2923A700C61BE5 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		FAD009C718D840910014DCC5 /* Bluetooth */ = {
 			isa = PBXGroup;
 			children = (
@@ -736,6 +792,7 @@
 				FA283EF918B494E5003D4FB6 /* QuickTransfer-iOS */,
 				FA283F1118B494E5003D4FB6 /* QuickTransfer-iOSTests */,
 				07CB1B5D1C0612EF00E3C02D /* SplashScreen */,
+				FA4127F91C2923A700C61BE5 /* QuickTransferHelper */,
 				FAD9FFD618B33CA70098DA76 /* Frameworks */,
 				FAD9FFD518B33CA70098DA76 /* Products */,
 				FAEB335718CDB55C00EA5993 /* QuickTransfer copy-Info.plist */,
@@ -751,6 +808,7 @@
 				FA283EF218B494E5003D4FB6 /* QuickTransfer-iOS.app */,
 				FA283F0B18B494E5003D4FB6 /* QuickTransfer-iOSTests.xctest */,
 				FA59121E1C0583520057928C /* QuickTransfer copy.app */,
+				FA4127F81C2923A700C61BE5 /* QuickTransferHelper.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -758,6 +816,7 @@
 		FAD9FFD618B33CA70098DA76 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA41280B1C2923F000C61BE5 /* ServiceManagement.framework */,
 				FA3453841C1ECABD00FC95EF /* PhotosUI.framework */,
 				FA40A09318FBFBE800FFE344 /* Quartz.framework */,
 				FA40A09118FBFB2200FFE344 /* QuickLook.framework */,
@@ -870,6 +929,23 @@
 			productReference = FA283F0B18B494E5003D4FB6 /* QuickTransfer-iOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		FA4127F71C2923A700C61BE5 /* QuickTransferHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA4128081C2923A800C61BE5 /* Build configuration list for PBXNativeTarget "QuickTransferHelper" */;
+			buildPhases = (
+				FA4127F41C2923A700C61BE5 /* Sources */,
+				FA4127F51C2923A700C61BE5 /* Frameworks */,
+				FA4127F61C2923A700C61BE5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = QuickTransferHelper;
+			productName = QuickTransferHelper;
+			productReference = FA4127F81C2923A700C61BE5 /* QuickTransferHelper.app */;
+			productType = "com.apple.product-type.application";
+		};
 		FA5911F51C0583520057928C /* QuickTransfer copy */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FA59121B1C0583520057928C /* Build configuration list for PBXNativeTarget "QuickTransfer copy" */;
@@ -896,6 +972,7 @@
 				FAD9FFD118B33CA70098DA76 /* Frameworks */,
 				FAD9FFD218B33CA70098DA76 /* Resources */,
 				FA10D28418BB41E400C54388 /* ShellScript */,
+				FA4128091C2923B600C61BE5 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -940,6 +1017,9 @@
 					FA283F0A18B494E5003D4FB6 = {
 						TestTargetID = FA283EF118B494E5003D4FB6;
 					};
+					FA4127F71C2923A700C61BE5 = {
+						CreatedOnToolsVersion = 7.0;
+					};
 					FAD9FFF418B33CA80098DA76 = {
 						TestTargetID = FAD9FFD318B33CA70098DA76;
 					};
@@ -963,6 +1043,7 @@
 				FA283EF118B494E5003D4FB6 /* QuickTransfer-iOS */,
 				FA283F0A18B494E5003D4FB6 /* QuickTransfer-iOSTests */,
 				FA5911F51C0583520057928C /* QuickTransfer copy */,
+				FA4127F71C2923A700C61BE5 /* QuickTransferHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -994,6 +1075,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA283F1618B494E5003D4FB6 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA4127F61C2923A700C61BE5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA4128011C2923A700C61BE5 /* Assets.xcassets in Resources */,
+				FA4128041C2923A800C61BE5 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1124,6 +1214,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA4127F41C2923A700C61BE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FA4127FF1C2923A700C61BE5 /* main.m in Sources */,
+				FA4127FC1C2923A700C61BE5 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FA5911F61C0583520057928C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1250,6 +1349,14 @@
 				FA283F1518B494E5003D4FB6 /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		FA4128021C2923A800C61BE5 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FA4128031C2923A800C61BE5 /* Base */,
+			);
+			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 		FAD9FFE018B33CA70098DA76 /* InfoPlist.strings */ = {
@@ -1384,6 +1491,49 @@
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+		FA4128061C2923A800C61BE5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = QuickTransferHelper/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = io.leftshift.QuickTransferHelper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FA4128071C2923A800C61BE5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = QuickTransferHelper/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = io.leftshift.QuickTransferHelper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -1575,6 +1725,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		FA4128081C2923A800C61BE5 /* Build configuration list for PBXNativeTarget "QuickTransferHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA4128061C2923A800C61BE5 /* Debug */,
+				FA4128071C2923A800C61BE5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		FA59121B1C0583520057928C /* Build configuration list for PBXNativeTarget "QuickTransfer copy" */ = {
 			isa = XCConfigurationList;
