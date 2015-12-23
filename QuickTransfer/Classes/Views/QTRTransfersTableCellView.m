@@ -10,26 +10,13 @@
 #import "QTRTransfer.h"
 #import "QTRUser.h"
 #import "QTRFile.h"
-@implementation QTRTransfersTableCellView {
-    NSColor *_backgroundColor;
-}
+@implementation QTRTransfersTableCellView
 
 - (void)awakeFromNib {
-    NSProgressIndicator *progressIndicator = [[NSProgressIndicator alloc] initWithFrame:NSMakeRect(self.fileNameField.frame.origin.x + 5, self.fileNameField.frame.origin.y + 24, self.bounds.size.width - 10, 6)];
-    [progressIndicator setIndeterminate:NO];
-    [progressIndicator setUsesThreadedAnimation:YES];
-    [progressIndicator setMaxValue:1.0f];
-    [progressIndicator setMinValue:0.0f];
-    [progressIndicator setDoubleValue:0.0f];
-    [progressIndicator setAutoresizingMask:(NSViewWidthSizable | NSViewMaxXMargin)];
-    [progressIndicator setBezeled:NO];
-    [progressIndicator setDisplayedWhenStopped:NO];
+    [super awakeFromNib];
 
-    [self addSubview:progressIndicator];
-    self.progressIndicator = progressIndicator;
-
-    _backgroundColor = [NSColor whiteColor];
-
+    [self.leftButton setTarget:self];
+    [self.leftButton setAction:@selector(clickLeftButton)];
 }
 
 - (void)setObjectValue:(id)objectValue {
@@ -40,21 +27,33 @@
         [self.fileSizeField setIntegerValue:transfer.fileSize];
         [self.fileNameField setStringValue:[[transfer.fileURL path] lastPathComponent]];
         [self.timestampField setObjectValue:transfer.timestamp];
-        [self.progressIndicator setDoubleValue:transfer.progress];
 
         switch (transfer.state) {
             case QTRTransferStateInProgress:
-                _backgroundColor = [NSColor whiteColor];
-                [self.progressIndicator setHidden:NO];
+                [self.timestampField setObjectValue:[NSString stringWithFormat:@"%d%% completed", (int)(transfer.progress * 100)]];
+                if ([transfer isIncoming]) {
+                    [self.timestampField setTextColor:[NSColor colorWithRed:0.35 green:0.78 blue:0.98 alpha:1]];
+                    [self.leftButton setImage:[NSImage imageNamed:@"IncomingFileIcon"]];
+                } else {
+                    [self.timestampField setTextColor:[NSColor colorWithRed:0.3 green:0.85 blue:0.39 alpha:1]];
+                    [self.leftButton setImage:[NSImage imageNamed:@"OutgoingFileIcon"]];
+                }
                 break;
 
             case QTRTransferStateCompleted:
-                _backgroundColor = [NSColor colorWithCalibratedRed:0.76f green:0.99f blue:0.80f alpha:1.00f];
+                [self.timestampField setObjectValue:transfer.timestamp];
+                [self.timestampField setTextColor:self.recipientNameField.textColor];
+                if ([transfer isIncoming]) {
+                    [self.leftButton setImage:[NSImage imageNamed:@"IncomingFileIcon"]];
+                } else {
+                    [self.leftButton setImage:[NSImage imageNamed:@"OutgoingFileIcon"]];
+                }
                 break;
 
             case QTRTransferStateFailed:
-                _backgroundColor = [NSColor colorWithCalibratedRed:1.00f green:0.90f blue:0.89f alpha:1.00f];
-                [self.progressIndicator setHidden:YES];
+                [self.timestampField setObjectValue:@"Failed"];
+                [self.timestampField setTextColor:[NSColor colorWithRed:1 green:0.23 blue:0.19 alpha:1]];
+                [self.leftButton setImage:[NSImage imageNamed:@"RetryIcon"]];
                 break;
 
             default:
@@ -66,9 +65,10 @@
     }
 }
 
-- (void)drawRect:(NSRect)dirtyRect {
-    [_backgroundColor setFill];
-    NSRectFill(dirtyRect);
+- (void)clickLeftButton {
+    if ([self.delegate respondsToSelector:@selector(transfersTableCellViewDidClickPrimaryButton:)]) {
+        [self.delegate transfersTableCellViewDidClickPrimaryButton:self];
+    }
 }
 
 @end

@@ -101,6 +101,8 @@
     [_client stop];
     _client = nil;
 
+    _canRefresh = YES;
+
     if ([self.delegate respondsToSelector:@selector(bonjourManagerDidStopServices:)]) {
         [self.delegate bonjourManagerDidStopServices:self];
     }

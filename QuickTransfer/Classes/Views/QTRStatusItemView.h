@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-
+#import "QTRStatusItemButton.h";
 @class QTRStatusItemView;
 
 /*!
@@ -31,7 +31,7 @@
 /*!
  The frontmost view of the reciver, which receives click actions
  */
-@property (weak, nonatomic) IBOutlet NSButton *button;
+@property (weak, nonatomic) IBOutlet QTRStatusItemButton *button;
 
 /*!
  The delegate of the receiver

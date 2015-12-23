@@ -19,6 +19,7 @@ NSString *const QTRTransferCurrentChunkProgressKey = @"QTRTransferCurrentChunkPr
 NSString *const QTRTransferStateKey = @"QTRTransferState";
 NSString *const QTRTransferSentBytesKey = @"QTRTransferSentBytes";
 NSString *const QTRTransferFileIdentifierKey = @"QTRTransferFileIdentifier";
+NSString *const QTRTransferIsIncomingKey = @"QTRTransferIsIncoming";
 
 @implementation QTRTransfer
 
@@ -49,6 +50,7 @@ NSString *const QTRTransferFileIdentifierKey = @"QTRTransferFileIdentifier";
         _state = [aDecoder decodeIntegerForKey:QTRTransferStateKey];
         _sentBytes = [aDecoder decodeIntegerForKey:QTRTransferSentBytesKey];
         _fileIdentifier = [aDecoder decodeObjectForKey:QTRTransferFileIdentifierKey];
+        _isIncoming = [aDecoder decodeBoolForKey:QTRTransferIsIncomingKey];
     }
 
     return self;
@@ -67,6 +69,7 @@ NSString *const QTRTransferFileIdentifierKey = @"QTRTransferFileIdentifier";
     [aCoder encodeInteger:self.state forKey:QTRTransferStateKey];
     [aCoder encodeInteger:self.sentBytes forKey:QTRTransferSentBytesKey];
     [aCoder encodeObject:_fileIdentifier forKey:QTRTransferFileIdentifierKey];
+    [aCoder encodeBool:_isIncoming forKey:QTRTransferIsIncomingKey];
 }
 
 #pragma mark - QLPreviewItem methods

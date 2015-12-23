@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "2BBA04AC630ECB52DF101DD9A1CAF8893A9F437B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "4E6708CCC0E92EF4B58960325FCAF65F2DF67EF3" : 0,
+    "2BBA04AC630ECB52DF101DD9A1CAF8893A9F437B" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "AFCC0C5D-BEF7-4A7D-97D4-D043845CCEEE",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "4E6708CCC0E92EF4B58960325FCAF65F2DF67EF3" : "QuickTransfer\/ThirdParty\/StartAtLoginController\/",
+    "2BBA04AC630ECB52DF101DD9A1CAF8893A9F437B" : "QuickTransfer\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "QuickTransfer",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "QuickTransfer.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:WickedLynx\/QuickTransfer.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "2BBA04AC630ECB52DF101DD9A1CAF8893A9F437B"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/alexzielenski\/StartAtLoginController.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4E6708CCC0E92EF4B58960325FCAF65F2DF67EF3"
+    }
+  ]
+}

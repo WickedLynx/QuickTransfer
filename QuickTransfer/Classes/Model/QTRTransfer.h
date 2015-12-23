@@ -93,6 +93,8 @@ typedef NS_ENUM(NSInteger, QTRTransferState) {
  */
 @property (nonatomic) long long sentBytes;
 
+@property (nonatomic) BOOL isIncoming;
+
 /*!
  The state of the transfer
  */

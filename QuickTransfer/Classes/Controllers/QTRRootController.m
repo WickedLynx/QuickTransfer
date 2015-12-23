@@ -18,6 +18,7 @@
 #import "QTRDraggedItem.h"
 #import "QTRNotificationsController.h"
 #import "QTRBonjourManager.h"
+#import "QTRDragView.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -30,7 +31,7 @@ int const QTRRootControllerSendMenuItemBaseTag = 1000;
 NSString *const QTRDefaultsAutomaticallyAcceptFilesKey = @"automaticallyAcceptFiles";
 NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 
-@interface QTRRootController () <NSTableViewDataSource, NSTableViewDelegate, QTRStatusItemViewDelegate, QTRTransfersControllerDelegate, QTRBonjourManagerDelegate> {
+@interface QTRRootController () <QTRStatusItemViewDelegate, QTRTransfersControllerDelegate, QTRBonjourManagerDelegate, NSCollectionViewDelegate, QTRDragViewDelegate, NSSearchFieldDelegate> {
     QTRBonjourManager *_bonjourManager;
     NSStatusItem *_statusItem;
     QTRUser *_selectedUser;
@@ -40,7 +41,7 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
     QTRNotificationsController *_notificationsController;
 }
 
-@property (weak) IBOutlet NSTableView *devicesTableView;
+@property (weak) IBOutlet QTRDragView *headerView;
 @property (weak) IBOutlet NSMenuItem *localComputerNameItem;
 @property (weak) IBOutlet NSMenuItem *sendFileSubMenuItem;
 @property (weak) IBOutlet NSMenu *statusBarMenu;
@@ -53,12 +54,15 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @property (weak) IBOutlet NSTextField *computerNameTextField;
 @property (weak) IBOutlet NSButton *automaticallyAcceptCheckBox;
 @property (weak) IBOutlet NSButton *launchAtLoginCheckBox;
+@property (strong, nonatomic) NSArray *users;
+@property (weak, nonatomic) IBOutlet NSCollectionView *collectionView;
+@property (strong) IBOutlet NSLayoutConstraint *sendButtonContainerBottomConstraint;
+@property (strong) NSArray *droppedFiles;
+@property (weak) IBOutlet NSSearchField *searchField;
 
 - (IBAction)clickSavePreferences:(id)sender;
-- (IBAction)clickSendFile:(id)sender;
 - (IBAction)clickRefresh:(id)sender;
 - (IBAction)clickStopServices:(id)sender;
-- (IBAction)clickConnectedDevices:(id)sender;
 - (IBAction)clickQuit:(id)sender;
 - (IBAction)clickTransfers:(id)sender;
 - (IBAction)clickPreferences:(id)sender;
@@ -68,7 +72,7 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @implementation QTRRootController
 
 @synthesize computerName = _computerName;
-
+@synthesize users = _users;
 void refreshComputerModel() {
     size_t len = 0;
     sysctlbyname("hw.model", NULL, &len, NULL, 0);
@@ -82,6 +86,17 @@ void refreshComputerModel() {
 - (void)awakeFromNib {
     [super awakeFromNib];
 
+    [self setUsers:[[NSMutableArray alloc] init]];
+
+    [self.mainWindow setBackgroundColor:[NSColor clearColor]];
+    [self.mainWindow setMovableByWindowBackground:YES];
+
+    if ([self.mainWindow.contentView isKindOfClass:[NSVisualEffectView class]]) {
+        NSVisualEffectView *visualEffectView = self.mainWindow.contentView;
+        [visualEffectView setState:NSVisualEffectStateActive];
+        [visualEffectView setMaterial:NSVisualEffectMaterialDark];
+    }
+
     _notificationsController = [[QTRNotificationsController alloc] init];
 
     _statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
@@ -90,7 +105,8 @@ void refreshComputerModel() {
     [_statusItem setMenu:self.statusBarMenu];
     [_statusItem setView:self.statusItemView];
     [self.statusItemView.button setTarget:self];
-    [self.statusItemView.button setAction:@selector(showMenu:)];
+    [self.statusItemView.button setAction:@selector(showDevicesWindow)];
+    [self.statusItemView.button setTarget:self forRightClickAction:@selector(showMenu:)];
     [self.statusItemView setDelegate:self];
 
     NSURL *appSupportDirectoryURL = [QTRHelper applicationSupportDirectoryURL];
@@ -103,6 +119,8 @@ void refreshComputerModel() {
     _bonjourManager = [[QTRBonjourManager alloc] init];
     [_bonjourManager setDelegate:self];
     [_bonjourManager setTransfersDelegate:_transfersController.transfersStore];
+    BOOL autoAccept = [[NSUserDefaults standardUserDefaults] boolForKey:QTRDefaultsAutomaticallyAcceptFilesKey];
+    [_bonjourManager setShouldAutoAcceptFiles:autoAccept];
     NSError *serverError = [_bonjourManager startServices];
     if (serverError != nil) {
         NSAlert *alert = [NSAlert alertWithMessageText:@"Could not start server" defaultButton:@"Ok" alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@",[serverError localizedDescription] ?: @"Unknown Error occured"];
@@ -111,7 +129,11 @@ void refreshComputerModel() {
 
     [self refreshMenu];
 
-    [self.devicesTableView registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
+    [self.collectionView registerForDraggedTypes:@[(NSString *)kUTTypeFileURL]];
+
+    [self.headerView setDelegate:self];
+
+    [self.collectionView addObserver:self forKeyPath:@"selectionIndexes" options:(NSKeyValueObservingOptionNew) context:NULL];
 }
 
 #pragma mark - Private methods
@@ -169,6 +191,7 @@ void refreshComputerModel() {
         [[NSUserDefaults standardUserDefaults] synchronize];
 
         [_bonjourManager refresh:nil];
+        [_bonjourManager setShouldAutoAcceptFiles:shouldAutoAccept];
     }
 
     [self.preferencesWindow close];
@@ -215,28 +238,33 @@ void refreshComputerModel() {
 
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
 
-    [openPanel setAllowsMultipleSelection:NO];
+    [openPanel setAllowsMultipleSelection:YES];
     [openPanel setAllowsOtherFileTypes:NO];
-    [openPanel setAllowsMultipleSelection:NO];
-    [openPanel setCanChooseDirectories:NO];
+    [openPanel setCanChooseDirectories:YES];
+
+    __weak typeof(self) wself = self;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    void (^openPanelCompletionHandler)(NSInteger) = ^(NSInteger result) {
+        if (result == NSFileHandlingPanelOKButton && openPanel.URLs != nil) {
+            for (NSURL *url in openPanel.URLs) {
+                BOOL directory = NO;
+                if ([fileManager fileExistsAtPath:url.path isDirectory:&directory]) {
+                    if (directory) {
+                        [wself sendDirectoryAtURL:url];
+                    } else {
+                        [wself sendFileAtURL:url];
+                    }
+                }
+
+            }
+        }
+    };
 
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
     if ([[NSApplication sharedApplication] keyWindow] == nil) {
-        [openPanel beginWithCompletionHandler:^(NSInteger result) {
-            if (result == NSFileHandlingPanelOKButton && openPanel.URL != nil) {
-                NSURL *url = openPanel.URL;
-                [self sendFileAtURL:url];
-            }
-        }];
+        [openPanel beginWithCompletionHandler:openPanelCompletionHandler];
     } else {
-        [openPanel beginSheetModalForWindow:self.mainWindow completionHandler:^(NSInteger result) {
-
-            if (result == NSFileHandlingPanelOKButton && openPanel.URL != nil) {
-                NSURL *url = openPanel.URL;
-                [self sendFileAtURL:url];
-            }
-
-        }];
+        [openPanel beginSheetModalForWindow:self.mainWindow completionHandler:openPanelCompletionHandler];
     }
 }
 
@@ -267,7 +295,7 @@ void refreshComputerModel() {
 
     [self.sendFileMenu removeAllItems];
 
-    NSInteger totalConnectedUsers = [[_bonjourManager remoteUsers] count];
+    NSInteger totalConnectedUsers = [self.users count];
 
     if (totalConnectedUsers == 0) {
         [self.sendFileSubMenuItem setEnabled:NO];
@@ -315,7 +343,6 @@ void refreshComputerModel() {
 }
 
 - (void)showTransfers {
-//    [self.transfersPanel makeKeyAndOrderFront:self];
     [self.transfersPanel orderFront:self];
 }
 
@@ -336,7 +363,7 @@ void refreshComputerModel() {
 
 - (IBAction)clickRefresh:(id)sender {
 
-    // TODO: Refresh
+    [_bonjourManager refresh:nil];
 
 }
 
@@ -345,19 +372,8 @@ void refreshComputerModel() {
     [alert beginSheetModalForWindow:self.preferencesWindow modalDelegate:self didEndSelector:@selector(preferencesAlertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
-- (IBAction)clickSendFile:(id)sender {
-
-    _clickedRow = [self.devicesTableView clickedRow];
-
-    [self showOpenPanelForSelectedUser];
-}
-
 - (IBAction)clickStopServices:(id)sender {
     [_bonjourManager stopServices];
-}
-
-- (IBAction)clickConnectedDevices:(id)sender {
-    [self showDevicesWindow];
 }
 
 - (void)clickSendMenuItem:(NSMenuItem *)menuItem {
@@ -390,43 +406,91 @@ void refreshComputerModel() {
     [self.preferencesWindow makeKeyAndOrderFront:self];
 }
 
-#pragma mark - NSTableViewDataSource
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView {
-    return [[_bonjourManager remoteUsers] count];
+- (IBAction)clickSend:(id)sender {
+    if (self.droppedFiles.count > 0) {
+        if (self.collectionView.selectionIndexes.count > 0) {
+            NSArray *users = [self.users objectsAtIndexes:self.collectionView.selectionIndexes];
+            for (QTRDraggedItem *item in self.droppedFiles) {
+                if (![item isDirectory]) {
+                    for (QTRUser *user in users) {
+                        [_bonjourManager sendFileAtURL:item.fileURL toUser:user];
+                    }
+                } else {
+                    __weak typeof(self) wself = self;
+                    void (^zipCompletion)(NSURL *, NSError *) = ^(NSURL *zipURL, NSError *zipError) {
+                        if (wself != nil) {
+                            typeof(self) sself = wself;
+                            if (zipError == nil) {
+                                for (QTRUser *user in users) {
+                                    [sself->_bonjourManager sendFileAtURL:zipURL toUser:user];
+                                }
+                            }
+                        }
+                    };
+                    
+                    [QTRFileZipper zipDirectoryAtURL:item.fileURL completion:zipCompletion];
+                }
+            }
+        }
+    }
 }
 
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex {
-    QTRUser *theUser = [_bonjourManager userAtIndex:rowIndex];
-    NSString *name = [self styledDisplayNameForUser:theUser];
+#pragma mark - KVO
 
-    return  name;
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    if ([object isEqual:self.collectionView]) {
+        NSIndexSet *indexset = change[@"new"];
+        BOOL showSendButton = NO;
+        if (indexset.count > 0) {
+            if (self.droppedFiles.count > 0) {
+                showSendButton = YES;
+            }
+        }
+        if (showSendButton) {
+            self.sendButtonContainerBottomConstraint.constant = 0;
+        } else {
+            self.sendButtonContainerBottomConstraint.constant = -40;
+        }
+    }
 }
 
-- (NSDragOperation)tableView:(NSTableView *)aTableView validateDrop:(id < NSDraggingInfo >)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)operation {
+#pragma mark - Notification Observers
+
+- (void)controlTextDidChange:(NSNotification *)obj {
+    if (obj.object == self.searchField) {
+        if (self.searchField.stringValue.length == 0) {
+            [self setUsers:[_bonjourManager remoteUsers]];
+        } else {
+            NSArray *filteredUsers = [[_bonjourManager remoteUsers] filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id  _Nonnull evaluatedObject, NSDictionary<NSString *,id> * _Nullable bindings) {
+                QTRUser *user = (QTRUser *)evaluatedObject;
+                return [user.name.lowercaseString containsString:self.searchField.stringValue.lowercaseString];
+            }]];
+            [self setUsers:filteredUsers];
+        }
+    }
+}
+
+#pragma mark - NSCollectionViewDelegate methods
+
+- (NSDragOperation)collectionView:(NSCollectionView *)collectionView validateDrop:(id<NSDraggingInfo>)draggingInfo proposedIndex:(NSInteger *)proposedDropIndex dropOperation:(NSCollectionViewDropOperation *)proposedDropOperation {
+
     NSDragOperation dragOperation = NSDragOperationNone;
-
-    if (operation == NSTableViewDropOn) {
-        if ([self validateDraggedFileURLOnRow:row info:info] != nil) {
+    if (*proposedDropOperation == NSCollectionViewDropOn) {
+        if ([self validateDraggedFileURLOnRow:*proposedDropIndex info:draggingInfo] != nil) {
             dragOperation = NSDragOperationLink;
         }
-
     }
 
     return dragOperation;
-
 }
 
-- (BOOL)tableView:(NSTableView *)tableView acceptDrop:(id<NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)dropOperation {
-
+- (BOOL)collectionView:(NSCollectionView *)collectionView acceptDrop:(id<NSDraggingInfo>)draggingInfo index:(NSInteger)index dropOperation:(NSCollectionViewDropOperation)dropOperation {
     BOOL acceptDrop = NO;
-
-    NSArray *files = [self validateDraggedFileURLOnRow:row info:info];
-
+    NSArray *files = [self validateDraggedFileURLOnRow:index info:draggingInfo];
     if (files.count > 0) {
 
         acceptDrop = YES;
-        _clickedRow = row;
+        _clickedRow = index;
         for (QTRDraggedItem *file in files) {
             if ([file isDirectory]) {
                 [self sendDirectoryAtURL:file.fileURL];
@@ -446,7 +510,8 @@ void refreshComputerModel() {
 }
 
 - (void)bonjourManagerDidStopServices:(QTRBonjourManager *)manager {
-    [self.devicesTableView reloadData];
+    [self.searchField setStringValue:@""];
+    [self setUsers:nil];
     [self refreshMenu];
 }
 
@@ -487,12 +552,14 @@ void refreshComputerModel() {
 }
 
 - (void)bonjourManager:(QTRBonjourManager *)manager didConnectToUser:(QTRUser *)remoteUser {
-    [self.devicesTableView reloadData];
+    [self.searchField setStringValue:@""];
+    [self setUsers:[_bonjourManager remoteUsers]];
     [self refreshMenu];
 }
 
 - (void)bonjourManager:(QTRBonjourManager *)manager didDisconnectFromUser:(QTRUser *)remoteUser {
-    [self.devicesTableView reloadData];
+    [self.searchField setStringValue:@""];
+    [self setUsers:[_bonjourManager remoteUsers]];
     [self refreshMenu];
 }
 
@@ -524,5 +591,41 @@ void refreshComputerModel() {
     [self showDevicesWindow];
 }
 
+#pragma mark - QTRDragViewDelegate methods
+
+- (NSString *)dragView:(QTRDragView *)dragView didPerformDragOperation:(id<NSDraggingInfo>)draggingInfo {
+    NSString *statusText = nil;
+    NSArray *draggedFiles = [self validateDraggedFileURLOnRow:0 info:draggingInfo];
+    BOOL showSendButton = NO;
+    if (draggedFiles.count > 0) {
+        [self setDroppedFiles:draggedFiles];
+        QTRDraggedItem *file = [draggedFiles firstObject];
+        NSString *fileName = [file.fileURL lastPathComponent];
+        if (draggedFiles.count == 2) {
+            statusText = [NSString stringWithFormat:@"%@ and %ld more file", fileName, (draggedFiles.count - 1)];
+        } else if (draggedFiles.count > 2) {
+            statusText = [NSString stringWithFormat:@"%@ and %ld more files", fileName, (draggedFiles.count - 1)];
+        } else {
+            statusText = fileName;
+        }
+        if (self.collectionView.selectionIndexes.count > 0) {
+            showSendButton = YES;
+        }
+    }
+
+    if (showSendButton) {
+        self.sendButtonContainerBottomConstraint.constant = 0;
+    } else {
+        self.sendButtonContainerBottomConstraint.constant = -40;
+    }
+
+    return statusText;
+}
+
+#pragma mark - NSSearchFieldDelegate methods
+
+- (void)searchFieldDidEndSearching:(NSSearchField *)sender {
+    [self setUsers:[_bonjourManager remoteUsers]];
+}
 
 @end

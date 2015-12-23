@@ -46,6 +46,8 @@
  */
 - (void)deleteTransfer:(QTRTransfer *)transfer;
 
+- (void)deleteTransfersAtIndexes:(NSIndexSet *)indexes;
+
 /*!
  Removes all transfers currently being tracked by the receiver.
 
