@@ -1,12 +1,13 @@
 //
-//  QTRRecentLogsViewController.m
+//  QTRTransfersViewController.m
 //  QuickTransfer
 //
-//  Created by Tarun Yadav on 03/12/15.
+//  Created by Tarun Yadav on 24/12/15.
 //  Copyright © 2015 Laughing Buddha Software. All rights reserved.
 //
 
-#import "QTRRecentLogsViewController.h"
+#import "QTRTransfersViewController.h"
+
 #import "QTRTransfersTableCell.h"
 #import "QTRTransfer.h"
 #import "QTRFile.h"
@@ -18,7 +19,7 @@
 
 
 
-@interface QTRRecentLogsViewController ()  <UITableViewDataSource, UITableViewDelegate, QLPreviewControllerDataSource, QTRTransfersStoreDelegate>
+@interface QTRTransfersViewController ()  <UITableViewDataSource, UITableViewDelegate, QLPreviewControllerDataSource, QTRTransfersStoreDelegate>
 {
     
     NSByteCountFormatter *_byteCountFormatter;
@@ -33,7 +34,7 @@
 
 static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdentifier";
 
-@implementation QTRRecentLogsViewController
+@implementation QTRTransfersViewController
 
 - (id)init {
     self = [super init];
@@ -118,14 +119,14 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
 #pragma mark - Button Actions
 
 - (void)leftBarButtonAction {
-        [self.navigationController popToRootViewControllerAnimated:YES];
+    [self.navigationController popToRootViewControllerAnimated:YES];
     
 }
 
 - (void)rightBarButtonAction {
     
-        [_transfersStore removeAllTransfers];
-        [[_devicesView devicesTableView] reloadData];
+    [_transfersStore removeAllTransfers];
+    [[_devicesView devicesTableView] reloadData];
 }
 
 #pragma mark - Cleanup
@@ -166,7 +167,7 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
     }
     
     [cell setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
-
+    
     QTRTransfer *theTransfer = [[_transfersStore transfers] objectAtIndex:[indexPath row]];
     [[cell titleLabel] setText:[theTransfer.fileURL.absoluteString lastPathComponent]];
     [[cell subtitleLabel] setText:theTransfer.user.name];

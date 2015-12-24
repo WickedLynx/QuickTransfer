@@ -8,7 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "QTRRootViewController.h"
-#import "QTRRecentLogsViewController.h"
+#import "QTRTransfersViewController.h"
 #import "QTRConnectedDevicesViewController.h"
 #import "QTRTransfersStore.h"
 #import "QTRConnectedDevicesView.h"
@@ -33,7 +33,7 @@ CGFloat const QTRRootViewControllerXOffset = 50.0f;
     [super viewDidLoad];
     
     
-    QTRRecentLogsViewController *transfersController = [QTRRecentLogsViewController new];
+    QTRTransfersViewController *transfersController = [QTRTransfersViewController new];
     UINavigationController *transfersNavigationController = [[UINavigationController alloc] initWithRootViewController:transfersController];
     _transfersNavigationController = transfersNavigationController;
     

@@ -21,9 +21,8 @@
 #import "QTRBeaconHelper.h"
 #import "QTRHelper.h"
 #import "QTRSelectedUserInfo.h"
-#import "QTRRecentLogsViewController.h"
 #import "QTRCustomAlertView.h"
-
+#import "QTRTransfersViewController.h"
 
 
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate, UIImagePickerControllerDelegate> {
@@ -154,7 +153,7 @@ NSString * const cellIdentifier = @"cellIdentifier";
     
     _selectedRecivers = [[NSMutableDictionary alloc]init];
     
-    [[[_devicesView noConnectedDeviceFoundView] refreshButton] addTarget:self action:@selector(noDeviceFound) forControlEvents:UIControlEventTouchUpInside];
+    [[[_devicesView noConnectedDeviceFoundView] refreshButton] addTarget:self action:@selector(noConnectedDeviceFoundAction) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
     [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
@@ -184,14 +183,14 @@ NSString * const cellIdentifier = @"cellIdentifier";
     [customRightBarButton setUserInteractionEnabled:NO];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button addTarget:self action:@selector(logsBarButton:) forControlEvents:UIControlEventTouchUpInside];
+    [button addTarget:self action:@selector(RightBarButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     button.frame = customRightBarButton.frame;
     [customRightBarButton addSubview:button];
     
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:customRightBarButton];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
-    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"settingIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(setLeftBarButton:)];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"settingIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(setLeftBarButtonAction:)];
     [self.navigationItem setLeftBarButtonItem:leftBarButton];
     
     [[_devicesView sendButton] addTarget:self action:@selector(nextButtonClicked) forControlEvents:UIControlEventTouchUpInside];
@@ -230,7 +229,7 @@ NSString * const cellIdentifier = @"cellIdentifier";
 
 #pragma mark - Actions
 
-- (void)noDeviceFound {
+- (void)noConnectedDeviceFoundAction {
     
     [[_devicesView noConnectedDeviceFoundView] setHidden:YES];
     [self refreshConnectedDevices];
@@ -247,13 +246,13 @@ NSString * const cellIdentifier = @"cellIdentifier";
 
 }
 
-- (void)setLeftBarButton:(UIBarButtonItem *)barButton {
+- (void)setLeftBarButtonAction:(UIBarButtonItem *)barButton {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 
 }
 
-- (void)logsBarButton:(UIBarButtonItem *)barButton {
-    QTRRecentLogsViewController *recentLogs = [[QTRRecentLogsViewController alloc]init];
+- (void)RightBarButtonAction:(UIBarButtonItem *)barButton {
+    QTRTransfersViewController *recentLogs = [[QTRTransfersViewController alloc]init];
     [self.navigationController pushViewController:recentLogs animated:YES];
     
     

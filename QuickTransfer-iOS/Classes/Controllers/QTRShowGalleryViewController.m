@@ -10,7 +10,7 @@
 #import "QTRGalleryCollectionViewCell.h"
 #import "QTRRightBarButtonView.h"
 #import "QTRImagesInfoData.h"
-#import "QTRRecentLogsViewController.h"
+#import "QTRTransfersViewController.h"
 #import "QTRHelper.h"
 
 
@@ -185,7 +185,7 @@ int totalImages;
 
 -(void)logsBarButton {
     
-    QTRRecentLogsViewController *recentLogs = [[QTRRecentLogsViewController alloc]init];
+    QTRTransfersViewController *recentLogs = [[QTRTransfersViewController alloc]init];
     [self.navigationController pushViewController:recentLogs animated:YES];
     
 }
