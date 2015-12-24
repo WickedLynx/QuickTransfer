@@ -41,7 +41,6 @@
     QTRUser *_localUser;
     QTRUser *_selectedUser;
     
-//    UIRefreshControl *refreshControl;
     NSMapTable *_alertToFileMapTable;
     NSURL *_fileCacheDirectory;
 
@@ -51,18 +50,18 @@
     QTRBeaconRanger *_beaconRanger;
     QTRBeaconAdvertiser *_beaconAdvertiser;
     
-    QTRActionSheetGalleryView *customView;
+    QTRActionSheetGalleryView *customActionSheetGalleryView;
     QTRDeviceNotFound *noDeviceView;
-    QTRCustomAlertView *cac;
+    QTRCustomAlertView *customAlertView;
 
 
     __weak id <QTRBonjourTransferDelegate> _transfersController;
 
     NSURL *_importedFileURL;
-    //UILabel *fetchingDevicesLabel;
     NSTimer *_timer;
-    
-    
+
+    PHImageRequestOptions *requestOptions;
+    NSMutableArray* filteredUserData;
 }
 
 
@@ -92,9 +91,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     if (self != nil) {
 
         _transfersController = transfersStore;
-
-        //_assetsLibrary = [[ALAssetsLibrary alloc] init];
-
         _alertToFileMapTable = [NSMapTable weakToStrongObjectsMapTable];
 
         if ([QTRBeaconHelper isBLEAvailable]) {
@@ -294,25 +290,25 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     else if ([_selectedRecivers count] > 0) {
     
-        cac = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-        [self.view addSubview:cac];
+        customAlertView = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        [self.view addSubview:customAlertView];
     
-        customView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
-        [customView setUserInteractionEnabled:YES];
-        customView.delegate = self;
-        customView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
+        customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
+        [customActionSheetGalleryView setUserInteractionEnabled:YES];
+        customActionSheetGalleryView.delegate = self;
+        customActionSheetGalleryView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
     
-        [customView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+        [customActionSheetGalleryView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
     
-        [customView.actionControllerCollectionView setDataSource:customView];
-        [customView.actionControllerCollectionView setDelegate:customView];
-        customView.actionControllerCollectionView.allowsMultipleSelection = YES;
-        [cac.galleryCollectionView addSubview:customView];
+        [customActionSheetGalleryView.actionControllerCollectionView setDataSource:customActionSheetGalleryView];
+        [customActionSheetGalleryView.actionControllerCollectionView setDelegate:customActionSheetGalleryView];
+        customActionSheetGalleryView.actionControllerCollectionView.allowsMultipleSelection = YES;
+        [customAlertView.galleryCollectionView addSubview:customActionSheetGalleryView];
 
-        [cac.cancelButton addTarget: self action: @selector(actionViewCancelButton) forControlEvents: UIControlEventTouchUpInside];
-        [cac.iCloudButton addTarget: self action: @selector(actioniCloudButton) forControlEvents: UIControlEventTouchUpInside];
-        [cac.cameraRollButton addTarget: self action: @selector(actionCameraRoll) forControlEvents: UIControlEventTouchUpInside];
-        [cac.takePhotoButton addTarget: self action: @selector(actionTakePhoto) forControlEvents: UIControlEventTouchUpInside];
+        [customAlertView.cancelButton addTarget: self action: @selector(actionViewCancelButton) forControlEvents: UIControlEventTouchUpInside];
+        [customAlertView.iCloudButton addTarget: self action: @selector(actioniCloudButton) forControlEvents: UIControlEventTouchUpInside];
+        [customAlertView.cameraRollButton addTarget: self action: @selector(actionCameraRoll) forControlEvents: UIControlEventTouchUpInside];
+        [customAlertView.takePhotoButton addTarget: self action: @selector(actionTakePhoto) forControlEvents: UIControlEventTouchUpInside];
 
     }
     
@@ -340,19 +336,19 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 
 -(void) actionViewCancelButton {
-    [cac removeFromSuperview];
+    [customAlertView removeFromSuperview];
 
 }
 
 -(void) actioniCloudButton {
-    [cac removeFromSuperview];
+    [customAlertView removeFromSuperview];
 
 }
 
 -(void) actionCameraRoll {
     
-    [cac removeFromSuperview];
-    [customView removeFromSuperview];
+    [customAlertView removeFromSuperview];
+    [customActionSheetGalleryView removeFromSuperview];
     
     QTRSelectedUserInfo *usersInfo = [[QTRSelectedUserInfo alloc]init];
     usersInfo._client = _client;
@@ -375,7 +371,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     if (!isCameraAvailable) {
         
-        [cac removeFromSuperview];
+        [customAlertView removeFromSuperview];
         UIAlertController *alertView = [UIAlertController
                                         alertControllerWithTitle:@"Attention"
                                         message:@"Your device does't support this feature!"
@@ -394,7 +390,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
         [self presentViewController:alertView animated:YES completion:nil];
         
     } else {
-        [cac removeFromSuperview];
+        [customAlertView removeFromSuperview];
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.delegate = self;
         picker.allowsEditing = YES;
@@ -733,7 +729,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
 
     if (self.isFiltered) {
-        return [self.filteredUserData count];
+        return [filteredUserData count];
     }
     else {
         return [_connectedServers count] + [_connectedClients count];
@@ -747,7 +743,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     QTRUser *theUser;
 
     if (self.isFiltered) {
-        theUser = [self.filteredUserData objectAtIndex:indexPath.row];
+        theUser = [filteredUserData objectAtIndex:indexPath.row];
         }
     else {
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
@@ -781,7 +777,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     QTRUser *theUser;
     
     if (self.isFiltered) {
-        theUser = [self.filteredUserData objectAtIndex:indexPath.row];
+        theUser = [filteredUserData objectAtIndex:indexPath.row];
 
     } else {
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
@@ -816,7 +812,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
     
     if (self.isFiltered) {
-        theUser = [self.filteredUserData objectAtIndex:indexPath.row];
+        theUser = [filteredUserData objectAtIndex:indexPath.row];
 
     } else {
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
@@ -830,7 +826,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     QTRUser *theUser;
     
     if (self.isFiltered) {
-        theUser = [self.filteredUserData objectAtIndex:indexPath.row];
+        theUser = [filteredUserData objectAtIndex:indexPath.row];
     }
     else {
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
@@ -958,7 +954,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView didCellSelected:(BOOL)selected withCollectionCell:(QTRAlertControllerCollectionViewCell *)alertControllerCollectionViewCell selectedImage:(QTRImagesInfoData *)sendingImage {
     
-    [cac removeFromSuperview];
+    [customAlertView removeFromSuperview];
     [self sendDataToSelectedUser:sendingImage];
 
 }
@@ -969,16 +965,16 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 - (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
     
-    self.requestOptions = [[PHImageRequestOptions alloc] init];
-    self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
-    self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    requestOptions = [[PHImageRequestOptions alloc] init];
+    requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
+    requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     
-    self.requestOptions.synchronous = true;
+    requestOptions.synchronous = true;
     NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
     
     
     [[PHImageManager defaultManager] requestImageDataForAsset:sendingImage.imageAsset
-                                                      options:self.requestOptions
+                                                      options:requestOptions
                                                 resultHandler:
      ^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
          
@@ -1035,14 +1031,13 @@ static NSString *cellIdentifier = @"cellIdentifier";
     else
     {
         self.isFiltered = true;
-        self.filteredUserData = [[NSMutableArray alloc] init];
+        filteredUserData = [[NSMutableArray alloc] init];
         
         for (QTRUser *theUser in _connectedServers)
         {
-            //case insensative search - way cool
             if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
             {
-                [self.filteredUserData addObject:theUser];
+                [filteredUserData addObject:theUser];
             }
         }
         
@@ -1050,7 +1045,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
         {
             if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
             {
-                [self.filteredUserData addObject:theUser];
+                [filteredUserData addObject:theUser];
             }
         }
     }

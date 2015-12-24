@@ -11,14 +11,12 @@
 @import Photos;
 @import PhotosUI;
 
+
+
 @interface QTRConnectedDevicesViewController : UIViewController <UINavigationControllerDelegate, UISearchBarDelegate>
 
 
-@property (nonatomic, strong) NSIndexPath *selectedItemIndexPath;
-@property (nonatomic, strong) NSMutableArray *photos;
-@property (nonatomic, assign) bool isFiltered;
-@property (strong, nonatomic) NSMutableArray* filteredUserData;
-@property (nonatomic, retain) PHImageRequestOptions *requestOptions;
+@property (nonatomic, assign) BOOL isFiltered;
 
 /*!
  Initialises the receiver.
