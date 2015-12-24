@@ -35,7 +35,12 @@ typedef NS_ENUM(NSInteger, QTRTransferState) {
     /*!
      The transfer has failed
      */
-    QTRTransferStateFailed
+    QTRTransferStateFailed,
+
+    /*!
+     The transfer has been paused
+     */
+    QTRTransferStatePaused
 };
 
 /*!

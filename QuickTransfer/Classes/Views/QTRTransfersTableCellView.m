@@ -10,6 +10,7 @@
 #import "QTRTransfer.h"
 #import "QTRUser.h"
 #import "QTRFile.h"
+
 @implementation QTRTransfersTableCellView
 
 - (void)awakeFromNib {
@@ -56,6 +57,13 @@
                 [self.leftButton setImage:[NSImage imageNamed:@"RetryIcon"]];
                 break;
 
+            case QTRTransferStatePaused:
+                if (![transfer isIncoming]) {
+                    [self.leftButton setImage:[NSImage imageNamed:@"ResumeTransferIcon"]];
+                } else {
+                    [self.leftButton setImage:[NSImage imageNamed:@"PauseTransferIcon"]];
+                }
+
             default:
                 break;
         }
@@ -71,4 +79,29 @@
     }
 }
 
+- (void)mouseEntered:(NSEvent *)theEvent {
+    [super mouseEntered:theEvent];
+
+    if ([self.delegate respondsToSelector:@selector(transferForCellView:)]) {
+        QTRTransfer *transfer = [self.delegate transferForCellView:self];
+        if (![transfer isIncoming]) {
+            if (transfer.state == QTRTransferStateInProgress) {
+                [self.leftButton setImage:[NSImage imageNamed:@"PauseTransferIcon"]];
+            }
+        }
+    }
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    [super mouseExited:theEvent];
+
+    if ([self.delegate respondsToSelector:@selector(transferForCellView:)]) {
+        QTRTransfer *transfer = [self.delegate transferForCellView:self];
+        if (![transfer isIncoming]) {
+            if (transfer.state == QTRTransferStateInProgress) {
+                [self.leftButton setImage:[NSImage imageNamed:@"OutgoingFileIcon"]];
+            }
+        }
+    }
+}
 @end

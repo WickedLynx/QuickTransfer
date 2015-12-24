@@ -32,13 +32,6 @@ NSString *const QTRTransfersTableRowViewIdentifier = @"QTRTransfersTableRowViewI
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
 }
 
-#pragma mark - Actions
-
-- (IBAction)clickClearCompleted:(id)sender {
-
-    [self.transfersStore removeCompletedTransfers];
-}
-
 #pragma mark - Public methods
 
 - (void)setTransfersStore:(QTRTransfersStore *)transfersStore {
@@ -107,7 +100,7 @@ NSString *const QTRTransfersTableRowViewIdentifier = @"QTRTransfersTableRowViewI
         QTRTransfer *theTransfer = [[self.transfersStore transfers] objectAtIndex:clickedRow];
         if (theTransfer.progress == 1.0f) {
             [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[theTransfer.fileURL]];
-        } else if (theTransfer.state == QTRTransferStateFailed) {
+        } else if (theTransfer.state == QTRTransferStateFailed || theTransfer.state == QTRTransferStatePaused) {
             BOOL canResume = NO;
             if ([self.delegate respondsToSelector:@selector(transfersController:needsResumeTransfer:)]) {
                 if ([self.delegate transfersController:self needsResumeTransfer:theTransfer]) {
@@ -121,8 +114,23 @@ NSString *const QTRTransfersTableRowViewIdentifier = @"QTRTransfersTableRowViewI
                 [alert addButtonWithTitle:@"Okay"];
                 [alert beginSheetModalForWindow:self.window completionHandler:nil];
             }
+        } else if (![theTransfer isIncoming]) {
+            if ([self.delegate respondsToSelector:@selector(transfersController:needsPauseTransfer:)]) {
+                [self.delegate transfersController:self needsPauseTransfer:theTransfer];
+            }
         }
     }
+}
+
+- (QTRTransfer *)transferForCellView:(QTRTransfersTableCellView *)cellView {
+    QTRTransfer *transfer = nil;
+    NSUInteger index = [self.transfersTableView rowForView:cellView];
+    NSArray *transfers = [_transfersStore transfers];
+    if (index < transfers.count) {
+        transfer = transfers[index];
+    }
+
+    return transfer;
 }
 
 #pragma mark - Notification callbacks

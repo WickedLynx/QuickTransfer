@@ -123,6 +123,10 @@ long long const QTRMultipartTransferMaximumPartSize = 10 * 1024 * 1024;   // 10 
     return canResume;
 }
 
+- (long long)currentOffset {
+    return [_fileHandle offsetInFile];
+}
+
 - (void)dealloc {
     [_fileHandle closeFile];
 }

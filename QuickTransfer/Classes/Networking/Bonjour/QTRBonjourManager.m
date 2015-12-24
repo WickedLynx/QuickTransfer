@@ -162,6 +162,9 @@
     return ([_server resumeTransfer:transfer] || [_client resumeTransfer:transfer]);
 }
 
+- (BOOL)pauseTransfer:(QTRTransfer *)transfer {
+    return ([_server pauseTransfer:transfer] || [_client pauseTransfer:transfer]);
+}
 
 #pragma mark - Private methods
 

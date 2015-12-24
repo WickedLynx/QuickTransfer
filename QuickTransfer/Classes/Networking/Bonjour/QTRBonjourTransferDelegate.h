@@ -64,6 +64,9 @@
  */
 - (void)resumeTransferForUser:(QTRUser *)user file:(QTRFile *)file chunk:(DTBonjourDataChunk *)chunk;
 
+
+- (void)transferDidPause:(QTRTransfer *)transfer;
+
 /*!
  Update the transfer of an incoming file
  
@@ -77,7 +80,7 @@
  @param sentBytes The total bytes sent
  @param file The file to update
  */
-- (void)updateSentBytes:(long long)sentBytes forFile:(QTRFile *)file;
+- (void)updateSentBytes:(long long)sentBytes forFileID:(NSString *)fileID;
 
 /*!
  Check if a transfer can be resumed
@@ -88,5 +91,7 @@
  Returns the URL of a partially written file
  */
 - (NSURL *)saveURLForResumedFile:(QTRFile *)file;
+
+- (QTRTransfer *)transferForFileID:(NSString *)fileIdentifier;
 
 @end

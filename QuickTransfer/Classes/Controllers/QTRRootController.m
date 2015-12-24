@@ -585,6 +585,10 @@ void refreshComputerModel() {
     return [_bonjourManager resumeTransfer:transfer];
 }
 
+- (BOOL)transfersController:(QTRTransfersController *)controller needsPauseTransfer:(QTRTransfer *)transfer {
+    return [_bonjourManager pauseTransfer:transfer];
+}
+
 #pragma mark - QTRStatusItemViewDelegate methods
 
 - (void)statusItemViewDraggingEntered:(QTRStatusItemView *)view {
