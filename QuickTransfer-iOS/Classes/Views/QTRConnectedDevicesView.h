@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QTRNoConnectedDeviceFoundView.h"
 
 @interface QTRConnectedDevicesView : UIView
 
@@ -16,5 +17,10 @@
 @property (retain, nonatomic) UIButton *sendButton;
 @property (retain, nonatomic) UIRefreshControl *deviceRefreshControl;
 @property (retain, nonatomic) UILabel *fetchingDevicesLabel;
+@property (retain, nonatomic) QTRNoConnectedDeviceFoundView *noConnectedDeviceFoundView;
+
+
+- (void)animatePreviewLabel:(UILabel *)previewMessageLabel;
+
 
 @end

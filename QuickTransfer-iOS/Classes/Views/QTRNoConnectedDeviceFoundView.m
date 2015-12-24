@@ -1,22 +1,24 @@
 //
-//  QTRDeviceNotFound.m
+//  QTRNoConnectedDeviceFoundView.m
 //  QuickTransfer
 //
-//  Created by Tarun Yadav on 14/12/15.
+//  Created by Tarun Yadav on 24/12/15.
 //  Copyright © 2015 Laughing Buddha Software. All rights reserved.
 //
 
-#import "QTRDeviceNotFound.h"
+#import "QTRNoConnectedDeviceFoundView.h"
 
-@implementation QTRDeviceNotFound
+@implementation QTRNoConnectedDeviceFoundView
+
+
 
 - (id)initWithFrame:(CGRect)aRect
 {
     if ((self = [super initWithFrame:aRect])) {
         
-       
+        
         [self setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
-        float screenHeight = (self.frame.size.height / 2.0) - 22.0;
+        float screenHeight = (self.frame.size.height / 3.0);
         
         
         UILabel *topLabel = [[UILabel alloc]initWithFrame:CGRectZero];
@@ -59,16 +61,12 @@
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-32-[topLabel]-32-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-58-[button]-58-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-32-[bottomLabel]-32-|" options:0 metrics:0 views:views]];
-    
+        
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%f-[button(==44)]",screenHeight] options:0 metrics:0 views:views]];
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%f-[topLabel]",(screenHeight - 54)] options:0 metrics:0 views:views]];
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|-%f-[bottomLabel]",(screenHeight + 79)] options:0 metrics:0 views:views]];
-
-        
-        
-        
         
         
     }

@@ -63,7 +63,14 @@
         [self addSubview:fetchDevice];
         _fetchingDevicesLabel = fetchDevice;
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(button, aCollectionView, searchBar, fetchDevice);
+        QTRNoConnectedDeviceFoundView *noConnectedDeviceView = [[QTRNoConnectedDeviceFoundView alloc]initWithFrame:self.bounds];
+        [noConnectedDeviceView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [noConnectedDeviceView setHidden:YES];
+        [self addSubview:noConnectedDeviceView];
+        _noConnectedDeviceFoundView = noConnectedDeviceView;
+        
+        
+        NSDictionary *views = NSDictionaryOfVariableBindings(button, aCollectionView, searchBar, fetchDevice, noConnectedDeviceView);
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[button]-7-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[aCollectionView]|" options:0 metrics:0 views:views]];
@@ -74,9 +81,21 @@
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-50-[fetchDevice]-50-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-200-[fetchDevice(==44)]" options:0 metrics:0 views:views]];
         
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[noConnectedDeviceView]-0-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[noConnectedDeviceView]-0-|" options:0 metrics:0 views:views]];
+        
     }
 
     return self;
+}
+
+- (void)animatePreviewLabel:(UILabel *)previewMessageLabel {
+    CATransition *animation = [CATransition animation];
+    animation.duration = 1.2;
+    animation.type = kCATransitionReveal;
+    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    [previewMessageLabel.layer addAnimation:animation forKey:@"changeTextTransition"];
+    
 }
 
 

@@ -19,6 +19,7 @@
 		072BE74F1C0D8BBD00798AC1 /* linuxIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7451C0D808500798AC1 /* linuxIcon.xcassets */; };
 		0731C36B1C1B0A43003EFC61 /* IPhonesIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E121C1B046000405F0D /* IPhonesIcon.xcassets */; };
 		073CAC3C1C2BA59E00BE9496 /* QTRTransfersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 073CAC3B1C2BA59E00BE9496 /* QTRTransfersView.m */; };
+		073CAC421C2BCF1E00BE9496 /* QTRNoConnectedDeviceFoundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 073CAC411C2BCF1E00BE9496 /* QTRNoConnectedDeviceFoundView.m */; };
 		0745DA561C15688500579DCC /* QTRCustomAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0745DA551C15688500579DCC /* QTRCustomAlertView.m */; };
 		077AA25C1C2058CA0048326F /* AppIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 077AA25A1C2058AE0048326F /* AppIcon.xcassets */; };
 		07A79E0C1C1A8C0A00405F0D /* pauseIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */; };
@@ -32,7 +33,6 @@
 		07BB98211C102EC600AF7F7C /* QTRSelectedUserInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 07BB98201C102EC600AF7F7C /* QTRSelectedUserInfo.m */; };
 		07BB98241C10491100AF7F7C /* QTRRecentLogsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07BB98231C10491100AF7F7C /* QTRRecentLogsViewController.m */; };
 		07BB98261C105F5C00AF7F7C /* LogsIconRetry.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07BB98251C105F5C00AF7F7C /* LogsIconRetry.xcassets */; };
-		07CE79A11C1E88C200AEDD7B /* QTRDeviceNotFound.m in Sources */ = {isa = PBXBuildFile; fileRef = 07CE79A01C1E88C200AEDD7B /* QTRDeviceNotFound.m */; };
 		07D4A2E21C0821E0006F93E6 /* settingIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D4A2E11C0821E0006F93E6 /* settingIcon.png */; };
 		07D4A2E81C0848F0006F93E6 /* QTRRightBarButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */; };
 		07D4A2EB1C086AD4006F93E6 /* QTRActionSheetGalleryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2EA1C086AD4006F93E6 /* QTRActionSheetGalleryView.m */; };
@@ -185,6 +185,8 @@
 		072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = defaultIcon.xcassets; sourceTree = "<group>"; };
 		073CAC3A1C2BA59E00BE9496 /* QTRTransfersView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersView.h; sourceTree = "<group>"; };
 		073CAC3B1C2BA59E00BE9496 /* QTRTransfersView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersView.m; sourceTree = "<group>"; };
+		073CAC401C2BCF1E00BE9496 /* QTRNoConnectedDeviceFoundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRNoConnectedDeviceFoundView.h; sourceTree = "<group>"; };
+		073CAC411C2BCF1E00BE9496 /* QTRNoConnectedDeviceFoundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRNoConnectedDeviceFoundView.m; sourceTree = "<group>"; };
 		0745DA541C15688500579DCC /* QTRCustomAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRCustomAlertView.h; sourceTree = "<group>"; };
 		0745DA551C15688500579DCC /* QTRCustomAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRCustomAlertView.m; sourceTree = "<group>"; };
 		077AA25A1C2058AE0048326F /* AppIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AppIcon.xcassets; sourceTree = "<group>"; };
@@ -199,8 +201,6 @@
 		07BB98221C10491100AF7F7C /* QTRRecentLogsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRRecentLogsViewController.h; sourceTree = "<group>"; };
 		07BB98231C10491100AF7F7C /* QTRRecentLogsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRRecentLogsViewController.m; sourceTree = "<group>"; };
 		07BB98251C105F5C00AF7F7C /* LogsIconRetry.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = LogsIconRetry.xcassets; sourceTree = "<group>"; };
-		07CE799F1C1E88C200AEDD7B /* QTRDeviceNotFound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRDeviceNotFound.h; sourceTree = "<group>"; };
-		07CE79A01C1E88C200AEDD7B /* QTRDeviceNotFound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRDeviceNotFound.m; sourceTree = "<group>"; };
 		07D4A2E11C0821E0006F93E6 /* settingIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settingIcon.png; sourceTree = "<group>"; };
 		07D4A2E61C0848F0006F93E6 /* QTRRightBarButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRRightBarButtonView.h; sourceTree = "<group>"; };
 		07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRRightBarButtonView.m; sourceTree = "<group>"; };
@@ -526,8 +526,8 @@
 				07D4A2F31C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m */,
 				0745DA541C15688500579DCC /* QTRCustomAlertView.h */,
 				0745DA551C15688500579DCC /* QTRCustomAlertView.m */,
-				07CE799F1C1E88C200AEDD7B /* QTRDeviceNotFound.h */,
-				07CE79A01C1E88C200AEDD7B /* QTRDeviceNotFound.m */,
+				073CAC401C2BCF1E00BE9496 /* QTRNoConnectedDeviceFoundView.h */,
+				073CAC411C2BCF1E00BE9496 /* QTRNoConnectedDeviceFoundView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1040,10 +1040,10 @@
 				FA283F2C18B49BA8003D4FB6 /* QTRFile.m in Sources */,
 				FADEB05B18F5577E002F1C00 /* QTRRootViewController.m in Sources */,
 				FA283F2118B49551003D4FB6 /* DTBonjourServer.m in Sources */,
+				073CAC421C2BCF1E00BE9496 /* QTRNoConnectedDeviceFoundView.m in Sources */,
 				07D4A2E81C0848F0006F93E6 /* QTRRightBarButtonView.m in Sources */,
 				FA283F3D18B5BE49003D4FB6 /* QTRConnectedDevicesViewController.m in Sources */,
 				FA283F3A18B5BD9F003D4FB6 /* QTRConnectedDevicesView.m in Sources */,
-				07CE79A11C1E88C200AEDD7B /* QTRDeviceNotFound.m in Sources */,
 				FA283F2218B49551003D4FB6 /* NSScanner+DTBonjour.m in Sources */,
 				FA283F0418B494E5003D4FB6 /* QTRAppDelegate.m in Sources */,
 				07BB98241C10491100AF7F7C /* QTRRecentLogsViewController.m in Sources */,

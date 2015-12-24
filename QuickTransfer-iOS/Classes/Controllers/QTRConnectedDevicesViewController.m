@@ -23,7 +23,6 @@
 #import "QTRSelectedUserInfo.h"
 #import "QTRRecentLogsViewController.h"
 #import "QTRCustomAlertView.h"
-#import "QTRDeviceNotFound.h"
 
 
 
@@ -51,7 +50,6 @@
     QTRBeaconAdvertiser *_beaconAdvertiser;
     
     QTRActionSheetGalleryView *customActionSheetGalleryView;
-    QTRDeviceNotFound *noDeviceView;
     QTRCustomAlertView *customAlertView;
 
 
@@ -64,9 +62,6 @@
     NSMutableArray* filteredUserData;
 }
 
-
-- (void)touchShare:(UIBarButtonItem *)barButton;
-- (void)touchRefresh:(UIBarButtonItem *)barButton;
 - (void)startServices;
 - (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user receiver:(id)receiver;
 - (void)saveFile:(QTRFile *)file;
@@ -79,7 +74,7 @@
 
 @end
 
-static NSString *cellIdentifier = @"cellIdentifier";
+NSString * const cellIdentifier = @"cellIdentifier";
 
 
 @implementation QTRConnectedDevicesViewController
@@ -138,7 +133,11 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [super viewDidAppear:animated];
 
     [self stopTimer];
-    [self animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+    
+    
+    [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+    
+    
     [[_devicesView fetchingDevicesLabel] setText:@"Fetching Devices"];
     [[_devicesView deviceRefreshControl] beginRefreshing];
     [self startTimer];
@@ -152,11 +151,10 @@ static NSString *cellIdentifier = @"cellIdentifier";
     [super viewDidLoad];
     
     [self startTimer];
-    noDeviceView = [[QTRDeviceNotFound alloc]initWithFrame:self.view.bounds];
-    [noDeviceView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[noDeviceView refreshButton] addTarget:self action:@selector(noDeviceFound) forControlEvents:UIControlEventTouchUpInside];
     
     _selectedRecivers = [[NSMutableDictionary alloc]init];
+    
+    [[[_devicesView noConnectedDeviceFoundView] refreshButton] addTarget:self action:@selector(noDeviceFound) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
     [[_devicesView devicesCollectionView] setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
@@ -193,7 +191,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:customRightBarButton];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
-    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"settingIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(settingBarButton:)];
+    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"settingIcon"] style:UIBarButtonItemStylePlain target:self action:@selector(setLeftBarButton:)];
     [self.navigationItem setLeftBarButtonItem:leftBarButton];
     
     [[_devicesView sendButton] addTarget:self action:@selector(nextButtonClicked) forControlEvents:UIControlEventTouchUpInside];
@@ -233,14 +231,15 @@ static NSString *cellIdentifier = @"cellIdentifier";
 #pragma mark - Actions
 
 - (void)noDeviceFound {
-    [noDeviceView removeFromSuperview];
+    
+    [[_devicesView noConnectedDeviceFoundView] setHidden:YES];
     [self refreshConnectedDevices];
 }
 
 - (void)refreshConnectedDevices {
     [self stopTimer];
 
-    [self animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+    [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
     [[_devicesView fetchingDevicesLabel] setText:@"Fetching Devices"];
     [[_devicesView devicesCollectionView] reloadData];
     [self refresh];
@@ -248,7 +247,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 }
 
-- (void)settingBarButton:(UIBarButtonItem *)barButton {
+- (void)setLeftBarButton:(UIBarButtonItem *)barButton {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 
 }
@@ -260,10 +259,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
 }
 
-
-- (void)touchRefresh:(UIBarButtonItem *)barButton {
-    [self refresh];
-}
 
 -(void)nextButtonClicked{
     
@@ -400,22 +395,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     }
 }
 
-- (void)touchShare:(UIBarButtonItem *)barButton {
-    if (_selectedUser != nil) {
-        
-    }
-}
-
 #pragma mark - Private methods
-
-- (void)animatePreviewLabel:(UILabel *)previewMessageLabel {
-    CATransition *animation = [CATransition animation];
-    animation.duration = 1.2;
-    animation.type = kCATransitionReveal;
-    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    [previewMessageLabel.layer addAnimation:animation forKey:@"changeTextTransition"];
-
-}
 
 - (void)stopServices {
     [_server setDelegate:nil];
@@ -679,12 +659,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     if (totalUsers > 0) {
         [[_devicesView deviceRefreshControl] endRefreshing];
-        [self animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+        [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
         [[_devicesView fetchingDevicesLabel] setText:@""];
         
     } else {
         [[_devicesView deviceRefreshControl] beginRefreshing];
-        [self animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+        [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
         [[_devicesView fetchingDevicesLabel] setText:@"Fetching Devices"];
 
     }
@@ -797,7 +777,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
     if (_importedFileURL == nil) {
         
         _selectedUser = theUser;
-        [self touchShare:nil];
         
     } else {
         
@@ -1157,15 +1136,10 @@ static NSString *cellIdentifier = @"cellIdentifier";
 - (void)_timerFired:(NSTimer *)timer {
 
     if (([_connectedClients count] + [_connectedServers count]) < 1) {
-        [self stopServices];
-        [[_devicesView fetchingDevicesLabel] setText:@""];
-        [self.view addSubview:noDeviceView];
+        [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(noDeviceView);
-        
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[noDeviceView]-0-|" options:0 metrics:0 views:views]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[noDeviceView]-0-|" options:0 metrics:0 views:views]];
-        
+        [[_devicesView noConnectedDeviceFoundView] setHidden:false];
+
     }
 }
 

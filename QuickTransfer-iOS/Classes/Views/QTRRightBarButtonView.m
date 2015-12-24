@@ -14,7 +14,7 @@
 {
     if ((self = [super initWithFrame:aRect])) {
     
-    self.frame = CGRectMake(0.f, 0.f, 36.f, 36.f);
+        self.frame = CGRectMake(0.f, 0.f, 36.f, 36.f);
         
         UIBezierPath *path12 = [UIBezierPath bezierPath];
         [path12 moveToPoint:CGPointMake(12.f, 4.f)];
