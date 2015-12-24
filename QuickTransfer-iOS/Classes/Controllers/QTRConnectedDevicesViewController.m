@@ -153,6 +153,9 @@ NSString * const cellIdentifier = @"cellIdentifier";
     
     _selectedRecivers = [[NSMutableDictionary alloc]init];
     
+    customAlertView = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
+    
     [[[_devicesView noConnectedDeviceFoundView] refreshButton] addTarget:self action:@selector(noConnectedDeviceFoundAction) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view setBackgroundColor:[UIColor colorWithRed:55.f/255.f green:55.f/255.f blue:55.f/255.f alpha:1.00f]];
@@ -252,8 +255,8 @@ NSString * const cellIdentifier = @"cellIdentifier";
 }
 
 - (void)RightBarButtonAction:(UIBarButtonItem *)barButton {
-    QTRTransfersViewController *recentLogs = [[QTRTransfersViewController alloc]init];
-    [self.navigationController pushViewController:recentLogs animated:YES];
+    QTRTransfersViewController *filestransferViewController = [[QTRTransfersViewController alloc]init];
+    [self.navigationController pushViewController:filestransferViewController animated:YES];
     
     
 }
@@ -283,11 +286,9 @@ NSString * const cellIdentifier = @"cellIdentifier";
     }
     
     else if ([_selectedRecivers count] > 0) {
-    
-        customAlertView = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+        
         [self.view addSubview:customAlertView];
-    
-        customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
+        
         [customActionSheetGalleryView setUserInteractionEnabled:YES];
         customActionSheetGalleryView.delegate = self;
         customActionSheetGalleryView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
@@ -299,10 +300,10 @@ NSString * const cellIdentifier = @"cellIdentifier";
         customActionSheetGalleryView.actionControllerCollectionView.allowsMultipleSelection = YES;
         [customAlertView.galleryCollectionView addSubview:customActionSheetGalleryView];
 
-        [customAlertView.cancelButton addTarget: self action: @selector(actionViewCancelButton) forControlEvents: UIControlEventTouchUpInside];
-        [customAlertView.iCloudButton addTarget: self action: @selector(actioniCloudButton) forControlEvents: UIControlEventTouchUpInside];
-        [customAlertView.cameraRollButton addTarget: self action: @selector(actionCameraRoll) forControlEvents: UIControlEventTouchUpInside];
-        [customAlertView.takePhotoButton addTarget: self action: @selector(actionTakePhoto) forControlEvents: UIControlEventTouchUpInside];
+        [customAlertView.cancelButton addTarget: self action: @selector(touchAlertViewCancel) forControlEvents: UIControlEventTouchUpInside];
+        [customAlertView.iCloudButton addTarget: self action: @selector(touchOpeniCloud) forControlEvents: UIControlEventTouchUpInside];
+        [customAlertView.cameraRollButton addTarget: self action: @selector(touchOpenCameraRoll) forControlEvents: UIControlEventTouchUpInside];
+        [customAlertView.takePhotoButton addTarget: self action: @selector(touchOpenCamera) forControlEvents: UIControlEventTouchUpInside];
 
     }
     
@@ -329,17 +330,17 @@ NSString * const cellIdentifier = @"cellIdentifier";
 }
 
 
--(void) actionViewCancelButton {
+-(void) touchAlertViewCancel {
     [customAlertView removeFromSuperview];
 
 }
 
--(void) actioniCloudButton {
+-(void) touchOpeniCloud {
     [customAlertView removeFromSuperview];
 
 }
 
--(void) actionCameraRoll {
+-(void) touchOpenCameraRoll {
     
     [customAlertView removeFromSuperview];
     [customActionSheetGalleryView removeFromSuperview];
@@ -359,7 +360,7 @@ NSString * const cellIdentifier = @"cellIdentifier";
 
 }
 
--(void) actionTakePhoto {
+-(void) touchOpenCamera {
     
     BOOL isCameraAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     
@@ -1119,7 +1120,7 @@ NSString * const cellIdentifier = @"cellIdentifier";
     if (!_timer) {
         _timer = [NSTimer scheduledTimerWithTimeInterval:5.0f
                                                   target:self
-                                                selector:@selector(_timerFired:)
+                                                selector:@selector(timerFired:)
                                                 userInfo:nil
                                                  repeats:YES];
     }
@@ -1132,7 +1133,7 @@ NSString * const cellIdentifier = @"cellIdentifier";
     _timer = nil;
 }
 
-- (void)_timerFired:(NSTimer *)timer {
+- (void)timerFired:(NSTimer *)timer {
 
     if (([_connectedClients count] + [_connectedServers count]) < 1) {
         [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];

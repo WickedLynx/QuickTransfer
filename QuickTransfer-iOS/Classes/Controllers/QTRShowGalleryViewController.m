@@ -86,7 +86,7 @@ int totalImages;
     [customRightBarButton setUserInteractionEnabled:NO];
     
     UIButton *barButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [barButton addTarget:self action:@selector(logsBarButton) forControlEvents:UIControlEventTouchUpInside];
+    [barButton addTarget:self action:@selector(rightBarButtonAction) forControlEvents:UIControlEventTouchUpInside];
     barButton.frame = customRightBarButton.frame;
     [customRightBarButton addSubview:barButton];
     
@@ -183,10 +183,10 @@ int totalImages;
 
 
 
--(void)logsBarButton {
+-(void)rightBarButtonAction {
     
-    QTRTransfersViewController *recentLogs = [[QTRTransfersViewController alloc]init];
-    [self.navigationController pushViewController:recentLogs animated:YES];
+    QTRTransfersViewController *filestransferViewController = [[QTRTransfersViewController alloc]init];
+    [self.navigationController pushViewController:filestransferViewController animated:YES];
     
 }
 

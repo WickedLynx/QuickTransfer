@@ -63,14 +63,13 @@
         [self addSubview:fetchDevice];
         _fetchingDevicesLabel = fetchDevice;
         
-        QTRNoConnectedDeviceFoundView *noConnectedDeviceView = [[QTRNoConnectedDeviceFoundView alloc]initWithFrame:self.bounds];
-        [noConnectedDeviceView setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [noConnectedDeviceView setHidden:YES];
-        [self addSubview:noConnectedDeviceView];
-        _noConnectedDeviceFoundView = noConnectedDeviceView;
+        QTRNoConnectedDeviceFoundView *noConnectedDeviceFoundView = [[QTRNoConnectedDeviceFoundView alloc]initWithFrame:self.bounds];
+        [noConnectedDeviceFoundView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [noConnectedDeviceFoundView setHidden:YES];
+        [self addSubview:noConnectedDeviceFoundView];
+        _noConnectedDeviceFoundView = noConnectedDeviceFoundView;
         
-        
-        NSDictionary *views = NSDictionaryOfVariableBindings(button, aCollectionView, searchBar, fetchDevice, noConnectedDeviceView);
+        NSDictionary *views = NSDictionaryOfVariableBindings(button, aCollectionView, searchBar, fetchDevice, noConnectedDeviceFoundView);
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[button]-7-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[aCollectionView]|" options:0 metrics:0 views:views]];
@@ -81,8 +80,8 @@
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-50-[fetchDevice]-50-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-200-[fetchDevice(==44)]" options:0 metrics:0 views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[noConnectedDeviceView]-0-|" options:0 metrics:0 views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[noConnectedDeviceView]-0-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[noConnectedDeviceFoundView]-0-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[noConnectedDeviceFoundView]-0-|" options:0 metrics:0 views:views]];
         
     }
 

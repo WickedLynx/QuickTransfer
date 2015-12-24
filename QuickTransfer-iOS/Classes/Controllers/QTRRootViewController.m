@@ -15,14 +15,11 @@
 #import "QTRShowGalleryViewController.h"
 
 
-CGFloat const QTRRootViewControllerXOffset = 50.0f;
-
 @interface QTRRootViewController () <UIGestureRecognizerDelegate> {
     UINavigationController *_connectedDevicesNavigationController;
     UINavigationController *_transfersNavigationController;
 }
 
-- (void)handleSwipe:(UISwipeGestureRecognizer *)swipeGestureRecognizer;
 
 @end
 
@@ -58,7 +55,6 @@ CGFloat const QTRRootViewControllerXOffset = 50.0f;
                 [[NSFileManager defaultManager] removeItemAtURL:fileURL error:nil];
             } else {
                 [(QTRConnectedDevicesViewController *)[[_connectedDevicesNavigationController viewControllers] objectAtIndex:0] setImportedFile:fileURL];
-                [self showDevices];
                 returnValue = YES;
             }
         }
@@ -66,38 +62,6 @@ CGFloat const QTRRootViewControllerXOffset = 50.0f;
 
     return returnValue;
 }
-
-- (void)showDevices {
-    [UIView animateWithDuration:0.25f delay:0.0f options:UIViewAnimationOptionCurveLinear animations:^{
-        [_transfersNavigationController.view setFrame:CGRectOffset(self.view.bounds, self.view.bounds.size.width - QTRRootViewControllerXOffset, 0.0f)];
-    } completion:^(BOOL finished) {
-
-    }];
-}
-
-- (void)hideDevices {
-    [UIView animateWithDuration:0.25f delay:0.0f options:UIViewAnimationOptionCurveLinear animations:^{
-        [_transfersNavigationController.view setFrame:self.view.bounds];
-    } completion:^(BOOL finished) {
-
-    }];
-}
-
-- (void)handleSwipe:(UISwipeGestureRecognizer *)swipeGestureRecognizer {
-    switch (swipeGestureRecognizer.direction) {
-        case UISwipeGestureRecognizerDirectionLeft:
-            [self hideDevices];
-            break;
-
-        case UISwipeGestureRecognizerDirectionRight:
-            [self showDevices];
-            break;
-
-        default:
-            break;
-    }
-}
-
 
 
 @end

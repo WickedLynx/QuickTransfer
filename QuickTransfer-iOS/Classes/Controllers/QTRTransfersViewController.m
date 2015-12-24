@@ -78,10 +78,6 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
-    
-    
     [[ _devicesView devicesTableView] setDataSource:self];
     [[_devicesView devicesTableView] setDelegate:self];
     
