@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "QTRAlertControllerCollectionViewCell.h"
 #import "QTRImagesInfoData.h"
 

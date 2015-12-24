@@ -1,14 +1,14 @@
 //
-//  QTRTempTransView.h
+//  QTRTransfersView.h
 //  QuickTransfer
 //
-//  Created by Tarun Yadav on 08/12/15.
+//  Created by Tarun Yadav on 24/12/15.
 //  Copyright © 2015 Laughing Buddha Software. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
-@interface QTRTempTransView : UIView
+@interface QTRTransfersView : UIView
 
 @property (weak, nonatomic) UITableView *devicesTableView;
 

@@ -13,8 +13,6 @@
 #import "QTRRecentLogsViewController.h"
 #import "QTRHelper.h"
 
-#import <AssetsLibrary/AssetsLibrary.h>
-
 
 @interface QTRShowGalleryViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,PHPhotoLibraryChangeObserver> {
 

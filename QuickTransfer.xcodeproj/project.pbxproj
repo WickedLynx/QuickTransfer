@@ -18,6 +18,7 @@
 		072BE74E1C0D8BB800798AC1 /* defaultIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */; };
 		072BE74F1C0D8BBD00798AC1 /* linuxIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7451C0D808500798AC1 /* linuxIcon.xcassets */; };
 		0731C36B1C1B0A43003EFC61 /* IPhonesIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E121C1B046000405F0D /* IPhonesIcon.xcassets */; };
+		073CAC3C1C2BA59E00BE9496 /* QTRTransfersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 073CAC3B1C2BA59E00BE9496 /* QTRTransfersView.m */; };
 		0745DA561C15688500579DCC /* QTRCustomAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0745DA551C15688500579DCC /* QTRCustomAlertView.m */; };
 		077AA25C1C2058CA0048326F /* AppIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 077AA25A1C2058AE0048326F /* AppIcon.xcassets */; };
 		07A79E0C1C1A8C0A00405F0D /* pauseIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */; };
@@ -36,7 +37,6 @@
 		07D4A2E81C0848F0006F93E6 /* QTRRightBarButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */; };
 		07D4A2EB1C086AD4006F93E6 /* QTRActionSheetGalleryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2EA1C086AD4006F93E6 /* QTRActionSheetGalleryView.m */; };
 		07D4A2F41C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2F31C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m */; };
-		07D9449A1C16A3E8000015FE /* QTRTempTransView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D944991C16A3E8000015FE /* QTRTempTransView.m */; };
 		07E7422E1C0717490084388C /* QTRShowGalleryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E7422D1C0717490084388C /* QTRShowGalleryViewController.m */; };
 		07E742341C073BE80084388C /* QTRGalleryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E742331C073BE80084388C /* QTRGalleryCollectionViewCell.m */; };
 		07E742381C0751410084388C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07E742371C0751410084388C /* LaunchScreen.storyboard */; };
@@ -184,6 +184,8 @@
 		072BE7451C0D808500798AC1 /* linuxIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = linuxIcon.xcassets; sourceTree = "<group>"; };
 		072BE7471C0D809700798AC1 /* windowsIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = windowsIcon.xcassets; sourceTree = "<group>"; };
 		072BE74C1C0D8AE700798AC1 /* defaultIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = defaultIcon.xcassets; sourceTree = "<group>"; };
+		073CAC3A1C2BA59E00BE9496 /* QTRTransfersView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersView.h; sourceTree = "<group>"; };
+		073CAC3B1C2BA59E00BE9496 /* QTRTransfersView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersView.m; sourceTree = "<group>"; };
 		0745DA541C15688500579DCC /* QTRCustomAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRCustomAlertView.h; sourceTree = "<group>"; };
 		0745DA551C15688500579DCC /* QTRCustomAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRCustomAlertView.m; sourceTree = "<group>"; };
 		077AA25A1C2058AE0048326F /* AppIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AppIcon.xcassets; sourceTree = "<group>"; };
@@ -207,8 +209,6 @@
 		07D4A2EA1C086AD4006F93E6 /* QTRActionSheetGalleryView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRActionSheetGalleryView.m; sourceTree = "<group>"; };
 		07D4A2F21C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRAlertControllerCollectionViewCell.h; sourceTree = "<group>"; };
 		07D4A2F31C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRAlertControllerCollectionViewCell.m; sourceTree = "<group>"; };
-		07D944981C16A3E8000015FE /* QTRTempTransView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTempTransView.h; sourceTree = "<group>"; };
-		07D944991C16A3E8000015FE /* QTRTempTransView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTempTransView.m; sourceTree = "<group>"; };
 		07E7422C1C0717490084388C /* QTRShowGalleryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRShowGalleryViewController.h; sourceTree = "<group>"; };
 		07E7422D1C0717490084388C /* QTRShowGalleryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRShowGalleryViewController.m; sourceTree = "<group>"; };
 		07E742321C073BE80084388C /* QTRGalleryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRGalleryCollectionViewCell.h; sourceTree = "<group>"; };
@@ -515,8 +515,8 @@
 			children = (
 				FA283F3818B5BD9F003D4FB6 /* QTRConnectedDevicesView.h */,
 				FA283F3918B5BD9F003D4FB6 /* QTRConnectedDevicesView.m */,
-				07D944981C16A3E8000015FE /* QTRTempTransView.h */,
-				07D944991C16A3E8000015FE /* QTRTempTransView.m */,
+				073CAC3A1C2BA59E00BE9496 /* QTRTransfersView.h */,
+				073CAC3B1C2BA59E00BE9496 /* QTRTransfersView.m */,
 				FAAC781A18EE884C0006B698 /* QTRTransfersTableCell.h */,
 				FAAC781B18EE884C0006B698 /* QTRTransfersTableCell.m */,
 				07EE54671C047B550092C913 /* QTRHomeCollectionViewCell.h */,
@@ -1031,13 +1031,13 @@
 				07BB98211C102EC600AF7F7C /* QTRSelectedUserInfo.m in Sources */,
 				FA283F2418B49582003D4FB6 /* QTRBonjourClient.m in Sources */,
 				FA283F2518B49582003D4FB6 /* QTRMessage.m in Sources */,
-				07D9449A1C16A3E8000015FE /* QTRTempTransView.m in Sources */,
 				FA12BB0418BF06000030911F /* QTRTransfer.m in Sources */,
 				FAAC781C18EE884C0006B698 /* QTRTransfersTableCell.m in Sources */,
 				FADEB05818F53177002F1C00 /* QTRHelper.m in Sources */,
 				FA6DA6B818C453E30097742B /* QTRMultipartTransfer.m in Sources */,
 				0745DA561C15688500579DCC /* QTRCustomAlertView.m in Sources */,
 				FA283F2618B49582003D4FB6 /* QTRUser.m in Sources */,
+				073CAC3C1C2BA59E00BE9496 /* QTRTransfersView.m in Sources */,
 				FA283F2718B49582003D4FB6 /* QTRConstants.m in Sources */,
 				FA283F1F18B49551003D4FB6 /* DTBonjourDataChunk.m in Sources */,
 				FA283F2018B49551003D4FB6 /* DTBonjourDataConnection.m in Sources */,

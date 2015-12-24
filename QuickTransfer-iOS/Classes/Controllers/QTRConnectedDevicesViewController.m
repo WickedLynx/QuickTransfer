@@ -7,7 +7,6 @@
 //
 
 #import <MobileCoreServices/MobileCoreServices.h>
-#import <AssetsLibrary/AssetsLibrary.h>
 #import "QTRConnectedDevicesViewController.h"
 #import "QTRConnectedDevicesView.h"
 #import "QTRHomeCollectionViewCell.h"

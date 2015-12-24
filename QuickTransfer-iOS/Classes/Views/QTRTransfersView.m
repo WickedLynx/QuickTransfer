@@ -1,14 +1,14 @@
 //
-//  QTRTempTransView.m
+//  QTRTransfersView.m
 //  QuickTransfer
 //
-//  Created by Tarun Yadav on 08/12/15.
+//  Created by Tarun Yadav on 24/12/15.
 //  Copyright © 2015 Laughing Buddha Software. All rights reserved.
 //
 
-#import "QTRTempTransView.h"
+#import "QTRTransfersView.h"
 
-@implementation QTRTempTransView
+@implementation QTRTransfersView
 
 - (id)initWithFrame:(CGRect)frame {
     
@@ -24,6 +24,5 @@
     
     return self;
 }
-
 
 @end

@@ -14,7 +14,7 @@
 #import "QTRHelper.h"
 #import "QTRTransfersStore.h"
 #import "QTRRootViewController.h"
-#import "QTRTempTransView.h"
+#import "QTRTransfersView.h"
 
 
 
@@ -26,7 +26,7 @@
     QTRTransfersStore *_transfersStore;
     QTRTransfer *_selectedTransfer;
     
-    __weak QTRTempTransView *_devicesView;
+    __weak QTRTransfersView *_devicesView;
 }
 @end
 
@@ -59,20 +59,20 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
 #pragma mark - View lifecycle
 
 - (void)loadView {
-    QTRTempTransView *view = [[QTRTempTransView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    QTRTransfersView *view = [[QTRTransfersView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [view setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
     [self setView:view];
 }
 
 - (void)setView:(UIView *)view {
     
-    if (![view isKindOfClass:[QTRTempTransView class]]) {
-        [NSException raise:NSInternalInconsistencyException format:@"%@ must be associated only with %@", NSStringFromClass([self class]), NSStringFromClass([QTRTempTransView class])];
+    if (![view isKindOfClass:[QTRTransfersView class]]) {
+        [NSException raise:NSInternalInconsistencyException format:@"%@ must be associated only with %@", NSStringFromClass([self class]), NSStringFromClass([QTRTransfersView class])];
     }
     
     [super setView:view];
     
-    _devicesView = (QTRTempTransView *)view;
+    _devicesView = (QTRTransfersView *)view;
 }
 
 - (void)viewDidLoad {

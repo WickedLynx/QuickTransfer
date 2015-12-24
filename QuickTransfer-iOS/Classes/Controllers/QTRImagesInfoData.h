@@ -8,7 +8,6 @@
 
 #import <PhotosUI/PhotosUI.h>
 #import <Foundation/Foundation.h>
-#import <AssetsLibrary/AssetsLibrary.h>
 
 @interface QTRImagesInfoData : NSObject
 
