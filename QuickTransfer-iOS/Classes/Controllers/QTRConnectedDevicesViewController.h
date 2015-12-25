@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "QTRBonjourTransferDelegate.h"
+#import "QTRGetMediaImages.h"
+
 @import Photos;
 @import PhotosUI;
 
@@ -17,6 +19,7 @@
 
 
 @property (nonatomic, assign) BOOL isFiltered;
+@property (nonatomic, strong) QTRGetMediaImages *getMediaImages;
 
 /*!
  Initialises the receiver.

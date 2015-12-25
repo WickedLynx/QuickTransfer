@@ -25,6 +25,9 @@
 #import "QTRTransfersViewController.h"
 
 
+#import "QTRGetMediaImages.h"
+
+
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate, UIImagePickerControllerDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
@@ -73,7 +76,7 @@
 
 @end
 
-NSString * const cellIdentifier = @"cellIdentifier";
+NSString * const cellIdentifier = @"CellIdentifier";
 
 
 @implementation QTRConnectedDevicesViewController
@@ -153,6 +156,9 @@ NSString * const cellIdentifier = @"cellIdentifier";
     
     _selectedRecivers = [[NSMutableDictionary alloc]init];
     
+    _getMediaImages = [[QTRGetMediaImages alloc] init];
+    [_getMediaImages downloadMedia];
+    
     customAlertView = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
     
@@ -167,7 +173,7 @@ NSString * const cellIdentifier = @"cellIdentifier";
     
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
     
-    [[_devicesView devicesCollectionView] registerClass:[QTRHomeCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+    [[_devicesView devicesCollectionView] registerClass:[QTRHomeCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
 
     [[_devicesView devicesCollectionView] setDataSource:self];
     [[_devicesView devicesCollectionView] setDelegate:self];
@@ -289,11 +295,16 @@ NSString * const cellIdentifier = @"cellIdentifier";
         
         [self.view addSubview:customAlertView];
         
+        customActionSheetGalleryView.fetchingImageArray = [_getMediaImages fetchMediaImages];
+        if ([_getMediaImages fetchMediaImages].count > 0) {
+            [customActionSheetGalleryView stopIndicatorViewAnimation];
+        }
+        
         [customActionSheetGalleryView setUserInteractionEnabled:YES];
         customActionSheetGalleryView.delegate = self;
         customActionSheetGalleryView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
     
-        [customActionSheetGalleryView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+        [customActionSheetGalleryView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
     
         [customActionSheetGalleryView.actionControllerCollectionView setDataSource:customActionSheetGalleryView];
         [customActionSheetGalleryView.actionControllerCollectionView setDelegate:customActionSheetGalleryView];
@@ -336,6 +347,10 @@ NSString * const cellIdentifier = @"cellIdentifier";
 }
 
 -(void) touchOpeniCloud {
+    
+    NSLog(@"\n\n Open icloude..");
+    [_getMediaImages fetchMediaImages];
+    
     [customAlertView removeFromSuperview];
 
 }
@@ -356,6 +371,7 @@ NSString * const cellIdentifier = @"cellIdentifier";
 
     QTRShowGalleryViewController *showGallery = [[QTRShowGalleryViewController alloc] init];
     showGallery.reciversInfo = usersInfo;
+    showGallery.fetchingImageArray = [_getMediaImages fetchMediaImages];
     [self.navigationController pushViewController:showGallery animated:YES];
 
 }

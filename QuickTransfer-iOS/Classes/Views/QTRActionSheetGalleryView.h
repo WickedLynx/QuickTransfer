@@ -21,19 +21,15 @@
 @end
 
 @interface QTRActionSheetGalleryView : UIView  <UICollectionViewDelegate,UICollectionViewDataSource>
-{
-    NSArray *imageArray;
-    NSMutableArray *mutableArray;
-    UICollectionView *aCollectionView;
-    UIActivityIndicatorView *customIndicatorView;
-}
 
-@property (nonatomic, strong) PHCachingImageManager *imageManager;
-@property (nonatomic, strong) PHImageRequestOptions *requestOptions;
 
 @property (weak, nonatomic) UICollectionView *actionControllerCollectionView;
 @property (retain, nonatomic) UIActivityIndicatorView *actionCustomIndicatorView;
 
 @property (nonatomic, weak) id <actionSheetGallaryDelegate> delegate;
+
+@property (nonatomic, retain) NSMutableArray *fetchingImageArray;
+
+- (void)stopIndicatorViewAnimation;
 
 @end

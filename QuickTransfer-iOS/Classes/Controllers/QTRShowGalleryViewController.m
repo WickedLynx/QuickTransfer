@@ -14,11 +14,10 @@
 #import "QTRHelper.h"
 
 
-@interface QTRShowGalleryViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,PHPhotoLibraryChangeObserver> {
+
+@interface QTRShowGalleryViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
 
     UICollectionView *galleryCollectionView;
-    NSMutableArray *images;
-    NSMutableArray *assets;
     NSArray *totalImages;
     UICollectionViewFlowLayout *layout;
     
@@ -29,7 +28,6 @@
     NSMutableDictionary *_selectedRecivers;
     QTRUser *_localUser;
     QTRUser *_selectedUser;
-        
 
 }
 
@@ -38,15 +36,7 @@
 @end
 
 
-static NSString * const AllPhotosReuseIdentifier = @"AllPhotosCell";
-static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
-
-static NSString * const AllPhotosSegue = @"showAllPhotos";
-static NSString * const CollectionSegue = @"showCollection";
-
-static NSString *cellIdentifier = @"cellIdentifier";
-int totalImages;
-
+static NSString *cellIdentifier = @"CellIdentifier";
 
 @implementation QTRShowGalleryViewController
 
@@ -108,7 +98,7 @@ int totalImages;
     
     [self.view addSubview:galleryCollectionView];
     
-    [galleryCollectionView registerClass:[QTRGalleryCollectionViewCell class] forCellWithReuseIdentifier:@"cellIdentifier"];
+    [galleryCollectionView registerClass:[QTRGalleryCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectZero;
@@ -129,9 +119,8 @@ int totalImages;
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[galleryCollectionView]|" options:0 metrics:0 views:views]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[button]-7-|" options:0 metrics:0 views:views]];
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[galleryCollectionView]-5-[button(==44)]-5-|" options:0 metrics:0 views:views]];
-
-    [self getPhotos];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[galleryCollectionView]-5-[button(==44)]-5-|" options:0 metrics:0 views:views]];    
+    
     
 }
 
@@ -141,47 +130,6 @@ int totalImages;
     
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
-
--(void)getPhotos {
-
-    self.requestOptions = [[PHImageRequestOptions alloc] init];
-    self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
-    self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-    
-    self.requestOptions.synchronous = false;
-    
-    PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
-    PHImageManager *manager = [PHImageManager defaultManager];
-    images = [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
-    assets = [NSMutableArray arrayWithCapacity:[assetsFetchResult count]];
-    
-    __block QTRImagesInfoData *imageInfoData;
-    //__block int i;
-    
-    for (PHAsset *asset in assetsFetchResult) {
-        [manager requestImageForAsset:asset
-                           targetSize:CGSizeMake(160, 160)
-                          contentMode:PHImageContentModeDefault
-                              options:self.requestOptions
-                        resultHandler:^void(UIImage *image, NSDictionary *info) {
-                            
-                            imageInfoData = [[QTRImagesInfoData alloc]init];
-                            imageInfoData.finalImage = image;
-                            imageInfoData.imageInfo = info;
-                            imageInfoData.imageAsset = asset;
-                            
-                            if (imageInfoData != nil) {
-                                [images addObject:imageInfoData];
-                                [galleryCollectionView reloadData];
-                            }
-
-                            
-                        }];
-        
-            }
-}
-
-
 
 -(void)rightBarButtonAction {
     
@@ -250,7 +198,7 @@ int totalImages;
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return [images count];
+    return [_fetchingImageArray count];
     
 }
 
@@ -258,7 +206,8 @@ int totalImages;
     
     QTRGalleryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
+    QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
+    
     cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) imageData.finalImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
  
     return cell;
@@ -275,7 +224,7 @@ int totalImages;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
  
-    QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
+    QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
     UIImage *img = imageData.finalImage;
     
     [self.selectedImages setObject:imageData forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
@@ -286,7 +235,7 @@ int totalImages;
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
+    QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
     UIImage *img = imageData.finalImage;
     
     if ([self.selectedImages count] > 0) {
@@ -299,16 +248,20 @@ int totalImages;
 
 - (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
     
-    self.requestOptions = [[PHImageRequestOptions alloc] init];
-    self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
-    self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+ 
     
-    self.requestOptions.synchronous = true;
+    PHImageRequestOptions *requestOptions;
+
+    requestOptions = [[PHImageRequestOptions alloc] init];
+    requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
+    requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    
+    requestOptions.synchronous = true;
     NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
     
 
     [[PHImageManager defaultManager] requestImageDataForAsset:sendingImage.imageAsset
-                                                      options:self.requestOptions
+                                                      options:requestOptions
                                                 resultHandler:
      ^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
          
@@ -385,31 +338,6 @@ int totalImages;
 
 
 #pragma mark - PHPhoto Observer
-
-- (void)photoLibraryDidChange:(PHChange *)changeInstance {
-    /*
-     Change notifications may be made on a background queue. Re-dispatch to the
-     main queue before acting on the change as we'll be updating the UI.
-     */
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Loop through the section fetch results, replacing any fetch results that have been updated.
-        NSMutableArray *updatedSectionFetchResults = [self.sectionFetchResults mutableCopy];
-        __block BOOL reloadRequired = NO;
-        
-        [self.sectionFetchResults enumerateObjectsUsingBlock:^(PHFetchResult *collectionsFetchResult, NSUInteger index, BOOL *stop) {
-            PHFetchResultChangeDetails *changeDetails = [changeInstance changeDetailsForFetchResult:collectionsFetchResult];
-            
-            if (changeDetails != nil) {
-                [updatedSectionFetchResults replaceObjectAtIndex:index withObject:[changeDetails fetchResultAfterChanges]];
-                reloadRequired = YES;
-            }
-            [self getPhotos];
-            [galleryCollectionView reloadData];
-            
-        }];
-        
-    });
-}
 
 
 - (void)didReceiveMemoryWarning {

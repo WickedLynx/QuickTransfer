@@ -11,19 +11,14 @@
 #import "QTRBonjourServer.h"
 #import "QTRSelectedUserInfo.h"
 
-@import Photos;
-@import PhotosUI;
-
 @interface QTRShowGalleryViewController : UIViewController 
 
-@property (nonatomic, retain) PHCachingImageManager *imageManager;
-@property (nonatomic, retain) PHImageRequestOptions *requestOptions;
-
 @property (nonatomic, retain) NSMutableDictionary *selectedImages;
-@property (nonatomic, retain) NSArray *sectionFetchResults;
-@property (nonatomic, retain) NSArray *sectionLocalizedTitles;
+
 
 @property (nonatomic, retain) QTRSelectedUserInfo *reciversInfo;
+
+@property (nonatomic, retain) NSMutableArray *fetchingImageArray;
 
 
 @end

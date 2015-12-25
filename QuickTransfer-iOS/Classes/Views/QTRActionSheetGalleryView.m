@@ -10,15 +10,10 @@
 #import "QTRAlertControllerCollectionViewCell.h"
 
 @interface QTRActionSheetGalleryView()<PHPhotoLibraryChangeObserver> {
-
-    NSMutableArray *images;
-    NSMutableArray *assets;
-
-
+    
+    UICollectionView *aCollectionView;
+    UIActivityIndicatorView *customIndicatorView;
 }
-
-@property (nonatomic, strong) NSArray *sectionFetchResults;
-@property (nonatomic, strong) NSArray *sectionLocalizedTitles;
 
 
 @end
@@ -30,7 +25,7 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 
 static NSString * const AllPhotosSegue = @"showAllPhotos";
 static NSString * const CollectionSegue = @"showCollection";
-static NSString *cellIdentifier = @"cellIdentifier";
+static NSString *cellIdentifier = @"CellIdentifier";
 
 
 @implementation QTRActionSheetGalleryView
@@ -68,8 +63,6 @@ static NSString *cellIdentifier = @"cellIdentifier";
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[customIndicatorView]-0-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[customIndicatorView]-0-|" options:0 metrics:0 views:views]];
         
-        [self getMedia];
-        
     }
     return self;
 }
@@ -84,7 +77,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return [images count];
+    return [_fetchingImageArray count];
     
 }
 
@@ -92,7 +85,7 @@ static NSString *cellIdentifier = @"cellIdentifier";
     
     QTRAlertControllerCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
+    QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
     cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) imageData.finalImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
     
     return cell;
@@ -105,6 +98,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
     return CGSizeMake(66.0f, 66.0f);
 }
 
+- (void)stopIndicatorViewAnimation {
+
+    [_actionCustomIndicatorView stopAnimating];
+
+}
+
 
 #pragma mark - UICollectionViewDelegate methods
 
@@ -112,100 +111,12 @@ static NSString *cellIdentifier = @"cellIdentifier";
 {
     QTRAlertControllerCollectionViewCell *cell = (QTRAlertControllerCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     
-    QTRImagesInfoData *imageData = [images objectAtIndex:indexPath.row ];
+    QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
     [self.delegate QTRActionSheetGalleryView:self didCellSelected:YES withCollectionCell:cell selectedImage:imageData];
    
     
 }
 
-
--(void)getMedia {
-    PHFetchOptions *allPhotosOptions = [[PHFetchOptions alloc] init];
-    allPhotosOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-    
-    PHFetchResult *allPhotos = [PHAsset fetchAssetsWithOptions:allPhotosOptions];
-    
-    PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
-    
-    PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
-    
-    self.sectionFetchResults = @[allPhotos, smartAlbums, topLevelUserCollections];
-    self.sectionLocalizedTitles = @[@"", NSLocalizedString(@"Smart Albums", @""), NSLocalizedString(@"Albums", @"")];
-    
-    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
-    
-    [self getPhotos];
-}
-
--(void)getPhotos {
-    
-    
-    self.requestOptions = [[PHImageRequestOptions alloc] init];
-    self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
-    self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-    
-    self.requestOptions.synchronous = false;
-    
-    PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
-    PHImageManager *manager = [PHImageManager defaultManager];
-    
-    images= [NSMutableArray arrayWithCapacity:10];
-    assets = [NSMutableArray arrayWithCapacity:10];
-    //__block UIImage *ima;
-    __block int i;
-    __block QTRImagesInfoData *imageInfoData;
-
-    
-    for(i = 0; i < 10 ; i++) {
-        
-        PHAsset *asset = [assetsFetchResult objectAtIndex:i];
-        [manager requestImageForAsset:asset
-                           targetSize:CGSizeMake(160, 160)
-                          contentMode:PHImageContentModeDefault
-                              options:self.requestOptions
-                        resultHandler:^void(UIImage *image, NSDictionary *info) {
-                            imageInfoData = [[QTRImagesInfoData alloc]init];
-                            imageInfoData.finalImage = image;
-                            imageInfoData.imageInfo = info;
-                            imageInfoData.imageAsset = asset;
-                            
-                            if (imageInfoData != nil) {
-                                [images addObject:imageInfoData];
-                                [aCollectionView reloadData];
-                            }
-                        }];
-        
-        
-    }
-    [_actionCustomIndicatorView stopAnimating];
-
-    
-}
-
-- (void)photoLibraryDidChange:(PHChange *)changeInstance {
-    /*
-     Change notifications may be made on a background queue. Re-dispatch to the
-     main queue before acting on the change as we'll be updating the UI.
-     */
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Loop through the section fetch results, replacing any fetch results that have been updated.
-        NSMutableArray *updatedSectionFetchResults = [self.sectionFetchResults mutableCopy];
-        __block BOOL reloadRequired = NO;
-        
-        [self.sectionFetchResults enumerateObjectsUsingBlock:^(PHFetchResult *collectionsFetchResult, NSUInteger index, BOOL *stop) {
-            PHFetchResultChangeDetails *changeDetails = [changeInstance changeDetailsForFetchResult:collectionsFetchResult];
-            
-            if (changeDetails != nil) {
-                [updatedSectionFetchResults replaceObjectAtIndex:index withObject:[changeDetails fetchResultAfterChanges]];
-                reloadRequired = YES;
-            }
-            [self getPhotos];
-            [aCollectionView reloadData];
-            
-        }];
-        
-    });
-}
 
 
 @end
