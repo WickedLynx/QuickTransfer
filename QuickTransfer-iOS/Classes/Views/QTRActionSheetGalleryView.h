@@ -10,8 +10,6 @@
 #import "QTRAlertControllerCollectionViewCell.h"
 #import "QTRImagesInfoData.h"
 
-@import Photos;
-@import PhotosUI;
 
 @class QTRActionSheetGalleryView;
 @protocol actionSheetGallaryDelegate <NSObject>
@@ -23,13 +21,10 @@
 @interface QTRActionSheetGalleryView : UIView  <UICollectionViewDelegate,UICollectionViewDataSource>
 
 
-@property (weak, nonatomic) UICollectionView *actionControllerCollectionView;
-@property (retain, nonatomic) UIActivityIndicatorView *actionCustomIndicatorView;
-
 @property (nonatomic, weak) id <actionSheetGallaryDelegate> delegate;
-
 @property (nonatomic, retain) NSMutableArray *fetchingImageArray;
 
 - (void)stopIndicatorViewAnimation;
+- (void)startIndicatorViewAnimation;
 
 @end

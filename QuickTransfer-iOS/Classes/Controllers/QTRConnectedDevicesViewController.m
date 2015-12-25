@@ -296,19 +296,15 @@ NSString * const cellIdentifier = @"CellIdentifier";
         [self.view addSubview:customAlertView];
         
         customActionSheetGalleryView.fetchingImageArray = [_getMediaImages fetchMediaImages];
-        if ([_getMediaImages fetchMediaImages].count > 0) {
+        if (customActionSheetGalleryView.fetchingImageArray.count > 0) {
             [customActionSheetGalleryView stopIndicatorViewAnimation];
+        } else {
+            [customActionSheetGalleryView startIndicatorViewAnimation];
         }
         
         [customActionSheetGalleryView setUserInteractionEnabled:YES];
         customActionSheetGalleryView.delegate = self;
-        customActionSheetGalleryView.actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
-    
-        [customActionSheetGalleryView.actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
-    
-        [customActionSheetGalleryView.actionControllerCollectionView setDataSource:customActionSheetGalleryView];
-        [customActionSheetGalleryView.actionControllerCollectionView setDelegate:customActionSheetGalleryView];
-        customActionSheetGalleryView.actionControllerCollectionView.allowsMultipleSelection = YES;
+
         [customAlertView.galleryCollectionView addSubview:customActionSheetGalleryView];
 
         [customAlertView.cancelButton addTarget: self action: @selector(touchAlertViewCancel) forControlEvents: UIControlEventTouchUpInside];

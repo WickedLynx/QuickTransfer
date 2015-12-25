@@ -9,30 +9,25 @@
 #import "QTRActionSheetGalleryView.h"
 #import "QTRAlertControllerCollectionViewCell.h"
 
-@interface QTRActionSheetGalleryView()<PHPhotoLibraryChangeObserver> {
-    
-    UICollectionView *aCollectionView;
-    UIActivityIndicatorView *customIndicatorView;
-}
+@interface QTRActionSheetGalleryView() {
 
+    UIActivityIndicatorView *actionCustomIndicatorView;
+    UICollectionView *actionControllerCollectionView;
+
+
+}
 
 @end
 
 
-
-static NSString * const AllPhotosReuseIdentifier = @"AllPhotosCell";
-static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
-
-static NSString * const AllPhotosSegue = @"showAllPhotos";
-static NSString * const CollectionSegue = @"showCollection";
 static NSString *cellIdentifier = @"CellIdentifier";
 
 
 @implementation QTRActionSheetGalleryView
 
-- (id)initWithFrame:(CGRect)aRect
+- (id)initWithFrame:(CGRect)frame
 {
-    if ((self = [super initWithFrame:aRect])) {
+    if ((self = [super initWithFrame:frame])) {
         
         self.backgroundColor = [UIColor whiteColor];        
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
@@ -40,28 +35,27 @@ static NSString *cellIdentifier = @"CellIdentifier";
         [layout setMinimumLineSpacing:1.0f];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         
-        aCollectionView = [[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:layout];
-        [aCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [aCollectionView setShowsHorizontalScrollIndicator:NO];
-        aCollectionView.frame = self.frame;
+        actionControllerCollectionView = [[UICollectionView alloc]initWithFrame:self.frame collectionViewLayout:layout];
+        [actionControllerCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [actionControllerCollectionView setShowsHorizontalScrollIndicator:NO];
+        actionControllerCollectionView.backgroundColor = [UIColor whiteColor];
+        [actionControllerCollectionView registerClass:[QTRAlertControllerCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
+        [actionControllerCollectionView setDataSource:self];
+        [actionControllerCollectionView setDelegate:self];
+        [self addSubview:actionControllerCollectionView];
         
-        [self addSubview:aCollectionView];
-        _actionControllerCollectionView = aCollectionView;
-                
-        customIndicatorView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        customIndicatorView.frame = CGRectZero;
-        [customIndicatorView setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [self addSubview: customIndicatorView];
-        _actionCustomIndicatorView = customIndicatorView;
+        actionCustomIndicatorView = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        actionCustomIndicatorView.frame = CGRectZero;
+        [actionCustomIndicatorView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [self addSubview: actionCustomIndicatorView];
+       
         
-        [_actionCustomIndicatorView startAnimating];
-                
-        NSDictionary *views = NSDictionaryOfVariableBindings(aCollectionView, customIndicatorView);
+        NSDictionary *views = NSDictionaryOfVariableBindings(actionControllerCollectionView, actionCustomIndicatorView);
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[aCollectionView]-0-|" options:0 metrics:0 views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[aCollectionView]-0-|" options:0 metrics:0 views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[customIndicatorView]-0-|" options:0 metrics:0 views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[customIndicatorView]-0-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[actionControllerCollectionView]-0-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[actionControllerCollectionView]-0-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[actionCustomIndicatorView]-0-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[actionCustomIndicatorView]-0-|" options:0 metrics:0 views:views]];
         
     }
     return self;
@@ -98,10 +92,18 @@ static NSString *cellIdentifier = @"CellIdentifier";
     return CGSizeMake(66.0f, 66.0f);
 }
 
+#pragma mark - UIActivityIndicator Action methods
+
 - (void)stopIndicatorViewAnimation {
 
-    [_actionCustomIndicatorView stopAnimating];
+    [actionCustomIndicatorView stopAnimating];
 
+}
+
+- (void)startIndicatorViewAnimation {
+    
+    [actionCustomIndicatorView startAnimating];
+    
 }
 
 
