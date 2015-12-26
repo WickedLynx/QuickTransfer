@@ -93,15 +93,8 @@
                             if (imageInfoData != nil) {
                                 [fetchImagesArray addObject:imageInfoData];
                             }
-                            
-                            
                         }];
-        
     }
-
-
-    
-    
 }
 
 - (void)photoLibraryDidChange:(PHChange *)changeInstance {
