@@ -11,7 +11,5 @@
 @interface QTRAlertControllerCollectionViewCell : UICollectionViewCell
 
 
-@property (weak, nonatomic) UICollectionView *actionControllerCollectionView;
-
 
 @end
