@@ -12,16 +12,16 @@
 
 
 @class QTRActionSheetGalleryView;
-@protocol actionSheetGallaryDelegate <NSObject>
+@protocol QTRActionSheetGallaryDelegate <NSObject>
 
-- (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImage:(QTRImagesInfoData *)sendingImage;
+- (void)actionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImage:(QTRImagesInfoData *)sendingImage;
 
 @end
 
 @interface QTRActionSheetGalleryView : UIView  <UICollectionViewDelegate,UICollectionViewDataSource>
 
 
-@property (nonatomic, weak) id <actionSheetGallaryDelegate> delegate;
+@property (nonatomic, weak) id <QTRActionSheetGallaryDelegate> delegate;
 @property (nonatomic, retain) NSMutableArray *fetchingImageArray;
 
 - (void)stopIndicatorViewAnimation;

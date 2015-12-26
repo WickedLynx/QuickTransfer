@@ -27,7 +27,7 @@
 #import "QTRGetMediaImages.h"
 
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate, showGalleryCustomDelegate, UIImagePickerControllerDelegate> {
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, QTRActionSheetGallaryDelegate, TRShowGalleryCustomDelegate, UIImagePickerControllerDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
     
@@ -932,7 +932,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 #pragma mark - ActionSheetGallaryDelegate method
 
-- (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImage:(QTRImagesInfoData *)sendingImage {
+- (void)actionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImage:(QTRImagesInfoData *)sendingImage {
 
         [customAlertView removeFromSuperview];
         [self sendDataToSelectedUser:sendingImage];
@@ -943,7 +943,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 #pragma mark - ShowGallaryDelegate method
 
 
-- (void)QTRShowGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSArray *)sendingImagesData {
+- (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSArray *)sendingImagesData {
 
     for (QTRImagesInfoData *selectedImage in sendingImagesData) {
         

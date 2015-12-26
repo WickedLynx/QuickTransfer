@@ -10,16 +10,16 @@
 #import "QTRImagesInfoData.h"
 
 @class QTRShowGalleryViewController;
-@protocol showGalleryCustomDelegate <NSObject>
+@protocol TRShowGalleryCustomDelegate <NSObject>
 
-- (void)QTRShowGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSArray *)sendingImagesData;
+- (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSArray *)sendingImagesData;
 
 @end
 
 @interface QTRShowGalleryViewController : UIViewController 
 
 
-@property (nonatomic, weak) id <showGalleryCustomDelegate> delegate;
+@property (nonatomic, weak) id <TRShowGalleryCustomDelegate> delegate;
 @property (nonatomic, retain) NSMutableDictionary *selectedImages;
 @property (nonatomic, retain) NSMutableArray *fetchingImageArray;
 

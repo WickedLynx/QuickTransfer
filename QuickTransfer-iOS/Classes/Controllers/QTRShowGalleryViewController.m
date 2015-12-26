@@ -126,7 +126,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
     if ([self.selectedImages count] > 0) {
         totalSelectedImages = [[NSArray alloc]initWithArray:[self.selectedImages allValues]];
             
-        [self.delegate QTRShowGalleryViewController:self selectedImages:totalSelectedImages];
+        [self.delegate showGalleryViewController:self selectedImages:totalSelectedImages];
         
         [self.selectedImages removeAllObjects];
         [galleryCollectionView reloadData];
