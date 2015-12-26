@@ -732,7 +732,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
         }
     
     [cell.connectedDeviceName setText:[theUser name]];
-    [cell setIconImage:theUser.platform];
+    [cell setIconImageByName:theUser.platform];
     
     if ([_selectedRecivers count] > 0) {
         
@@ -741,7 +741,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
         }
     }
     
-    [cell setIconImage:theUser.platform];
+    
     return cell;
     
 }

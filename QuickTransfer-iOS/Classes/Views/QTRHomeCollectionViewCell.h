@@ -13,6 +13,6 @@
 @property(nonatomic, retain) UIImageView *connectedDeviceImage;
 @property(nonatomic, retain) UILabel *connectedDeviceName;
 
--(void)setIconImage:(NSString *)imagePlatform;
+-(void)setIconImageByName:(NSString *)devicePlatformName;
 
 @end

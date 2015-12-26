@@ -60,8 +60,8 @@
     }
 }
 
--(void)setIconImage:(NSString *)imagePlatform {    
-    [_connectedDeviceImage setImage:[UIImage imageNamed:imagePlatform]];
+-(void)setIconImageByName:(NSString *)devicePlatformName {
+    [_connectedDeviceImage setImage:[UIImage imageNamed:devicePlatformName]];
 }
     
 @end
