@@ -28,7 +28,7 @@
 #import "QTRGetMediaImages.h"
 
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate, UIImagePickerControllerDelegate> {
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, actionSheetGallaryDelegate, showGalleryCustomDelegate, UIImagePickerControllerDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
     
@@ -62,6 +62,8 @@
 
     PHImageRequestOptions *requestOptions;
     NSMutableArray* filteredUserData;
+    
+    QTRShowGalleryViewController *showGallery;
 }
 
 - (void)startServices;
@@ -158,6 +160,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     _getMediaImages = [[QTRGetMediaImages alloc] init];
     [_getMediaImages downloadMedia];
+    
+    showGallery = [[QTRShowGalleryViewController alloc] init];
     
     customAlertView = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
@@ -365,8 +369,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     usersInfo._localUser = _localUser;
     usersInfo._selectedUser = _selectedUser;
 
-    QTRShowGalleryViewController *showGallery = [[QTRShowGalleryViewController alloc] init];
-    showGallery.reciversInfo = usersInfo;
+    showGallery.delegate = self;
     showGallery.fetchingImageArray = [_getMediaImages fetchMediaImages];
     [self.navigationController pushViewController:showGallery animated:YES];
 
@@ -937,13 +940,12 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
             [self startServices];
         }
-
     }
 }
 
-#pragma mark - ActionSheetGallaryDelegate methods
+#pragma mark - ActionSheetGallaryDelegate method
 
-- (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView didCellSelected:(BOOL)selected selectedImage:(QTRImagesInfoData *)sendingImage {
+- (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImage:(QTRImagesInfoData *)sendingImage {
 
         [customAlertView removeFromSuperview];
         [self sendDataToSelectedUser:sendingImage];
@@ -951,9 +953,22 @@ NSString * const cellIdentifier = @"CellIdentifier";
 }
 
 
+#pragma mark - ShowGallaryDelegate method
+
+
+- (void)QTRShowGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSArray *)sendingImagesData {
+
+    for (QTRImagesInfoData *selectedImage in sendingImagesData) {
+        
+         [self sendDataToSelectedUser:selectedImage];
+        
+         }
+
+
+}
+
+
 #pragma mark - Sending Data
-
-
 
 - (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
     

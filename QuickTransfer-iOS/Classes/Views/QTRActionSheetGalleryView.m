@@ -113,7 +113,9 @@ static NSString *cellIdentifier = @"CellIdentifier";
 {
 
     QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
-    [self.delegate QTRActionSheetGalleryView:self didCellSelected:YES selectedImage:imageData];
+    [self.delegate QTRActionSheetGalleryView:self selectedImage:imageData];
+    
+    
     
 }
 

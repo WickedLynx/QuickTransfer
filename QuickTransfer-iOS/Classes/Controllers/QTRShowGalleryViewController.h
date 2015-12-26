@@ -7,18 +7,23 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "QTRBonjourClient.h"
-#import "QTRBonjourServer.h"
-#import "QTRSelectedUserInfo.h"
+#import "QTRImagesInfoData.h"
+
+@class QTRShowGalleryViewController;
+@protocol showGalleryCustomDelegate <NSObject>
+
+- (void)QTRShowGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSArray *)sendingImagesData;
+
+@end
 
 @interface QTRShowGalleryViewController : UIViewController 
 
+
+@property (nonatomic, weak) id <showGalleryCustomDelegate> delegate;
 @property (nonatomic, retain) NSMutableDictionary *selectedImages;
-
-
-@property (nonatomic, retain) QTRSelectedUserInfo *reciversInfo;
-
 @property (nonatomic, retain) NSMutableArray *fetchingImageArray;
+
+
 
 
 @end

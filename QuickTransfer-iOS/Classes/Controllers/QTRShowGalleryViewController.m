@@ -9,26 +9,15 @@
 #import "QTRShowGalleryViewController.h"
 #import "QTRGalleryCollectionViewCell.h"
 #import "QTRRightBarButtonView.h"
-#import "QTRImagesInfoData.h"
 #import "QTRTransfersViewController.h"
-#import "QTRHelper.h"
 
 
 
-@interface QTRShowGalleryViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
+@interface QTRShowGalleryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout> {
 
     UICollectionView *galleryCollectionView;
-    NSArray *totalImages;
-    UICollectionViewFlowLayout *layout;
-    
-    QTRBonjourClient *_client;
-    QTRBonjourServer *_server;
-    NSMutableArray *_connectedServers;
-    NSMutableArray *_connectedClients;
-    NSMutableDictionary *_selectedRecivers;
-    QTRUser *_localUser;
-    QTRUser *_selectedUser;
-
+    NSArray *totalSelectedImages;
+    UICollectionViewFlowLayout *galleryCollectionViewLayout;
 }
 
 
@@ -45,15 +34,6 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     self.selectedImages = [[NSMutableDictionary alloc]init];
     
-    _client = self.reciversInfo._client;
-    _server = self.reciversInfo._server;
-    _connectedServers = self.reciversInfo._connectedServers;
-    _connectedClients = self.reciversInfo._connectedClients;
-    _selectedRecivers = self.reciversInfo._selectedRecivers;
-    _localUser = self.reciversInfo._localUser;
-    _selectedUser = self.reciversInfo._selectedUser;
-    
-
     [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     [self setTitle:@"Camera Roll"];
     
@@ -84,12 +64,12 @@ static NSString *cellIdentifier = @"CellIdentifier";
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
    
-    layout = [[UICollectionViewFlowLayout alloc] init];
-    [layout setMinimumInteritemSpacing:0.0f];
-    [layout setMinimumLineSpacing:0.0f];
-    layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    galleryCollectionViewLayout = [[UICollectionViewFlowLayout alloc] init];
+    [galleryCollectionViewLayout setMinimumInteritemSpacing:0.0f];
+    [galleryCollectionViewLayout setMinimumLineSpacing:0.0f];
+    galleryCollectionViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     
-    galleryCollectionView = [[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:layout];
+    galleryCollectionView = [[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:galleryCollectionViewLayout];
     galleryCollectionView.delegate = self;
     galleryCollectionView.dataSource = self;
     galleryCollectionView.allowsMultipleSelection = YES;
@@ -141,12 +121,12 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 -(void)sendData {
     
+    
+    
     if ([self.selectedImages count] > 0) {
-        totalImages = [[NSArray alloc]initWithArray:[self.selectedImages allValues]];
-
-        for (QTRImagesInfoData *selectedImage in totalImages) {
-            [self sendDataToSelectedUser:selectedImage];
-        }
+        totalSelectedImages = [[NSArray alloc]initWithArray:[self.selectedImages allValues]];
+            
+        [self.delegate QTRShowGalleryViewController:self selectedImages:totalSelectedImages];
         
         [self.selectedImages removeAllObjects];
         [galleryCollectionView reloadData];
@@ -178,13 +158,13 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     if (totalRemSpace == 0.0) {
         
-        [layout setMinimumLineSpacing:0.0f];
+        [galleryCollectionViewLayout setMinimumLineSpacing:0.0f];
         return UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
 
     }
     else {
         CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
-        [layout setMinimumLineSpacing:gap];
+        [galleryCollectionViewLayout setMinimumLineSpacing:gap];
 
     
     return UIEdgeInsetsMake( (gap * 2.0f), gap, (gap * 2.0f), gap);
@@ -243,116 +223,5 @@ static NSString *cellIdentifier = @"CellIdentifier";
     }
     
 }
-
-#pragma mark - Transfer Selected files to selected user
-
-- (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
-    
- 
-    
-    PHImageRequestOptions *requestOptions;
-
-    requestOptions = [[PHImageRequestOptions alloc] init];
-    requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
-    requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-    
-    requestOptions.synchronous = true;
-    NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
-    
-
-    [[PHImageManager defaultManager] requestImageDataForAsset:sendingImage.imageAsset
-                                                      options:requestOptions
-                                                resultHandler:
-     ^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-         
-         NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
-         
-         [imageData writeToURL:localURL atomically:YES];
-         
-         NSArray *totalRecivers = [_selectedRecivers allValues];
-         _selectedUser = nil;
-         
-         for (QTRUser *currentUser in totalRecivers) {
-             
-             _selectedUser = currentUser;
-             
-             if ([_connectedClients containsObject:_selectedUser]) {
-                 [_server sendFileAtURL:localURL toUser:_selectedUser];
-                 
-             } else if ([_connectedServers containsObject:_selectedUser]) {
-                 [_client sendFileAtURL:localURL toUser:_selectedUser];
-                 
-             } else {
-                 UIAlertController *alertView = [UIAlertController
-                                                 alertControllerWithTitle:@"Error"
-                                                 message:[NSString stringWithFormat:@"Device is not connected anymore"]
-                                                 preferredStyle:UIAlertControllerStyleAlert];
-                 
-                 UIAlertAction* okButton = [UIAlertAction
-                                            actionWithTitle:@"Dismiss"
-                                            style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * action)
-                                            {
-                                                [alertView dismissViewControllerAnimated:YES completion:nil];
-                                                
-                                            }];
-                 
-                 [alertView addAction:okButton];
-                 [self presentViewController:alertView animated:YES completion:nil];
-                 
-            }
-             
-             _selectedUser = nil;
-         }
-    
-     }];
-    
-}
-
-
-
-- (NSURL *)uniqueURLForFileWithName:(NSString *)fileName {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    NSURL *cachesURL = [QTRHelper fileCacheDirectory];
-    
-    NSString *filePath = [[cachesURL path] stringByAppendingPathComponent:fileName];
-    
-    if ([fileManager fileExistsAtPath:filePath]) {
-        NSString *name = [[filePath lastPathComponent] stringByDeletingPathExtension];
-        NSString *extension = [filePath pathExtension];
-        NSString *nameWithExtension = [name stringByAppendingPathExtension:extension];
-        NSString *tempName = name;
-        int fileCount = 0;
-        while ([fileManager fileExistsAtPath:filePath]) {
-            ++fileCount;
-            tempName = [name stringByAppendingFormat:@"%d", fileCount];
-            nameWithExtension = [tempName stringByAppendingPathExtension:extension];
-            filePath = [[cachesURL path] stringByAppendingPathComponent:nameWithExtension];
-        }
-    }
-    
-    
-    return [NSURL fileURLWithPath:filePath];
-}
-
-
-#pragma mark - PHPhoto Observer
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

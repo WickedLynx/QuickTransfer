@@ -14,7 +14,7 @@
 @class QTRActionSheetGalleryView;
 @protocol actionSheetGallaryDelegate <NSObject>
 
-- (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView didCellSelected:(BOOL)selected selectedImage:(QTRImagesInfoData *)sendingImage;
+- (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImage:(QTRImagesInfoData *)sendingImage;
 
 @end
 
