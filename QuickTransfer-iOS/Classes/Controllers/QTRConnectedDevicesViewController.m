@@ -20,7 +20,6 @@
 #import "QTRConstants.h"
 #import "QTRBeaconHelper.h"
 #import "QTRHelper.h"
-#import "QTRSelectedUserInfo.h"
 #import "QTRCustomAlertView.h"
 #import "QTRTransfersViewController.h"
 
@@ -348,9 +347,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 -(void) touchOpeniCloud {
     
-    NSLog(@"\n\n Open icloude..");
-    [_getMediaImages fetchMediaImages];
-    
     [customAlertView removeFromSuperview];
 
 }
@@ -360,15 +356,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
     [customAlertView removeFromSuperview];
     [customActionSheetGalleryView removeFromSuperview];
     
-    QTRSelectedUserInfo *usersInfo = [[QTRSelectedUserInfo alloc]init];
-    usersInfo._client = _client;
-    usersInfo._server = _server;
-    usersInfo._connectedServers = _connectedServers;
-    usersInfo._connectedClients = _connectedClients;
-    usersInfo._selectedRecivers = _selectedRecivers;
-    usersInfo._localUser = _localUser;
-    usersInfo._selectedUser = _selectedUser;
-
     showGallery.delegate = self;
     showGallery.fetchingImageArray = [_getMediaImages fetchMediaImages];
     [self.navigationController pushViewController:showGallery animated:YES];
