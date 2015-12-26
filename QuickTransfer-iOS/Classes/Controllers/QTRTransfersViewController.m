@@ -127,10 +127,6 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
 
 #pragma mark - Cleanup
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 - (void)dealloc {
     
