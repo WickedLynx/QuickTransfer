@@ -22,8 +22,6 @@
 		073CAC3C1C2BA59E00BE9496 /* QTRTransfersView.m in Sources */ = {isa = PBXBuildFile; fileRef = 073CAC3B1C2BA59E00BE9496 /* QTRTransfersView.m */; };
 		073CAC421C2BCF1E00BE9496 /* QTRNoConnectedDeviceFoundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 073CAC411C2BCF1E00BE9496 /* QTRNoConnectedDeviceFoundView.m */; };
 		073CAC451C2BDFE000BE9496 /* QTRTransfersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 073CAC441C2BDFE000BE9496 /* QTRTransfersViewController.m */; };
-		073CAC471C2BFF3E00BE9496 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 073CAC461C2BFF3E00BE9496 /* Photos.framework */; };
-		073CAC491C2BFF4800BE9496 /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 073CAC481C2BFF4800BE9496 /* PhotosUI.framework */; };
 		0745DA561C15688500579DCC /* QTRCustomAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0745DA551C15688500579DCC /* QTRCustomAlertView.m */; };
 		077AA25C1C2058CA0048326F /* AppIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 077AA25A1C2058AE0048326F /* AppIcon.xcassets */; };
 		07A79E0C1C1A8C0A00405F0D /* pauseIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07A79E0B1C1A8C0A00405F0D /* pauseIcon.xcassets */; };
@@ -334,8 +332,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				073CAC491C2BFF4800BE9496 /* PhotosUI.framework in Frameworks */,
-				073CAC471C2BFF3E00BE9496 /* Photos.framework in Frameworks */,
 				FA96D09D18FBF335000085DC /* QuickLook.framework in Frameworks */,
 				FA96D09B18FBDFCC000085DC /* QuartzCore.framework in Frameworks */,
 				FAD009CF18D84AC50014DCC5 /* CoreLocation.framework in Frameworks */,

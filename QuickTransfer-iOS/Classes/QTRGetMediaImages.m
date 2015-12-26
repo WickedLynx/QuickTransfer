@@ -12,9 +12,11 @@
 
 
     UICollectionView *galleryCollectionView;
-    NSMutableArray *images;
-    NSMutableArray *assets;
-    NSArray *totalImages;
+    NSMutableArray *fetchImagesArray;
+    NSArray *sectionFetchResults;
+    NSArray *sectionLocalizedTitles;
+
+
 
 
 @implementation QTRGetMediaImages 
@@ -22,8 +24,8 @@
 
 - (NSMutableArray *)fetchMediaImages {
     
-    if (images.count >1 ) {
-        return images;
+    if (fetchImagesArray.count >1 ) {
+        return fetchImagesArray;
     }
     
     else {
@@ -41,6 +43,7 @@
 
 
 - (void)getMedia {
+    
     PHFetchOptions *allPhotosOptions = [[PHFetchOptions alloc] init];
     allPhotosOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
     
@@ -50,8 +53,8 @@
     
     PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
     
-    self.sectionFetchResults = @[allPhotos, smartAlbums, topLevelUserCollections];
-    self.sectionLocalizedTitles = @[@"", NSLocalizedString(@"Smart Albums", @""), NSLocalizedString(@"Albums", @"")];
+    sectionFetchResults = @[allPhotos, smartAlbums, topLevelUserCollections];
+    sectionLocalizedTitles = @[@"", NSLocalizedString(@"Smart Albums", @""), NSLocalizedString(@"Albums", @"")];
     
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
     
@@ -59,20 +62,19 @@
 }
 
 -(void)getPhotos {
+        
+    PHImageRequestOptions *requestOptions;
+    requestOptions = [[PHImageRequestOptions alloc] init];
+    requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
+    requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     
-    
-    self.requestOptions = [[PHImageRequestOptions alloc] init];
-    self.requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
-    self.requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-    
-    self.requestOptions.synchronous = false;
+    requestOptions.synchronous = false;
     
     PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
     PHImageManager *manager = [PHImageManager defaultManager];
     
-    images= [NSMutableArray arrayWithCapacity:10];
-    assets = [NSMutableArray arrayWithCapacity:10];
-    //__block UIImage *ima;
+    fetchImagesArray= [NSMutableArray arrayWithCapacity:10];
+
     __block QTRImagesInfoData *imageInfoData;
     
     
@@ -80,7 +82,7 @@
         [manager requestImageForAsset:asset
                            targetSize:CGSizeMake(160, 160)
                           contentMode:PHImageContentModeDefault
-                              options:self.requestOptions
+                              options:requestOptions
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
                             
                             imageInfoData = [[QTRImagesInfoData alloc]init];
@@ -89,8 +91,7 @@
                             imageInfoData.imageAsset = asset;
                             
                             if (imageInfoData != nil) {
-                                [images addObject:imageInfoData];
-                                NSLog(@"In %@ --Integer%ld",self.class, NSIntegerMax);
+                                [fetchImagesArray addObject:imageInfoData];
                             }
                             
                             
@@ -110,10 +111,10 @@
      */
     dispatch_async(dispatch_get_main_queue(), ^{
         // Loop through the section fetch results, replacing any fetch results that have been updated.
-        NSMutableArray *updatedSectionFetchResults = [self.sectionFetchResults mutableCopy];
+        NSMutableArray *updatedSectionFetchResults = [sectionFetchResults mutableCopy];
         __block BOOL reloadRequired = NO;
         
-        [self.sectionFetchResults enumerateObjectsUsingBlock:^(PHFetchResult *collectionsFetchResult, NSUInteger index, BOOL *stop) {
+        [sectionFetchResults enumerateObjectsUsingBlock:^(PHFetchResult *collectionsFetchResult, NSUInteger index, BOOL *stop) {
             PHFetchResultChangeDetails *changeDetails = [changeInstance changeDetailsForFetchResult:collectionsFetchResult];
             
             if (changeDetails != nil) {
@@ -126,6 +127,13 @@
         }];
         
     });
+}
+
+
+- (void)dealloc {
+    
+    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
+
 }
 
 

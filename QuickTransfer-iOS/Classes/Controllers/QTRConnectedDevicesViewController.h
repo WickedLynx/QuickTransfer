@@ -10,10 +10,6 @@
 #import "QTRBonjourTransferDelegate.h"
 #import "QTRGetMediaImages.h"
 
-@import Photos;
-@import PhotosUI;
-
-
 
 @interface QTRConnectedDevicesViewController : UIViewController <UINavigationControllerDelegate, UISearchBarDelegate>
 

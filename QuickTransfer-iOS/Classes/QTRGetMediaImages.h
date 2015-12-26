@@ -11,15 +11,9 @@
 
 @interface QTRGetMediaImages : NSObject <PHPhotoLibraryChangeObserver>
 
+@property (nonatomic, retain) NSMutableDictionary *selectedImages;
+
 - (NSMutableArray *)fetchMediaImages;
 - (void)downloadMedia;
-
-@property (nonatomic, retain) PHCachingImageManager *imageManager;
-@property (nonatomic, retain) PHImageRequestOptions *requestOptions;
-
-@property (nonatomic, retain) NSMutableDictionary *selectedImages;
-@property (nonatomic, retain) NSArray *sectionFetchResults;
-@property (nonatomic, retain) NSArray *sectionLocalizedTitles;
-
 
 @end
