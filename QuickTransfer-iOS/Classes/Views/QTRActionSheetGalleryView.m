@@ -111,11 +111,9 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    QTRAlertControllerCollectionViewCell *cell = (QTRAlertControllerCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    
+
     QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
-    [self.delegate QTRActionSheetGalleryView:self didCellSelected:YES withCollectionCell:cell selectedImage:imageData];
-   
+    [self.delegate QTRActionSheetGalleryView:self didCellSelected:YES selectedImage:imageData];
     
 }
 

@@ -943,12 +943,13 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 #pragma mark - ActionSheetGallaryDelegate methods
 
-- (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView didCellSelected:(BOOL)selected withCollectionCell:(QTRAlertControllerCollectionViewCell *)alertControllerCollectionViewCell selectedImage:(QTRImagesInfoData *)sendingImage {
-    
-    [customAlertView removeFromSuperview];
-    [self sendDataToSelectedUser:sendingImage];
+- (void)QTRActionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView didCellSelected:(BOOL)selected selectedImage:(QTRImagesInfoData *)sendingImage {
+
+        [customAlertView removeFromSuperview];
+        [self sendDataToSelectedUser:sendingImage];
 
 }
+
 
 #pragma mark - Sending Data
 
