@@ -17,34 +17,34 @@
         
         [self setBackgroundColor:[UIColor clearColor]];
         
-        UIImageView *_connectedDeviceImageLocal = [[UIImageView alloc]init];
-        _connectedDeviceImageLocal.frame = CGRectZero;
-        [_connectedDeviceImageLocal setTranslatesAutoresizingMaskIntoConstraints:NO];
-        _connectedDeviceImageLocal.layer.masksToBounds = YES;
-        _connectedDeviceImageLocal.layer.cornerRadius = 40.0f;
-        [_connectedDeviceImageLocal setBackgroundColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
+        UIImageView *connectedDeviceImage = [[UIImageView alloc]init];
+        connectedDeviceImage.frame = CGRectZero;
+        [connectedDeviceImage setTranslatesAutoresizingMaskIntoConstraints:NO];
+        connectedDeviceImage.layer.masksToBounds = YES;
+        connectedDeviceImage.layer.cornerRadius = 40.0f;
+        [connectedDeviceImage setBackgroundColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
         
-        UILabel *_connectedDeviceNameLocal = [[UILabel alloc]initWithFrame:CGRectZero];
-        [_connectedDeviceNameLocal setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [_connectedDeviceNameLocal setFont:[UIFont fontWithName:@"SanFranciscoText-Light" size:13]];
-        _connectedDeviceNameLocal.numberOfLines = 2;
-        _connectedDeviceNameLocal.textAlignment = NSTextAlignmentCenter;
-        _connectedDeviceNameLocal.textColor = [UIColor whiteColor];
+        UILabel *connectedDeviceName = [[UILabel alloc]initWithFrame:CGRectZero];
+        [connectedDeviceName setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [connectedDeviceName setFont:[UIFont fontWithName:@"SanFranciscoText-Light" size:13]];
+        connectedDeviceName.numberOfLines = 2;
+        connectedDeviceName.textAlignment = NSTextAlignmentCenter;
+        connectedDeviceName.textColor = [UIColor whiteColor];
         
-        [self.contentView addSubview:_connectedDeviceImageLocal];
-        [self.contentView addSubview:_connectedDeviceNameLocal];
+        [self.contentView addSubview:connectedDeviceImage];
+        [self.contentView addSubview:connectedDeviceName];
         
-        self.connectedDeviceImage = _connectedDeviceImageLocal;
-        self.connectedDeviceName = _connectedDeviceNameLocal;
+        self.connectedDeviceImage = connectedDeviceImage;
+        self.connectedDeviceName = connectedDeviceName;
        
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(_connectedDeviceImageLocal,_connectedDeviceNameLocal);
+        NSDictionary *views = NSDictionaryOfVariableBindings(connectedDeviceImage,connectedDeviceName);
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[_connectedDeviceImageLocal(==80)]-10-|" options:0 metrics:0 views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[_connectedDeviceNameLocal(==90)]-5-|" options:0 metrics:0 views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_connectedDeviceImageLocal(==80)]" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[connectedDeviceImage(==80)]-10-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[connectedDeviceName(==90)]-5-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[connectedDeviceImage(==80)]" options:0 metrics:0 views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[_connectedDeviceNameLocal]" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-80-[connectedDeviceName]" options:0 metrics:0 views:views]];
         
     }
     return self;
