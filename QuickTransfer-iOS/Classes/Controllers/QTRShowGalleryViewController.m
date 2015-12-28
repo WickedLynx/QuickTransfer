@@ -10,16 +10,16 @@
 #import "QTRGalleryCollectionViewCell.h"
 #import "QTRRightBarButtonView.h"
 #import "QTRTransfersViewController.h"
+#import "QTRShowGalleryView.h"
 
 
 
 @interface QTRShowGalleryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout> {
 
-    UICollectionView *galleryCollectionView;
     NSArray *totalSelectedImages;
-    UICollectionViewFlowLayout *galleryCollectionViewLayout;
-}
+    QTRShowGalleryView *showGalleryView;
 
+}
 
 
 @end
@@ -63,43 +63,17 @@ static NSString *cellIdentifier = @"CellIdentifier";
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:customRightBarButton];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
-   
-    galleryCollectionViewLayout = [[UICollectionViewFlowLayout alloc] init];
-    [galleryCollectionViewLayout setMinimumInteritemSpacing:0.0f];
-    [galleryCollectionViewLayout setMinimumLineSpacing:0.0f];
-    galleryCollectionViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+    showGalleryView = [[QTRShowGalleryView alloc] initWithFrame:self.view.frame];
     
-    galleryCollectionView = [[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:galleryCollectionViewLayout];
-    galleryCollectionView.delegate = self;
-    galleryCollectionView.dataSource = self;
-    galleryCollectionView.allowsMultipleSelection = YES;
-    [galleryCollectionView setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
-    [galleryCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    
-    [self.view addSubview:galleryCollectionView];
-    
-    [galleryCollectionView registerClass:[QTRGalleryCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
-    
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectZero;
-    [[button layer]setCornerRadius:7.0f];
-    [[button layer]setBorderWidth:1.0f];
-    [[button layer]setBorderColor:[UIColor whiteColor].CGColor];
-    [[button layer]setMasksToBounds:TRUE];
-    button.clipsToBounds = YES;
-    [button setTitle:@"Send" forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(sendData) forControlEvents:UIControlEventTouchUpInside];
-    [button setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
-    [button setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.view addSubview:button];
+    showGalleryView.galleryCollectionView.delegate = self;
+    showGalleryView.galleryCollectionView.dataSource =self;
+    [showGalleryView.galleryCollectionView registerClass:[QTRGalleryCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
+    [showGalleryView.sendButton addTarget:self action:@selector(sendData) forControlEvents:UIControlEventTouchUpInside];
 
-
-    NSDictionary *views = NSDictionaryOfVariableBindings(galleryCollectionView, button);
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[galleryCollectionView]|" options:0 metrics:0 views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[button]-7-|" options:0 metrics:0 views:views]];
-
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[galleryCollectionView]-5-[button(==44)]-5-|" options:0 metrics:0 views:views]];    
+    [self.view addSubview:showGalleryView];
+    
+    
     
     
 }
@@ -129,7 +103,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
         [self.delegate showGalleryViewController:self selectedImages:totalSelectedImages];
         
         [self.selectedImages removeAllObjects];
-        [galleryCollectionView reloadData];
+        [showGalleryView.galleryCollectionView reloadData];
         
     } else {
         
@@ -158,13 +132,13 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     if (totalRemSpace == 0.0) {
         
-        [galleryCollectionViewLayout setMinimumLineSpacing:0.0f];
+        [showGalleryView.galleryCollectionViewLayout setMinimumLineSpacing:0.0f];
         return UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
 
     }
     else {
         CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
-        [galleryCollectionViewLayout setMinimumLineSpacing:gap];
+        [showGalleryView.galleryCollectionViewLayout setMinimumLineSpacing:gap];
 
     
     return UIEdgeInsetsMake( (gap * 2.0f), gap, (gap * 2.0f), gap);

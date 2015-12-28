@@ -14,7 +14,6 @@
 @property (nonatomic, retain) UIImage *finalImage;
 @property (nonatomic, retain) NSDictionary *imageInfo;
 @property (nonatomic, retain) NSString *imageIdentifier;
-@property (nonatomic, retain) NSData *imageBinData;
 @property (nonatomic, retain) PHAsset *imageAsset;
 
 @end
