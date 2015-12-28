@@ -283,7 +283,9 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 - (void)updateTransferForFile:(QTRFile *)file {
 
     QTRTransfer *theTransfer = _fileIdentifierToTransfers[file.identifier];
-    theTransfer.state = QTRTransferStateInProgress;
+    if (theTransfer.state != QTRTransferStatePaused) {
+        theTransfer.state = QTRTransferStateInProgress;
+    }
     if (theTransfer != nil && ![theTransfer isKindOfClass:[NSNull class]]) {
         [theTransfer setTransferedChunks:(file.partIndex + 1)];
 
