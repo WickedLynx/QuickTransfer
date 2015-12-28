@@ -9,11 +9,16 @@
 #import <Foundation/Foundation.h>
 #import <PhotosUI/PhotosUI.h>
 
-@interface QTRGetMediaImages : NSObject <PHPhotoLibraryChangeObserver>
+
+
+@interface QTRGetMediaImages : NSObject
+
+
 
 @property (nonatomic, retain) NSMutableDictionary *selectedImages;
 
-- (NSMutableArray *)fetchMediaImages;
-- (void)downloadMedia;
+- (void)fetchPhotosWithLimit:(NSInteger)fetchLimit completion: (void(^)(NSArray *fetchedPhotos))completion;
 
 @end
+
+

@@ -18,6 +18,8 @@
 
     NSArray *totalSelectedImages;
     QTRShowGalleryView *showGalleryView;
+    NSMutableDictionary *selectedImages;
+
 
 }
 
@@ -32,7 +34,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.selectedImages = [[NSMutableDictionary alloc]init];
+    selectedImages = [[NSMutableDictionary alloc]init];
     
     [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     [self setTitle:@"Camera Roll"];
@@ -97,12 +99,12 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     
     
-    if ([self.selectedImages count] > 0) {
-        totalSelectedImages = [[NSArray alloc]initWithArray:[self.selectedImages allValues]];
+    if ([selectedImages count] > 0) {
+        totalSelectedImages = [[NSArray alloc]initWithArray:[selectedImages allValues]];
             
         [self.delegate showGalleryViewController:self selectedImages:totalSelectedImages];
         
-        [self.selectedImages removeAllObjects];
+        [selectedImages removeAllObjects];
         [showGalleryView.galleryCollectionView reloadData];
         
     } else {
@@ -152,7 +154,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return [_fetchingImageArray count];
+    return [_fetchImageArray count];
     
 }
 
@@ -160,7 +162,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     QTRGalleryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
+    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
     
     cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) imageData.finalImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
  
@@ -178,10 +180,10 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
  
-    QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
+    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
     UIImage *img = imageData.finalImage;
     
-    [self.selectedImages setObject:imageData forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
+    [selectedImages setObject:imageData forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
     
 }
 
@@ -189,11 +191,11 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
+    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
     UIImage *img = imageData.finalImage;
     
-    if ([self.selectedImages count] > 0) {
-        [self.selectedImages removeObjectForKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
+    if ([selectedImages count] > 0) {
+        [selectedImages removeObjectForKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
     }
     
 }

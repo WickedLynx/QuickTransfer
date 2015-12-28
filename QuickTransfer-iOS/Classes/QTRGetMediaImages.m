@@ -11,123 +11,100 @@
 
 
 
+@interface QTRGetMediaImages() {
+
+
     UICollectionView *galleryCollectionView;
     NSMutableArray *fetchImagesArray;
     NSArray *sectionFetchResults;
     NSArray *sectionLocalizedTitles;
+    PHFetchResult *assetsFetchResult;
+
+}
+
+@end
 
 
+@implementation QTRGetMediaImages
 
 
-@implementation QTRGetMediaImages 
-
-
-- (NSMutableArray *)fetchMediaImages {
+- (void)fetchPhotosWithLimit:(NSInteger)fetchLimit completion:(void (^)(NSArray *))completion {
     
-    if (fetchImagesArray.count >1 ) {
-        return fetchImagesArray;
+    assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
+
+    if (fetchLimit == 0) {
+        if (fetchImagesArray.count < assetsFetchResult.count) {
+            
+            [self getPhotosfromMediaWith:fetchLimit];
+        }
+        
+    }else if (fetchImagesArray.count < fetchLimit) {
+        
+        [self getPhotosfromMediaWith:fetchLimit];
     }
     
-    else {
-        return nil;
+    if (completion != nil) {
+        completion(fetchImagesArray);
+        
     }
-    
-
-}
-
-- (void)downloadMedia {
-    [self getMedia];
 
 }
 
 
-
-- (void)getMedia {
-    
-    PHFetchOptions *allPhotosOptions = [[PHFetchOptions alloc] init];
-    allPhotosOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
-    
-    PHFetchResult *allPhotos = [PHAsset fetchAssetsWithOptions:allPhotosOptions];
-    
-    PHFetchResult *smartAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeAlbumRegular options:nil];
-    
-    PHFetchResult *topLevelUserCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
-    
-    sectionFetchResults = @[allPhotos, smartAlbums, topLevelUserCollections];
-    sectionLocalizedTitles = @[@"", NSLocalizedString(@"Smart Albums", @""), NSLocalizedString(@"Albums", @"")];
-    
-    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
-    
-    [self getPhotos];
-}
-
--(void)getPhotos {
+-(void)getPhotosfromMediaWith:(NSInteger)fetchImagesLimit {
         
     PHImageRequestOptions *requestOptions;
     requestOptions = [[PHImageRequestOptions alloc] init];
     requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
     requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    requestOptions.synchronous = YES;
     
-    requestOptions.synchronous = false;
-    
-    PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsWithMediaType:PHAssetMediaTypeImage options:nil];
     PHImageManager *manager = [PHImageManager defaultManager];
+    NSArray *assetsForFetchLimit;
     
-    fetchImagesArray= [NSMutableArray arrayWithCapacity:10];
-
-    __block QTRImagesInfoData *imageInfoData;
+    if (fetchImagesLimit == 0) {
+        assetsForFetchLimit = [assetsFetchResult objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, assetsFetchResult.count)]];
+        
+        fetchImagesArray= [NSMutableArray arrayWithCapacity:assetsFetchResult.count];
+        
+    } else {
+        
+        assetsForFetchLimit = [assetsFetchResult objectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, fetchImagesLimit)]];
+        
+        fetchImagesArray= [NSMutableArray arrayWithCapacity:assetsFetchResult.count];
+    }
     
     
-    for (PHAsset *asset in assetsFetchResult) {
+    for (PHAsset *asset in assetsForFetchLimit) {
+        
         [manager requestImageForAsset:asset
                            targetSize:CGSizeMake(160, 160)
                           contentMode:PHImageContentModeDefault
                               options:requestOptions
+         
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
                             
-                            imageInfoData = [[QTRImagesInfoData alloc]init];
+                            QTRImagesInfoData *imageInfoData = [[QTRImagesInfoData alloc]init];
                             imageInfoData.finalImage = image;
                             imageInfoData.imageInfo = info;
                             imageInfoData.imageAsset = asset;
+
                             
                             if (imageInfoData != nil) {
                                 [fetchImagesArray addObject:imageInfoData];
                             }
+                            
+                            NSLog(@"Image Asset Inside: %@",asset);
+                            
+                            
                         }];
+        NSLog(@"Image Asset Outside: %@",asset);
+
+
     }
 }
 
-- (void)photoLibraryDidChange:(PHChange *)changeInstance {
-    /*
-     Change notifications may be made on a background queue. Re-dispatch to the
-     main queue before acting on the change as we'll be updating the UI.
-     */
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Loop through the section fetch results, replacing any fetch results that have been updated.
-        NSMutableArray *updatedSectionFetchResults = [sectionFetchResults mutableCopy];
-        __block BOOL reloadRequired = NO;
-        
-        [sectionFetchResults enumerateObjectsUsingBlock:^(PHFetchResult *collectionsFetchResult, NSUInteger index, BOOL *stop) {
-            PHFetchResultChangeDetails *changeDetails = [changeInstance changeDetailsForFetchResult:collectionsFetchResult];
-            
-            if (changeDetails != nil) {
-                [updatedSectionFetchResults replaceObjectAtIndex:index withObject:[changeDetails fetchResultAfterChanges]];
-                reloadRequired = YES;
-            }
 
-            [self getPhotos];
-            
-        }];
-        
-    });
-}
-
-
-- (void)dealloc {
-    
-    [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
-
-}
 
 
 @end

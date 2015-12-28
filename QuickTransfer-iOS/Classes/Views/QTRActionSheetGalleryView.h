@@ -22,7 +22,7 @@
 
 
 @property (nonatomic, weak) id <QTRActionSheetGallaryDelegate> delegate;
-@property (nonatomic, retain) NSMutableArray *fetchingImageArray;
+@property (nonatomic, retain) NSArray *fetchImageArray;
 
 - (void)stopIndicatorViewAnimation;
 - (void)startIndicatorViewAnimation;

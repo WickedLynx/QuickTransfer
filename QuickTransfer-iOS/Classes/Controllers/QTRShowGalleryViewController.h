@@ -20,8 +20,7 @@
 
 
 @property (nonatomic, weak) id <TRShowGalleryCustomDelegate> delegate;
-@property (nonatomic, retain) NSMutableDictionary *selectedImages;
-@property (nonatomic, retain) NSMutableArray *fetchingImageArray;
+@property (nonatomic, weak) NSArray *fetchImageArray;
 
 
 

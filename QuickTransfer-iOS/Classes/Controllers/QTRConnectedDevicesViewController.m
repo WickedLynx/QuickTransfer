@@ -158,7 +158,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
     _selectedRecivers = [[NSMutableDictionary alloc]init];
     
     _getMediaImages = [[QTRGetMediaImages alloc] init];
-    [_getMediaImages downloadMedia];
     
     showGallery = [[QTRShowGalleryViewController alloc] init];
     
@@ -298,12 +297,19 @@ NSString * const cellIdentifier = @"CellIdentifier";
         
         [self.view addSubview:customAlertView];
         
-        customActionSheetGalleryView.fetchingImageArray = [_getMediaImages fetchMediaImages];
-        if (customActionSheetGalleryView.fetchingImageArray.count > 0) {
-            [customActionSheetGalleryView stopIndicatorViewAnimation];
-        } else {
-            [customActionSheetGalleryView startIndicatorViewAnimation];
-        }
+        
+       
+        
+        [_getMediaImages fetchPhotosWithLimit:15 completion:^(NSArray *imagesArray){
+            customActionSheetGalleryView.fetchImageArray = [imagesArray subarrayWithRange:NSMakeRange(0, 15)];
+            
+                if (customActionSheetGalleryView.fetchImageArray.count > 0) {
+                    [customActionSheetGalleryView stopIndicatorViewAnimation];
+                } else {
+                    [customActionSheetGalleryView startIndicatorViewAnimation];
+                }
+        
+        }];
         
         [customActionSheetGalleryView setUserInteractionEnabled:YES];
         customActionSheetGalleryView.delegate = self;
@@ -357,8 +363,19 @@ NSString * const cellIdentifier = @"CellIdentifier";
     [customActionSheetGalleryView removeFromSuperview];
     
     showGallery.delegate = self;
-    showGallery.fetchingImageArray = [_getMediaImages fetchMediaImages];
-    [self.navigationController pushViewController:showGallery animated:YES];
+    
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [_getMediaImages fetchPhotosWithLimit:0 completion:^(NSArray *imagesArray){
+            showGallery.fetchImageArray = imagesArray;
+            
+        }];
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self.navigationController pushViewController:showGallery animated:YES];
+        });
+        
+    });
 
 }
 
@@ -466,11 +483,13 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 - (void)refresh {
     [self stopServices];
+    
+    __weak QTRConnectedDevicesViewController *weakSelf = self;
 
     double delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [self startServices];
+        [weakSelf startServices];
     });
 }
 
@@ -682,9 +701,15 @@ NSString * const cellIdentifier = @"CellIdentifier";
     [self refreshBeacons];
 
     if (_backgroundTaskIdentifier == UIBackgroundTaskInvalid) {
+        
+
+//        __weak QTRConnectedDevicesViewController *weakSelf = self;
+        
+        __block UIBackgroundTaskIdentifier weakBackgroundTaskIdentifier = _backgroundTaskIdentifier;
+        
         _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-            [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
-            _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+            [[UIApplication sharedApplication] endBackgroundTask: weakBackgroundTaskIdentifier];
+            weakBackgroundTaskIdentifier = UIBackgroundTaskInvalid;
         }];
 
         [self refresh];
@@ -766,8 +791,9 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
     }
     
-    [_selectedRecivers removeObjectForKey:theUser.identifier];
-    
+    if (theUser != nil) {
+        [_selectedRecivers setObject:theUser forKey:theUser.identifier];
+    }
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -799,7 +825,10 @@ NSString * const cellIdentifier = @"CellIdentifier";
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
     }
     
-    [_selectedRecivers setObject:theUser forKey:theUser.identifier];
+    if (theUser != nil) {
+        [_selectedRecivers setObject:theUser forKey:theUser.identifier];
+    }
+    
 }
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -966,13 +995,14 @@ NSString * const cellIdentifier = @"CellIdentifier";
     requestOptions.synchronous = true;
     NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
     
-    
+    __weak QTRConnectedDevicesViewController *weakSelf = self;
+
     [[PHImageManager defaultManager] requestImageDataForAsset:sendingImage.imageAsset
                                                       options:requestOptions
                                                 resultHandler:
      ^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
          
-         NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
+         NSURL *localURL = [weakSelf uniqueURLForFileWithName:[referenceURL lastPathComponent]];
          
          [imageData writeToURL:localURL atomically:YES];
          

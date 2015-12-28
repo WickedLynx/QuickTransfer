@@ -71,7 +71,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return [_fetchingImageArray count];
+    return [_fetchImageArray count];
     
 }
 
@@ -79,7 +79,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     QTRAlertControllerCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
+    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
     cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) imageData.finalImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
     
     return cell;
@@ -112,7 +112,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    QTRImagesInfoData *imageData = [_fetchingImageArray objectAtIndex:indexPath.row ];
+    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
     [self.delegate actionSheetGalleryView:self selectedImage:imageData];
     
     
