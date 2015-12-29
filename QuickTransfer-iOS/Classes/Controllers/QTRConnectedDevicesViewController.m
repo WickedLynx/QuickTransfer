@@ -99,9 +99,12 @@ NSString * const cellIdentifier = @"CellIdentifier";
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
+        
         _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+          
             [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
             _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
+            
         }];
 
         [self startServices];
