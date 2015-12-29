@@ -41,7 +41,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
             _allTransfers = [NSMutableArray new];
             _fileIdentifierToTransfers = [NSMutableDictionary new];
         }
-        
+
 #if TARGET_OS_IPHONE
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 
@@ -98,6 +98,16 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     }
 
     [self archiveTransfers];
+}
+
+- (void)deleteTransfersAtIndexes:(NSIndexSet *)indexes {
+    if (indexes.count > 0) {
+        [_allTransfers removeObjectsAtIndexes:indexes];
+        [self archiveTransfers];
+        if ([self.delegate respondsToSelector:@selector(transfersStore:didDeleteTransfersAtIndices:)]) {
+            [self.delegate transfersStore:self didDeleteTransfersAtIndices:indexes];
+        }
+    }
 }
 
 - (void)archiveTransfers {
@@ -259,6 +269,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     [transfer setFileSize:file.totalSize];
     [transfer setFileURL:file.url];
     [transfer setFileIdentifier:file.identifier];
+    [transfer setIsIncoming:YES];
     [_allTransfers insertObject:transfer atIndex:0];
     _fileIdentifierToTransfers[file.identifier] = transfer;
 
