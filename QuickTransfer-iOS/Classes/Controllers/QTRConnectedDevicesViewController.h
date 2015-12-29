@@ -8,14 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "QTRBonjourTransferDelegate.h"
-#import "QTRGetMediaImages.h"
 
 
 @interface QTRConnectedDevicesViewController : UIViewController <UINavigationControllerDelegate, UISearchBarDelegate>
 
 
 @property (nonatomic, assign) BOOL isFiltered;
-@property (nonatomic, strong) QTRGetMediaImages *getMediaImages;
 
 /*!
  Initialises the receiver.

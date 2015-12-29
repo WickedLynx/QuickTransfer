@@ -24,8 +24,6 @@
 #import "QTRTransfersViewController.h"
 #import "QTRPhotoLibraryController.h"
 
-#import "QTRGetMediaImages.h"
-
 
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, QTRActionSheetGallaryDelegate, TRShowGalleryCustomDelegate, UIImagePickerControllerDelegate> {
 
@@ -159,13 +157,10 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     _selectedRecivers = [[NSMutableDictionary alloc] init];
     
-    _getMediaImages = [[QTRGetMediaImages alloc] init];
-    
     showGallery = [[QTRShowGalleryViewController alloc] init];
     
     customAlertView = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
-//    [customActionSheetGalleryView startIndicatorViewAnimation];
     
     _fetchPhotoLibrary = [[QTRPhotoLibraryController alloc] init];
     [_fetchPhotoLibrary fetchAssetInformation];
@@ -302,27 +297,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     else if ([_selectedRecivers count] > 0) {
         
         [self.view addSubview:customAlertView];
-        
-//        __weak QTRActionSheetGalleryView *weakCustomActionSheetGalleryView = customActionSheetGalleryView;
-//
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//            
-//            [_getMediaImages fetchPhotosWithLimit:15 completion:^(NSArray *imagesArray){
-//                weakCustomActionSheetGalleryView.fetchImageArray = [imagesArray subarrayWithRange:NSMakeRange(0, 15)];
-//                
-//            }];
-//
-//            
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                if (weakCustomActionSheetGalleryView.fetchImageArray.count > 0) {
-//                    [weakCustomActionSheetGalleryView stopIndicatorViewAnimation];
-//                     [weakCustomActionSheetGalleryView reloadUICollectionView];
-//                }
-//            });
-//            
-//        });
-        
-        
+    
         [customActionSheetGalleryView setUserInteractionEnabled:YES];
         customActionSheetGalleryView.delegate = self;
         customActionSheetGalleryView.fetchPhotoLibrary = _fetchPhotoLibrary;
@@ -381,20 +356,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
     showGallery.fetchPhotoLibrary = weakFetchPhotoLibrary;
     
     [self.navigationController pushViewController:showGallery animated:YES];
-
-//    __weak QTRShowGalleryViewController *weakShowGallery = showGallery;
-    
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        [_getMediaImages fetchPhotosWithLimit:0 completion:^(NSArray *imagesArray){
-//            weakShowGallery.fetchImageArray = imagesArray;
-//            
-//        }];
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [weakSelf.navigationController pushViewController:showGallery animated:YES];
-//        });
-//        
-//    });
 
 }
 
@@ -721,15 +682,10 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
     if (_backgroundTaskIdentifier == UIBackgroundTaskInvalid) {
         
-
-//        __weak QTRConnectedDevicesViewController *weakSelf = self;
-        
-        __block UIBackgroundTaskIdentifier weakBackgroundTaskIdentifier = _backgroundTaskIdentifier;
-        
         _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
          
-            [[UIApplication sharedApplication] endBackgroundTask: weakBackgroundTaskIdentifier];
-            weakBackgroundTaskIdentifier = UIBackgroundTaskInvalid;
+            [[UIApplication sharedApplication] endBackgroundTask: _backgroundTaskIdentifier];
+            _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
         }];
 
         [self refresh];
@@ -983,22 +939,22 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 - (void)actionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImageAsset:(PHAsset *)imageAsset imageInfo:(NSDictionary *)sendingImageInfo {
     [self sendDataToSelectedUser:imageAsset :sendingImageInfo];
+    
+    [customAlertView removeFromSuperview];
 
 }
 
 
 #pragma mark - ShowGallaryDelegate method
 
-
-- (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSArray *)sendingImagesData {
-
-//    for (QTRImagesInfoData *selectedImage in sendingImagesData) {
-//        
-//         //[self sendDataToSelectedUser:selectedImage];
-//        
-//         }
-
-
+- (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSDictionary *)selectedImagesData {
+    
+    NSArray *totalSelectedImages = [[NSArray alloc]initWithArray:[selectedImagesData allValues]];
+    
+    for (NSArray *fetchImageData in totalSelectedImages) {
+        [self sendDataToSelectedUser:[fetchImageData objectAtIndex:0] :[fetchImageData objectAtIndex:1]];
+        
+    }
 }
 
 

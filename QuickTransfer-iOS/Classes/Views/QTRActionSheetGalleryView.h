@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "QTRAlertControllerCollectionViewCell.h"
-#import "QTRImagesInfoData.h"
 #import "QTRPhotoLibraryController.h"
 
 

@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "QTRImagesInfoData.h"
 #import "QTRPhotoLibraryController.h"
 
 @class QTRShowGalleryViewController;
 @protocol TRShowGalleryCustomDelegate <NSObject>
 
-- (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSArray *)sendingImagesData;
+- (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSDictionary *)selectedImagesData;
 
 @end
 

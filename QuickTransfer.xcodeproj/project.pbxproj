@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		07220CE21C2D1ED400207359 /* QTRGetMediaImages.m in Sources */ = {isa = PBXBuildFile; fileRef = 07220CE11C2D1ED400207359 /* QTRGetMediaImages.m */; };
 		072BE7401C0D803500798AC1 /* macIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE73F1C0D803500798AC1 /* macIcon.xcassets */; };
 		072BE7421C0D804A00798AC1 /* AndroidIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */; };
 		072BE7461C0D808500798AC1 /* linuxIcon.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 072BE7451C0D808500798AC1 /* linuxIcon.xcassets */; };
@@ -33,7 +32,6 @@
 		07B308381C0ECD5700A889BF /* selected_image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B308361C0ECD2800A889BF /* selected_image.xcassets */; };
 		07B3083C1C0EDC6300A889BF /* Button_back.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B3083B1C0EDC6300A889BF /* Button_back.xcassets */; };
 		07B3083D1C0EDC8E00A889BF /* Button_back.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07B3083B1C0EDC6300A889BF /* Button_back.xcassets */; };
-		07BB981D1C100B9500AF7F7C /* QTRImagesInfoData.m in Sources */ = {isa = PBXBuildFile; fileRef = 07BB981C1C100B9500AF7F7C /* QTRImagesInfoData.m */; };
 		07BB98261C105F5C00AF7F7C /* LogsIconRetry.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07BB98251C105F5C00AF7F7C /* LogsIconRetry.xcassets */; };
 		07D4A2E21C0821E0006F93E6 /* settingIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07D4A2E11C0821E0006F93E6 /* settingIcon.png */; };
 		07D4A2E81C0848F0006F93E6 /* QTRRightBarButtonView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07D4A2E71C0848F0006F93E6 /* QTRRightBarButtonView.m */; };
@@ -224,8 +222,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		07220CE01C2D1ED400207359 /* QTRGetMediaImages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRGetMediaImages.h; sourceTree = "<group>"; };
-		07220CE11C2D1ED400207359 /* QTRGetMediaImages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRGetMediaImages.m; sourceTree = "<group>"; };
 		072BE73F1C0D803500798AC1 /* macIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = macIcon.xcassets; sourceTree = "<group>"; };
 		072BE7411C0D804A00798AC1 /* AndroidIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = AndroidIcon.xcassets; sourceTree = "<group>"; };
 		072BE7451C0D808500798AC1 /* linuxIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = linuxIcon.xcassets; sourceTree = "<group>"; };
@@ -250,8 +246,6 @@
 		07A79E121C1B046000405F0D /* IPhonesIcon.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = IPhonesIcon.xcassets; sourceTree = "<group>"; };
 		07B308361C0ECD2800A889BF /* selected_image.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = selected_image.xcassets; sourceTree = "<group>"; };
 		07B3083B1C0EDC6300A889BF /* Button_back.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Button_back.xcassets; sourceTree = "<group>"; };
-		07BB981B1C100B9500AF7F7C /* QTRImagesInfoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QTRImagesInfoData.h; path = Controllers/QTRImagesInfoData.h; sourceTree = "<group>"; };
-		07BB981C1C100B9500AF7F7C /* QTRImagesInfoData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QTRImagesInfoData.m; path = Controllers/QTRImagesInfoData.m; sourceTree = "<group>"; };
 		07BB98251C105F5C00AF7F7C /* LogsIconRetry.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = LogsIconRetry.xcassets; sourceTree = "<group>"; };
 		07D4A2E11C0821E0006F93E6 /* settingIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settingIcon.png; sourceTree = "<group>"; };
 		07D4A2E61C0848F0006F93E6 /* QTRRightBarButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRRightBarButtonView.h; sourceTree = "<group>"; };
@@ -495,10 +489,6 @@
 		07BB981E1C102E9200AF7F7C /* ModelData */ = {
 			isa = PBXGroup;
 			children = (
-				07BB981B1C100B9500AF7F7C /* QTRImagesInfoData.h */,
-				07BB981C1C100B9500AF7F7C /* QTRImagesInfoData.m */,
-				07220CE01C2D1ED400207359 /* QTRGetMediaImages.h */,
-				07220CE11C2D1ED400207359 /* QTRGetMediaImages.m */,
 				072EA0771C326EC4003CFE85 /* QTRPhotoLibraryController.h */,
 				072EA0781C326EC4003CFE85 /* QTRPhotoLibraryController.m */,
 			);
@@ -1198,8 +1188,6 @@
 				FAD009CB18D840AD0014DCC5 /* QTRBeaconHelper.m in Sources */,
 				FA283F2318B49582003D4FB6 /* QTRBonjourServer.m in Sources */,
 				07D4A2EB1C086AD4006F93E6 /* QTRActionSheetGalleryView.m in Sources */,
-				07220CE21C2D1ED400207359 /* QTRGetMediaImages.m in Sources */,
-				07BB981D1C100B9500AF7F7C /* QTRImagesInfoData.m in Sources */,
 				FA5911EB1C0570610057928C /* QTRFileZipper.m in Sources */,
 				07D4A2F41C088D5F006F93E6 /* QTRAlertControllerCollectionViewCell.m in Sources */,
 				FA5911F21C057F0F0057928C /* QTRDraggedItem.m in Sources */,

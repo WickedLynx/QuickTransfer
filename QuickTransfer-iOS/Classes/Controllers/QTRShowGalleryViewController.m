@@ -25,8 +25,6 @@
 
 }
 
-
-
 @end
 
 
@@ -103,12 +101,11 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     
     if ([selectedImages count] > 0) {
-        totalSelectedImages = [[NSArray alloc]initWithArray:[selectedImages allValues]];
-            
-        [self.delegate showGalleryViewController:self selectedImages:totalSelectedImages];
+                
+        [self.delegate showGalleryViewController:self selectedImages:selectedImages];
         
-        [selectedImages removeAllObjects];
-        [showGalleryView.galleryCollectionView reloadData];
+        [self.navigationController popViewControllerAnimated:YES];
+
         
     } else {
         
@@ -184,16 +181,13 @@ static NSString *cellIdentifier = @"CellIdentifier";
 #pragma mark - UICollectionView Delegate methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
- 
-    QTRImagesInfoData *imageInfoData = [_fetchImageArray objectAtIndex:indexPath.row ];
-    UIImage *img = imageInfoData.finalImage;
     
-    [selectedImages setObject:imageInfoData forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
-    
-//    NSLog(@"Cell %ld clicked..", (long)indexPath.row);
-//    [fetchPhotoLibrary originalImageAtIndex:imageInfoData completion:^(NSData *imageData) {
-//        NSLog(@"In Cell %ld with %@ ",(long)indexPath.row, imageData);
-//    }];
+    [_fetchPhotoLibrary originalImageAtIndex:indexPath.row completion:^(PHAsset *asset, NSDictionary *info) {
+        
+        NSArray *imageData = [[NSArray alloc] initWithObjects:asset, info, nil];
+        [selectedImages setObject:imageData forKey:[NSString stringWithFormat:@"%@",asset]];
+        
+    }];
     
 }
 
@@ -201,13 +195,13 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
-    UIImage *img = imageData.finalImage;
-    
-    if ([selectedImages count] > 0) {
-        [selectedImages removeObjectForKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
-    }
+    [_fetchPhotoLibrary originalImageAtIndex:indexPath.row completion:^(PHAsset *asset, NSDictionary *info) {
+        
+        [selectedImages removeObjectForKey:[NSString stringWithFormat:@"%@",asset]];
+    }];
     
 }
+
+
 
 @end
