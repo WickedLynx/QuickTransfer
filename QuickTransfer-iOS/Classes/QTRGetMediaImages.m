@@ -93,14 +93,7 @@
                             if (imageInfoData != nil) {
                                 [fetchImagesArray addObject:imageInfoData];
                             }
-                            
-                            NSLog(@"Image Asset Inside: %@",asset);
-                            
-                            
                         }];
-        NSLog(@"Image Asset Outside: %@",asset);
-
-
     }
 }
 

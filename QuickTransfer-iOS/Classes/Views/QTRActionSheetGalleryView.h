@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "QTRAlertControllerCollectionViewCell.h"
 #import "QTRImagesInfoData.h"
+#import "QTRPhotoLibraryController.h"
 
 
 @class QTRActionSheetGalleryView;
@@ -20,9 +21,8 @@
 
 @interface QTRActionSheetGalleryView : UIView  <UICollectionViewDelegate,UICollectionViewDataSource>
 
-
+@property (nonatomic, strong) QTRPhotoLibraryController *fetchPhotoLibrary;
 @property (nonatomic, weak) id <QTRActionSheetGallaryDelegate> delegate;
-@property (nonatomic, retain) NSArray *fetchImageArray;
 
 - (void)stopIndicatorViewAnimation;
 - (void)startIndicatorViewAnimation;

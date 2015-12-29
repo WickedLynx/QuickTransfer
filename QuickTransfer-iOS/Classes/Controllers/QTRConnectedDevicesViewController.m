@@ -22,7 +22,7 @@
 #import "QTRHelper.h"
 #import "QTRCustomAlertView.h"
 #import "QTRTransfersViewController.h"
-
+#import "QTRPhotoLibraryController.h"
 
 #import "QTRGetMediaImages.h"
 
@@ -64,6 +64,8 @@
     
     QTRShowGalleryViewController *showGallery;
 }
+
+@property (nonatomic, strong) QTRPhotoLibraryController *fetchPhotoLibrary;
 
 - (void)startServices;
 - (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user receiver:(id)receiver;
@@ -155,7 +157,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     [self startTimer];
     
-    _selectedRecivers = [[NSMutableDictionary alloc]init];
+    _selectedRecivers = [[NSMutableDictionary alloc] init];
     
     _getMediaImages = [[QTRGetMediaImages alloc] init];
     
@@ -163,7 +165,10 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     customAlertView = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
-    [customActionSheetGalleryView startIndicatorViewAnimation];
+//    [customActionSheetGalleryView startIndicatorViewAnimation];
+    
+    _fetchPhotoLibrary = [[QTRPhotoLibraryController alloc] init];
+    [_fetchPhotoLibrary fetchAssetInformation];
     
     [[[_devicesView noConnectedDeviceFoundView] refreshButton] addTarget:self action:@selector(noConnectedDeviceFoundAction) forControlEvents:UIControlEventTouchUpInside];
     
@@ -298,28 +303,29 @@ NSString * const cellIdentifier = @"CellIdentifier";
         
         [self.view addSubview:customAlertView];
         
-        __weak QTRActionSheetGalleryView *weakCustomActionSheetGalleryView = customActionSheetGalleryView;
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            
-            [_getMediaImages fetchPhotosWithLimit:15 completion:^(NSArray *imagesArray){
-                weakCustomActionSheetGalleryView.fetchImageArray = [imagesArray subarrayWithRange:NSMakeRange(0, 15)];
-                
-            }];
-
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (weakCustomActionSheetGalleryView.fetchImageArray.count > 0) {
-                    [weakCustomActionSheetGalleryView stopIndicatorViewAnimation];
-                     [weakCustomActionSheetGalleryView reloadUICollectionView];
-                }
-            });
-            
-        });
+//        __weak QTRActionSheetGalleryView *weakCustomActionSheetGalleryView = customActionSheetGalleryView;
+//
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//            
+//            [_getMediaImages fetchPhotosWithLimit:15 completion:^(NSArray *imagesArray){
+//                weakCustomActionSheetGalleryView.fetchImageArray = [imagesArray subarrayWithRange:NSMakeRange(0, 15)];
+//                
+//            }];
+//
+//            
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                if (weakCustomActionSheetGalleryView.fetchImageArray.count > 0) {
+//                    [weakCustomActionSheetGalleryView stopIndicatorViewAnimation];
+//                     [weakCustomActionSheetGalleryView reloadUICollectionView];
+//                }
+//            });
+//            
+//        });
         
         
         [customActionSheetGalleryView setUserInteractionEnabled:YES];
         customActionSheetGalleryView.delegate = self;
+        customActionSheetGalleryView.fetchPhotoLibrary = _fetchPhotoLibrary;
 
         [customAlertView.galleryCollectionView addSubview:customActionSheetGalleryView];
 
@@ -371,20 +377,24 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     showGallery.delegate = self;
     
-    __weak QTRConnectedDevicesViewController *weakSelf = self;
-    __weak QTRShowGalleryViewController *weakShowGallery = showGallery;
+    __weak QTRPhotoLibraryController *weakFetchPhotoLibrary = _fetchPhotoLibrary;
+    showGallery.fetchPhotoLibrary = weakFetchPhotoLibrary;
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [_getMediaImages fetchPhotosWithLimit:0 completion:^(NSArray *imagesArray){
-            weakShowGallery.fetchImageArray = imagesArray;
-            
-        }];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.navigationController pushViewController:showGallery animated:YES];
-        });
-        
-    });
+    [self.navigationController pushViewController:showGallery animated:YES];
+
+//    __weak QTRShowGalleryViewController *weakShowGallery = showGallery;
+    
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        [_getMediaImages fetchPhotosWithLimit:0 completion:^(NSArray *imagesArray){
+//            weakShowGallery.fetchImageArray = imagesArray;
+//            
+//        }];
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [weakSelf.navigationController pushViewController:showGallery animated:YES];
+//        });
+//        
+//    });
 
 }
 

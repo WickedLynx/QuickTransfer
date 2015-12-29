@@ -13,9 +13,8 @@
 
     UIActivityIndicatorView *actionCustomIndicatorView;
     UICollectionView *actionControllerCollectionView;
-
-
 }
+
 
 @end
 
@@ -71,17 +70,21 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return [_fetchImageArray count];
+    return 20;
     
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    QTRAlertControllerCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    __weak QTRAlertControllerCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
-    cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) imageData.finalImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
+    [_fetchPhotoLibrary imageAtIndex:indexPath.row completion:^(UIImage *image) {
+        cell.backgroundView = [[UIImageView alloc] initWithImage:image ];
+        
+    }];
+
     
+
     return cell;
     
 }
@@ -119,12 +122,19 @@ static NSString *cellIdentifier = @"CellIdentifier";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
-    [self.delegate actionSheetGalleryView:self selectedImage:imageData];
+    [_fetchPhotoLibrary originalImageAtIndex:indexPath.row completion:^(UIImage *image, NSDictionary *info) {
+        
+        
+        
+    }];
+    
+//    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
+//    [self.delegate actionSheetGalleryView:self selectedImage:imageData];
     
     
     
 }
+
 
 
 

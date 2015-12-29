@@ -11,6 +11,7 @@
 #import "QTRRightBarButtonView.h"
 #import "QTRTransfersViewController.h"
 #import "QTRShowGalleryView.h"
+#import "QTRPhotoLibraryController.h"
 
 
 
@@ -19,9 +20,11 @@
     NSArray *totalSelectedImages;
     QTRShowGalleryView *showGalleryView;
     NSMutableDictionary *selectedImages;
+    NSInteger totalImageCount;
 
 
 }
+
 
 
 @end
@@ -154,18 +157,20 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return [_fetchImageArray count];
+    return [_fetchPhotoLibrary fetchImageCount];
     
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    QTRGalleryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
+    __weak QTRGalleryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
-    
-    cell.backgroundView = [[UIImageView alloc] initWithImage:[ (UIImage *) imageData.finalImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:5.0] ];
+    [_fetchPhotoLibrary imageAtIndex:indexPath.row completion:^(UIImage *image) {
+        cell.backgroundView = [[UIImageView alloc] initWithImage:image ];
+        
+    }];
  
+    
     return cell;
     
 }
@@ -180,10 +185,15 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
  
-    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
-    UIImage *img = imageData.finalImage;
+    QTRImagesInfoData *imageInfoData = [_fetchImageArray objectAtIndex:indexPath.row ];
+    UIImage *img = imageInfoData.finalImage;
     
-    [selectedImages setObject:imageData forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
+    [selectedImages setObject:imageInfoData forKey:[NSString stringWithFormat:@"%@",img.imageAsset]];
+    
+//    NSLog(@"Cell %ld clicked..", (long)indexPath.row);
+//    [fetchPhotoLibrary originalImageAtIndex:imageInfoData completion:^(NSData *imageData) {
+//        NSLog(@"In Cell %ld with %@ ",(long)indexPath.row, imageData);
+//    }];
     
 }
 

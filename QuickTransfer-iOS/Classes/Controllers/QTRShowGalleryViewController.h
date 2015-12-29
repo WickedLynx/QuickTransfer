@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "QTRImagesInfoData.h"
+#import "QTRPhotoLibraryController.h"
 
 @class QTRShowGalleryViewController;
 @protocol TRShowGalleryCustomDelegate <NSObject>
@@ -20,8 +21,8 @@
 
 
 @property (nonatomic, weak) id <TRShowGalleryCustomDelegate> delegate;
-@property (nonatomic, weak) NSArray *fetchImageArray;
-
+@property (nonatomic, strong) NSArray *fetchImageArray;
+@property (nonatomic, strong) QTRPhotoLibraryController *fetchPhotoLibrary;
 
 
 
