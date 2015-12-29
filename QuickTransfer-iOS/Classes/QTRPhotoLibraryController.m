@@ -68,12 +68,12 @@ const NSInteger imageFetchLimit = 9999;
 }
 #pragma mark - deliver image data to reciver
 
-- (void)originalImageAtIndex:(NSInteger)imageIndex completion: (void(^)(UIImage *image, NSDictionary *info))completion {
+- (void)originalImageAtIndex:(NSInteger)imageIndex completion: (void(^)(PHAsset *asset, NSDictionary *info))completion {
     
 
     
     if (imageIndex < 0 && imageIndex > imageFetchLimit && completion == nil) {
-        completion(nil,nil);
+        completion(nil, nil);
         
     } else {
         
@@ -88,7 +88,7 @@ const NSInteger imageFetchLimit = 9999;
                         resultHandler:^void(UIImage *image, NSDictionary *info) {
                             
                             if (completion != nil) {
-                                completion(image, info);
+                                completion(asset, info);
                             }
                         }];
     }

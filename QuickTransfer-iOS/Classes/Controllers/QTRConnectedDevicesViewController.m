@@ -727,6 +727,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
         __block UIBackgroundTaskIdentifier weakBackgroundTaskIdentifier = _backgroundTaskIdentifier;
         
         _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+         
             [[UIApplication sharedApplication] endBackgroundTask: weakBackgroundTaskIdentifier];
             weakBackgroundTaskIdentifier = UIBackgroundTaskInvalid;
         }];
@@ -980,10 +981,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 #pragma mark - ActionSheetGallaryDelegate method
 
-- (void)actionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImage:(QTRImagesInfoData *)sendingImage {
-
-        [customAlertView removeFromSuperview];
-        [self sendDataToSelectedUser:sendingImage];
+- (void)actionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImageAsset:(PHAsset *)imageAsset imageInfo:(NSDictionary *)sendingImageInfo {
+    [self sendDataToSelectedUser:imageAsset :sendingImageInfo];
 
 }
 
@@ -993,11 +992,11 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 - (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSArray *)sendingImagesData {
 
-    for (QTRImagesInfoData *selectedImage in sendingImagesData) {
-        
-         [self sendDataToSelectedUser:selectedImage];
-        
-         }
+//    for (QTRImagesInfoData *selectedImage in sendingImagesData) {
+//        
+//         //[self sendDataToSelectedUser:selectedImage];
+//        
+//         }
 
 
 }
@@ -1005,18 +1004,18 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 #pragma mark - Sending Data
 
-- (void)sendDataToSelectedUser:(QTRImagesInfoData *)sendingImage {
+- (void)sendDataToSelectedUser:(PHAsset *)imageAsset :(NSDictionary *)imageInfo {
     
     requestOptions = [[PHImageRequestOptions alloc] init];
     requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
     requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     
     requestOptions.synchronous = true;
-    NSURL *referenceURL = [sendingImage.imageInfo objectForKey:@"PHImageFileURLKey"];
+    NSURL *referenceURL = [imageInfo objectForKey:@"PHImageFileURLKey"];
     
     __weak QTRConnectedDevicesViewController *weakSelf = self;
 
-    [[PHImageManager defaultManager] requestImageDataForAsset:sendingImage.imageAsset
+    [[PHImageManager defaultManager] requestImageDataForAsset:imageAsset
                                                       options:requestOptions
                                                 resultHandler:
      ^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {

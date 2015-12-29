@@ -12,7 +12,7 @@
 @interface QTRPhotoLibraryController : NSObject
 
 - (void)imageAtIndex:(NSInteger)imageIndex completion: (void(^)(UIImage *image))completion;
-- (void)originalImageAtIndex:(NSInteger)imageIndex completion: (void(^)(UIImage *image, NSDictionary *info))completion;
+- (void)originalImageAtIndex:(NSInteger)imageIndex completion: (void(^)(PHAsset *asset, NSDictionary *info))completion;
 - (void)fetchAssetInformation;
 - (NSInteger)fetchImageCount;
 

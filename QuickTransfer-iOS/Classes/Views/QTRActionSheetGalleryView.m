@@ -122,16 +122,11 @@ static NSString *cellIdentifier = @"CellIdentifier";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    [_fetchPhotoLibrary originalImageAtIndex:indexPath.row completion:^(UIImage *image, NSDictionary *info) {
-        
-        
+    [_fetchPhotoLibrary originalImageAtIndex:indexPath.row completion:^(PHAsset *asset, NSDictionary *info) {
+                
+        [self.delegate actionSheetGalleryView:self selectedImageAsset:asset imageInfo:info];
         
     }];
-    
-//    QTRImagesInfoData *imageData = [_fetchImageArray objectAtIndex:indexPath.row ];
-//    [self.delegate actionSheetGalleryView:self selectedImage:imageData];
-    
-    
     
 }
 
