@@ -163,6 +163,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     customAlertView = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
+    [customActionSheetGalleryView startIndicatorViewAnimation];
     
     [[[_devicesView noConnectedDeviceFoundView] refreshButton] addTarget:self action:@selector(noConnectedDeviceFoundAction) forControlEvents:UIControlEventTouchUpInside];
     
@@ -297,19 +298,25 @@ NSString * const cellIdentifier = @"CellIdentifier";
         
         [self.view addSubview:customAlertView];
         
+        __weak QTRActionSheetGalleryView *weakCustomActionSheetGalleryView = customActionSheetGalleryView;
         
-       
-        
-        [_getMediaImages fetchPhotosWithLimit:15 completion:^(NSArray *imagesArray){
-            customActionSheetGalleryView.fetchImageArray = [imagesArray subarrayWithRange:NSMakeRange(0, 15)];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
-                if (customActionSheetGalleryView.fetchImageArray.count > 0) {
-                    [customActionSheetGalleryView stopIndicatorViewAnimation];
-                } else {
-                    [customActionSheetGalleryView startIndicatorViewAnimation];
+            [_getMediaImages fetchPhotosWithLimit:15 completion:^(NSArray *imagesArray){
+                weakCustomActionSheetGalleryView.fetchImageArray = [imagesArray subarrayWithRange:NSMakeRange(0, 15)];
+                
+            }];
+
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (weakCustomActionSheetGalleryView.fetchImageArray.count > 0) {
+                    [weakCustomActionSheetGalleryView stopIndicatorViewAnimation];
+                     [weakCustomActionSheetGalleryView reloadUICollectionView];
                 }
+            });
+            
+        });
         
-        }];
         
         [customActionSheetGalleryView setUserInteractionEnabled:YES];
         customActionSheetGalleryView.delegate = self;
@@ -364,15 +371,17 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     showGallery.delegate = self;
     
+    __weak QTRConnectedDevicesViewController *weakSelf = self;
+    __weak QTRShowGalleryViewController *weakShowGallery = showGallery;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [_getMediaImages fetchPhotosWithLimit:0 completion:^(NSArray *imagesArray){
-            showGallery.fetchImageArray = imagesArray;
+            weakShowGallery.fetchImageArray = imagesArray;
             
         }];
         
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            [self.navigationController pushViewController:showGallery animated:YES];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.navigationController pushViewController:showGallery animated:YES];
         });
         
     });

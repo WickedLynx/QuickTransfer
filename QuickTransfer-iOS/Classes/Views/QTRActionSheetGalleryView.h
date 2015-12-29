@@ -26,5 +26,6 @@
 
 - (void)stopIndicatorViewAnimation;
 - (void)startIndicatorViewAnimation;
+- (void)reloadUICollectionView;
 
 @end

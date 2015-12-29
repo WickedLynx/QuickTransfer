@@ -106,6 +106,13 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
 }
 
+#pragma mark - UICollectionView Action methods
+
+- (void)reloadUICollectionView {
+
+    [actionControllerCollectionView reloadData];
+}
+
 
 #pragma mark - UICollectionViewDelegate methods
 
