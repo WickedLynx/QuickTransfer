@@ -31,7 +31,7 @@ const NSInteger imageFetchLimit = 9999;
     
     if (autherizationStatus == PHAuthorizationStatusNotDetermined) {
         [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-            
+            //Access request
         }];
         
         
