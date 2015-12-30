@@ -508,8 +508,6 @@
 				FA283F3318B5BD73003D4FB6 /* Classes */,
 				FA283F0218B494E5003D4FB6 /* QTRAppDelegate.h */,
 				FA283F0318B494E5003D4FB6 /* QTRAppDelegate.m */,
-				FA283F0518B494E5003D4FB6 /* Images.xcassets */,
-				07D4A2E11C0821E0006F93E6 /* settingIcon.png */,
 				FA283EFA18B494E5003D4FB6 /* Supporting Files */,
 			);
 			path = "QuickTransfer-iOS";
@@ -522,6 +520,8 @@
 				FA283EFC18B494E5003D4FB6 /* InfoPlist.strings */,
 				FA283EFF18B494E5003D4FB6 /* main.m */,
 				FA283F0118B494E5003D4FB6 /* QuickTransfer-iOS-Prefix.pch */,
+				FA283F0518B494E5003D4FB6 /* Images.xcassets */,
+				07D4A2E11C0821E0006F93E6 /* settingIcon.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
