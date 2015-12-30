@@ -61,7 +61,6 @@
     
     QTRShowGalleryViewController *showGallery;
     
-    BOOL photoLibraryAuthorizationStatus;
 }
 
 @property (nonatomic, strong) QTRPhotoLibraryController *fetchPhotoLibrary;
@@ -163,10 +162,17 @@ NSString * const cellIdentifier = @"CellIdentifier";
     _selectedRecivers = [[NSMutableDictionary alloc] init];
     
     _fetchPhotoLibrary = [[QTRPhotoLibraryController alloc] init];
-    photoLibraryAuthorizationStatus = [_fetchPhotoLibrary fetchAssetInformation];
     
+    __weak typeof(QTRPhotoLibraryController) *weakFetchPhotoLibrary = _fetchPhotoLibrary;
+    
+    [_fetchPhotoLibrary requestUserPermissionIfRequired:^(BOOL autharizationStatus) {
+        if (autharizationStatus == YES) {
+            [weakFetchPhotoLibrary fetchAssetInformation];
+        }
+    }];
+    
+//    [_fetchPhotoLibrary fetchAssetInformation];
     showGallery = [[QTRShowGalleryViewController alloc] init];
-    
     customAlertView = [[QTRCustomAlertView alloc] init];
     [customAlertView setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:customAlertView];
@@ -308,25 +314,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 -(void)nextButtonClicked{
     
-    if (photoLibraryAuthorizationStatus == NO) {
-        UIAlertController *alertView = [UIAlertController
-                                        alertControllerWithTitle:@"Attention"
-                                        message:@"Please give this app permission to access your photo library in your settings app!"
-                                        preferredStyle:UIAlertControllerStyleAlert];
-        
-        UIAlertAction* okButton = [UIAlertAction
-                                   actionWithTitle:@"Ok"
-                                   style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction * action)
-                                   {
-                                       [alertView dismissViewControllerAnimated:YES completion:nil];
-                                       
-                                   }];
-        
-        [alertView addAction:okButton];
-        [self presentViewController:alertView animated:NO completion:nil];
-        
-    }else if ([_selectedRecivers count] > 0) {
+   if ([_selectedRecivers count] > 0) {
         
         [customAlertView setHidden:NO];
     }

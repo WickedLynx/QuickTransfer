@@ -23,6 +23,27 @@ const NSInteger imageFetchLimit = 9999;
 
 @implementation QTRPhotoLibraryController
 
+#pragma mark - Chech PhotoLibrary acces authintication
+
+- (void)requestUserPermissionIfRequired:(void(^)(BOOL autharizationStatus))completion {
+    
+    PHAuthorizationStatus autherizationStatus = [PHPhotoLibrary authorizationStatus];
+    
+    if (autherizationStatus == PHAuthorizationStatusNotDetermined) {
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            
+        }];
+        
+        
+    } else if((autherizationStatus == PHAuthorizationStatusRestricted) || (autherizationStatus == PHAuthorizationStatusDenied)) {
+        completion(NO);
+        
+    } else if (autherizationStatus == 3) {
+        completion(YES);
+        
+    }
+}
+
 #pragma mark - Fetch image for specific index
 
 - (void)imageAtIndex:(NSUInteger)imageIndex imageWithFullSize:(BOOL)isFullSize imageSize:(CGSize)fetchImageSize completion:(void (^)(UIImage *image))completion {
@@ -53,19 +74,9 @@ const NSInteger imageFetchLimit = 9999;
 
 #pragma mark - Fetch PHAssetResultArray for all images
 
-- (BOOL)fetchAssetInformation {
+- (void)fetchAssetInformation {
     
-    BOOL photoLibraryAuthorizationStatus;
-    
-    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    
-    if (status != PHAuthorizationStatusAuthorized) {
-        photoLibraryAuthorizationStatus = NO;
-    
-    } else {
-        photoLibraryAuthorizationStatus = YES;
-        
-        PHFetchOptions *options = [[PHFetchOptions alloc] init];
+    PHFetchOptions *options = [[PHFetchOptions alloc] init];
     options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
     options.predicate = [NSPredicate predicateWithFormat:@"mediaType = %d", PHAssetMediaTypeImage];
     
@@ -76,10 +87,7 @@ const NSInteger imageFetchLimit = 9999;
     _requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     _requestOptions.synchronous = NO;
         
-    }
-    
-    return photoLibraryAuthorizationStatus;
-}
+  }
 
 - (NSInteger)fetchImageCount {
 

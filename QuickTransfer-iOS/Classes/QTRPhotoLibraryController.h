@@ -11,7 +11,9 @@
 
 @interface QTRPhotoLibraryController : NSObject
 
-- (BOOL)fetchAssetInformation;
+
+- (void)requestUserPermissionIfRequired:(void(^)(BOOL autharizationStatus))completion;
+- (void)fetchAssetInformation;
 - (NSInteger)fetchImageCount;
 
 - (void)imageAtIndex:(NSUInteger)imageIndex imageWithFullSize:(BOOL)isFullSize imageSize:(CGSize)fetchImageSize completion:(void (^)(UIImage *image))completion;
