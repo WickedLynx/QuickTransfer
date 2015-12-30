@@ -11,7 +11,9 @@
 #import "QTRUser.h"
 #import "QTRFile.h"
 
-@implementation QTRTransfersTableCellView
+@implementation QTRTransfersTableCellView {
+    NSTrackingArea *_trackingArea;
+}
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -27,7 +29,6 @@
         [self.recipientNameField setStringValue:transfer.user.name];
         [self.fileSizeField setIntegerValue:transfer.fileSize];
         [self.fileNameField setStringValue:[[transfer.fileURL path] lastPathComponent]];
-        [self.timestampField setObjectValue:transfer.timestamp];
 
         switch (transfer.state) {
             case QTRTransferStateInProgress:
@@ -58,6 +59,7 @@
                 break;
 
             case QTRTransferStatePaused:
+                [self.timestampField setObjectValue:[NSString stringWithFormat:@"%d%% completed", (int)(transfer.progress * 100)]];
                 if (![transfer isIncoming]) {
                     [self.leftButton setImage:[NSImage imageNamed:@"ResumeTransferIcon"]];
                 } else {
@@ -76,6 +78,20 @@
 - (void)clickLeftButton {
     if ([self.delegate respondsToSelector:@selector(transfersTableCellViewDidClickPrimaryButton:)]) {
         [self.delegate transfersTableCellViewDidClickPrimaryButton:self];
+    }
+}
+
+- (void)ensureTrackingArea {
+    if (_trackingArea == nil) {
+        _trackingArea = [[NSTrackingArea alloc] initWithRect:NSZeroRect options:NSTrackingInVisibleRect | NSTrackingActiveAlways | NSTrackingMouseEnteredAndExited owner:self userInfo:nil];
+    }
+}
+
+- (void)updateTrackingAreas {
+    [super updateTrackingAreas];
+    [self ensureTrackingArea];
+    if (![[self trackingAreas] containsObject:_trackingArea]) {
+        [self addTrackingArea:_trackingArea];
     }
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import "QTRTransfersTableView.h"
+#import "QTRTransfersTableCellView.h"
 
 @implementation QTRTransfersTableView
 
