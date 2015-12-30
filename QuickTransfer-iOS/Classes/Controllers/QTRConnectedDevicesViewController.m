@@ -25,7 +25,7 @@
 #import "QTRPhotoLibraryController.h"
 
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, QTRActionSheetGallaryDelegate, TRShowGalleryCustomDelegate, UIImagePickerControllerDelegate> {
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
     
@@ -57,10 +57,11 @@
     NSURL *_importedFileURL;
     NSTimer *_timer;
 
-    PHImageRequestOptions *requestOptions;
     NSMutableArray* filteredUserData;
     
     QTRShowGalleryViewController *showGallery;
+    
+    BOOL photoLibraryAuthorizationStatus;
 }
 
 @property (nonatomic, strong) QTRPhotoLibraryController *fetchPhotoLibrary;
@@ -162,7 +163,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     _selectedRecivers = [[NSMutableDictionary alloc] init];
     
     _fetchPhotoLibrary = [[QTRPhotoLibraryController alloc] init];
-    [_fetchPhotoLibrary fetchAssetInformation];
+    photoLibraryAuthorizationStatus = [_fetchPhotoLibrary fetchAssetInformation];
     
     showGallery = [[QTRShowGalleryViewController alloc] init];
     
@@ -187,7 +188,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     
     [customActionSheetGalleryView setUserInteractionEnabled:YES];
-    customActionSheetGalleryView.delegate = self;
     customActionSheetGalleryView.fetchPhotoLibrary = _fetchPhotoLibrary;
     
     
@@ -308,9 +308,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 -(void)nextButtonClicked{
     
-    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    
-    if (status != PHAuthorizationStatusAuthorized) {
+    if (photoLibraryAuthorizationStatus == NO) {
         UIAlertController *alertView = [UIAlertController
                                         alertControllerWithTitle:@"Attention"
                                         message:@"Please give this app permission to access your photo library in your settings app!"
@@ -326,10 +324,9 @@ NSString * const cellIdentifier = @"CellIdentifier";
                                    }];
         
         [alertView addAction:okButton];
-        [self presentViewController:alertView animated:YES completion:nil];
-    }
-    
-    else if ([_selectedRecivers count] > 0) {
+        [self presentViewController:alertView animated:NO completion:nil];
+        
+    }else if ([_selectedRecivers count] > 0) {
         
         [customAlertView setHidden:NO];
     }
@@ -369,9 +366,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
 -(void) touchOpenCameraRoll {
     
     [customAlertView setHidden:YES];
-    
-    showGallery.delegate = self;
-    
     __weak QTRPhotoLibraryController *weakFetchPhotoLibrary = _fetchPhotoLibrary;
     showGallery.fetchPhotoLibrary = weakFetchPhotoLibrary;
     
@@ -953,87 +947,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
     }
 }
 
-#pragma mark - ActionSheetGallaryDelegate method
-
-- (void)actionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImageAsset:(PHAsset *)imageAsset imageInfo:(NSDictionary *)sendingImageInfo {
-    [self sendDataToSelectedUser:imageAsset :sendingImageInfo];
-    
-    [customAlertView setHidden:YES];
-
-}
-
-
-#pragma mark - ShowGallaryDelegate method
-
-- (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSDictionary *)selectedImagesData {
-    
-    NSArray *totalSelectedImages = [[NSArray alloc]initWithArray:[selectedImagesData allValues]];
-    
-    for (NSArray *fetchImageData in totalSelectedImages) {
-        [self sendDataToSelectedUser:[fetchImageData objectAtIndex:0] :[fetchImageData objectAtIndex:1]];
-        
-    }
-}
-
-
-#pragma mark - Sending Data
-
-- (void)sendDataToSelectedUser:(PHAsset *)imageAsset :(NSDictionary *)imageInfo {
-    
-    requestOptions = [[PHImageRequestOptions alloc] init];
-    requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
-    requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-    
-    requestOptions.synchronous = true;
-    NSURL *referenceURL = [imageInfo objectForKey:@"PHImageFileURLKey"];
-    
-    __weak QTRConnectedDevicesViewController *weakSelf = self;
-
-    [[PHImageManager defaultManager] requestImageDataForAsset:imageAsset
-                                                      options:requestOptions
-                                                resultHandler:
-     ^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-         
-         NSURL *localURL = [weakSelf uniqueURLForFileWithName:[referenceURL lastPathComponent]];
-         
-         [imageData writeToURL:localURL atomically:YES];
-         
-         NSArray *totalRecivers = [_selectedRecivers allValues];
-         _selectedUser = nil;
-         
-         for (QTRUser *currentUser in totalRecivers) {
-             
-             _selectedUser = currentUser;
-             
-             if ([_connectedClients containsObject:_selectedUser]) {
-                 [_server sendFileAtURL:localURL toUser:_selectedUser];
-                 
-             } else if ([_connectedServers containsObject:_selectedUser]) {
-                 [_client sendFileAtURL:localURL toUser:_selectedUser];
-                 
-             } else {
-                 UIAlertController *alertView = [UIAlertController
-                                                 alertControllerWithTitle:@"Error"
-                                                 message:[NSString stringWithFormat:@"Device is not connected anymore"]
-                                                 preferredStyle:UIAlertControllerStyleAlert];
-                 
-                 UIAlertAction* okButton = [UIAlertAction
-                                            actionWithTitle:@"Dismiss"
-                                            style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction * action)
-                                            {
-                                                [alertView dismissViewControllerAnimated:YES completion:nil];
-                                                
-                                            }];
-                 
-                 [alertView addAction:okButton];
-                 [self presentViewController:alertView animated:YES completion:nil];
-             }
-             
-             _selectedUser = nil;
-         }
-     }];
-}
 
 #pragma mark - Search Bar methods
 

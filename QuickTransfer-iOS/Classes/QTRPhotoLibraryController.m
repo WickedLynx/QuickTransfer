@@ -8,6 +8,7 @@
 
 
 #import "QTRPhotoLibraryController.h"
+@import PhotosUI;
 
 @interface QTRPhotoLibraryController()
 
@@ -49,11 +50,22 @@ const NSInteger imageFetchLimit = 9999;
     }
 }
 
+
 #pragma mark - Fetch PHAssetResultArray for all images
 
-- (void)fetchAssetInformation {
+- (BOOL)fetchAssetInformation {
     
-    PHFetchOptions *options = [[PHFetchOptions alloc] init];
+    BOOL photoLibraryAuthorizationStatus;
+    
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    
+    if (status != PHAuthorizationStatusAuthorized) {
+        photoLibraryAuthorizationStatus = NO;
+    
+    } else {
+        photoLibraryAuthorizationStatus = YES;
+        
+        PHFetchOptions *options = [[PHFetchOptions alloc] init];
     options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
     options.predicate = [NSPredicate predicateWithFormat:@"mediaType = %d", PHAssetMediaTypeImage];
     
@@ -63,7 +75,10 @@ const NSInteger imageFetchLimit = 9999;
     _requestOptions.resizeMode   = PHImageRequestOptionsResizeModeExact;
     _requestOptions.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     _requestOptions.synchronous = NO;
+        
+    }
     
+    return photoLibraryAuthorizationStatus;
 }
 
 - (NSInteger)fetchImageCount {
@@ -71,32 +86,8 @@ const NSInteger imageFetchLimit = 9999;
     return [_assetsFetchResult count];
 
 }
-#pragma mark - deliver image data on request
 
-- (void)originalImageAtIndex:(NSInteger)imageIndex completion: (void(^)(PHAsset *asset, NSDictionary *info))completion {
 
-    if (completion != nil) {
-        
-        if (imageIndex < [self fetchImageCount]) {
-            
-            PHImageManager *manager = [PHImageManager defaultManager];
-            PHAsset *asset = [_assetsFetchResult objectAtIndex:imageIndex];
-            
-            [manager requestImageForAsset:asset targetSize:CGSizeMake(160, 160) contentMode:PHImageContentModeDefault options:_requestOptions resultHandler:^void(UIImage *image, NSDictionary *info) {
-                                
-                                if (completion != nil) {
-                                    completion(asset, info);
-                                }
-            }];
-
-            
-        } else {
-            
-            completion(nil, nil);
-        }
-    }
-    
-}
 
 
 

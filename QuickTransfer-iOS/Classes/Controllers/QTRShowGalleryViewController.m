@@ -190,12 +190,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    [_fetchPhotoLibrary originalImageAtIndex:indexPath.row completion:^(PHAsset *asset, NSDictionary *info) {
-        
-        NSArray *imageData = [[NSArray alloc] initWithObjects:asset, info, nil];
-        [selectedImages setObject:imageData forKey:[NSString stringWithFormat:@"%@",asset]];
-        
-    }];
+
     
 }
 
@@ -203,10 +198,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    [_fetchPhotoLibrary originalImageAtIndex:indexPath.row completion:^(PHAsset *asset, NSDictionary *info) {
-        
-        [selectedImages removeObjectForKey:[NSString stringWithFormat:@"%@",asset]];
-    }];
+
     
 }
 

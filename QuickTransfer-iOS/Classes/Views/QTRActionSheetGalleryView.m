@@ -121,12 +121,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    [_fetchPhotoLibrary originalImageAtIndex:indexPath.row completion:^(PHAsset *asset, NSDictionary *info) {
-                
-        [self.delegate actionSheetGalleryView:self selectedImageAsset:asset imageInfo:info];
-        
-    }];
-    
+
 }
 
 

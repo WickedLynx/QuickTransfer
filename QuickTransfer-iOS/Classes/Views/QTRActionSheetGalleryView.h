@@ -11,10 +11,10 @@
 #import "QTRPhotoLibraryController.h"
 
 
+
 @class QTRActionSheetGalleryView;
 @protocol QTRActionSheetGallaryDelegate <NSObject>
 
-- (void)actionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImageAsset:(PHAsset *)imageAsset imageInfo:(NSDictionary *)sendingImageInfo;
 
 @end
 

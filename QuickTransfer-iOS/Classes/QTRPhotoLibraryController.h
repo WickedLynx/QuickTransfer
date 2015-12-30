@@ -7,16 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <PhotosUI/PhotosUI.h>
+
 
 @interface QTRPhotoLibraryController : NSObject
 
-- (void)imageAtIndex:(NSUInteger)imageIndex imageWithFullSize:(BOOL)isFullSize imageSize:(CGSize)fetchImageSize completion:(void (^)(UIImage *image))completion;
-- (void)originalImageAtIndex:(NSInteger)imageIndex completion: (void(^)(PHAsset *asset, NSDictionary *info))completion;
-- (void)fetchAssetInformation;
+- (BOOL)fetchAssetInformation;
 - (NSInteger)fetchImageCount;
 
-
+- (void)imageAtIndex:(NSUInteger)imageIndex imageWithFullSize:(BOOL)isFullSize imageSize:(CGSize)fetchImageSize completion:(void (^)(UIImage *image))completion;
 
 @end
 
