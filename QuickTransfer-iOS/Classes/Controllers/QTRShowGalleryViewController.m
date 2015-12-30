@@ -74,15 +74,22 @@ static NSString *cellIdentifier = @"CellIdentifier";
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:customRightBarButton];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
-    showGalleryView = [[QTRShowGalleryView alloc] initWithFrame:self.view.frame];
+    showGalleryView = [[QTRShowGalleryView alloc] init];
+    [showGalleryView setTranslatesAutoresizingMaskIntoConstraints:NO];
     
     showGalleryView.galleryCollectionView.delegate = self;
     showGalleryView.galleryCollectionView.dataSource =self;
     [showGalleryView.galleryCollectionView registerClass:[QTRGalleryCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
     [showGalleryView.sendButton addTarget:self action:@selector(sendData) forControlEvents:UIControlEventTouchUpInside];
 
-    
     [self.view addSubview:showGalleryView];
+    
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(showGalleryView);
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[showGalleryView]-0-|" options:0 metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[showGalleryView]-0-|" options:0 metrics:0 views:views]];
     
     
     

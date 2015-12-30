@@ -53,7 +53,6 @@
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[galleryCollectionView]-5-[sendButton(==44)]-5-|" options:0 metrics:0 views:views]];
         
-
         
     }
     

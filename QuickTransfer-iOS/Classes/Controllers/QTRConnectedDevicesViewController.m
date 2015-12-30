@@ -160,13 +160,44 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     _selectedRecivers = [[NSMutableDictionary alloc] init];
     
-    showGallery = [[QTRShowGalleryViewController alloc] init];
-    
-    customAlertView = [[QTRCustomAlertView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, 66.0f)];
-    
     _fetchPhotoLibrary = [[QTRPhotoLibraryController alloc] init];
     [_fetchPhotoLibrary fetchAssetInformation];
+    
+    showGallery = [[QTRShowGalleryViewController alloc] init];
+    
+    customAlertView = [[QTRCustomAlertView alloc] init];
+    [customAlertView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.view addSubview:customAlertView];
+    
+    customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] init];
+    [customActionSheetGalleryView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [customAlertView.galleryCollectionView addSubview:customActionSheetGalleryView];
+    
+    
+    NSDictionary *views = NSDictionaryOfVariableBindings(customAlertView, customActionSheetGalleryView);
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[customAlertView]-0-|" options:0 metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[customAlertView]-0-|" options:0 metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[customActionSheetGalleryView]-0-|" options:0 metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[customActionSheetGalleryView(==66)]" options:0 metrics:0 views:views]];
+    
+    
+    [customActionSheetGalleryView setUserInteractionEnabled:YES];
+    customActionSheetGalleryView.delegate = self;
+    customActionSheetGalleryView.fetchPhotoLibrary = _fetchPhotoLibrary;
+    
+    
+    
+    [customAlertView.cancelButton addTarget: self action: @selector(touchAlertViewCancel) forControlEvents: UIControlEventTouchUpInside];
+    [customAlertView.iCloudButton addTarget: self action: @selector(touchOpeniCloud) forControlEvents: UIControlEventTouchUpInside];
+    [customAlertView.cameraRollButton addTarget: self action: @selector(touchOpenCameraRoll) forControlEvents: UIControlEventTouchUpInside];
+    [customAlertView.takePhotoButton addTarget: self action: @selector(touchOpenCamera) forControlEvents: UIControlEventTouchUpInside];
+    
+    [customAlertView setHidden:YES];
+    
     
     [[[_devicesView noConnectedDeviceFoundView] refreshButton] addTarget:self action:@selector(noConnectedDeviceFoundAction) forControlEvents:UIControlEventTouchUpInside];
     
@@ -299,21 +330,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     else if ([_selectedRecivers count] > 0) {
         
-        NSLog(@"[_selectedRecivers count]: %ld", [_selectedRecivers count]);
-        
-        [self.view addSubview:customAlertView];
-    
-        [customActionSheetGalleryView setUserInteractionEnabled:YES];
-        customActionSheetGalleryView.delegate = self;
-        customActionSheetGalleryView.fetchPhotoLibrary = _fetchPhotoLibrary;
-
-        [customAlertView.galleryCollectionView addSubview:customActionSheetGalleryView];
-
-        [customAlertView.cancelButton addTarget: self action: @selector(touchAlertViewCancel) forControlEvents: UIControlEventTouchUpInside];
-        [customAlertView.iCloudButton addTarget: self action: @selector(touchOpeniCloud) forControlEvents: UIControlEventTouchUpInside];
-        [customAlertView.cameraRollButton addTarget: self action: @selector(touchOpenCameraRoll) forControlEvents: UIControlEventTouchUpInside];
-        [customAlertView.takePhotoButton addTarget: self action: @selector(touchOpenCamera) forControlEvents: UIControlEventTouchUpInside];
-
+        [customAlertView setHidden:NO];
     }
     
     else {
@@ -340,20 +357,17 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 
 -(void) touchAlertViewCancel {
-    [customAlertView removeFromSuperview];
+    [customAlertView setHidden:YES];
 
 }
 
 -(void) touchOpeniCloud {
-    
-    [customAlertView removeFromSuperview];
-
+    [customAlertView setHidden:YES];
 }
 
 -(void) touchOpenCameraRoll {
     
-    [customAlertView removeFromSuperview];
-    [customActionSheetGalleryView removeFromSuperview];
+    [customAlertView setHidden:YES];
     
     showGallery.delegate = self;
     
@@ -370,7 +384,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     if (!isCameraAvailable) {
         
-        [customAlertView removeFromSuperview];
         UIAlertController *alertView = [UIAlertController
                                         alertControllerWithTitle:@"Attention"
                                         message:@"Your device does't support this feature!"
@@ -389,7 +402,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
         [self presentViewController:alertView animated:YES completion:nil];
         
     } else {
-        [customAlertView removeFromSuperview];
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.delegate = self;
         picker.allowsEditing = YES;
@@ -945,7 +957,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 - (void)actionSheetGalleryView:(QTRActionSheetGalleryView *)actionSheetGalleryView selectedImageAsset:(PHAsset *)imageAsset imageInfo:(NSDictionary *)sendingImageInfo {
     [self sendDataToSelectedUser:imageAsset :sendingImageInfo];
     
-    [customAlertView removeFromSuperview];
+    [customAlertView setHidden:YES];
 
 }
 
