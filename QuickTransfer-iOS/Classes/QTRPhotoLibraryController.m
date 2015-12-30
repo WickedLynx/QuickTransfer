@@ -10,8 +10,8 @@
 
 @interface QTRPhotoLibraryController()
 
-@property PHFetchResult *assetsFetchResult;
-@property PHImageRequestOptions *requestOptions;
+@property (nonatomic, strong) PHFetchResult *assetsFetchResult;
+@property (nonatomic, strong) PHImageRequestOptions *requestOptions;
 
 
 @end
@@ -22,7 +22,7 @@ const NSInteger imageFetchLimit = 9999;
 
 - (void)imageAtIndex:(NSInteger)imageIndex completion: (void(^)(UIImage *image))completion {
     
-    if (imageIndex < 0 && imageIndex > imageFetchLimit && completion == nil) {
+    if (imageIndex < 0 && imageIndex > imageFetchLimit && !completion) {
         completion(nil);
         
     } else {

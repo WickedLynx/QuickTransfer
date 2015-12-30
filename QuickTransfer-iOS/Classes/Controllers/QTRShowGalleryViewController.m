@@ -32,6 +32,14 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 @implementation QTRShowGalleryViewController
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    [selectedImages removeAllObjects];
+    [showGalleryView.galleryCollectionView reloadData];
+
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -103,7 +111,6 @@ static NSString *cellIdentifier = @"CellIdentifier";
     if ([selectedImages count] > 0) {
                 
         [self.delegate showGalleryViewController:self selectedImages:selectedImages];
-        
         [self.navigationController popViewControllerAnimated:YES];
 
         
