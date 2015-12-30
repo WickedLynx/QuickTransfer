@@ -44,6 +44,8 @@
  */
 - (void)replaceChunk:(DTBonjourDataChunk *)oldChunk withChunk:(DTBonjourDataChunk *)newChunk;
 
+- (void)transmissionDidPauseAfterChunk:(DTBonjourDataChunk *)chunk;
+
 /*!
  Marks all transfers for the particular user as failed
  

@@ -459,6 +459,9 @@
             [message setType:QTRMessageTypePauseTransfer];
             [[self connectionForUser:transfer.user] sendObject:message error:nil dataChunk:NULL];
             [_dataChunksToMultipartTransfers removeObjectForKey:chunk];
+            if ([self.transferDelegate respondsToSelector:@selector(transmissionDidPauseAfterChunk:)]) {
+                [self.transferDelegate transmissionDidPauseAfterChunk:chunk];
+            }
 
         } else {
             __weak typeof(self) wSelf = self;

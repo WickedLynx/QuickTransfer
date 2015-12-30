@@ -224,6 +224,15 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     }
 }
 
+- (void)transmissionDidPauseAfterChunk:(DTBonjourDataChunk *)chunk {
+    QTRTransfer *transfer = [_dataChunksToTransfers objectForKey:chunk];
+    if (transfer != nil) {
+        ++transfer.transferedChunks;
+        [_dataChunksToTransfers removeObjectForKey:chunk];
+        [self archiveTransfers];
+    }
+}
+
 - (void)replaceChunk:(DTBonjourDataChunk *)oldChunk withChunk:(DTBonjourDataChunk *)newChunk {
     QTRTransfer *transfer = [_dataChunksToTransfers objectForKey:oldChunk];
     if (transfer != nil) {
@@ -231,6 +240,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         [transfer setCurrentChunkProgress:0.0f];
         ++transfer.transferedChunks;
         [_dataChunksToTransfers setObject:transfer forKey:newChunk];
+        [self archiveTransfers];
     }
 }
 
