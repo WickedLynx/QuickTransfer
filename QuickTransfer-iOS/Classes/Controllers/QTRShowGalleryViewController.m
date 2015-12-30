@@ -15,7 +15,7 @@
 
 
 
-@interface QTRShowGalleryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout> {
+@interface QTRShowGalleryViewController () <UICollectionViewDataSource, UICollectionViewDelegate> {
 
     NSArray *totalSelectedImages;
     QTRShowGalleryView *showGalleryView;
@@ -91,9 +91,6 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[showGalleryView]-0-|" options:0 metrics:0 views:views]];
     
-    
-    
-    
 }
 
 #pragma mark - Button Action methods
@@ -112,9 +109,6 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 
 -(void)sendData {
-    
-    
-    
     if ([selectedImages count] > 0) {
                 
         [self.delegate showGalleryViewController:self selectedImages:selectedImages];
@@ -176,11 +170,11 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     __weak QTRGalleryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    [_fetchPhotoLibrary imageAtIndex:indexPath.row completion:^(UIImage *image) {
+    CGSize fetchImageSize = CGSizeMake(cell.frame.size.width * 2, cell.frame.size.width * 2);
+    
+    [_fetchPhotoLibrary imageAtIndex:indexPath.row imageWithFullSize:NO imageSize:fetchImageSize completion:^(UIImage * image) {
         cell.backgroundView = [[UIImageView alloc] initWithImage:image ];
-        
     }];
- 
     
     return cell;
     

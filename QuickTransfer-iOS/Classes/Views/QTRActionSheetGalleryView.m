@@ -78,12 +78,11 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     __weak QTRAlertControllerCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    [_fetchPhotoLibrary imageAtIndex:indexPath.row completion:^(UIImage *image) {
-        cell.backgroundView = [[UIImageView alloc] initWithImage:image ];
-        
-    }];
-
+    CGSize fetchImageSize = CGSizeMake(cell.frame.size.width * 2, cell.frame.size.width * 2);
     
+    [_fetchPhotoLibrary imageAtIndex:indexPath.row imageWithFullSize:NO imageSize:fetchImageSize completion:^(UIImage * image) {
+        cell.backgroundView = [[UIImageView alloc] initWithImage:image ];
+    }];
 
     return cell;
     

@@ -156,6 +156,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
     [self startTimer];
     
     _selectedRecivers = [[NSMutableDictionary alloc] init];

@@ -11,10 +11,12 @@
 
 @interface QTRPhotoLibraryController : NSObject
 
-- (void)imageAtIndex:(NSInteger)imageIndex completion: (void(^)(UIImage *image))completion;
+- (void)imageAtIndex:(NSUInteger)imageIndex imageWithFullSize:(BOOL)isFullSize imageSize:(CGSize)fetchImageSize completion:(void (^)(UIImage *image))completion;
 - (void)originalImageAtIndex:(NSInteger)imageIndex completion: (void(^)(PHAsset *asset, NSDictionary *info))completion;
 - (void)fetchAssetInformation;
 - (NSInteger)fetchImageCount;
+
+
 
 @end
 
