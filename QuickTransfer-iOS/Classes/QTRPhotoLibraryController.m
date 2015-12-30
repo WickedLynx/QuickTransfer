@@ -71,29 +71,29 @@ const NSInteger imageFetchLimit = 9999;
     return [_assetsFetchResult count];
 
 }
-#pragma mark - deliver image data to reciver
+#pragma mark - deliver image data on request
 
 - (void)originalImageAtIndex:(NSInteger)imageIndex completion: (void(^)(PHAsset *asset, NSDictionary *info))completion {
 
-    if (imageIndex < 0 && imageIndex > imageFetchLimit && completion == nil) {
-        completion(nil, nil);
+    if (completion != nil) {
         
-    } else {
-        
-        PHImageManager *manager = [PHImageManager defaultManager];
-        PHAsset *asset = [_assetsFetchResult objectAtIndex:imageIndex];
-        
-        [manager requestImageForAsset:asset
-                           targetSize:CGSizeMake(160, 160)
-                          contentMode:PHImageContentModeDefault
-                              options:_requestOptions
-         
-                        resultHandler:^void(UIImage *image, NSDictionary *info) {
-                            
-                            if (completion != nil) {
-                                completion(asset, info);
-                            }
-                        }];
+        if (imageIndex < [self fetchImageCount]) {
+            
+            PHImageManager *manager = [PHImageManager defaultManager];
+            PHAsset *asset = [_assetsFetchResult objectAtIndex:imageIndex];
+            
+            [manager requestImageForAsset:asset targetSize:CGSizeMake(160, 160) contentMode:PHImageContentModeDefault options:_requestOptions resultHandler:^void(UIImage *image, NSDictionary *info) {
+                                
+                                if (completion != nil) {
+                                    completion(asset, info);
+                                }
+            }];
+
+            
+        } else {
+            
+            completion(nil, nil);
+        }
     }
     
 }
