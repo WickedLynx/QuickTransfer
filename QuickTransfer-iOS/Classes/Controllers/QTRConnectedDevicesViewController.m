@@ -299,6 +299,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     else if ([_selectedRecivers count] > 0) {
         
+        NSLog(@"[_selectedRecivers count]: %ld", [_selectedRecivers count]);
+        
         [self.view addSubview:customAlertView];
     
         [customActionSheetGalleryView setUserInteractionEnabled:YES];
@@ -771,7 +773,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     }
     
     if (theUser != nil) {
-        [_selectedRecivers setObject:theUser forKey:theUser.identifier];
+        [_selectedRecivers removeObjectForKey:theUser.identifier];
     }
 }
 
