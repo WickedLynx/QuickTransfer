@@ -16,10 +16,10 @@
     
     if (self != nil) {
         
-        UITableView *aTableView = [[UITableView alloc] initWithFrame:self.bounds];
-        [aTableView setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
-        [self addSubview:aTableView];
-        _devicesTableView = aTableView;
+        UITableView *devicesTableView = [[UITableView alloc] initWithFrame:self.bounds];
+        [devicesTableView setAutoresizingMask:(UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth)];
+        [self addSubview:devicesTableView];
+        _devicesTableView = devicesTableView;
     }
     
     return self;

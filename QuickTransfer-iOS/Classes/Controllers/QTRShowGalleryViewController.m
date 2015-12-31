@@ -17,10 +17,9 @@
 
 @interface QTRShowGalleryViewController () <UICollectionViewDataSource, UICollectionViewDelegate> {
 
-    NSArray *totalSelectedImages;
-    QTRShowGalleryView *showGalleryView;
-    NSMutableDictionary *selectedImages;
-    NSInteger totalImageCount;
+    QTRShowGalleryView *_showGalleryView;
+    NSMutableDictionary *_selectedImages;
+    NSInteger _totalImageCount;
 
 
 }
@@ -35,15 +34,15 @@ static NSString *cellIdentifier = @"CellIdentifier";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    [selectedImages removeAllObjects];
-    [showGalleryView.galleryCollectionView reloadData];
+    [_selectedImages removeAllObjects];
+    [_showGalleryView.galleryCollectionView reloadData];
 
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    selectedImages = [[NSMutableDictionary alloc]init];
+    _selectedImages = [[NSMutableDictionary alloc]init];
     
     [self.view setBackgroundColor:[UIColor colorWithRed:76.f/255.f green:76.f/255.f blue:76.f/255.f alpha:1.00f]];
     [self setTitle:@"Camera Roll"];
@@ -74,21 +73,21 @@ static NSString *cellIdentifier = @"CellIdentifier";
     UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:customRightBarButton];
     [self.navigationItem setRightBarButtonItem:rightBarButton];
     
-    showGalleryView = [[QTRShowGalleryView alloc] init];
-    [showGalleryView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    _showGalleryView = [[QTRShowGalleryView alloc] init];
+    [_showGalleryView setTranslatesAutoresizingMaskIntoConstraints:NO];
     
-    showGalleryView.galleryCollectionView.delegate = self;
-    showGalleryView.galleryCollectionView.dataSource =self;
-    [showGalleryView.galleryCollectionView registerClass:[QTRGalleryCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
-    [showGalleryView.sendButton addTarget:self action:@selector(sendData) forControlEvents:UIControlEventTouchUpInside];
+    _showGalleryView.galleryCollectionView.delegate = self;
+    _showGalleryView.galleryCollectionView.dataSource =self;
+    [_showGalleryView.galleryCollectionView registerClass:[QTRGalleryCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
+    [_showGalleryView.sendButton addTarget:self action:@selector(sendData) forControlEvents:UIControlEventTouchUpInside];
 
-    [self.view addSubview:showGalleryView];
+    [self.view addSubview:_showGalleryView];
     
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(showGalleryView);
+    NSDictionary *views = NSDictionaryOfVariableBindings(_showGalleryView);
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[showGalleryView]-0-|" options:0 metrics:0 views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[showGalleryView]-0-|" options:0 metrics:0 views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_showGalleryView]-0-|" options:0 metrics:0 views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_showGalleryView]-0-|" options:0 metrics:0 views:views]];
     
 }
 
@@ -108,9 +107,9 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 
 -(void)sendData {
-    if ([selectedImages count] > 0) {
+    if ([_selectedImages count] > 0) {
                 
-        [self.delegate showGalleryViewController:self selectedImages:selectedImages];
+        [self.delegate showGalleryViewController:self selectedImages:_selectedImages];
         [self.navigationController popViewControllerAnimated:YES];
 
         
@@ -141,13 +140,13 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     if (totalRemSpace == 0.0) {
         
-        [showGalleryView.galleryCollectionViewLayout setMinimumLineSpacing:0.0f];
+        [_showGalleryView.galleryCollectionViewLayout setMinimumLineSpacing:0.0f];
         return UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
 
     }
     else {
         CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
-        [showGalleryView.galleryCollectionViewLayout setMinimumLineSpacing:gap];
+        [_showGalleryView.galleryCollectionViewLayout setMinimumLineSpacing:gap];
 
     
     return UIEdgeInsetsMake( (gap * 2.0f), gap, (gap * 2.0f), gap);
@@ -186,6 +185,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
         }
     
     }];
+    
     
     return cell;
     

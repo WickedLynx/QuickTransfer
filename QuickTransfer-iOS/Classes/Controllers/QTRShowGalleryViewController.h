@@ -20,7 +20,6 @@
 
 
 @property (nonatomic, weak) id <TRShowGalleryCustomDelegate> delegate;
-@property (nonatomic, strong) NSArray *fetchImageArray;
 @property (nonatomic, strong) QTRPhotoLibraryController *fetchPhotoLibrary;
 
 

@@ -8,9 +8,16 @@
 
 #import "QTRNoConnectedDeviceFoundView.h"
 
+@interface QTRNoConnectedDeviceFoundView() {
+
+UILabel *_topMessageLabel;
+UILabel *_bottomMessageLabel;
+
+}
+
+@end
+
 @implementation QTRNoConnectedDeviceFoundView
-
-
 
 - (id)initWithFrame:(CGRect)aRect
 {

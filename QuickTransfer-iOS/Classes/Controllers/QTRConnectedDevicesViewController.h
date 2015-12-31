@@ -13,8 +13,6 @@
 @interface QTRConnectedDevicesViewController : UIViewController <UINavigationControllerDelegate, UISearchBarDelegate>
 
 
-@property (nonatomic, assign) BOOL isFiltered;
-
 /*!
  Initialises the receiver.
  

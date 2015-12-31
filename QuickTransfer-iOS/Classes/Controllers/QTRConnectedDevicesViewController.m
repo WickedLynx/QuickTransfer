@@ -28,6 +28,7 @@
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
+    __weak id <QTRBonjourTransferDelegate> _transfersController;
     
     QTRBonjourClient *_client;
     QTRBonjourServer *_server;
@@ -48,18 +49,18 @@
     QTRBeaconRanger *_beaconRanger;
     QTRBeaconAdvertiser *_beaconAdvertiser;
     
-    QTRActionSheetGalleryView *customActionSheetGalleryView;
-    QTRCustomAlertView *customAlertView;
+    QTRActionSheetGalleryView *_customActionSheetGalleryView;
+    QTRCustomAlertView *_customAlertView;
 
 
-    __weak id <QTRBonjourTransferDelegate> _transfersController;
-
+    
+    BOOL isFiltered;
     NSURL *_importedFileURL;
     NSTimer *_timer;
 
-    NSMutableArray* filteredUserData;
+    NSMutableArray *_filteredUserData;
     
-    QTRShowGalleryViewController *showGallery;
+    QTRShowGalleryViewController *_showGallery;
     
 }
 
@@ -96,6 +97,9 @@ NSString * const cellIdentifier = @"CellIdentifier";
             _beaconRanger = [[QTRBeaconRanger alloc] init];
         }
 
+
+            
+    
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
@@ -141,10 +145,10 @@ NSString * const cellIdentifier = @"CellIdentifier";
     [self stopTimer];
     
     
-    [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+    [_devicesView animatePreviewLabel:[_devicesView fetchDevicesLabel]];
     
     
-    [[_devicesView fetchingDevicesLabel] setText:@"Fetching Devices"];
+    [[_devicesView fetchDevicesLabel] setText:@"Fetching Devices"];
     [[_devicesView deviceRefreshControl] beginRefreshing];
     [self startTimer];
     [self updateTitle];
@@ -171,38 +175,38 @@ NSString * const cellIdentifier = @"CellIdentifier";
         }
     }];
     
-    showGallery = [[QTRShowGalleryViewController alloc] init];
-    customAlertView = [[QTRCustomAlertView alloc] init];
-    [customAlertView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [self.view addSubview:customAlertView];
+    _showGallery = [[QTRShowGalleryViewController alloc] init];
+    _customAlertView = [[QTRCustomAlertView alloc] init];
+    [_customAlertView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.view addSubview:_customAlertView];
     
-    customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] init];
-    [customActionSheetGalleryView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [customAlertView.galleryCollectionView addSubview:customActionSheetGalleryView];
-    
-    
-    NSDictionary *views = NSDictionaryOfVariableBindings(customAlertView, customActionSheetGalleryView);
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[customAlertView]-0-|" options:0 metrics:0 views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[customAlertView]-0-|" options:0 metrics:0 views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[customActionSheetGalleryView]-0-|" options:0 metrics:0 views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[customActionSheetGalleryView(==66)]" options:0 metrics:0 views:views]];
+    _customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] init];
+    [_customActionSheetGalleryView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [_customAlertView.galleryCollectionView addSubview:_customActionSheetGalleryView];
     
     
-    [customActionSheetGalleryView setUserInteractionEnabled:YES];
-    customActionSheetGalleryView.fetchPhotoLibrary = _fetchPhotoLibrary;
+    NSDictionary *views = NSDictionaryOfVariableBindings(_customAlertView, _customActionSheetGalleryView);
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_customAlertView]-0-|" options:0 metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_customAlertView]-0-|" options:0 metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_customActionSheetGalleryView]-0-|" options:0 metrics:0 views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_customActionSheetGalleryView(==66)]" options:0 metrics:0 views:views]];
+    
+    
+    [_customActionSheetGalleryView setUserInteractionEnabled:YES];
+    _customActionSheetGalleryView.fetchPhotoLibrary = _fetchPhotoLibrary;
     
     
     
-    [customAlertView.cancelButton addTarget: self action: @selector(touchAlertViewCancel) forControlEvents: UIControlEventTouchUpInside];
-    [customAlertView.iCloudButton addTarget: self action: @selector(touchOpeniCloud) forControlEvents: UIControlEventTouchUpInside];
-    [customAlertView.cameraRollButton addTarget: self action: @selector(touchOpenCameraRoll) forControlEvents: UIControlEventTouchUpInside];
-    [customAlertView.takePhotoButton addTarget: self action: @selector(touchOpenCamera) forControlEvents: UIControlEventTouchUpInside];
+    [_customAlertView.cancelButton addTarget: self action: @selector(touchAlertViewCancel) forControlEvents: UIControlEventTouchUpInside];
+    [_customAlertView.iCloudButton addTarget: self action: @selector(touchOpeniCloud) forControlEvents: UIControlEventTouchUpInside];
+    [_customAlertView.cameraRollButton addTarget: self action: @selector(touchOpenCameraRoll) forControlEvents: UIControlEventTouchUpInside];
+    [_customAlertView.takePhotoButton addTarget: self action: @selector(touchOpenCamera) forControlEvents: UIControlEventTouchUpInside];
     
-    [customAlertView setHidden:YES];
+    [_customAlertView setHidden:YES];
     
     
     [[[_devicesView noConnectedDeviceFoundView] refreshButton] addTarget:self action:@selector(noConnectedDeviceFoundAction) forControlEvents:UIControlEventTouchUpInside];
@@ -290,8 +294,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
 - (void)refreshConnectedDevices {
     [self stopTimer];
 
-    [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
-    [[_devicesView fetchingDevicesLabel] setText:@"Fetching Devices"];
+    [_devicesView animatePreviewLabel:[_devicesView fetchDevicesLabel]];
+    [[_devicesView fetchDevicesLabel] setText:@"Fetching Devices"];
     [[_devicesView devicesCollectionView] reloadData];
     [self refresh];
     [self startTimer];
@@ -315,7 +319,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
    if ([_selectedRecivers count] > 0) {
         
-        [customAlertView setHidden:NO];
+        [_customAlertView setHidden:NO];
     }
     
     else {
@@ -342,21 +346,21 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 
 -(void) touchAlertViewCancel {
-    [customAlertView setHidden:YES];
+    [_customAlertView setHidden:YES];
 
 }
 
 -(void) touchOpeniCloud {
-    [customAlertView setHidden:YES];
+    [_customAlertView setHidden:YES];
 }
 
 -(void) touchOpenCameraRoll {
     
-    [customAlertView setHidden:YES];
+    [_customAlertView setHidden:YES];
     __weak QTRPhotoLibraryController *weakFetchPhotoLibrary = _fetchPhotoLibrary;
-    showGallery.fetchPhotoLibrary = weakFetchPhotoLibrary;
+    _showGallery.fetchPhotoLibrary = weakFetchPhotoLibrary;
     
-    [self.navigationController pushViewController:showGallery animated:YES];
+    [self.navigationController pushViewController:_showGallery animated:YES];
 
 }
 
@@ -659,13 +663,13 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     if (totalUsers > 0) {
         [[_devicesView deviceRefreshControl] endRefreshing];
-        [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
-        [[_devicesView fetchingDevicesLabel] setText:@""];
+        [_devicesView animatePreviewLabel:[_devicesView fetchDevicesLabel]];
+        [[_devicesView fetchDevicesLabel] setText:@""];
         
     } else {
         [[_devicesView deviceRefreshControl] beginRefreshing];
-        [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
-        [[_devicesView fetchingDevicesLabel] setText:@"Fetching Devices"];
+        [_devicesView animatePreviewLabel:[_devicesView fetchDevicesLabel]];
+        [[_devicesView fetchDevicesLabel] setText:@"Fetching Devices"];
 
     }
 }
@@ -710,8 +714,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
 
-    if (self.isFiltered) {
-        return [filteredUserData count];
+    if (isFiltered) {
+        return [_filteredUserData count];
     }
     else {
         return [_connectedServers count] + [_connectedClients count];
@@ -724,8 +728,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
     QTRHomeCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     QTRUser *theUser;
 
-    if (self.isFiltered) {
-        theUser = [filteredUserData objectAtIndex:indexPath.row];
+    if (isFiltered) {
+        theUser = [_filteredUserData objectAtIndex:indexPath.row];
         }
     else {
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
@@ -758,8 +762,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
 {
     QTRUser *theUser;
     
-    if (self.isFiltered) {
-        theUser = [filteredUserData objectAtIndex:indexPath.row];
+    if (isFiltered) {
+        theUser = [_filteredUserData objectAtIndex:indexPath.row];
 
     } else {
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
@@ -793,8 +797,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
     }
 
     
-    if (self.isFiltered) {
-        theUser = [filteredUserData objectAtIndex:indexPath.row];
+    if (isFiltered) {
+        theUser = [_filteredUserData objectAtIndex:indexPath.row];
 
     } else {
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
@@ -810,8 +814,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     QTRUser *theUser;
     
-    if (self.isFiltered) {
-        theUser = [filteredUserData objectAtIndex:indexPath.row];
+    if (isFiltered) {
+        theUser = [_filteredUserData objectAtIndex:indexPath.row];
     }
     else {
         theUser = [self userAtIndexPath:indexPath isServer:NULL];
@@ -941,19 +945,19 @@ NSString * const cellIdentifier = @"CellIdentifier";
 {
     if(text.length == 0)
     {
-        self.isFiltered = FALSE;
+        isFiltered = FALSE;
         [searchBar resignFirstResponder];
     }
     else
     {
-        self.isFiltered = true;
-        filteredUserData = [[NSMutableArray alloc] init];
+        isFiltered = true;
+        _filteredUserData = [[NSMutableArray alloc] init];
         
         for (QTRUser *theUser in _connectedServers)
         {
             if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
             {
-                [filteredUserData addObject:theUser];
+                [_filteredUserData addObject:theUser];
             }
         }
         
@@ -961,7 +965,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
         {
             if ([theUser.name rangeOfString:text options:NSCaseInsensitiveSearch].location != NSNotFound)
             {
-                [filteredUserData addObject:theUser];
+                [_filteredUserData addObject:theUser];
             }
         }
     }
@@ -986,7 +990,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     [searchBar setShowsCancelButton:NO animated:YES];
     [searchBar resignFirstResponder];
     
-    self.isFiltered = FALSE;
+    isFiltered = FALSE;
     [[_devicesView devicesCollectionView] reloadData];
 }
 
@@ -1073,7 +1077,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 - (void)timerFired:(NSTimer *)timer {
 
     if (([_connectedClients count] + [_connectedServers count]) < 1) {
-        [_devicesView animatePreviewLabel:[_devicesView fetchingDevicesLabel]];
+        [_devicesView animatePreviewLabel:[_devicesView fetchDevicesLabel]];
         
         [[_devicesView noConnectedDeviceFoundView] setHidden:false];
 

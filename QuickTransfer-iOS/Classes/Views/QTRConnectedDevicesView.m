@@ -21,11 +21,11 @@
         [layout setMinimumLineSpacing:20.0f];
         layout.scrollDirection = UICollectionViewScrollDirectionVertical;
         
-        UICollectionView *aCollectionView = [[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:layout];
-        [aCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        UICollectionView *deviceCollectionView = [[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:layout];
+        [deviceCollectionView setTranslatesAutoresizingMaskIntoConstraints:NO];
         
-        [self addSubview:aCollectionView];
-        _devicesCollectionView = aCollectionView;
+        [self addSubview:deviceCollectionView];
+        _devicesCollectionView = deviceCollectionView;
        
         UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
         [searchBar setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -37,31 +37,31 @@
         _searchBar =searchBar;
         
        
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectZero;
-        [[button layer]setCornerRadius:7.0f];
-        [[button layer]setBorderWidth:1.0f];
-        [[button layer]setBorderColor:[UIColor whiteColor].CGColor];
-        [[button layer]setMasksToBounds:TRUE];
-        button.clipsToBounds = YES;
-        [button setTitle:@"Next" forState:UIControlStateNormal];
-        [button setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [self addSubview:button];
-        _sendButton = button;
+        UIButton *sendButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        sendButton.frame = CGRectZero;
+        [[sendButton layer]setCornerRadius:7.0f];
+        [[sendButton layer]setBorderWidth:1.0f];
+        [[sendButton layer]setBorderColor:[UIColor whiteColor].CGColor];
+        [[sendButton layer]setMasksToBounds:TRUE];
+        sendButton.clipsToBounds = YES;
+        [sendButton setTitle:@"Next" forState:UIControlStateNormal];
+        [sendButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [self addSubview:sendButton];
+        _sendButton = sendButton;
         
-        UIRefreshControl *refreshControl = [[UIRefreshControl alloc]init];
-        [refreshControl setHidden:YES];
-        [aCollectionView addSubview:refreshControl];
-        _deviceRefreshControl = refreshControl;
+        UIRefreshControl *deviceRefreshControl = [[UIRefreshControl alloc]init];
+        [deviceRefreshControl setHidden:YES];
+        [deviceCollectionView addSubview:deviceRefreshControl];
+        _deviceRefreshControl = deviceRefreshControl;
         
-        UILabel *fetchDevice = [[UILabel alloc]initWithFrame:CGRectZero];
-        [fetchDevice setText:@""];
-        [fetchDevice setTextAlignment:NSTextAlignmentCenter];
-        [fetchDevice setTextColor:[UIColor whiteColor]];
-        [fetchDevice setBackgroundColor:[UIColor clearColor]];
-        [fetchDevice setTranslatesAutoresizingMaskIntoConstraints:NO];
-        [self addSubview:fetchDevice];
-        _fetchingDevicesLabel = fetchDevice;
+        UILabel *fetchDevicesLabel = [[UILabel alloc]initWithFrame:CGRectZero];
+        [fetchDevicesLabel setText:@""];
+        [fetchDevicesLabel setTextAlignment:NSTextAlignmentCenter];
+        [fetchDevicesLabel setTextColor:[UIColor whiteColor]];
+        [fetchDevicesLabel setBackgroundColor:[UIColor clearColor]];
+        [fetchDevicesLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [self addSubview:fetchDevicesLabel];
+        _fetchDevicesLabel = fetchDevicesLabel;
         
         QTRNoConnectedDeviceFoundView *noConnectedDeviceFoundView = [[QTRNoConnectedDeviceFoundView alloc]initWithFrame:self.bounds];
         [noConnectedDeviceFoundView setTranslatesAutoresizingMaskIntoConstraints:NO];
@@ -69,16 +69,16 @@
         [self addSubview:noConnectedDeviceFoundView];
         _noConnectedDeviceFoundView = noConnectedDeviceFoundView;
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(button, aCollectionView, searchBar, fetchDevice, noConnectedDeviceFoundView);
+        NSDictionary *views = NSDictionaryOfVariableBindings(sendButton, deviceCollectionView, searchBar, fetchDevicesLabel, noConnectedDeviceFoundView);
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[button]-7-|" options:0 metrics:0 views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[aCollectionView]|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-7-[sendButton]-7-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[deviceCollectionView]|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[searchBar]|" options:0 metrics:0 views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-64-[searchBar]-0-[aCollectionView]-5-[button(==44)]-5-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-64-[searchBar]-0-[deviceCollectionView]-5-[sendButton(==44)]-5-|" options:0 metrics:0 views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-50-[fetchDevice]-50-|" options:0 metrics:0 views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-200-[fetchDevice(==44)]" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-50-[fetchDevicesLabel]-50-|" options:0 metrics:0 views:views]];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-200-[fetchDevicesLabel(==44)]" options:0 metrics:0 views:views]];
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[noConnectedDeviceFoundView]-0-|" options:0 metrics:0 views:views]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[noConnectedDeviceFoundView]-0-|" options:0 metrics:0 views:views]];

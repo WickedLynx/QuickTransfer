@@ -16,7 +16,7 @@
 @property (nonatomic, strong) UICollectionView *devicesCollectionView;
 @property (nonatomic, strong) UIButton *sendButton;
 @property (nonatomic, strong) UIRefreshControl *deviceRefreshControl;
-@property (nonatomic, strong) UILabel *fetchingDevicesLabel;
+@property (nonatomic, strong) UILabel *fetchDevicesLabel;
 @property (nonatomic, strong) QTRNoConnectedDeviceFoundView *noConnectedDeviceFoundView;
 
 
