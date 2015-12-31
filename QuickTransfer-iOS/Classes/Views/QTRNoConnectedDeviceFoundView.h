@@ -10,8 +10,8 @@
 
 @interface QTRNoConnectedDeviceFoundView : UIView
 
-@property (retain, nonatomic) UILabel *topMessageLabel;
-@property (retain, nonatomic) UILabel *bottomMessageLabel;
-@property (weak, nonatomic) UIButton *refreshButton;
+@property (nonatomic, strong) UILabel *topMessageLabel;
+@property (nonatomic, strong) UILabel *bottomMessageLabel;
+@property (nonatomic, strong) UIButton *refreshButton;
 
 @end

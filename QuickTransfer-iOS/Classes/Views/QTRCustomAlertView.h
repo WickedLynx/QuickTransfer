@@ -10,12 +10,12 @@
 
 @interface QTRCustomAlertView : UIView
 
-@property (retain, nonatomic) UIButton *cancelButton;
-@property (retain, nonatomic) UIButton *iCloudButton;
-@property (retain, nonatomic) UIButton *takePhotoButton;
-@property (retain, nonatomic) UIButton *cameraRollButton;
-@property (retain, nonatomic) UIView *galleryUIView;
-@property (retain, nonatomic) UIView *galleryCollectionView;
-@property (retain, nonatomic) UILabel *alertTitleLabel;
+@property (nonatomic, strong) UIButton *cancelButton;
+@property (nonatomic, strong) UIButton *iCloudButton;
+@property (nonatomic, strong) UIButton *takePhotoButton;
+@property (nonatomic, strong) UIButton *cameraRollButton;
+@property (nonatomic, strong) UIView *galleryUIView;
+@property (nonatomic, strong) UIView *galleryCollectionView;
+@property (nonatomic, strong) UILabel *alertTitleLabel;
 
 @end

@@ -8,40 +8,52 @@
 
 #import "QTRGalleryCollectionViewCell.h"
 
+@interface QTRGalleryCollectionViewCell()
+
+@property (nonatomic, strong) UIImageView *fetchImageView;
+@property (nonatomic, strong) UIImageView *selectedImageView;
+@property (nonatomic, strong) UIActivityIndicatorView *fetchImageLoader;
+
+@end
+
+
+
 @implementation QTRGalleryCollectionViewCell
+
+
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
         
-        self.retrivedImage = [[UIImageView alloc]init];
-        self.selectedImage = [[UIImageView alloc]init];
+        self.fetchImageView = [[UIImageView alloc]init];
+        self.selectedImageView = [[UIImageView alloc]init];
     
-        self.retrivedImage.frame = self.contentView.frame;
-        self.retrivedImage.layer.masksToBounds = YES;
+        self.fetchImageView.frame = self.contentView.frame;
+        self.fetchImageView.layer.masksToBounds = YES;
+        self.fetchImageView.contentMode = UIViewContentModeScaleAspectFill;
         
-        self.selectedImage.frame = self.contentView.frame;
-        self.selectedImage.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
+        self.selectedImageView.frame = self.contentView.frame;
+        self.selectedImageView.backgroundColor = [UIColor colorWithWhite:1.0f alpha:0.4f];
         
-        self.selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        UIImage *img = [UIImage imageNamed:@"check"];
+        UIButton *selectedButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIImage *buttonCheckImage = [UIImage imageNamed:@"check"];
         
-        self.selectedButton.frame = CGRectMake(50, 50, img.size.width, img.size.height);
+        selectedButton.frame = CGRectMake(50, 50, buttonCheckImage.size.width, buttonCheckImage.size.height);
         
-        [self.selectedButton setImage:img forState:UIControlStateNormal];
-        [self.selectedButton setImage:img forState:UIControlStateHighlighted];
-        [self.selectedButton setImage:img forState:UIControlStateSelected];
+        [selectedButton setImage:buttonCheckImage forState:UIControlStateNormal];
         
-        self.selectedButton.contentMode = UIViewContentModeScaleToFill;
-        [self.selectedImage addSubview:self.selectedButton];
+        selectedButton.contentMode = UIViewContentModeScaleToFill;
+        [self.selectedImageView addSubview:selectedButton];
         
+        [self addSubview:self.fetchImageView];
         
-        
-        [self addSubview:self.retrivedImage];
+        self.fetchImageLoader = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        [self.fetchImageLoader setCenter:self.center];
+        [self.fetchImageLoader startAnimating];
+        [self addSubview:self.fetchImageLoader];
 
-
-        
     }
     return self;
 }
@@ -52,12 +64,25 @@
     [super setSelected:selected];
     if (selected) {
 
-        [self.retrivedImage addSubview:self.selectedImage];
+        [self.fetchImageView addSubview:self.selectedImageView];
         
     }else {
-        [self.selectedImage removeFromSuperview];
+        [self.selectedImageView removeFromSuperview];
 
     }
+}
+
+- (void)resetImage:(NSUInteger)item {
+    
+    self.fetchImageView.image = nil;
+    [self.fetchImageLoader startAnimating];
+}
+
+- (void)setImage:(UIImage *)image fetchItem:(NSUInteger)item {
+    
+    self.fetchImageView.image = image;
+    [self.fetchImageLoader stopAnimating];
+
 }
 
 

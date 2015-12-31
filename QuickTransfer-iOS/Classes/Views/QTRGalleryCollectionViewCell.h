@@ -10,8 +10,8 @@
 
 @interface QTRGalleryCollectionViewCell : UICollectionViewCell
 
-@property(nonatomic,retain) UIImageView *retrivedImage;
-@property(nonatomic,retain) UIImageView *selectedImage;
-@property(nonatomic,retain) UIButton *selectedButton;
+
+- (void)resetImage:(NSUInteger)item;
+- (void)setImage:(UIImage *)image fetchItem:(NSUInteger)item;
 
 @end

@@ -171,7 +171,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
         }
     }];
     
-//    [_fetchPhotoLibrary fetchAssetInformation];
     showGallery = [[QTRShowGalleryViewController alloc] init];
     customAlertView = [[QTRCustomAlertView alloc] init];
     [customAlertView setTranslatesAutoresizingMaskIntoConstraints:NO];

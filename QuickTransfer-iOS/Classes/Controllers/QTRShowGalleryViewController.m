@@ -88,7 +88,6 @@ static NSString *cellIdentifier = @"CellIdentifier";
     NSDictionary *views = NSDictionaryOfVariableBindings(showGalleryView);
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[showGalleryView]-0-|" options:0 metrics:0 views:views]];
-    
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[showGalleryView]-0-|" options:0 metrics:0 views:views]];
     
 }
@@ -168,12 +167,24 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    __weak QTRGalleryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    CGSize fetchImageSize = CGSizeMake(cell.frame.size.width * 2, cell.frame.size.width * 2);
+    QTRGalleryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellIdentifier forIndexPath:indexPath];
     
-    [_fetchPhotoLibrary imageAtIndex:indexPath.row imageWithFullSize:NO imageSize:fetchImageSize completion:^(UIImage * image) {
-        cell.backgroundView = [[UIImageView alloc] initWithImage:image ];
+    __weak UICollectionView *weakCollectionView = collectionView;
+    __weak QTRGalleryCollectionViewCell *weakCell = cell;
+ 
+    CGSize fetchImageSize = CGSizeMake(600.0, 600.0);
+    
+    [_fetchPhotoLibrary imageAtIndex:indexPath.item imageWithFullSize:NO imageSize:fetchImageSize completion:^(UIImage * image) {
+    
+        NSIndexPath *indexPathFromCell = [weakCollectionView indexPathForCell:weakCell];
+        NSIndexPath *currentIndexPath = [NSIndexPath indexPathForItem:indexPath.item inSection:0];
+        
+        if (indexPathFromCell.item == currentIndexPath.item) {
+            [weakCell setImage:image fetchItem:indexPath.item];
+
+        }
+    
     }];
     
     return cell;
@@ -183,6 +194,13 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     return CGSizeMake(80.0f, 80.0f);
+}
+
+
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(nonnull UICollectionViewCell *)cell forItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
+    
+    QTRGalleryCollectionViewCell *disapperedCell = (QTRGalleryCollectionViewCell *) cell;
+    [disapperedCell resetImage:indexPath.item];
 }
 
 

@@ -10,7 +10,7 @@
 
 @interface QTRTransfersTableCell : UITableViewCell
 
-@property (nonatomic, retain) UIImageView *transferStateIconView;
+@property (nonatomic, strong) UIImageView *transferStateIconView;
 
 - (UILabel *)titleLabel;
 - (UILabel *)subtitleLabel;

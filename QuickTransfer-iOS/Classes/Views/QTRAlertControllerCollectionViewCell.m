@@ -13,12 +13,7 @@
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        
-        self.frame = CGRectMake(0, 0, 97.5f, 97.5f);
     
-        
-    }
     return self;
 }
 
