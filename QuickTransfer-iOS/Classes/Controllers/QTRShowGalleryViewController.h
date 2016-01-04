@@ -10,7 +10,7 @@
 #import "QTRPhotoLibraryController.h"
 
 @class QTRShowGalleryViewController;
-@protocol TRShowGalleryCustomDelegate <NSObject>
+@protocol QTRShowGalleryCustomDelegate <NSObject>
 
 - (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSDictionary *)selectedImagesData;
 
@@ -19,7 +19,7 @@
 @interface QTRShowGalleryViewController : UIViewController 
 
 
-@property (nonatomic, weak) id <TRShowGalleryCustomDelegate> delegate;
+@property (nonatomic, weak) id <QTRShowGalleryCustomDelegate> delegate;
 @property (nonatomic, strong) QTRPhotoLibraryController *fetchPhotoLibrary;
 
 

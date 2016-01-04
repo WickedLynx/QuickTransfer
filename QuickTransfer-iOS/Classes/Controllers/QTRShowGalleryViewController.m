@@ -18,7 +18,7 @@
 @interface QTRShowGalleryViewController () <UICollectionViewDataSource, UICollectionViewDelegate> {
 
     QTRShowGalleryView *_showGalleryView;
-    NSMutableDictionary *_selectedImages;
+    NSMutableDictionary*_selectedImages;
     NSInteger _totalImageCount;
 
 
@@ -108,7 +108,15 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 -(void)sendData {
     if ([_selectedImages count] > 0) {
-                
+        
+//        NSLog(@"Total Selected %d", _selectedImages.count);
+//        
+//        
+//        for (NSNumber *n in _selectedImages) {
+//            NSInteger intgerVal = n.integerValue;
+//            NSLog(@"This %d is selected", intgerVal);
+//        }
+        
         [self.delegate showGalleryViewController:self selectedImages:_selectedImages];
         [self.navigationController popViewControllerAnimated:YES];
 
@@ -208,6 +216,19 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
+    
+    [_selectedImages setObject:[NSNumber numberWithInteger:indexPath.item] forKey:[NSNumber numberWithInteger:indexPath.item]];
+    
+//    NSLog(@"Now %@ Cell Selected", [_selectedImages objectForKey:[NSNumber numberWithInteger:indexPath.item]]);
+//    NSNumber *num = [_selectedImages objectForKey:[NSNumber numberWithInteger:indexPath.item]];
+//    
+//    
+//    if (num.integerValue == indexPath.item) {
+//        NSLog(@"Equal");
+//    } else {
+//        NSLog(@"Not Equal");
+//    }
+    
 
     
 }
@@ -216,6 +237,8 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    [_selectedImages removeObjectForKey:[NSNumber numberWithInteger:indexPath.item]];
 
     
 }

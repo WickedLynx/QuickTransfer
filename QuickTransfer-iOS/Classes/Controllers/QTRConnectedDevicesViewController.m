@@ -25,7 +25,7 @@
 #import "QTRPhotoLibraryController.h"
 
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate> {
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, QTRShowGalleryCustomDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
     __weak id <QTRBonjourTransferDelegate> _transfersController;
@@ -176,6 +176,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     }];
     
     _showGallery = [[QTRShowGalleryViewController alloc] init];
+    _showGallery.delegate = self;
     _customAlertView = [[QTRCustomAlertView alloc] init];
     [_customAlertView setTranslatesAutoresizingMaskIntoConstraints:NO];
     [self.view addSubview:_customAlertView];
@@ -831,6 +832,25 @@ NSString * const cellIdentifier = @"CellIdentifier";
         }
     }
     
+}
+
+#pragma mark - QTRShow Gallery Delegate Methods
+
+- (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSDictionary * )selectedImagesData {
+    
+    
+    NSLog(@"In Class: %@", self.class);
+    
+            NSLog(@"Total Selected %d", selectedImagesData.count);
+    
+    
+            for (NSNumber *n in selectedImagesData) {
+                NSInteger intgerVal = n.integerValue;
+                NSLog(@"This %d is selected", intgerVal);
+            }
+
+
+
 }
 
 #pragma mark - QTRBonjourServerDelegate methods
