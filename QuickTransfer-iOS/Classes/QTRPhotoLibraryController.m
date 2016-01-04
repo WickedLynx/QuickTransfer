@@ -8,6 +8,7 @@
 
 
 #import "QTRPhotoLibraryController.h"
+#import "QTRHelper.h"
 @import PhotosUI;
 
 @interface QTRPhotoLibraryController()
@@ -71,6 +72,31 @@ const NSInteger imageFetchLimit = 9999;
     }
 }
 
+#pragma mark - Fetch image for specific index
+
+- (void)originalImageAtIndex:(NSInteger)imageIndex completion:(void (^)(NSURL *))completion {
+
+    if (completion != nil) {
+        
+        PHAsset *imageAsset = [_assetsFetchResult objectAtIndex:imageIndex];
+        
+        [[PHImageManager defaultManager] requestImageDataForAsset:imageAsset options:self.requestOptions resultHandler: ^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+            
+            NSURL *referenceURL = [info objectForKey:@"PHImageFileURLKey"];
+            
+            NSURL *localURL = [self uniqueURLForFileWithName:[referenceURL lastPathComponent]];
+            
+            [imageData writeToURL:localURL atomically:YES];
+            
+            completion(localURL);
+        
+        }];
+
+    } else {
+        completion(nil);
+    }
+
+}
 
 #pragma mark - Fetch PHAssetResultArray for all images
 
@@ -94,5 +120,33 @@ const NSInteger imageFetchLimit = 9999;
     return [_assetsFetchResult count];
 
 }
+
+#pragma mark - Unique URL for file name
+         
+- (NSURL *)uniqueURLForFileWithName:(NSString *)fileName {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    NSURL *cachesURL = [QTRHelper fileCacheDirectory];
+    
+    NSString *filePath = [[cachesURL path] stringByAppendingPathComponent:fileName];
+    
+    if ([fileManager fileExistsAtPath:filePath]) {
+        NSString *name = [[filePath lastPathComponent] stringByDeletingPathExtension];
+        NSString *extension = [filePath pathExtension];
+        NSString *nameWithExtension = [name stringByAppendingPathExtension:extension];
+        NSString *tempName = name;
+        int fileCount = 0;
+        while ([fileManager fileExistsAtPath:filePath]) {
+            ++fileCount;
+            tempName = [name stringByAppendingFormat:@"%d", fileCount];
+            nameWithExtension = [tempName stringByAppendingPathExtension:extension];
+            filePath = [[cachesURL path] stringByAppendingPathComponent:nameWithExtension];
+        }
+    }
+    
+    
+    return [NSURL fileURLWithPath:filePath];
+}
+         
 
 @end

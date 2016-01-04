@@ -23,6 +23,7 @@
 #import "QTRCustomAlertView.h"
 #import "QTRTransfersViewController.h"
 #import "QTRPhotoLibraryController.h"
+@import PhotosUI;
 
 
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, QTRShowGalleryCustomDelegate> {
@@ -497,7 +498,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 - (NSURL *)uniqueURLForFileWithName:(NSString *)fileName {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-
+    
     NSURL *cachesURL = [QTRHelper fileCacheDirectory];
     
     NSString *filePath = [[cachesURL path] stringByAppendingPathComponent:fileName];
@@ -519,6 +520,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     return [NSURL fileURLWithPath:filePath];
 }
+
 
 - (BOOL)userConnected:(QTRUser *)user {
     return [_connectedClients containsObject:user] || [_connectedServers containsObject:user] || [_localUser isEqual:user];
@@ -838,19 +840,58 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 - (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSDictionary * )selectedImagesData {
     
+    for (NSNumber *indexNumber in selectedImagesData) {
+        NSInteger intgerIndexNumber = indexNumber.integerValue;
+        [self sendDataToSelectedUser:intgerIndexNumber];
+        }
+
+}
+
+#pragma mark - Sending Data
+
+- (void)sendDataToSelectedUser:(NSInteger)imageIndex {
     
-    NSLog(@"In Class: %@", self.class);
     
-            NSLog(@"Total Selected %d", selectedImagesData.count);
+//    __weak QTRConnectedDevicesViewController *weakSelf = self;
     
-    
-            for (NSNumber *n in selectedImagesData) {
-                NSInteger intgerVal = n.integerValue;
-                NSLog(@"This %d is selected", intgerVal);
+    [_fetchPhotoLibrary originalImageAtIndex:imageIndex completion:^(NSURL *imageLocalUrl) {
+        
+        NSArray *totalRecivers = [_selectedRecivers allValues];
+        _selectedUser = nil;
+        
+        for (QTRUser *currentUser in totalRecivers) {
+            
+            _selectedUser = currentUser;
+            
+            if ([_connectedClients containsObject:_selectedUser]) {
+                [_server sendFileAtURL:imageLocalUrl toUser:_selectedUser];
+                
+            } else if ([_connectedServers containsObject:_selectedUser]) {
+                [_client sendFileAtURL:imageLocalUrl toUser:_selectedUser];
+                
+            } else {
+                UIAlertController *alertView = [UIAlertController
+                                                alertControllerWithTitle:@"Error"
+                                                message:[NSString stringWithFormat:@"Device is not connected anymore"]
+                                                preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction* okButton = [UIAlertAction
+                                           actionWithTitle:@"Dismiss"
+                                           style:UIAlertActionStyleDefault
+                                           handler:^(UIAlertAction * action)
+                                           {
+                                               [alertView dismissViewControllerAnimated:YES completion:nil];
+                                               
+                                           }];
+                
+                [alertView addAction:okButton];
+                [self presentViewController:alertView animated:YES completion:nil];
             }
+            
+            _selectedUser = nil;
 
-
-
+        }
+    }];
 }
 
 #pragma mark - QTRBonjourServerDelegate methods
@@ -1079,11 +1120,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 - (void)startTimer {
     if (!_timer) {
-        _timer = [NSTimer scheduledTimerWithTimeInterval:5.0f
-                                                  target:self
-                                                selector:@selector(timerFired:)
-                                                userInfo:nil
-                                                 repeats:YES];
+        _timer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(timerFired:)userInfo:nil repeats:YES];
     }
 }
 
@@ -1103,6 +1140,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
     }
 }
+
+
 
 
 @end
