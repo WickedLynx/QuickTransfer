@@ -262,8 +262,8 @@
             </connections>
             <point key="canvasLocation" x="146.5" y="383"/>
         </customView>
-        <window title="Transfers" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hasShadow="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="fOD-IS-IEa" customClass="NSPanel">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES" HUD="YES"/>
+        <window title="Transfers" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" hasShadow="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="fOD-IS-IEa">
+            <windowStyleMask key="styleMask" utility="YES" HUD="YES"/>
             <windowCollectionBehavior key="collectionBehavior" moveToActiveSpace="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="847" y="381" width="300" height="450"/>

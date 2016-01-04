@@ -19,6 +19,7 @@
 #import "QTRNotificationsController.h"
 #import "QTRBonjourManager.h"
 #import "QTRDragView.h"
+#import <QuartzCore/QuartzCore.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -89,13 +90,21 @@ void refreshComputerModel() {
     [self setUsers:[[NSMutableArray alloc] init]];
 
     [self.mainWindow setBackgroundColor:[NSColor clearColor]];
-    [self.mainWindow setMovableByWindowBackground:YES];
+    [self.transfersPanel setBackgroundColor:[NSColor clearColor]];
+//    [self.mainWindow setMovableByWindowBackground:YES];
 
     if ([self.mainWindow.contentView isKindOfClass:[NSVisualEffectView class]]) {
         NSVisualEffectView *visualEffectView = self.mainWindow.contentView;
         [visualEffectView setState:NSVisualEffectStateActive];
         [visualEffectView setMaterial:NSVisualEffectMaterialDark];
+        [visualEffectView setWantsLayer:YES];
     }
+
+    [self.transfersPanel.contentView setWantsLayer:YES];
+    CALayer *transfersLayer = self.transfersPanel.contentView.layer;
+    CATransform3D ttransform = CATransform3DMakeRotation(-M_PI / 2, 0, 1.0, 0);
+    CATransform3D ttranslation = CATransform3DMakeTranslation(transfersLayer.bounds.size.width / 2, 0, 0);
+    [self.transfersPanel.contentView.layer setTransform:CATransform3DConcat(ttransform, ttranslation)];
 
     _notificationsController = [[QTRNotificationsController alloc] init];
 
@@ -339,11 +348,91 @@ void refreshComputerModel() {
     }
     [self.mainWindow setFrameOrigin:desiredWindowOrigin];
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    [self.transfersPanel setFrameOrigin:desiredWindowOrigin];
+    [self.transfersPanel makeKeyAndOrderFront:self];
     [self.mainWindow makeKeyAndOrderFront:self];
+    if (CATransform3DEqualToTransform(self.mainWindow.contentView.layer.transform, CATransform3DIdentity)) {
+        return;
+    }
+
+    CALayer *inLayer = self.mainWindow.contentView.layer;
+    CATransform3D inInitialRotation = CATransform3DMakeRotation(-M_PI / 2, 0, 1.0, 0);
+    CATransform3D inInitialTranslation = CATransform3DMakeTranslation(inLayer.bounds.size.width / 2, 0, 0);
+    [inLayer setTransform:CATransform3DConcat(inInitialRotation, inInitialTranslation)];
+    [self.searchField resignFirstResponder];
+
+    CALayer *outLayer = self.transfersPanel.contentView.layer;
+    CABasicAnimation *outAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
+    outAnimation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
+    CATransform3D outRotation = CATransform3DMakeRotation(-M_PI / 2, 0, 1.0, 0);
+    CATransform3D outTranslation = CATransform3DMakeTranslation(outLayer.bounds.size.width / 2, 0, 0);
+    outAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DConcat(outRotation, outTranslation)];
+    outAnimation.duration = 0.33;
+    outAnimation.fillMode = kCAFillModeForwards;
+    outAnimation.autoreverses = NO;
+    outAnimation.removedOnCompletion = NO;
+    [outLayer addAnimation:outAnimation forKey:@"transform"];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.33 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        CABasicAnimation *inAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
+        inAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
+        inAnimation.fromValue = [NSValue valueWithCATransform3D:CATransform3DConcat(inInitialRotation, inInitialTranslation)];
+        inAnimation.duration = 0.33;
+        inAnimation.fillMode = kCAFillModeForwards;
+        inAnimation.autoreverses = NO;
+        inAnimation.removedOnCompletion = NO;
+        [inLayer addAnimation:inAnimation forKey:@"transform"];
+
+        outLayer.transform = [outAnimation.toValue CATransform3DValue];
+        inLayer.transform = [inAnimation.toValue CATransform3DValue];
+    });
 }
 
 - (void)showTransfers {
-    [self.transfersPanel orderFront:self];
+    NSRect windowRect = [self.statusItemView.window convertRectToScreen:self.statusItemView.frame];
+    NSPoint desiredWindowOrigin = NSMakePoint(windowRect.origin.x - self.mainWindow.frame.size.width / 2, windowRect.origin.y);
+    if (desiredWindowOrigin.x + self.mainWindow.frame.size.width > [[NSScreen mainScreen] frame].size.width - 20) {
+        desiredWindowOrigin.x = windowRect.origin.x - self.mainWindow.frame.size.width - 20;
+    }
+    [self.mainWindow setFrameOrigin:desiredWindowOrigin];
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    [self.transfersPanel setFrameOrigin:desiredWindowOrigin];
+    [self.transfersPanel makeKeyAndOrderFront:self];
+    [self.mainWindow makeKeyAndOrderFront:self];
+    if (CATransform3DEqualToTransform(self.transfersPanel.contentView.layer.transform, CATransform3DIdentity)) {
+        return;
+    }
+    CALayer *inLayer = self.transfersPanel.contentView.layer;
+    CATransform3D inInitialRotation = CATransform3DMakeRotation(-M_PI / 2, 0, 1.0, 0);
+    CATransform3D inInitialTranslation = CATransform3DMakeTranslation(inLayer.bounds.size.width / 2, 0, 0);
+    [inLayer setTransform:CATransform3DConcat(inInitialRotation, inInitialTranslation)];
+    [self.searchField resignFirstResponder];
+
+    CALayer *outLayer = self.mainWindow.contentView.layer;
+    CABasicAnimation *outAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
+    outAnimation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
+    CATransform3D outRotation = CATransform3DMakeRotation(-M_PI / 2, 0, 1.0, 0);
+    CATransform3D outTranslation = CATransform3DMakeTranslation(outLayer.bounds.size.width / 2, 0, 0);
+    outAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DConcat(outRotation, outTranslation)];
+    outAnimation.duration = 0.33;
+    outAnimation.fillMode = kCAFillModeForwards;
+    outAnimation.autoreverses = NO;
+    outAnimation.removedOnCompletion = NO;
+    [outLayer addAnimation:outAnimation forKey:@"transform"];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.33 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        CABasicAnimation *inAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
+        inAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
+        inAnimation.fromValue = [NSValue valueWithCATransform3D:CATransform3DConcat(inInitialRotation, inInitialTranslation)];
+        inAnimation.duration = 0.33;
+        inAnimation.fillMode = kCAFillModeForwards;
+        inAnimation.autoreverses = NO;
+        inAnimation.removedOnCompletion = NO;
+        [inLayer addAnimation:inAnimation forKey:@"transform"];
+
+        outLayer.transform = [outAnimation.toValue CATransform3DValue];
+        inLayer.transform = [inAnimation.toValue CATransform3DValue];
+    });
 }
 
 - (void)showConfirmationAlertForFile:(QTRFile *)file user:(QTRUser *)user receiver:(id)receiver {
