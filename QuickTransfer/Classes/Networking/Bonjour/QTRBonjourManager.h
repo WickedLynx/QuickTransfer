@@ -22,6 +22,7 @@
 - (QTRUser *)userAtIndex:(NSInteger)index;
 
 - (BOOL)resumeTransfer:(QTRTransfer *)transfer;
+- (BOOL)pauseTransfer:(QTRTransfer *)transfer;
 
 @property (weak, nonatomic) id <QTRBonjourManagerDelegate> delegate;
 @property (weak, nonatomic) id <QTRBonjourTransferDelegate> transfersDelegate;

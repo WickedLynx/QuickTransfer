@@ -21,9 +21,6 @@
  */
 @interface QTRTransfersController : NSObject <NSTableViewDataSource, NSTableViewDelegate, QTRTransfersStoreDelegate, QTRTransfersTableCellViewDelegate, QTRTransfersTableViewEditingDelegate>
 
-
-- (IBAction)clickClearCompleted:(id)sender;
-
 @property (weak) IBOutlet NSWindow *window;
 
 /*!
@@ -53,5 +50,7 @@
  * The TransfersController calls this method when the user wishes to resume a transfer
  */
 - (BOOL)transfersController:(QTRTransfersController *)controller needsResumeTransfer:(QTRTransfer *)transfer;
+
+- (BOOL)transfersController:(QTRTransfersController *)controller needsPauseTransfer:(QTRTransfer *)transfer;
 
 @end

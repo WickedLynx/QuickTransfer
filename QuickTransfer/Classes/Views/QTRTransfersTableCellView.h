@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class QTRTransfer;
+
 @protocol QTRTransfersTableCellViewDelegate;
 
 /*!
@@ -46,5 +48,7 @@
 @optional
 
 - (void)transfersTableCellViewDidClickPrimaryButton:(QTRTransfersTableCellView *)cellView;
+
+- (QTRTransfer *)transferForCellView:(QTRTransfersTableCellView *)cellView;
 
 @end

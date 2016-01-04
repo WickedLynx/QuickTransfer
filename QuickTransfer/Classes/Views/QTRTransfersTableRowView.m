@@ -8,7 +8,9 @@
 
 #import "QTRTransfersTableRowView.h"
 
-@implementation QTRTransfersTableRowView
+@implementation QTRTransfersTableRowView {
+    NSTrackingArea *trackingArea;
+}
 
 - (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
@@ -18,4 +20,6 @@
         [self setBackgroundColor:[NSColor clearColor]];
     }
 }
+
+
 @end
