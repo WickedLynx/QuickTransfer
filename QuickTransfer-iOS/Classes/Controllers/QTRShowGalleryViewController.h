@@ -18,7 +18,6 @@
 
 @interface QTRShowGalleryViewController : UIViewController 
 
-
 @property (nonatomic, weak) id <QTRShowGalleryCustomDelegate> delegate;
 @property (nonatomic, strong) QTRPhotoLibraryController *fetchPhotoLibrary;
 

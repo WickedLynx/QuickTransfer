@@ -23,8 +23,6 @@
 #import "QTRCustomAlertView.h"
 #import "QTRTransfersViewController.h"
 #import "QTRPhotoLibraryController.h"
-@import PhotosUI;
-
 
 @interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, QTRShowGalleryCustomDelegate> {
 
@@ -37,32 +35,25 @@
     NSMutableArray *_connectedServers;
     NSMutableArray *_connectedClients;
     NSMutableDictionary *_selectedRecivers;
+    NSMutableArray *_filteredUserData;
     
     QTRUser *_localUser;
     QTRUser *_selectedUser;
     
     NSMapTable *_alertToFileMapTable;
     NSURL *_fileCacheDirectory;
-
     UIBackgroundTaskIdentifier _backgroundTaskIdentifier;
     NSDate *_killDate;
 
     QTRBeaconRanger *_beaconRanger;
     QTRBeaconAdvertiser *_beaconAdvertiser;
-    
     QTRActionSheetGalleryView *_customActionSheetGalleryView;
     QTRCustomAlertView *_customAlertView;
-
-
+    QTRShowGalleryViewController *_showGallery;
     
     BOOL isFiltered;
     NSURL *_importedFileURL;
     NSTimer *_timer;
-
-    NSMutableArray *_filteredUserData;
-    
-    QTRShowGalleryViewController *_showGallery;
-    
 }
 
 @property (nonatomic, strong) QTRPhotoLibraryController *fetchPhotoLibrary;
@@ -98,25 +89,18 @@ NSString * const cellIdentifier = @"CellIdentifier";
             _beaconRanger = [[QTRBeaconRanger alloc] init];
         }
 
-
-            
-    
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
 
-        
         _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
           
             [[UIApplication sharedApplication] endBackgroundTask:_backgroundTaskIdentifier];
             _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
-            
         }];
-
         [self startServices];
 
         _killDate = [NSDate date];
     }
-    
     return self;
 
 }
@@ -144,32 +128,21 @@ NSString * const cellIdentifier = @"CellIdentifier";
     [super viewDidAppear:animated];
 
     [self stopTimer];
-    
-    
     [_devicesView animatePreviewLabel:[_devicesView fetchDevicesLabel]];
-    
-    
     [[_devicesView fetchDevicesLabel] setText:@"Fetching Devices"];
     [[_devicesView deviceRefreshControl] beginRefreshing];
     [self startTimer];
     [self updateTitle];
-
-
 
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
-    [self startTimer];
-    
     _selectedRecivers = [[NSMutableDictionary alloc] init];
-    
     _fetchPhotoLibrary = [[QTRPhotoLibraryController alloc] init];
     
     __weak typeof(QTRPhotoLibraryController) *weakFetchPhotoLibrary = _fetchPhotoLibrary;
-    
     [_fetchPhotoLibrary requestUserPermissionIfRequired:^(BOOL autharizationStatus) {
         if (autharizationStatus == YES) {
             [weakFetchPhotoLibrary fetchAssetInformation];
@@ -186,30 +159,20 @@ NSString * const cellIdentifier = @"CellIdentifier";
     [_customActionSheetGalleryView setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_customAlertView.galleryCollectionView addSubview:_customActionSheetGalleryView];
     
-    
     NSDictionary *views = NSDictionaryOfVariableBindings(_customAlertView, _customActionSheetGalleryView);
-    
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_customAlertView]-0-|" options:0 metrics:0 views:views]];
-    
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_customAlertView]-0-|" options:0 metrics:0 views:views]];
-    
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_customActionSheetGalleryView]-0-|" options:0 metrics:0 views:views]];
-    
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_customActionSheetGalleryView(==66)]" options:0 metrics:0 views:views]];
-    
     
     [_customActionSheetGalleryView setUserInteractionEnabled:YES];
     _customActionSheetGalleryView.fetchPhotoLibrary = _fetchPhotoLibrary;
-    
-    
     
     [_customAlertView.cancelButton addTarget: self action: @selector(touchAlertViewCancel) forControlEvents: UIControlEventTouchUpInside];
     [_customAlertView.iCloudButton addTarget: self action: @selector(touchOpeniCloud) forControlEvents: UIControlEventTouchUpInside];
     [_customAlertView.cameraRollButton addTarget: self action: @selector(touchOpenCameraRoll) forControlEvents: UIControlEventTouchUpInside];
     [_customAlertView.takePhotoButton addTarget: self action: @selector(touchOpenCamera) forControlEvents: UIControlEventTouchUpInside];
-    
     [_customAlertView setHidden:YES];
-    
     
     [[[_devicesView noConnectedDeviceFoundView] refreshButton] addTarget:self action:@selector(noConnectedDeviceFoundAction) forControlEvents:UIControlEventTouchUpInside];
     
@@ -219,21 +182,15 @@ NSString * const cellIdentifier = @"CellIdentifier";
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     [self setTitle:@"Devices"];
-    
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
     
     [[_devicesView devicesCollectionView] registerClass:[QTRHomeCollectionViewCell class] forCellWithReuseIdentifier:cellIdentifier];
-
     [[_devicesView devicesCollectionView] setDataSource:self];
     [[_devicesView devicesCollectionView] setDelegate:self];
     [_devicesView devicesCollectionView].allowsMultipleSelection = YES;
-   
-
     [[_devicesView devicesCollectionView] reloadData];
     
-   
     [[_devicesView deviceRefreshControl] addTarget:self action:@selector(refreshConnectedDevices) forControlEvents:UIControlEventValueChanged];
-
     [[_devicesView devicesCollectionView] setScrollEnabled:YES];
     [_devicesView devicesCollectionView].alwaysBounceVertical = YES;
     
@@ -266,94 +223,65 @@ NSString * const cellIdentifier = @"CellIdentifier";
 - (void)setImportedFile:(NSURL *)fileURL {
     _importedFileURL = [fileURL copy];
     
-    UIAlertController *alertView = [UIAlertController
-                                    alertControllerWithTitle:@"Select User"
-                                    message:@"Select the user to whom you want to send the file"
-                                    preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alertView = [UIAlertController alertControllerWithTitle:@"Select User" message:@"Select the user to whom you want to send the file" preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction* okButton = [UIAlertAction
-                                actionWithTitle:@"Ok"
-                                style:UIAlertActionStyleDefault
-                                handler:^(UIAlertAction * action)
-                                {
+    UIAlertAction* okButton = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
                                     [alertView dismissViewControllerAnimated:YES completion:nil];
-                                    
                                 }];
-    
     [alertView addAction:okButton];
     [self presentViewController:alertView animated:YES completion:nil];
-
 }
 
 #pragma mark - Actions
 
 - (void)noConnectedDeviceFoundAction {
-    
     [[_devicesView noConnectedDeviceFoundView] setHidden:YES];
-    [self refreshConnectedDevices];
 }
 
 - (void)refreshConnectedDevices {
     [self stopTimer];
-
     [_devicesView animatePreviewLabel:[_devicesView fetchDevicesLabel]];
     [[_devicesView fetchDevicesLabel] setText:@"Fetching Devices"];
     [[_devicesView devicesCollectionView] reloadData];
     [self refresh];
     [self startTimer];
-
 }
 
 - (void)setLeftBarButtonAction:(UIBarButtonItem *)barButton {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-
 }
 
 - (void)RightBarButtonAction:(UIBarButtonItem *)barButton {
     QTRTransfersViewController *filestransferViewController = [[QTRTransfersViewController alloc]init];
     [self.navigationController pushViewController:filestransferViewController animated:YES];
-    
-    
 }
-
 
 -(void)nextButtonClicked{
     
    if ([_selectedRecivers count] > 0) {
-        
         [_customAlertView setHidden:NO];
-    }
-    
-    else {
+    } else {
         
-        UIAlertController *alertNextButton = [UIAlertController
-                                        alertControllerWithTitle:@"Warning"
-                                        message:@"Please Select Atlest One Device"
-                                        preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertNextButton = [UIAlertController alertControllerWithTitle:@"Warning" message:@"Please Select Atlest One Device" preferredStyle:UIAlertControllerStyleAlert];
         
-        UIAlertAction* okButton = [UIAlertAction
-                                   actionWithTitle:@"Ok"
-                                   style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction * action)
-                                   {
+        UIAlertAction* okButton = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
                                        [alertNextButton dismissViewControllerAnimated:YES completion:nil];
-                                       
                                    }];
         
         [alertNextButton addAction:okButton];
         [self presentViewController:alertNextButton animated:YES completion:nil];
     }
-    
 }
 
 
 -(void) touchAlertViewCancel {
     [_customAlertView setHidden:YES];
-
 }
 
 -(void) touchOpeniCloud {
     [_customAlertView setHidden:YES];
+    UIAlertView *iCloudeSupportAlert = [[UIAlertView alloc] initWithTitle:@"Sorry" message:@"For Now, This Feature is Not Aviliable" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+    [iCloudeSupportAlert show];
 }
 
 -(void) touchOpenCameraRoll {
@@ -372,18 +300,10 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     if (!isCameraAvailable) {
         
-        UIAlertController *alertView = [UIAlertController
-                                        alertControllerWithTitle:@"Attention"
-                                        message:@"Your device does't support this feature!"
-                                        preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertView = [UIAlertController alertControllerWithTitle:@"Attention" message:@"Your device does't support this feature!" preferredStyle:UIAlertControllerStyleAlert];
         
-        UIAlertAction* okButton = [UIAlertAction
-                                   actionWithTitle:@"Ok"
-                                   style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction * action)
-                                   {
+        UIAlertAction* okButton = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
                                        [alertView dismissViewControllerAnimated:YES completion:nil];
-                                       
                                    }];
         
         [alertView addAction:okButton];
@@ -394,7 +314,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
         picker.delegate = self;
         picker.allowsEditing = YES;
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    
         [self presentViewController:picker animated:YES completion:NULL];
     }
 }
@@ -416,10 +335,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
     [_connectedServers removeAllObjects];
 
     [[_devicesView devicesCollectionView] reloadData];
-
     [_beaconAdvertiser stopAdvertisingBeaconRegion];
     [_beaconRanger stopRangingBeacons];
-
     _importedFileURL = nil;
 }
 
@@ -435,24 +352,15 @@ NSString * const cellIdentifier = @"CellIdentifier";
     }
 
     _localUser = [[QTRUser alloc] initWithName:[[UIDevice currentDevice] name] identifier:uuid platform:QTRUserPlatformIOS];
-
     _server = [[QTRBonjourServer alloc] initWithFileDelegate:self];
     [_server setTransferDelegate:_transfersController];
 
     if (![_server start]) {
         
-        UIAlertController *alertView = [UIAlertController
-                                        alertControllerWithTitle:@"Could not start server"
-                                        message:@"Please check that Wifi is turned on"
-                                        preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alertView = [UIAlertController alertControllerWithTitle:@"Could not start server" message:@"Please check that Wifi is turned on" preferredStyle:UIAlertControllerStyleAlert];
         
-        UIAlertAction* okButton = [UIAlertAction
-                                   actionWithTitle:@"Dismiss"
-                                   style:UIAlertActionStyleDefault
-                                   handler:^(UIAlertAction * action)
-                                   {
-                                       [alertView dismissViewControllerAnimated:YES completion:nil];
-                                       
+        UIAlertAction* okButton = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+                                        [alertView dismissViewControllerAnimated:YES completion:nil];
                                    }];
         
         [alertView addAction:okButton];
@@ -462,7 +370,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
     _client = [[QTRBonjourClient alloc] initWithDelegate:self];
     [_client setTransferDelegate:_transfersController];
     [_client start];
-    
     [self refreshBeacons];
 }
 
@@ -481,15 +388,11 @@ NSString * const cellIdentifier = @"CellIdentifier";
 - (void)refreshBeacons {
     if ([QTRBeaconHelper isBLEAvailable]) {
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-
             [_beaconRanger stopRangingBeacons];
-
             [_beaconAdvertiser startAdvertisingRegionWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
-
+            
         } else {
-
             [_beaconAdvertiser stopAdvertisingBeaconRegion];
-
             [_beaconRanger setDelegate:self];
             [_beaconRanger startRangingBeaconsWithProximityUUID:QTRBeaconRegionProximityUUID identifier:QTRBeaconRegionIdentifier majorValue:0 minorValue:0];
         }
@@ -498,9 +401,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 - (NSURL *)uniqueURLForFileWithName:(NSString *)fileName {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    
     NSURL *cachesURL = [QTRHelper fileCacheDirectory];
-    
     NSString *filePath = [[cachesURL path] stringByAppendingPathComponent:fileName];
     
     if ([fileManager fileExistsAtPath:filePath]) {
@@ -516,8 +417,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
             filePath = [[cachesURL path] stringByAppendingPathComponent:nameWithExtension];
         }
     }
-    
-    
     return [NSURL fileURLWithPath:filePath];
 }
 
@@ -539,16 +438,13 @@ NSString * const cellIdentifier = @"CellIdentifier";
         }
         
         [fileManager createDirectoryAtPath:cachesPath withIntermediateDirectories:YES attributes:nil error:nil];
-        
         _fileCacheDirectory = [NSURL fileURLWithPath:cachesPath];
     }
-    
     return _fileCacheDirectory;
 }
 
 - (QTRUser *)userAtIndexPath:(NSIndexPath *)indexPath isServer:(BOOL *)isServer {
     QTRUser *theUser = nil;
-
     long row = indexPath.row;
 
     if ([_connectedServers count] > row) {
@@ -565,7 +461,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
             }
         }
     }
-
     return theUser;
 }
 
@@ -584,86 +479,23 @@ NSString * const cellIdentifier = @"CellIdentifier";
 }
 
 - (void)showAlertForFile:(QTRFile *)file user:(QTRUser *)user receiver:(id)receiver {
-
     NSString *alertMessage = [NSString stringWithFormat:@"%@ wants to send you a file: %@", user.name, file.name];
     
-    UIAlertController *alertView = [UIAlertController
-                                    alertControllerWithTitle:@"Accept File?"
-                                    message:alertMessage
-                                    preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction* okButton = [UIAlertAction
-                               actionWithTitle:@"Accept"
-                               style:UIAlertActionStyleDefault
-                               handler:^(UIAlertAction * action)
-                               {
-                                   NSDictionary *context = [_alertToFileMapTable objectForKey:alertView];
-                                   QTRFile *theFile = context[@"file"];
-                                   id receiver = context[@"receiver"];
-                                   QTRUser *theUser = context[@"user"];
-                                   
-                                   BOOL shouldAccept = NO;
-                                   
-                                   shouldAccept = YES;
-                                   
-                                   if (receiver == _client) {
-                                       [_client acceptFile:theFile accept:shouldAccept fromUser:theUser];
-                                   } else {
-                                       [_server acceptFile:theFile accept:shouldAccept fromUser:theUser];
-                                   }
-                                   
-                                   [_alertToFileMapTable removeObjectForKey:alertView];
-
-                                   [alertView dismissViewControllerAnimated:YES completion:nil];
-                                   
-                               }];
-    
-    UIAlertAction* cancelButton = [UIAlertAction
-                               actionWithTitle:@"Reject"
-                               style:UIAlertActionStyleDefault
-                               handler:^(UIAlertAction * action)
-                               {
-                                   NSDictionary *context = [_alertToFileMapTable objectForKey:alertView];
-                                   QTRFile *theFile = context[@"file"];
-                                   id receiver = context[@"receiver"];
-                                   QTRUser *theUser = context[@"user"];
-                                   
-                                   BOOL shouldAccept = NO;
-                                   
-                                   if (receiver == _client) {
-                                       [_client acceptFile:theFile accept:shouldAccept fromUser:theUser];
-                                   } else {
-                                       [_server acceptFile:theFile accept:shouldAccept fromUser:theUser];
-                                   }
-                                   
-                                   [_alertToFileMapTable removeObjectForKey:alertView];
-                                   
-                                   [alertView dismissViewControllerAnimated:YES completion:nil];
-
-                                   [alertView dismissViewControllerAnimated:YES completion:nil];
-                                   
-                               }];
-    
-    [alertView addAction:okButton];
-    [alertView addAction:cancelButton];
-    
-    [_alertToFileMapTable setObject:@{@"file" : file, @"receiver" : receiver, @"user" : user} forKey:alertView];
-    [self presentViewController:alertView animated:YES completion:nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Accept File?" message:alertMessage delegate:self cancelButtonTitle:@"Accept" otherButtonTitles:@"Reject", nil];
+    [_alertToFileMapTable setObject:@{@"file" : file, @"receiver" : receiver, @"user" : user} forKey:alert];
+    [alert show];
     
     [self showNotificationIfRequiredWithMessage:alertMessage];
 }
 
 - (void)saveFile:(QTRFile *)file {
     [file.data writeToURL:[self uniqueURLForFileWithName:file.name] atomically:YES];
-
 }
 
 - (void)updateTitle {
     unsigned long totalUsers = [_connectedClients count] + [_connectedServers count];
     [self setTitle:[NSString stringWithFormat:@"Devices (%lu)", totalUsers]];
-    
-    
-    
+
     if (totalUsers > 0) {
         [[_devicesView deviceRefreshControl] endRefreshing];
         [_devicesView animatePreviewLabel:[_devicesView fetchDevicesLabel]];
@@ -673,7 +505,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
         [[_devicesView deviceRefreshControl] beginRefreshing];
         [_devicesView animatePreviewLabel:[_devicesView fetchDevicesLabel]];
         [[_devicesView fetchDevicesLabel] setText:@"Fetching Devices"];
-
     }
 }
 
@@ -687,13 +518,11 @@ NSString * const cellIdentifier = @"CellIdentifier";
     [self refreshBeacons];
 
     if (_backgroundTaskIdentifier == UIBackgroundTaskInvalid) {
-        
         _backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
          
             [[UIApplication sharedApplication] endBackgroundTask: _backgroundTaskIdentifier];
             _backgroundTaskIdentifier = UIBackgroundTaskInvalid;
         }];
-
         [self refresh];
     }
 }
@@ -706,8 +535,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
     int totalRemSpace = self.view.frame.size.width - (noOfItems * 100);
     
     CGFloat gap = (CGFloat)totalRemSpace / (CGFloat)(noOfItems + 1);
-    
-    
     return UIEdgeInsetsMake(5.0f, gap, 0.0f, gap);
 }
 
@@ -723,7 +550,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
     else {
         return [_connectedServers count] + [_connectedClients count];
     }
-    
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -747,17 +573,13 @@ NSString * const cellIdentifier = @"CellIdentifier";
             cell.connectedDeviceName.textColor = [UIColor colorWithRed:32.f/255.f green:149.f/255.f blue:242.f/255.f alpha:1.00f];
         }
     }
-    
-    
     return cell;
-    
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     return CGSizeMake(100.0f, 120.0f);
 }
-
 
 #pragma mark - UICollectionViewDelegate methods
 
@@ -798,7 +620,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
         
         _importedFileURL = nil;
     }
-
     
     if (isFiltered) {
         theUser = [_filteredUserData objectAtIndex:indexPath.row];
@@ -810,13 +631,11 @@ NSString * const cellIdentifier = @"CellIdentifier";
     if (theUser != nil) {
         [_selectedRecivers setObject:theUser forKey:theUser.identifier];
     }
-    
 }
 
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
     
     QTRUser *theUser;
-    
     if (isFiltered) {
         theUser = [_filteredUserData objectAtIndex:indexPath.row];
     }
@@ -826,14 +645,11 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     if ([_selectedRecivers count] > 0) {
         if ([_selectedRecivers objectForKey:theUser.identifier] != NULL) {
-            
-            
             dispatch_after(0.1, dispatch_get_main_queue(), ^{
                 [collectionView selectItemAtIndexPath:indexPath animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
             });
         }
     }
-    
 }
 
 #pragma mark - QTRShow Gallery Delegate Methods
@@ -844,15 +660,11 @@ NSString * const cellIdentifier = @"CellIdentifier";
         NSInteger intgerIndexNumber = indexNumber.integerValue;
         [self sendDataToSelectedUser:intgerIndexNumber];
         }
-
 }
 
 #pragma mark - Sending Data
 
 - (void)sendDataToSelectedUser:(NSInteger)imageIndex {
-    
-    
-//    __weak QTRConnectedDevicesViewController *weakSelf = self;
     
     [_fetchPhotoLibrary originalImageAtIndex:imageIndex completion:^(NSURL *imageLocalUrl) {
         
@@ -870,26 +682,16 @@ NSString * const cellIdentifier = @"CellIdentifier";
                 [_client sendFileAtURL:imageLocalUrl toUser:_selectedUser];
                 
             } else {
-                UIAlertController *alertView = [UIAlertController
-                                                alertControllerWithTitle:@"Error"
-                                                message:[NSString stringWithFormat:@"Device is not connected anymore"]
-                                                preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertController *alertView = [UIAlertController alertControllerWithTitle:@"Error" message:[NSString stringWithFormat:@"Device is not connected anymore"] preferredStyle:UIAlertControllerStyleAlert];
                 
-                UIAlertAction* okButton = [UIAlertAction
-                                           actionWithTitle:@"Dismiss"
-                                           style:UIAlertActionStyleDefault
-                                           handler:^(UIAlertAction * action)
-                                           {
+                UIAlertAction* okButton = [UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
                                                [alertView dismissViewControllerAnimated:YES completion:nil];
-                                               
                                            }];
                 
                 [alertView addAction:okButton];
                 [self presentViewController:alertView animated:YES completion:nil];
             }
-            
             _selectedUser = nil;
-
         }
     }];
 }
@@ -898,12 +700,9 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
 - (void)server:(QTRBonjourServer *)server didConnectToUser:(QTRUser *)user {
     if (![self userConnected:user]) {
-        
         [_connectedClients addObject:user];
         [self updateTitle];
-
         [[_devicesView devicesCollectionView] reloadData];
-        
     }
 }
 
@@ -918,22 +717,8 @@ NSString * const cellIdentifier = @"CellIdentifier";
 }
 
 - (void)user:(QTRUser *)user didRejectFile:(QTRFile *)file {
-    UIAlertController *alertView = [UIAlertController
-                                    alertControllerWithTitle:@"File Rejected"
-                                    message:[NSString stringWithFormat:@"%@ rejected file: %@", user.name, file.name]
-                                    preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction* okButton = [UIAlertAction
-                               actionWithTitle:@"Dismiss"
-                               style:UIAlertActionStyleDefault
-                               handler:^(UIAlertAction * action)
-                               {
-                                   [alertView dismissViewControllerAnimated:YES completion:nil];
-                                   
-                               }];
-    
-    [alertView addAction:okButton];
-    [self presentViewController:alertView animated:YES completion:nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"File Rejected" message:[NSString stringWithFormat:@"%@ rejected file: %@", user.name, file.name] delegate:nil cancelButtonTitle:@"Dismiss" otherButtonTitles:nil, nil];
+    [alert show];
 }
 
 - (void)server:(QTRBonjourServer *)server didDetectIncomingFile:(QTRFile *)file fromUser:(QTRUser *)user {
@@ -957,11 +742,9 @@ NSString * const cellIdentifier = @"CellIdentifier";
 - (void)client:(QTRBonjourClient *)client didConnectToServerForUser:(QTRUser *)user {
     
     if (![self userConnected:user]) {
-        
         [_connectedServers addObject:user];
         [self updateTitle];
         [[_devicesView devicesCollectionView] reloadData];
-        
     }
 }
 
@@ -991,9 +774,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
             }];
 
             [self stopServices];
-
             [NSThread sleepForTimeInterval:2];
-
             [self startServices];
         }
     }
@@ -1006,12 +787,12 @@ NSString * const cellIdentifier = @"CellIdentifier";
 {
     if(text.length == 0)
     {
-        isFiltered = FALSE;
+        isFiltered = NO;
         [searchBar resignFirstResponder];
     }
     else
     {
-        isFiltered = true;
+        isFiltered = YES;
         _filteredUserData = [[NSMutableArray alloc] init];
         
         for (QTRUser *theUser in _connectedServers)
@@ -1030,7 +811,6 @@ NSString * const cellIdentifier = @"CellIdentifier";
             }
         }
     }
-        
     [[_devicesView devicesCollectionView] reloadData];
 }
 
@@ -1047,12 +827,35 @@ NSString * const cellIdentifier = @"CellIdentifier";
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
     searchBar.text=@"";
-    
     [searchBar setShowsCancelButton:NO animated:YES];
     [searchBar resignFirstResponder];
     
-    isFiltered = FALSE;
+    isFiltered = NO;
     [[_devicesView devicesCollectionView] reloadData];
+}
+
+#pragma mark - UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    NSDictionary *context = [_alertToFileMapTable objectForKey:alertView];
+    QTRFile *theFile = context[@"file"];
+    id receiver = context[@"receiver"];
+    QTRUser *theUser = context[@"user"];
+    
+    BOOL shouldAccept = NO;
+    
+    if (buttonIndex == [alertView cancelButtonIndex]) {
+        shouldAccept = YES;
+    }
+    
+    if (receiver == _client) {
+        [_client acceptFile:theFile accept:shouldAccept fromUser:theUser];
+    } else {
+        [_server acceptFile:theFile accept:shouldAccept fromUser:theUser];
+    }
+    
+    [_alertToFileMapTable removeObjectForKey:alertView];
 }
 
 #pragma mark - Image Picker Controller delegate methods
@@ -1065,13 +868,10 @@ NSString * const cellIdentifier = @"CellIdentifier";
         UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
         NSData *imageData = UIImageJPEGRepresentation(chosenImage, 1.0);
         [imageData writeToURL:localURL atomically:YES];
-        
-        
         NSArray *totalRecivers = [_selectedRecivers allValues];
         _selectedUser = nil;
         
         for (QTRUser *currentUser in totalRecivers) {
-            
             _selectedUser = currentUser;
             
             if ([_connectedClients containsObject:_selectedUser]) {
@@ -1092,29 +892,18 @@ NSString * const cellIdentifier = @"CellIdentifier";
                                            handler:^(UIAlertAction * action)
                                            {
                                                [alertView dismissViewControllerAnimated:YES completion:nil];
-                                               
                                            }];
-                
                 [alertView addAction:okButton];
                 [self presentViewController:alertView animated:YES completion:nil];
-                
             }
-            
             _selectedUser = nil;
         }
-    
         [picker dismissViewControllerAnimated:YES completion:NULL];
-    
-    
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    
     [picker dismissViewControllerAnimated:YES completion:NULL];
-    
 }
-
-
 
 #pragma mark: NSTimer Controller
 
@@ -1135,9 +924,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
 
     if (([_connectedClients count] + [_connectedServers count]) < 1) {
         [_devicesView animatePreviewLabel:[_devicesView fetchDevicesLabel]];
-        
         [[_devicesView noConnectedDeviceFoundView] setHidden:false];
-
     }
 }
 

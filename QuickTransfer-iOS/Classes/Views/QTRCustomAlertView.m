@@ -15,8 +15,6 @@ static float screenHeight;
 - (id)initWithFrame:(CGRect)aRect
 {
     if ((self = [super initWithFrame:aRect])) {
-        
-
         screenHeight = [UIScreen mainScreen].bounds.size.height;
         
         UIView *galleryUIView = [[UIView alloc]initWithFrame:CGRectZero];

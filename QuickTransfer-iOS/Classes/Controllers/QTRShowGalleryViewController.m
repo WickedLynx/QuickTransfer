@@ -20,8 +20,6 @@
     QTRShowGalleryView *_showGalleryView;
     NSMutableDictionary*_selectedImages;
     NSInteger _totalImageCount;
-
-
 }
 
 @end
@@ -49,7 +47,6 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     [self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:85.f/255.f green:85.f/255.f blue:85.f/255.f alpha:1.00f]];
     
-    
     UIButton *leftCustomButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [leftCustomButton setImage:[UIImage imageNamed:@"back_arrow"] forState:UIControlStateNormal];
     [leftCustomButton setTitle:@" Back" forState:UIControlStateNormal];
@@ -57,7 +54,6 @@ static NSString *cellIdentifier = @"CellIdentifier";
     leftCustomButton.frame = CGRectMake(0.f, 0.f, 60.0f, 30.0f);
     [leftCustomButton addTarget:self action:@selector(backButtonAction) forControlEvents:UIControlEventTouchUpInside];
 
-    
     UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] init];
     [leftBarButton setCustomView:leftCustomButton];
     self.navigationItem.leftBarButtonItem=leftBarButton;
@@ -82,7 +78,6 @@ static NSString *cellIdentifier = @"CellIdentifier";
     [_showGalleryView.sendButton addTarget:self action:@selector(sendData) forControlEvents:UIControlEventTouchUpInside];
 
     [self.view addSubview:_showGalleryView];
-    
     
     NSDictionary *views = NSDictionaryOfVariableBindings(_showGalleryView);
     
@@ -186,9 +181,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     }];
     
-    
     return cell;
-    
 }
 
 
@@ -216,9 +209,8 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+   
     [_selectedImages removeObjectForKey:[NSNumber numberWithInteger:indexPath.item]];
-
     
 }
 

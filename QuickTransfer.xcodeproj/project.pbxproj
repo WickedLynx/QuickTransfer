@@ -1429,8 +1429,8 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "QuickTransfer-iOS/QuickTransfer-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leftshift.filescooter21;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leftshift.filescooter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -1453,8 +1453,8 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuickTransfer-iOS/QuickTransfer-iOS-Prefix.pch";
 				INFOPLIST_FILE = "QuickTransfer-iOS/QuickTransfer-iOS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leftshift.filescooter21;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leftshift.filescooter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "87c9a4cc-4f48-4f2c-aac3-0fd623051295";
 				SDKROOT = iphoneos;

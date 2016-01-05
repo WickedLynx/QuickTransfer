@@ -215,13 +215,9 @@ static NSString *QTRTransfersTableCellIdentifier = @"QTRTransfersTableCellIdenti
         
         QLPreviewController *previewController = [[QLPreviewController alloc] init];
         [previewController setDataSource:self];
-        
         [self.navigationController pushViewController:previewController animated:YES];
-    } else {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
-    
-    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
