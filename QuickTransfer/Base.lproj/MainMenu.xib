@@ -20,6 +20,17 @@
                 <rect key="frame" x="0.0" y="0.0" width="300" height="470"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wkd-M0-2wL">
+                        <rect key="frame" x="254" y="0.0" width="46" height="25"/>
+                        <animations/>
+                        <buttonCell key="cell" type="roundTextured" title="Transfers" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="xKr-wN-oJS">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="miniSystem"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="clickTransfersButton:" target="iUg-SY-gp7" id="Vcl-N3-udV"/>
+                        </connections>
+                    </button>
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="mtA-gt-cPY" customClass="QTRDragView">
                         <rect key="frame" x="0.0" y="314" width="300" height="156"/>
                         <subviews>
@@ -94,17 +105,6 @@
                             <outlet property="delegate" destination="iUg-SY-gp7" id="7Tz-82-40Q"/>
                         </connections>
                     </searchField>
-                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wkd-M0-2wL">
-                        <rect key="frame" x="254" y="0.0" width="46" height="25"/>
-                        <animations/>
-                        <buttonCell key="cell" type="roundTextured" title="Transfers" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" imageScaling="proportionallyDown" inset="2" id="xKr-wN-oJS">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="miniSystem"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="clickTransfersButton:" target="iUg-SY-gp7" id="Vcl-N3-udV"/>
-                        </connections>
-                    </button>
                     <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SAY-ov-UUC">
                         <rect key="frame" x="0.0" y="20" width="300" height="262"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="VRE-s8-wWv">
