@@ -167,7 +167,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
     __weak UICollectionView *weakCollectionView = collectionView;
     __weak QTRGalleryCollectionViewCell *weakCell = cell;
  
-    CGSize fetchImageSize = CGSizeMake(600.0, 600.0);
+    CGSize fetchImageSize = CGSizeMake(180.0, 180.0);
     
     [_fetchPhotoLibrary imageAtIndex:indexPath.item imageWithFullSize:NO imageSize:fetchImageSize completion:^(UIImage * image) {
     
