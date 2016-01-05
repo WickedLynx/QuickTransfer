@@ -54,6 +54,8 @@
 
 - (BOOL)resumeTransfer:(QTRTransfer *)transfer;
 
+- (BOOL)pauseTransfer:(QTRTransfer *)transfer;
+
 /*!
  The delegate of the receiver to  whom connection and file related events are sent
  */

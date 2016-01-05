@@ -44,6 +44,8 @@
 
 - (BOOL)resumeTransfer:(QTRTransfer *)transfer;
 
+- (BOOL)pauseTransfer:(QTRTransfer *)transfer;
+
 /*!
  The object which is interested in getting notified of connection and file related events
  */

@@ -52,10 +52,14 @@ FOUNDATION_EXPORT long long const QTRMultipartTransferMaximumPartSize;
  */
 + (BOOL)canResumeReadingFile:(QTRFile *)file;
 
+- (long long)currentOffset;
+
 /*!
  The name of the file of the transfer
  */
 @property (copy) NSString *fileName;
+
+@property (assign, getter=isPaused) BOOL paused;
 
 /*!
  The recipient of the file

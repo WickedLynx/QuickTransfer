@@ -37,6 +37,12 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
             _allTransfers = [array mutableCopy];
             NSArray *fileIdentifiers = [_allTransfers valueForKey:@"fileIdentifier"];
             _fileIdentifierToTransfers = [NSMutableDictionary dictionaryWithObjects:_allTransfers forKeys:fileIdentifiers];
+            [_allTransfers enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                QTRTransfer *transfer = (QTRTransfer *)obj;
+                if (transfer.state == QTRTransferStateInProgress || transfer.state == QTRTransferStatePaused) {
+                    [transfer setState:QTRTransferStateFailed];
+                }
+            }];
         } else {
             _allTransfers = [NSMutableArray new];
             _fileIdentifierToTransfers = [NSMutableDictionary new];
@@ -112,17 +118,6 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 
 - (void)archiveTransfers {
     [NSKeyedArchiver archiveRootObject:_allTransfers toFile:_archivedTransfersFilePath];
-}
-
-- (QTRTransfer *)transferForFileID:(NSString *)fileIdentifier {
-    QTRTransfer *transfer = nil;
-    for (QTRTransfer *aTransfer in _allTransfers) {
-        if ([aTransfer.fileIdentifier isEqualToString:fileIdentifier]) {
-            transfer = aTransfer;
-            break;
-        }
-    }
-    return transfer;
 }
 
 #pragma mark - QTRBonjourTransferDelegate method
@@ -229,6 +224,15 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     }
 }
 
+- (void)transmissionDidPauseAfterChunk:(DTBonjourDataChunk *)chunk {
+    QTRTransfer *transfer = [_dataChunksToTransfers objectForKey:chunk];
+    if (transfer != nil) {
+        ++transfer.transferedChunks;
+        [_dataChunksToTransfers removeObjectForKey:chunk];
+        [self archiveTransfers];
+    }
+}
+
 - (void)replaceChunk:(DTBonjourDataChunk *)oldChunk withChunk:(DTBonjourDataChunk *)newChunk {
     QTRTransfer *transfer = [_dataChunksToTransfers objectForKey:oldChunk];
     if (transfer != nil) {
@@ -236,6 +240,7 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
         [transfer setCurrentChunkProgress:0.0f];
         ++transfer.transferedChunks;
         [_dataChunksToTransfers setObject:transfer forKey:newChunk];
+        [self archiveTransfers];
     }
 }
 
@@ -288,7 +293,9 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
 - (void)updateTransferForFile:(QTRFile *)file {
 
     QTRTransfer *theTransfer = _fileIdentifierToTransfers[file.identifier];
-    theTransfer.state = QTRTransferStateInProgress;
+    if (theTransfer.state != QTRTransferStatePaused) {
+        theTransfer.state = QTRTransferStateInProgress;
+    }
     if (theTransfer != nil && ![theTransfer isKindOfClass:[NSNull class]]) {
         [theTransfer setTransferedChunks:(file.partIndex + 1)];
 
@@ -309,8 +316,8 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     }
 }
 
-- (void)updateSentBytes:(long long)sentBytes forFile:(QTRFile *)file {
-    QTRTransfer *theTransfer = [self transferForFileID:file.identifier];
+- (void)updateSentBytes:(long long)sentBytes forFileID:(NSString *)fileID {
+    QTRTransfer *theTransfer = [self transferForFileID:fileID];
     [theTransfer setSentBytes:sentBytes];
     [self archiveTransfers];
 }
@@ -330,6 +337,26 @@ float QTRTransfersControllerProgressThreshold = 0.02f;
     }
 
     return canResume;
+}
+
+- (void)transferDidPause:(QTRTransfer *)transfer {
+    [transfer setState:QTRTransferStatePaused];
+    if ([_allTransfers containsObject:transfer]) {
+        if ([self.delegate respondsToSelector:@selector(transfersStore:didUpdateTransfersAtIndices:)]) {
+            [self.delegate transfersStore:self didUpdateTransfersAtIndices:[NSIndexSet indexSetWithIndex:[_allTransfers indexOfObject:transfer]]];
+        }
+    }
+}
+
+- (QTRTransfer *)transferForFileID:(NSString *)fileIdentifier {
+    QTRTransfer *transfer = nil;
+    for (QTRTransfer *aTransfer in _allTransfers) {
+        if ([aTransfer.fileIdentifier isEqualToString:fileIdentifier]) {
+            transfer = aTransfer;
+            break;
+        }
+    }
+    return transfer;
 }
 
 - (NSURL *)saveURLForResumedFile:(QTRFile *)file {

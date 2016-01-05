@@ -72,7 +72,12 @@ typedef NS_ENUM(NSInteger, QTRMessageType) {
     /*!
      The sender rejected the request to resume the file transfer
      */
-    QTRMessageTypeRejectResumeTransfer
+    QTRMessageTypeRejectResumeTransfer,
+
+    /*!
+     The sender paused the file transfer. The message will contian a file object (without data) to identify the transfer.
+     */
+    QTRMessageTypePauseTransfer
 
 };
 

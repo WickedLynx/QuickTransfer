@@ -158,6 +158,25 @@
     return canResume;
 }
 
+- (BOOL)pauseTransfer:(QTRTransfer *)transfer {
+    BOOL canPause = NO;
+    NSEnumerator *enumerator = [_dataChunksToMultipartTransfers objectEnumerator];
+    QTRMultipartTransfer *savedTransfer;
+    while (savedTransfer = [enumerator nextObject]) {
+        if ([savedTransfer.fileIdentifier isEqualToString:transfer.fileIdentifier]) {
+            if (transfer.totalParts > 1 && transfer.transferedChunks < (transfer.totalParts - 1)) {
+                canPause = YES;
+                [savedTransfer setPaused:YES];
+                if ([self.transferDelegate respondsToSelector:@selector(transferDidPause:)]) {
+                    [self.transferDelegate transferDidPause:transfer];
+                }
+            }
+            break;
+        }
+    }
+    return canPause;
+}
+
 #pragma mark - Private methods
 
 - (QTRUser *)userForConnection:(DTBonjourDataConnection *)connection {
@@ -402,7 +421,7 @@
                         }
 
                         case QTRMessageTypeRejectResumeTransfer: {
-                            NSLog(@"Rejected transfer");
+
                             break;
                         }
 
@@ -423,7 +442,15 @@
                                 });
 
                             }];
-                            NSLog(@"Accepted transfer");
+                            break;
+                        }
+
+                        case QTRMessageTypePauseTransfer: {
+                            if ([sSelf.transferDelegate respondsToSelector:@selector(transferForFileID:)]) {
+                                QTRTransfer *transfer = [sSelf.transferDelegate transferForFileID:theMessage.file.identifier];
+                                [sSelf.receivedFileParts removeObjectForKey:transfer.fileIdentifier];
+                                [sSelf.transferDelegate transferDidPause:transfer];
+                            }
                             break;
                         }
 
@@ -494,29 +521,42 @@
 
 - (void)connection:(DTBonjourDataConnection *)connection didFinishSendingChunk:(DTBonjourDataChunk *)chunk {
     QTRMultipartTransfer *transfer = [self.dataChunksToMultipartTransfers objectForKey:chunk];
+    if ([self.transferDelegate respondsToSelector:@selector(updateSentBytes:forFileID:)]) {
+        [self.transferDelegate updateSentBytes:[transfer currentOffset] forFileID:transfer.fileIdentifier];
+    }
     if (transfer != nil) {
-        __weak typeof(self) wSelf = self;
-        [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart, long long offset) {
-            if (wSelf != nil) {
-                typeof(self) sSelf = wSelf;
-
-                QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
-                [message setType:QTRMessageTypeFileTransfer];
-
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    DTBonjourDataChunk *dataChunk = nil;
-                    [[sSelf connectionForUser:transfer.user] sendObject:message error:nil dataChunk:&dataChunk];
-                    [sSelf.transferDelegate replaceChunk:chunk withChunk:dataChunk];
-                    [sSelf.dataChunksToMultipartTransfers removeObjectForKey:chunk];
-                    if ([sSelf.transferDelegate respondsToSelector:@selector(updateSentBytes:forFile:)]) {
-                        [sSelf.transferDelegate updateSentBytes:offset forFile:file];
-                    }
-                    if (!isLastPart) {
-                        [sSelf.dataChunksToMultipartTransfers setObject:transfer forKey:dataChunk];
-                    }
-                });
+        if ([transfer isPaused]) {
+            QTRFile *file = [[QTRFile alloc] initWithName:transfer.fileName type:@"" data:nil];
+            [file setIdentifier:transfer.fileIdentifier];
+            QTRMessage *message = [QTRMessage messageWithUser:_localUser file:file];
+            [message setType:QTRMessageTypePauseTransfer];
+            [[self connectionForUser:transfer.user] sendObject:message error:nil dataChunk:NULL];
+            [_dataChunksToMultipartTransfers removeObjectForKey:chunk];
+            if ([self.transferDelegate respondsToSelector:@selector(transmissionDidPauseAfterChunk:)]) {
+                [self.transferDelegate transmissionDidPauseAfterChunk:chunk];
             }
-        }];
+
+        } else {
+            __weak typeof(self) wSelf = self;
+            [transfer readNextPartForTransmission:^(QTRFile *file, BOOL isLastPart, long long offset) {
+                if (wSelf != nil) {
+                    typeof(self) sSelf = wSelf;
+
+                    QTRMessage *message = [QTRMessage messageWithUser:sSelf->_localUser file:file];
+                    [message setType:QTRMessageTypeFileTransfer];
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        DTBonjourDataChunk *dataChunk = nil;
+                        [[sSelf connectionForUser:transfer.user] sendObject:message error:nil dataChunk:&dataChunk];
+                        [sSelf.transferDelegate replaceChunk:chunk withChunk:dataChunk];
+                        [sSelf.dataChunksToMultipartTransfers removeObjectForKey:chunk];
+                        if (!isLastPart) {
+                            [sSelf.dataChunksToMultipartTransfers setObject:transfer forKey:dataChunk];
+                        }
+                    });
+                }
+            }];
+        }
     }
 }
 
