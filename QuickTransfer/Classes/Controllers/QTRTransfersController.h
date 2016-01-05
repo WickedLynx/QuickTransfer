@@ -11,15 +11,16 @@
 #import "QTRBonjourTransferDelegate.h"
 
 #import "QTRTransfersStore.h"
+@class QTRStatusItemView;
 
 @protocol QTRTransfersControllerDelegate;
 @protocol QTRTransfersTableCellViewDelegate;
 @protocol QTRTransfersTableViewEditingDelegate;
-
+@protocol QTRStatusItemViewDelegate;
 /*!
  This class drives the transfers view which displays the progress of transfers
  */
-@interface QTRTransfersController : NSObject <NSTableViewDataSource, NSTableViewDelegate, QTRTransfersStoreDelegate, QTRTransfersTableCellViewDelegate, QTRTransfersTableViewEditingDelegate>
+@interface QTRTransfersController : NSObject <NSTableViewDataSource, NSTableViewDelegate, QTRTransfersStoreDelegate, QTRTransfersTableCellViewDelegate, QTRTransfersTableViewEditingDelegate, QTRStatusItemViewDelegate>
 
 @property (weak) IBOutlet NSWindow *window;
 
@@ -33,11 +34,15 @@
  */
 @property (strong, nonatomic) QTRTransfersStore *transfersStore;
 
+@property (weak) IBOutlet NSButton *showDevicesButton;
+
 
 /*!
  The delegate of the receiver
  */
 @property (weak, nonatomic) id <QTRTransfersControllerDelegate> delegate;
+
+@property (weak) IBOutlet QTRStatusItemView *dragView;
 
 @end
 
@@ -52,5 +57,7 @@
 - (BOOL)transfersController:(QTRTransfersController *)controller needsResumeTransfer:(QTRTransfer *)transfer;
 
 - (BOOL)transfersController:(QTRTransfersController *)controller needsPauseTransfer:(QTRTransfer *)transfer;
+
+- (void)transfersControllerNeedsToShowDevices:(QTRTransfersController *)controller;
 
 @end

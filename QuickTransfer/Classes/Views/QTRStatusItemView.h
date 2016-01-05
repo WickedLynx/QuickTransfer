@@ -36,6 +36,6 @@
 /*!
  The delegate of the receiver
  */
-@property (weak, nonatomic) id <QTRStatusItemViewDelegate> delegate;
+@property (weak, nonatomic) IBOutlet id <QTRStatusItemViewDelegate> delegate;
 
 @end

@@ -10,6 +10,10 @@
 
 @implementation QTRScroller
 
++ (BOOL)isCompatibleWithOverlayScrollers {
+    return  self == [QTRScroller class];
+}
+
 - (void)drawRect:(NSRect)dirtyRect {
     [self drawKnob];
 }
