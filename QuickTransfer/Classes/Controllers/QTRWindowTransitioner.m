@@ -56,6 +56,7 @@
     toWindow.alphaValue = 1.0f;
 
     if ([toWindow isEqual:self.visibleWindow]) {
+        [self activateVisibleWindowRelativeToStatusItemView:statusItem];
         return;
     }
 
@@ -104,6 +105,8 @@
                 [context setSecondTransition:YES];
                 CABasicAnimation *animation = (CABasicAnimation *)anim;
                 [context.outWindow.contentView.layer setTransform:[animation.toValue CATransform3DValue]];
+                context.outWindow.alphaValue = 0.0f;
+                context.inWindow.alphaValue = 1.0f;
                 [toWindow makeKeyAndOrderFront:nil];
                 CALayer *inLayer = toWindow.contentView.layer;
                 if (inLayer != nil) {
@@ -137,6 +140,10 @@
 
 - (void)setInitialVisibleWindow:(NSWindow *)window {
     [self setVisibleWindow:window];
+}
+
+- (void)setInitialHiddenWindow:(NSWindow *)window {
+    [window setAlphaValue:0.0f];
 }
 
 

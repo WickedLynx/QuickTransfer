@@ -93,6 +93,7 @@ void refreshComputerModel() {
 
     _windowTransitioner = [[QTRWindowTransitioner alloc] init];
     [_windowTransitioner setInitialVisibleWindow:self.mainWindow];
+    [_windowTransitioner setInitialHiddenWindow:self.transfersPanel];
 
     [self.showTransfersButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.showTransfersButton.title attributes:@{NSForegroundColorAttributeName : [NSColor whiteColor],  NSFontAttributeName : [NSFont systemFontOfSize:10.0f]}]];
 

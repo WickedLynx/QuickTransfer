@@ -13,4 +13,5 @@
 - (void)transitionFromWindow:(NSWindow *)fromWindow toWindow:(NSWindow *)toWindow relativeToStatusItem:(NSView *)statusItem animated:(BOOL)animated;
 - (void)activateVisibleWindowRelativeToStatusItemView:(NSView *)statusItemView;
 - (void)setInitialVisibleWindow:(NSWindow *)window;
+- (void)setInitialHiddenWindow:(NSWindow *)window;
 @end
