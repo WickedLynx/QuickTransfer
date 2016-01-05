@@ -269,6 +269,13 @@
                 <rect key="frame" x="0.0" y="0.0" width="300" height="470"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="1M1-wp-Gau" customClass="QTRStatusItemView">
+                        <rect key="frame" x="0.0" y="0.0" width="300" height="470"/>
+                        <animations/>
+                        <connections>
+                            <outlet property="delegate" destination="Hld-Bi-WE9" id="IRb-t0-lKu"/>
+                        </connections>
+                    </customView>
                     <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" scrollerKnobStyle="light" translatesAutoresizingMaskIntoConstraints="NO" id="9HG-6v-PAF">
                         <rect key="frame" x="0.0" y="20" width="300" height="450"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="dNJ-ix-0a0">
@@ -414,14 +421,20 @@
                     </button>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="1M1-wp-Gau" firstAttribute="top" secondItem="UkA-WE-3aU" secondAttribute="top" id="4f4-qv-nKg"/>
+                    <constraint firstItem="1M1-wp-Gau" firstAttribute="centerX" secondItem="UkA-WE-3aU" secondAttribute="centerX" id="5L1-b6-Soo"/>
                     <constraint firstItem="9HG-6v-PAF" firstAttribute="leading" secondItem="UkA-WE-3aU" secondAttribute="leading" id="IeO-79-cIk"/>
+                    <constraint firstItem="1M1-wp-Gau" firstAttribute="centerY" secondItem="UkA-WE-3aU" secondAttribute="centerY" id="Jp7-Sb-YTa"/>
                     <constraint firstAttribute="bottom" secondItem="clu-te-5wr" secondAttribute="bottom" id="QKF-7f-gsW"/>
                     <constraint firstItem="9HG-6v-PAF" firstAttribute="top" secondItem="UkA-WE-3aU" secondAttribute="top" id="ZNN-a1-PGd"/>
                     <constraint firstItem="9HG-6v-PAF" firstAttribute="centerY" secondItem="UkA-WE-3aU" secondAttribute="centerY" constant="-10" id="ZlT-A8-Dyl"/>
+                    <constraint firstAttribute="trailing" secondItem="1M1-wp-Gau" secondAttribute="trailing" id="cxS-cp-h99"/>
+                    <constraint firstItem="1M1-wp-Gau" firstAttribute="leading" secondItem="UkA-WE-3aU" secondAttribute="leading" id="heA-EK-tjj"/>
                     <constraint firstAttribute="trailing" secondItem="9HG-6v-PAF" secondAttribute="trailing" id="pOl-qK-otJ"/>
                     <constraint firstItem="9HG-6v-PAF" firstAttribute="centerX" secondItem="UkA-WE-3aU" secondAttribute="centerX" id="q4B-Al-GeZ"/>
                     <constraint firstAttribute="bottom" secondItem="9HG-6v-PAF" secondAttribute="bottom" constant="20" id="rN5-Vf-HUI"/>
                     <constraint firstAttribute="trailing" secondItem="clu-te-5wr" secondAttribute="trailing" id="uwH-sw-g08"/>
+                    <constraint firstAttribute="bottom" secondItem="1M1-wp-Gau" secondAttribute="bottom" id="weH-i4-ufE"/>
                 </constraints>
                 <animations/>
             </view>

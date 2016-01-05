@@ -12,6 +12,7 @@
 #import "QTRTransfersTableCellView.h"
 #import "QTRTransfersTableRowView.h"
 #import "QTRTransfersTableView.h"
+#import "QTRStatusItemView.h"
 
 NSString *const QTRTransfersTableRowViewIdentifier = @"QTRTransfersTableRowViewIdentifier";
 
@@ -21,9 +22,10 @@ NSString *const QTRTransfersTableRowViewIdentifier = @"QTRTransfersTableRowViewI
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
     [self.showDevicesButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.showDevicesButton.title attributes:@{NSForegroundColorAttributeName : [NSColor whiteColor], NSFontAttributeName : [NSFont systemFontOfSize:10.0f]}]];
+    [self.dragView setAlphaValue:0.0f];
 }
 
 #pragma mark - Public methods
@@ -131,6 +133,12 @@ NSString *const QTRTransfersTableRowViewIdentifier = @"QTRTransfersTableRowViewI
     }
 
     return transfer;
+}
+
+#pragma mark - QTRStatusItemViewDelegate methods
+
+- (void)statusItemViewDraggingEntered:(QTRStatusItemView *)view {
+    [self showDevices:nil];
 }
 
 #pragma mark - Notification callbacks
