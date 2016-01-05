@@ -55,7 +55,11 @@
             case QTRTransferStateFailed:
                 [self.timestampField setObjectValue:@"Failed"];
                 [self.timestampField setTextColor:[NSColor colorWithRed:1 green:0.23 blue:0.19 alpha:1]];
-                [self.leftButton setImage:[NSImage imageNamed:@"RetryIcon"]];
+                if (![transfer isIncoming]) {
+                    [self.leftButton setImage:[NSImage imageNamed:@"RetryIcon"]];
+                } else {
+                    [self.leftButton setImage:nil];
+                }
                 break;
 
             case QTRTransferStatePaused:
