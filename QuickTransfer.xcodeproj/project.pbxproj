@@ -190,6 +190,12 @@
 		FADEB05B18F5577E002F1C00 /* QTRRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05A18F5577E002F1C00 /* QTRRootViewController.m */; };
 		FADEB05F18F56202002F1C00 /* QTRTransfersStore.m in Sources */ = {isa = PBXBuildFile; fileRef = FADEB05E18F56202002F1C00 /* QTRTransfersStore.m */; };
 		FAEB335918CEE4ED00EA5993 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */; };
+		FAFE4C951C3B7EB10017EE05 /* QTRWindowTransitioner.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFE4C941C3B7EB10017EE05 /* QTRWindowTransitioner.m */; settings = {ASSET_TAGS = (); }; };
+		FAFE4C961C3B7EB10017EE05 /* QTRWindowTransitioner.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFE4C941C3B7EB10017EE05 /* QTRWindowTransitioner.m */; settings = {ASSET_TAGS = (); }; };
+		FAFE4C971C3B7EB10017EE05 /* QTRWindowTransitioner.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFE4C941C3B7EB10017EE05 /* QTRWindowTransitioner.m */; settings = {ASSET_TAGS = (); }; };
+		FAFE4C9A1C3B86220017EE05 /* QTRTransfersWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFE4C991C3B86220017EE05 /* QTRTransfersWindow.m */; settings = {ASSET_TAGS = (); }; };
+		FAFE4C9B1C3B86220017EE05 /* QTRTransfersWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFE4C991C3B86220017EE05 /* QTRTransfersWindow.m */; settings = {ASSET_TAGS = (); }; };
+		FAFE4C9C1C3B86220017EE05 /* QTRTransfersWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFE4C991C3B86220017EE05 /* QTRTransfersWindow.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -397,6 +403,10 @@
 		FAEB335718CDB55C00EA5993 /* QuickTransfer copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "QuickTransfer copy-Info.plist"; path = "/Users/harshad/Documents/Development/Cocoa/QuickTransfer/QuickTransfer copy-Info.plist"; sourceTree = "<absolute>"; };
 		FAEB335818CEE4ED00EA5993 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		FAEB336D18DADE7A0053620B /* IOBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetooth.framework; path = System/Library/Frameworks/IOBluetooth.framework; sourceTree = SDKROOT; };
+		FAFE4C931C3B7EB10017EE05 /* QTRWindowTransitioner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRWindowTransitioner.h; sourceTree = "<group>"; };
+		FAFE4C941C3B7EB10017EE05 /* QTRWindowTransitioner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRWindowTransitioner.m; sourceTree = "<group>"; };
+		FAFE4C981C3B86220017EE05 /* QTRTransfersWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTRTransfersWindow.h; sourceTree = "<group>"; };
+		FAFE4C991C3B86220017EE05 /* QTRTransfersWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QTRTransfersWindow.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -680,6 +690,8 @@
 				FADEB06018F562DA002F1C00 /* QTRTransfersStoreDelegate.h */,
 				FA2057311C0C1FE000598626 /* QTRNotificationsController.h */,
 				FA2057321C0C1FE000598626 /* QTRNotificationsController.m */,
+				FAFE4C931C3B7EB10017EE05 /* QTRWindowTransitioner.h */,
+				FAFE4C941C3B7EB10017EE05 /* QTRWindowTransitioner.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -741,6 +753,8 @@
 				FA239AB21C2944330033EE90 /* QTRTransfersTableRowView.m */,
 				FA239AB61C294D170033EE90 /* QTRTransfersTableView.h */,
 				FA239AB71C294D170033EE90 /* QTRTransfersTableView.m */,
+				FAFE4C981C3B86220017EE05 /* QTRTransfersWindow.h */,
+				FAFE4C991C3B86220017EE05 /* QTRTransfersWindow.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1249,6 +1263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA5911F71C0583520057928C /* QTRRootController.m in Sources */,
+				FAFE4C9C1C3B86220017EE05 /* QTRTransfersWindow.m in Sources */,
 				FA5911F81C0583520057928C /* QTRMessage.m in Sources */,
 				FA5911F91C0583520057928C /* QTRTransfersStore.m in Sources */,
 				FA5911FA1C0583520057928C /* QTRBonjourClient.m in Sources */,
@@ -1277,6 +1292,7 @@
 				FA59120A1C0583520057928C /* DTBonjourDataChunk.m in Sources */,
 				FA239AB51C2944330033EE90 /* QTRTransfersTableRowView.m in Sources */,
 				FA59120B1C0583520057928C /* DTBonjourServer.m in Sources */,
+				FAFE4C971C3B7EB10017EE05 /* QTRWindowTransitioner.m in Sources */,
 				FA6C8CF41C227EF60002520D /* QTRDeviceCollectionViewItemView.m in Sources */,
 				FA59120C1C0583520057928C /* main.m in Sources */,
 				FA59120D1C0583520057928C /* QTRUser.m in Sources */,
@@ -1302,12 +1318,14 @@
 				FA2057331C0C1FE000598626 /* QTRNotificationsController.m in Sources */,
 				FADEB05718F53177002F1C00 /* QTRHelper.m in Sources */,
 				FA239AB81C294D170033EE90 /* QTRTransfersTableView.m in Sources */,
+				FAFE4C9A1C3B86220017EE05 /* QTRTransfersWindow.m in Sources */,
 				FA283F2A18B49BA8003D4FB6 /* QTRFile.m in Sources */,
 				FA6DA6B718C453E30097742B /* QTRMultipartTransfer.m in Sources */,
 				FAD9002818B34DEF0098DA76 /* QTRBonjourServer.m in Sources */,
 				FA4128141C29258600C61BE5 /* StartAtLoginController.m in Sources */,
 				FA6C8CF71C22800A0002520D /* QTRDeviceDeviceCollectionViewItem.m in Sources */,
 				FA6C8CFC1C22B3EF0002520D /* QTRDragView.m in Sources */,
+				FAFE4C951C3B7EB10017EE05 /* QTRWindowTransitioner.m in Sources */,
 				FA3849991C23FDD10060E41F /* QTRDevicesWindow.m in Sources */,
 				FA3ACDB618C0577A00889FBC /* QTRTransfersTableCellView.m in Sources */,
 				FA38499E1C240D630060E41F /* QTRStatusItemButton.m in Sources */,
@@ -1340,8 +1358,10 @@
 				FA38499A1C23FDD10060E41F /* QTRDevicesWindow.m in Sources */,
 				FA38499F1C240D630060E41F /* QTRStatusItemButton.m in Sources */,
 				FA34537F1C1E8E9400FC95EF /* QTRBonjourManager.m in Sources */,
+				FAFE4C9B1C3B86220017EE05 /* QTRTransfersWindow.m in Sources */,
 				FA5911F11C057F0F0057928C /* QTRDraggedItem.m in Sources */,
 				FA5911EA1C0570610057928C /* QTRFileZipper.m in Sources */,
+				FAFE4C961C3B7EB10017EE05 /* QTRWindowTransitioner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

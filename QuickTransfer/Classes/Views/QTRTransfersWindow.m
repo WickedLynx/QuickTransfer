@@ -1,14 +1,14 @@
 //
-//  QTRDevicesWindow.m
+//  QTRTransfersWindow.m
 //  QuickTransfer
 //
-//  Created by Harshad on 18/12/15.
-//  Copyright © 2015 Laughing Buddha Software. All rights reserved.
+//  Created by Harshad on 05/01/16.
+//  Copyright © 2016 Laughing Buddha Software. All rights reserved.
 //
 
-#import "QTRDevicesWindow.h"
+#import "QTRTransfersWindow.h"
 
-@implementation QTRDevicesWindow
+@implementation QTRTransfersWindow
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -19,7 +19,6 @@
         [visualEffectView setMaterial:NSVisualEffectMaterialDark];
         [visualEffectView setWantsLayer:YES];
     }
-
 }
 
 - (BOOL)canBecomeKeyWindow {

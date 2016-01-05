@@ -11,6 +11,11 @@
 
 @implementation QTRTransfersTableView
 
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    [self setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleNone];
+}
+
 - (void)keyDown:(NSEvent *)theEvent {
     [super keyDown:theEvent];
 

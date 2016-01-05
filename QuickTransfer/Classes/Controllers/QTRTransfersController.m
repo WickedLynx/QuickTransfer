@@ -21,13 +21,6 @@ NSString *const QTRTransfersTableRowViewIdentifier = @"QTRTransfersTableRowViewI
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    
-    [self.window setMovableByWindowBackground:YES];
-    NSVisualEffectView *view = (NSVisualEffectView *)self.window.contentView;
-    [view setState:NSVisualEffectStateActive];
-    [view setMaterial:NSVisualEffectMaterialDark];
-
-    [self.transfersTableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleNone];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
 }
