@@ -71,8 +71,12 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return 20;
-    
+    if ([_fetchPhotoLibrary fetchImageCount] < 20) {
+        return [_fetchPhotoLibrary fetchImageCount];
+        
+    } else {
+        return 20;
+    }
 }
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -81,7 +85,7 @@ static NSString *cellIdentifier = @"CellIdentifier";
     
     __weak QTRAlertControllerCollectionViewCell *weakCell = cell;
     
-    CGSize fetchImageSize = CGSizeMake(600.0, 600.0);
+    CGSize fetchImageSize = CGSizeMake(180.0, 180.0);
     
     [_fetchPhotoLibrary imageAtIndex:indexPath.row imageWithFullSize:NO imageSize:fetchImageSize completion:^(UIImage * image) {
         weakCell.backgroundView = [[UIImageView alloc] initWithImage:image ];
