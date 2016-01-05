@@ -19,6 +19,8 @@
 #import "QTRNotificationsController.h"
 #import "QTRBonjourManager.h"
 #import "QTRDragView.h"
+#import <QuartzCore/QuartzCore.h>
+#import "QTRWindowTransitioner.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -39,6 +41,7 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
     long _clickedRow;
     BOOL _shouldAutoAccept;
     QTRNotificationsController *_notificationsController;
+    QTRWindowTransitioner *_windowTransitioner;
 }
 
 @property (weak) IBOutlet QTRDragView *headerView;
@@ -59,12 +62,12 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @property (strong) IBOutlet NSLayoutConstraint *sendButtonContainerBottomConstraint;
 @property (strong) NSArray *droppedFiles;
 @property (weak) IBOutlet NSSearchField *searchField;
+@property (weak) IBOutlet NSButton *showTransfersButton;
 
 - (IBAction)clickSavePreferences:(id)sender;
 - (IBAction)clickRefresh:(id)sender;
 - (IBAction)clickStopServices:(id)sender;
 - (IBAction)clickQuit:(id)sender;
-- (IBAction)clickTransfers:(id)sender;
 - (IBAction)clickPreferences:(id)sender;
 
 @end
@@ -88,14 +91,10 @@ void refreshComputerModel() {
 
     [self setUsers:[[NSMutableArray alloc] init]];
 
-    [self.mainWindow setBackgroundColor:[NSColor clearColor]];
-    [self.mainWindow setMovableByWindowBackground:YES];
+    _windowTransitioner = [[QTRWindowTransitioner alloc] init];
+    [_windowTransitioner setInitialVisibleWindow:self.mainWindow];
 
-    if ([self.mainWindow.contentView isKindOfClass:[NSVisualEffectView class]]) {
-        NSVisualEffectView *visualEffectView = self.mainWindow.contentView;
-        [visualEffectView setState:NSVisualEffectStateActive];
-        [visualEffectView setMaterial:NSVisualEffectMaterialDark];
-    }
+    [self.showTransfersButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.showTransfersButton.title attributes:@{NSForegroundColorAttributeName : [NSColor whiteColor],  NSFontAttributeName : [NSFont systemFontOfSize:10.0f]}]];
 
     _notificationsController = [[QTRNotificationsController alloc] init];
 
@@ -105,7 +104,7 @@ void refreshComputerModel() {
     [_statusItem setMenu:self.statusBarMenu];
     [_statusItem setView:self.statusItemView];
     [self.statusItemView.button setTarget:self];
-    [self.statusItemView.button setAction:@selector(showDevicesWindow)];
+    [self.statusItemView.button setAction:@selector(clickStatusItem)];
     [self.statusItemView.button setTarget:self forRightClickAction:@selector(showMenu:)];
     [self.statusItemView setDelegate:self];
 
@@ -332,18 +331,13 @@ void refreshComputerModel() {
 }
 
 - (void)showDevicesWindow {
-    NSRect windowRect = [self.statusItemView.window convertRectToScreen:self.statusItemView.frame];
-    NSPoint desiredWindowOrigin = NSMakePoint(windowRect.origin.x - self.mainWindow.frame.size.width / 2, windowRect.origin.y);
-    if (desiredWindowOrigin.x + self.mainWindow.frame.size.width > [[NSScreen mainScreen] frame].size.width - 20) {
-        desiredWindowOrigin.x = windowRect.origin.x - self.mainWindow.frame.size.width - 20;
-    }
-    [self.mainWindow setFrameOrigin:desiredWindowOrigin];
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
-    [self.mainWindow makeKeyAndOrderFront:self];
+    [_windowTransitioner transitionFromWindow:self.transfersPanel toWindow:self.mainWindow relativeToStatusItem:self.statusItemView animated:YES];
 }
 
 - (void)showTransfers {
-    [self.transfersPanel orderFront:self];
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+    [_windowTransitioner transitionFromWindow:self.mainWindow toWindow:self.transfersPanel relativeToStatusItem:self.statusItemView animated:YES];
 }
 
 - (void)showConfirmationAlertForFile:(QTRFile *)file user:(QTRUser *)user receiver:(id)receiver {
@@ -391,7 +385,7 @@ void refreshComputerModel() {
     [_statusItem popUpStatusItemMenu:_statusItem.menu];
 }
 
-- (void)clickTransfers:(id)sender {
+- (IBAction)clickTransfersButton:(id)sender {
     [self showTransfers];
 }
 
@@ -433,6 +427,11 @@ void refreshComputerModel() {
             }
         }
     }
+}
+
+- (void)clickStatusItem {
+    [NSApp activateIgnoringOtherApps:YES];
+    [_windowTransitioner activateVisibleWindowRelativeToStatusItemView:self.statusItemView];
 }
 
 #pragma mark - KVO
@@ -587,6 +586,10 @@ void refreshComputerModel() {
 
 - (BOOL)transfersController:(QTRTransfersController *)controller needsPauseTransfer:(QTRTransfer *)transfer {
     return [_bonjourManager pauseTransfer:transfer];
+}
+
+- (void)transfersControllerNeedsToShowDevices:(QTRTransfersController *)controller {
+    [self showDevicesWindow];
 }
 
 #pragma mark - QTRStatusItemViewDelegate methods
