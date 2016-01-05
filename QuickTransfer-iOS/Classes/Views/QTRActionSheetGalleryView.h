@@ -15,8 +15,10 @@
 @class QTRActionSheetGalleryView;
 @protocol QTRActionSheetGallaryDelegate <NSObject>
 
+- (void)actionSheetGalleryView:(QTRActionSheetGalleryView *)showGalleryCustomDelegate selectedIndex:(NSInteger )selectedImagesIndex;
 
 @end
+
 
 @interface QTRActionSheetGalleryView : UIView  <UICollectionViewDelegate,UICollectionViewDataSource>
 

@@ -9,6 +9,7 @@
 #import "QTRActionSheetGalleryView.h"
 #import "QTRAlertControllerCollectionViewCell.h"
 
+
 @interface QTRActionSheetGalleryView() {
 
     UIActivityIndicatorView *actionCustomIndicatorView;
@@ -120,10 +121,9 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 #pragma mark - UICollectionViewDelegate methods
 
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-
-
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [self.delegate actionSheetGalleryView:self selectedIndex:indexPath.item];
 }
 
 

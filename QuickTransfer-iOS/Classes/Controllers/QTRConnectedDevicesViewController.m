@@ -24,7 +24,7 @@
 #import "QTRTransfersViewController.h"
 #import "QTRPhotoLibraryController.h"
 
-@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, QTRShowGalleryCustomDelegate> {
+@interface QTRConnectedDevicesViewController () <QTRBonjourClientDelegate, QTRBonjourServerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, QTRBeaconRangerDelegate,UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, QTRShowGalleryCustomDelegate, QTRActionSheetGallaryDelegate> {
 
     __weak QTRConnectedDevicesView *_devicesView;
     __weak id <QTRBonjourTransferDelegate> _transfersController;
@@ -144,11 +144,11 @@ NSString * const cellIdentifier = @"CellIdentifier";
     
     __weak typeof(QTRPhotoLibraryController) *weakFetchPhotoLibrary = _fetchPhotoLibrary;
     [_fetchPhotoLibrary requestUserPermissionIfRequired:^(BOOL autharizationStatus) {
-        if (autharizationStatus == YES) {
-            [weakFetchPhotoLibrary fetchAssetInformation];
-        }
-    }];
-    
+            if (autharizationStatus == YES) {
+                [weakFetchPhotoLibrary fetchAssetInformation];
+            }
+        }];
+
     _showGallery = [[QTRShowGalleryViewController alloc] init];
     _showGallery.delegate = self;
     _customAlertView = [[QTRCustomAlertView alloc] init];
@@ -156,6 +156,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     [self.view addSubview:_customAlertView];
     
     _customActionSheetGalleryView = [[QTRActionSheetGalleryView alloc] init];
+    _customActionSheetGalleryView.delegate = self;
     [_customActionSheetGalleryView setTranslatesAutoresizingMaskIntoConstraints:NO];
     [_customAlertView.galleryCollectionView addSubview:_customActionSheetGalleryView];
     
@@ -652,7 +653,7 @@ NSString * const cellIdentifier = @"CellIdentifier";
     }
 }
 
-#pragma mark - QTRShow Gallery Delegate Methods
+#pragma mark - QTRShowGallery Delegate Methods
 
 - (void)showGalleryViewController:(QTRShowGalleryViewController *)showGalleryCustomDelegate selectedImages:(NSDictionary * )selectedImagesData {
     
@@ -660,6 +661,14 @@ NSString * const cellIdentifier = @"CellIdentifier";
         NSInteger intgerIndexNumber = indexNumber.integerValue;
         [self sendDataToSelectedUser:intgerIndexNumber];
         }
+}
+
+#pragma mark - QTRCustomActionGallery Delegate Methods
+
+- (void)actionSheetGalleryView:(QTRActionSheetGalleryView *)showGalleryCustomDelegate selectedIndex:(NSInteger)selectedImagesIndex {
+
+    [self sendDataToSelectedUser:selectedImagesIndex];
+    [_customAlertView setHidden:YES];
 }
 
 #pragma mark - Sending Data
