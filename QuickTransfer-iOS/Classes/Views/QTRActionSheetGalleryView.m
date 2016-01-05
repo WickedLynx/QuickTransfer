@@ -71,7 +71,13 @@ static NSString *cellIdentifier = @"CellIdentifier";
 
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    return 20;
+    if ([_fetchPhotoLibrary fetchImageCount] < 20) {
+        return [_fetchPhotoLibrary fetchImageCount];
+        
+    } else {
+        return 20;
+    }
+    
     
 }
 
