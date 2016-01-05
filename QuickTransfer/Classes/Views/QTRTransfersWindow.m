@@ -12,6 +12,7 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
+    [self setMovable:NO];
     [self setBackgroundColor:[NSColor clearColor]];
     if ([self.contentView isKindOfClass:[NSVisualEffectView class]]) {
         NSVisualEffectView *visualEffectView = self.contentView;

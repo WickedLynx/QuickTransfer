@@ -23,6 +23,7 @@ NSString *const QTRTransfersTableRowViewIdentifier = @"QTRTransfersTableRowViewI
     [super awakeFromNib];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
+    [self.showDevicesButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.showDevicesButton.title attributes:@{NSForegroundColorAttributeName : [NSColor whiteColor], NSFontAttributeName : [NSFont systemFontOfSize:10.0f]}]];
 }
 
 #pragma mark - Public methods
@@ -32,6 +33,12 @@ NSString *const QTRTransfersTableRowViewIdentifier = @"QTRTransfersTableRowViewI
     [_transfersStore setDelegate:self];
 
     [self.transfersTableView reloadData];
+}
+
+- (IBAction)showDevices:(id)sender {
+    if ([self.delegate respondsToSelector:@selector(transfersControllerNeedsToShowDevices:)]) {
+        [self.delegate transfersControllerNeedsToShowDevices:self];
+    }
 }
 
 

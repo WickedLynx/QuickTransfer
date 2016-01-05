@@ -33,6 +33,8 @@
  */
 @property (strong, nonatomic) QTRTransfersStore *transfersStore;
 
+@property (weak) IBOutlet NSButton *showDevicesButton;
+
 
 /*!
  The delegate of the receiver
@@ -52,5 +54,7 @@
 - (BOOL)transfersController:(QTRTransfersController *)controller needsResumeTransfer:(QTRTransfer *)transfer;
 
 - (BOOL)transfersController:(QTRTransfersController *)controller needsPauseTransfer:(QTRTransfer *)transfer;
+
+- (void)transfersControllerNeedsToShowDevices:(QTRTransfersController *)controller;
 
 @end

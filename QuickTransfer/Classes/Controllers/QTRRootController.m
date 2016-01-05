@@ -62,12 +62,12 @@ NSString *const QTRDefaultsLaunchAtLoginKey = @"launchAtLogin";
 @property (strong) IBOutlet NSLayoutConstraint *sendButtonContainerBottomConstraint;
 @property (strong) NSArray *droppedFiles;
 @property (weak) IBOutlet NSSearchField *searchField;
+@property (weak) IBOutlet NSButton *showTransfersButton;
 
 - (IBAction)clickSavePreferences:(id)sender;
 - (IBAction)clickRefresh:(id)sender;
 - (IBAction)clickStopServices:(id)sender;
 - (IBAction)clickQuit:(id)sender;
-- (IBAction)clickTransfers:(id)sender;
 - (IBAction)clickPreferences:(id)sender;
 
 @end
@@ -93,6 +93,8 @@ void refreshComputerModel() {
 
     _windowTransitioner = [[QTRWindowTransitioner alloc] init];
     [_windowTransitioner setInitialVisibleWindow:self.mainWindow];
+
+    [self.showTransfersButton setAttributedTitle:[[NSAttributedString alloc] initWithString:self.showTransfersButton.title attributes:@{NSForegroundColorAttributeName : [NSColor whiteColor],  NSFontAttributeName : [NSFont systemFontOfSize:10.0f]}]];
 
     _notificationsController = [[QTRNotificationsController alloc] init];
 
@@ -383,7 +385,7 @@ void refreshComputerModel() {
     [_statusItem popUpStatusItemMenu:_statusItem.menu];
 }
 
-- (void)clickTransfers:(id)sender {
+- (IBAction)clickTransfersButton:(id)sender {
     [self showTransfers];
 }
 
@@ -584,6 +586,10 @@ void refreshComputerModel() {
 
 - (BOOL)transfersController:(QTRTransfersController *)controller needsPauseTransfer:(QTRTransfer *)transfer {
     return [_bonjourManager pauseTransfer:transfer];
+}
+
+- (void)transfersControllerNeedsToShowDevices:(QTRTransfersController *)controller {
+    [self showDevicesWindow];
 }
 
 #pragma mark - QTRStatusItemViewDelegate methods
