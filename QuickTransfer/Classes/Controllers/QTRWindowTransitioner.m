@@ -72,7 +72,7 @@
     CABasicAnimation *outAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
     outAnimation.fromValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
     outAnimation.toValue = [NSValue valueWithCATransform3D:outTransform];
-    outAnimation.duration = 0.25;
+    outAnimation.duration = 0.125;
     outAnimation.fillMode = kCAFillModeForwards;
     outAnimation.autoreverses = NO;
     outAnimation.removedOnCompletion = NO;
@@ -110,7 +110,7 @@
                     CABasicAnimation *inAnimation = [CABasicAnimation animationWithKeyPath:@"transform"];
                     inAnimation.toValue = [NSValue valueWithCATransform3D:CATransform3DIdentity];
                     inAnimation.fromValue = [NSValue valueWithCATransform3D:inLayer.transform];
-                    inAnimation.duration = 0.25;
+                    inAnimation.duration = 0.125;
                     inAnimation.fillMode = kCAFillModeForwards;
                     inAnimation.autoreverses = NO;
                     inAnimation.removedOnCompletion = NO;
